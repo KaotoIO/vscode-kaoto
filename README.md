@@ -12,3 +12,7 @@ Create and edit kaoto files.
 ## Features
 
 - Create and edit Kaoto (`.kaoto.yaml` and `.kaoto.yml`) files.
+
+## Prerequisites
+
+- `docker` must be available on system path
