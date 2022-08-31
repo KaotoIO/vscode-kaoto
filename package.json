@@ -1,0 +1,80 @@
+{
+  "name": "vscode-kaoto",
+  "publisher": "redhat",
+  "displayName": "VSCode Kaoto",
+  "description": "Edit Kaoto files",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KaotoIO/vscode-kaoto.git"
+  },
+  "scripts": {
+    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "build:prod": "rimraf dist && webpack && pnpm pack:prod",
+    "build:dev": "rimraf dist && webpack --env dev",
+    "pack:prod": "vsce package --githubBranch main  --yarn -o ./dist/vscode_extension_kaoto_editor_$npm_package_version.vsix",
+    "compile": "webpack",
+    "watch": "webpack",
+    "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
+  },
+  "dependencies": {
+    "@kie-tools-core/editor": "0.0.0",
+    "@kie-tools-core/backend": "0.0.0",
+    "@kie-tools-core/i18n": "0.0.0",
+    "@kie-tools-core/patternfly-base": "0.0.0",
+    "@kie-tools-core/vscode-extension": "0.0.0",
+    "@kie-tools-core/workspace": "0.0.0",
+    "@kie-tools/kaoto-editor": "0.0.0",
+    "@kie-tools-core/monaco-editor": "0.0.0"
+  },
+  "devDependencies": {
+    "@kie-tools/build-env": "0.0.0",
+    "@kie-tools-core/run-script-if": "0.0.0",
+    "@kie-tools-core/webpack-base": "0.0.0"
+  },
+  "icon": "icon.png",
+  "main": "./dist/extension/extension.js",
+  "browser": "./dist/extension/extensionWeb.js",
+  "engines": {
+    "vscode": "^1.46.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCustomEditor:kieKogitoWebviewEditorsKaoto"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  },
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "kieKogitoWebviewEditorsKaoto",
+        "displayName": "Kaoto Editor",
+        "selector": [
+          {
+            "filenamePattern": "*.{kaoto.yaml,kaoto.yml}"
+          }
+        ]
+      }
+    ],
+    "languages": [
+      {
+        "id": "kaoto-yaml",
+        "extensions": [
+          ".kaoto.yml",
+          ".kaoto.yaml"
+        ],
+        "aliases": [
+          "Kaoto (YAML)",
+          "kaoto.yaml",
+          "kaoto.yml"
+        ]
+      }
+    ]
+  }
+}
