@@ -1,8 +1,8 @@
 {
   "name": "vscode-kaoto",
   "publisher": "redhat",
-  "displayName": "VSCode Kaoto",
-  "description": "Edit Kaoto files",
+  "displayName": "Kaoto",
+  "description": "Kaoto - No Code and low code Integration editor",
   "version": "0.0.0",
   "license": "Apache-2.0",
   "repository": {
@@ -13,7 +13,7 @@
     "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "build:prod": "rimraf dist && webpack && pnpm pack:prod",
     "build:dev": "rimraf dist && webpack --env dev",
-    "pack:prod": "vsce package --githubBranch main  --yarn -o ./dist/vscode_extension_kaoto_editor_$npm_package_version.vsix",
+    "pack:prod": "vsce package --githubBranch main  --yarn -o ./dist/vscode_kaoto_$npm_package_version.vsix",
     "compile": "webpack",
     "watch": "webpack",
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
