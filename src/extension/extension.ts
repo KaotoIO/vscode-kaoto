@@ -30,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
 
   KogitoVsCode.startExtension({
-    extensionName: "kie-group.vscode-extension-kaoto-editor",
+    extensionName: "redhat.vscode-kaoto",
     context: context,
     viewType: "kieKogitoWebviewEditorsKaoto",
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
