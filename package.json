@@ -42,6 +42,12 @@
   "categories": [
     "Other"
   ],
+  "keywords": [
+	"Kaoto",
+	"Apache Camel",
+	"Low Code Integration",
+	"No Code Integration"
+  ],
   "activationEvents": [
     "onCustomEditor:kieKogitoWebviewEditorsKaoto"
   ],
