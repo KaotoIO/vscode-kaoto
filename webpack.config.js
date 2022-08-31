@@ -16,7 +16,7 @@
 
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
-const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const common = require("./webpack.common.config");
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const BG_IMAGES_DIRNAME = "bgimages";
