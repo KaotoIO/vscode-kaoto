@@ -3,11 +3,18 @@
   "publisher": "redhat",
   "displayName": "Kaoto",
   "description": "Kaoto - No Code and low code Integration editor",
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "preview": true,
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/KaotoIO/vscode-kaoto.git"
+  },
+  "bugs": "https://github.com/KaotoIO/vscode-kaoto/issues",
+  "homepage": "https://github.com/KaotoIO/vscode-kaoto",
+  "author": {
+	"name": "Aurélien Pupier",
+	"email": "apupier@redhat.com"
   },
   "scripts": {
     "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
