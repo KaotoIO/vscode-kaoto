@@ -13,8 +13,8 @@
   "bugs": "https://github.com/KaotoIO/vscode-kaoto/issues",
   "homepage": "https://github.com/KaotoIO/vscode-kaoto",
   "author": {
-	"name": "Aurélien Pupier",
-	"email": "apupier@redhat.com"
+    "name": "Aurélien Pupier",
+    "email": "apupier@redhat.com"
   },
   "scripts": {
     "lint": "npm eslint ./src --ext .ts,.tsx",
@@ -45,10 +45,10 @@
     "Other"
   ],
   "keywords": [
-	"Kaoto",
-	"Apache Camel",
-	"Low Code Integration",
-	"No Code Integration"
+    "Kaoto",
+    "Apache Camel",
+    "Low Code Integration",
+    "No Code Integration"
   ],
   "activationEvents": [
     "onCustomEditor:kieKogitoWebviewEditorsKaoto"
@@ -86,8 +86,16 @@
     ]
   },
   "devDependencies": {
-    "webpack-merge": "^5.8.0",
-	"@kie-tools-core/webpack-base": "kiegroup/kie-tools#0.22.0",
-	"@kietools/build-env": "kiegroup/kie-tools#0.22.0"
+	"buffer": "^6.0.3",
+	"css-loader": "^6.7.1",
+	"file-loader": "^6.2.0",
+	"os-browserify": "^0.3.0",
+	"path-browserify": "^1.0.1",
+	"sass": "^1.54.8",
+	"sass-loader": "^13.0.2",
+	"style-loader": "^3.3.1",
+	"ts-loader": "^9.3.1",
+    "webpack-cli": "^4.10.0",
+    "webpack-merge": "^5.8.0"
   }
 }
