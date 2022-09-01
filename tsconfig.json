@@ -1,8 +1,20 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "declaration": false,
-    "declarationMap": false
-  },
-  "include": ["src"]
+	"exclude": ["node_modules"],
+	"include": ["src"],
+	"compilerOptions": {
+	  "lib": ["es6", "dom", "es2018.promise", "es2019", "esnext"],
+	  "target": "es5",
+	  "declaration": false,
+	  "declarationMap": false,
+	  "sourceMap": true,
+	  "noImplicitAny": true,
+	  "noImplicitThis": true,
+	  "removeComments": true,
+	  "strictNullChecks": true,
+	  "experimentalDecorators": true,
+	  "downlevelIteration": true,
+	  "skipLibCheck": true,
+	  "jsx": "react-jsx",
+	  
+	}
 }
