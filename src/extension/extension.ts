@@ -36,10 +36,10 @@ export function activate(context: vscode.ExtensionContext) {
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping(
         {
-		type:"kaoto",
-		filePathGlob:"**/*.kaoto.+(yml|yaml)",
-        envelopePath:"dist/webview/KaotoEditorEnvelopeApp.js",
-        resourcesPathPrefix:"dist/webview/editors/kaoto"
+        type:"kaoto",
+        filePathGlob:"**/*.kaoto.+(yml|yaml)",
+        resourcesPathPrefix:"dist/webview/KaotoEditorEnvelopeApp.js",
+        envelopePath:"dist/webview/editors/kaoto"
 	    }
       ),
     ]),
