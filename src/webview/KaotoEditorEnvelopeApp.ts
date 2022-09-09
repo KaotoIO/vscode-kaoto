@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KaotoEditorFactory } from "@kie-tools/kaoto-editor";
+import { KaotoEditorFactory } from "kaoto-ui/dist/lib/kogito-integration";
 import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 
 declare const acquireVsCodeApi: any;

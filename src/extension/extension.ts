@@ -34,12 +34,12 @@ export function activate(context: vscode.ExtensionContext) {
     context: context,
     viewType: "kieKogitoWebviewEditorsKaoto",
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
-      new EnvelopeMapping(
-        "kaoto",
-        "**/*.kaoto.+(yml|yaml)",
-        "dist/webview/KaotoEditorEnvelopeApp.js",
-        "dist/webview/editors/kaoto"
-      ),
+      new EnvelopeMapping({
+        type: "kaoto",
+        filePathGlob: "**/*.kaoto.+(yml|yaml)",
+        resourcesPathPrefix: "dist/webview/editors/kaoto",
+        envelopePath: "dist/webview/KaotoEditorEnvelopeApp.js",
+      }),
     ]),
     backendProxy: backendProxy,
   });
