@@ -130,6 +130,9 @@ const commonConfig = (env) => {
       },
       extensions: [".tsx", ".ts", ".js", ".jsx"],
       modules: ["node_modules"],
+      alias: {
+        react: path.resolve('./node_modules/react')
+      }
     },
     externals: {
       vscode: "commonjs vscode",
