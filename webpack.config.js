@@ -131,7 +131,9 @@ const commonConfig = (env) => {
       extensions: [".tsx", ".ts", ".js", ".jsx"],
       modules: ["node_modules"],
       alias: {
-        react: path.resolve('./node_modules/react')
+        "react": path.resolve('./node_modules/react'),
+        "react-dom": path.resolve('./node_modules/react-dom'),
+        "@patternfly/react-core": path.resolve('./node_modules/kaoto-ui/node_modules/@patternfly/react-core')
       }
     },
     externals: {
