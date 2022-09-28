@@ -17,13 +17,13 @@
     "email": "apupier@redhat.com"
   },
   "scripts": {
-    "lint": "npm eslint ./src --ext .ts,.tsx",
-    "build:prod": "rimraf dist && webpack && npm pack:prod",
+    "lint": "yarn eslint ./src --ext .ts,.tsx",
+    "build:prod": "rimraf dist && webpack && yarn pack:prod",
     "build:dev": "rimraf dist && webpack --env dev",
     "pack:prod": "vsce package --githubBranch main  --yarn -o ./dist/vscode_kaoto_$npm_package_version.vsix",
     "compile": "webpack",
     "watch": "webpack",
-    "run:webmode": "npm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
+    "run:webmode": "yarn vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
   },
   "dependencies": {
     "@kie-tools-core/backend": "^0.23.0",
@@ -33,9 +33,10 @@
     "@kie-tools-core/patternfly-base": "^0.23.0",
     "@kie-tools-core/vscode-extension": "^0.23.0",
     "@kie-tools-core/workspace": "^0.23.0",
+    "@thiagoelg/kaoto-ui": "0.1.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "kaoto-ui": "0.1.0"
+    "vsce": "^2.11.0"
   },
   "icon": "icon.png",
   "main": "./dist/extension/extension.js",
