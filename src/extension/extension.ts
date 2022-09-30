@@ -20,11 +20,25 @@ import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/d
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
+import * as child_process from "child_process";
 
 let backendProxy: VsCodeBackendProxy;
 
+const LENGTH_OF_DOCKER_CONTAINER_ID = 63;
+let dockerContainerID: string | undefined;
+
 export function activate(context: vscode.ExtensionContext) {
   console.info("Kaoto Editor extension is alive.");
+
+  const kaotoBackendOutputChannel = vscode.window.createOutputChannel(`Kaoto backend`);
+  const backendProcess = child_process.spawnSync("docker", ["run", "--rm", "-d", "-p", "8081:8081", "kaotoio/backend"]);
+  const filteredOutput = backendProcess.output.filter((s) => {
+      return s !== undefined && s !== null && s.length > LENGTH_OF_DOCKER_CONTAINER_ID;
+    });
+  const dockerContainerIDLine = filteredOutput[filteredOutput.length - 1];
+  dockerContainerID = dockerContainerIDLine?.toString().replace(/(\r\n|\n|\r)/gm, "");
+
+  backendProcess.output.forEach((value: Buffer | null) => value && kaotoBackendOutputChannel.appendLine(value.toString()));
 
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
@@ -48,5 +62,8 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
+  if (dockerContainerID !== undefined) {
+    child_process.spawnSync("docker", ["stop", dockerContainerID]);
+  }
   backendProxy?.stopServices();
 }
