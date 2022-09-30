@@ -1,4 +1,5 @@
 {
+	"extends": "./node_modules/kaoto-ui/tsconfig.lib.json",
 	"exclude": ["node_modules"],
 	"include": ["src"],
 	"compilerOptions": {
@@ -15,6 +16,5 @@
 	  "downlevelIteration": true,
 	  "skipLibCheck": true,
 	  "jsx": "react-jsx",
-	  
 	}
 }
