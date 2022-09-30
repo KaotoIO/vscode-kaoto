@@ -133,7 +133,7 @@ const commonConfig = (env) => {
       alias: {
         "react": path.resolve('./node_modules/react'),
         "react-dom": path.resolve('./node_modules/react-dom'),
-        "@patternfly/react-core": path.resolve('./node_modules/kaoto-ui/node_modules/@patternfly/react-core')
+        "@patternfly/react-core": path.resolve('./node_modules/@patternfly/react-core')
       }
     },
     externals: {
@@ -240,11 +240,8 @@ module.exports = async (env) => [
             {
               or: [
                 (input) => posixPath(input).includes("src"),
-                (input) => posixPath(input).includes("dist/webview/editors/kaoto/images"),
-                (input) => posixPath(input).includes("node_modules/kaoto-component-library/node_modules/kaoto-ui/dist/lib/assets/images"),
-                (input) => posixPath(input).includes("node_modules/kaoto-ui/dist/lib/assets/images"),
-                (input) => posixPath(input).includes("node_modules/kaoto-component-library/dist/editor/images"),
-                (input) => posixPath(input).includes("thiagoelg-kaoto-ui/dist/lib/assets/images"),
+                (input) => posixPath(input).includes("dist/lib/assets/images"),
+                (input) => posixPath(input).includes("node_modules/@thiagoelg/kaoto-ui/dist/lib/assets/images"),
                 (input) => posixPath(input).includes("node_modules/@patternfly/patternfly/assets/images"),
                 (input) => posixPath(input).includes("node_modules/@patternfly/react-styles/css/assets/images"),
                 (input) => posixPath(input).includes("node_modules/@patternfly/react-core/dist/styles/assets/images"),

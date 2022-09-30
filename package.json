@@ -20,7 +20,7 @@
     "lint": "yarn eslint ./src --ext .ts,.tsx",
     "build:prod": "rimraf dist && webpack && yarn pack:prod",
     "build:dev": "rimraf dist && webpack --env dev",
-    "pack:prod": "vsce package --githubBranch main  --yarn -o ./dist/vscode_kaoto_$npm_package_version.vsix",
+    "pack:prod": "vsce package --githubBranch main --no-dependencies --yarn -o ./dist/vscode_kaoto_$npm_package_version.vsix",
     "compile": "webpack",
     "watch": "webpack",
     "run:webmode": "yarn vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
@@ -33,9 +33,11 @@
     "@kie-tools-core/patternfly-base": "^0.23.0",
     "@kie-tools-core/vscode-extension": "^0.23.0",
     "@kie-tools-core/workspace": "^0.23.0",
-    "@thiagoelg/kaoto-ui": "0.1.2",
+    "@thiagoelg/kaoto-ui": "0.1.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "@patternfly/patternfly": "4.210.2",
+    "@patternfly/react-core": "4.235.7",
     "vsce": "^2.11.0"
   },
   "icon": "icon.png",
@@ -89,6 +91,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react": "18.0.18",
     "buffer": "^6.0.3",
     "css-loader": "^6.7.1",
     "file-loader": "^6.2.0",
