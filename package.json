@@ -33,7 +33,7 @@
     "@kie-tools-core/patternfly-base": "^0.23.0",
     "@kie-tools-core/vscode-extension": "^0.23.0",
     "@kie-tools-core/workspace": "^0.23.0",
-    "@thiagoelg/kaoto-ui": "0.1.4",
+    "kaoto-ui": "0.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "@patternfly/patternfly": "4.210.2",

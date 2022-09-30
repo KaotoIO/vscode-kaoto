@@ -241,7 +241,7 @@ module.exports = async (env) => [
               or: [
                 (input) => posixPath(input).includes("src"),
                 (input) => posixPath(input).includes("dist/lib/assets/images"),
-                (input) => posixPath(input).includes("node_modules/@thiagoelg/kaoto-ui/dist/lib/assets/images"),
+                (input) => posixPath(input).includes("node_modules/kaoto-ui/dist/lib/assets/images"),
                 (input) => posixPath(input).includes("node_modules/@patternfly/patternfly/assets/images"),
                 (input) => posixPath(input).includes("node_modules/@patternfly/react-styles/css/assets/images"),
                 (input) => posixPath(input).includes("node_modules/@patternfly/react-core/dist/styles/assets/images"),
