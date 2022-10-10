@@ -1,42 +1,142 @@
-/*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
-const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const webpack = require('webpack');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const path = require("path");
-const CopyPlugin = require("copy-webpack-plugin");
 const BG_IMAGES_DIRNAME = "bgimages";
 
 function posixPath(pathStr) {
   return pathStr.split(path.sep).join(path.posix.sep);
 }
 
-const commonConfig = (env) =>
-  merge(common(env), {
+const getEnvConfig = (env) => {
+  if (env.dev) {
+    return {
+      minimize: false,
+      transpileOnly: false,
+      sourceMaps: true,
+      mode: "development",
+      live: env.live,
+    };
+  } else {
+    return {
+      minimize: true,
+      transpileOnly: false,
+      sourceMaps: false,
+      mode: "production",
+      live: env.live,
+    };
+  }
+};
+
+const commonConfig = (env) => {
+  const { transpileOnly, minimize, sourceMaps, mode, live } = getEnvConfig(env);
+
+  console.info(`Webpack :: ts-loader :: transpileOnly: ${transpileOnly}`);
+  console.info(`Webpack :: minimize: ${minimize}`);
+  console.info(`Webpack :: sourceMaps: ${sourceMaps}`);
+  console.info(`Webpack :: mode: ${mode}`);
+  console.info(`Webpack :: live: ${live}`);
+
+  const sourceMapsLoader = sourceMaps
+    ? [
+        {
+          test: /\.js$/,
+          enforce: "pre",
+          use: ["source-map-loader"],
+        },
+      ]
+    : [];
+
+  const devtool = sourceMaps
+    ? {
+        devtool: "inline-source-map",
+      }
+    : {};
+
+  const importsNotUsedAsValues = live ? { importsNotUsedAsValues: "preserve" } : {};
+
+  return {
+    mode,
+    optimization: {
+      minimize,
+    },
+    ...devtool,
+    module: {
+      rules: [
+        ...sourceMapsLoader,
+        {
+          test: /\.m?js/,
+          resolve: {
+            fullySpecified: false,
+          },
+        },
+        {
+          test: /\.tsx?$/,
+          use: [
+            {
+              loader: "ts-loader",
+              options: {
+                transpileOnly,
+                compilerOptions: {
+                  ...importsNotUsedAsValues,
+                  sourceMap: sourceMaps,
+                },
+              },
+            },
+          ],
+        },
+      ],
+    },
     output: {
+      path: path.resolve("./dist"),
+      filename: "[name].js",
+      chunkFilename: "[name].bundle.js",
       library: "KaotoEditor",
       libraryTarget: "umd",
       umdNamedDefine: true,
       globalObject: "this",
     },
+    stats: {
+      excludeAssets: [(name) => !name.endsWith(".js")],
+      excludeModules: true,
+    },
+    performance: {
+      maxAssetSize: 30000000,
+      maxEntrypointSize: 30000000,
+    },
+    resolve: {
+      // Required for github.dev and `minimatch`, as Webpack 5 doesn't add polyfills automatically anymore.
+      fallback: {
+        path: require.resolve("path-browserify"),
+        os: require.resolve("os-browserify/browser"),
+        fs: false,
+        child_process: false,
+        net: false,
+        buffer: require.resolve("buffer/"),
+      },
+      extensions: [".tsx", ".ts", ".js", ".jsx"],
+      modules: ["node_modules"],
+      alias: {
+        "react": path.resolve('./node_modules/react'),
+        "react-dom": path.resolve('./node_modules/react-dom'),
+        "@patternfly/react-core": path.resolve('./node_modules/@patternfly/react-core')
+      },
+      plugins: [
+        new TsconfigPathsPlugin({
+          configFile: path.resolve(__dirname, './tsconfig.json'),
+        }),
+      ],
+    },
+    plugins: [
+      new webpack.DefinePlugin({
+        'process.env.KAOTO_API': JSON.stringify("http://localhost:8081")
+      })
+    ],
     externals: {
       vscode: "commonjs vscode",
     },
-  });
+  };
+};
 
 module.exports = async (env) => [
   merge(commonConfig(env), {
@@ -56,21 +156,6 @@ module.exports = async (env) => [
     entry: {
       "webview/KaotoEditorEnvelopeApp": "./src/webview/KaotoEditorEnvelopeApp.ts",
     },
-    resolve: {
-      alias: {
-        // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
-        // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
-        // `@kiegroup/monaco-editor`. This way, everything works as expected.
-        "monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tools-core/monaco-editor"),
-      },
-    },
-    // plugins: [
-    //   new CopyPlugin({
-    //     patterns: [
-    //       { from: "../kaoto-editor/dist/editor", to: "./webview/editors/kaoto" },
-    //     ],
-    //   }),
-    // ],
     module: {
       rules: [
         {
@@ -151,7 +236,8 @@ module.exports = async (env) => [
             {
               or: [
                 (input) => posixPath(input).includes("src"),
-                (input) => posixPath(input).includes("dist/webview/editors/kaoto/images"),
+                (input) => posixPath(input).includes("dist/lib/assets/images"),
+                (input) => posixPath(input).includes("node_modules/kaoto-ui/dist/lib/assets/images"),
                 (input) => posixPath(input).includes("node_modules/@patternfly/patternfly/assets/images"),
                 (input) => posixPath(input).includes("node_modules/@patternfly/react-styles/css/assets/images"),
                 (input) => posixPath(input).includes("node_modules/@patternfly/react-core/dist/styles/assets/images"),
