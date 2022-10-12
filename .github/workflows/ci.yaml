@@ -1,0 +1,40 @@
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+name: Build with released version of Kaoto
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+        cache: 'yarn'
+    - name: Install prerequisites
+      run: |
+        yarn global add rimraf
+        yarn global add vsce
+        yarn global add webpack-cli
+        yarn global add webpack
+        yarn global add webpack-merge
+    - name: yarn
+      run: yarn
+    - name: yarn build:dev
+      run: yarn build:dev
+    - name: vsix package
+      run: yarn pack:prod
+    - name: Archive vsix
+      uses: actions/upload-artifact@v3
+      with:
+        path: 'dist/*.vsix'
