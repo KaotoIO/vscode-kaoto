@@ -46,7 +46,7 @@ export function activate(context: vscode.ExtensionContext) {
   KogitoVsCode.startExtension({
     extensionName: "redhat.vscode-kaoto",
     context: context,
-    viewType: "kieKogitoWebviewEditorsKaoto",
+    viewType: "webviewEditorsKaoto",
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping({
         type: "kaoto",

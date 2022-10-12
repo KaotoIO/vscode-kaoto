@@ -55,7 +55,7 @@
     "No Code Integration"
   ],
   "activationEvents": [
-    "onCustomEditor:kieKogitoWebviewEditorsKaoto"
+    "onCustomEditor:webviewEditorsKaoto"
   ],
   "capabilities": {
     "untrustedWorkspaces": {
@@ -65,7 +65,7 @@
   "contributes": {
     "customEditors": [
       {
-        "viewType": "kieKogitoWebviewEditorsKaoto",
+        "viewType": "webviewEditorsKaoto",
         "displayName": "Kaoto Editor",
         "selector": [
           {
