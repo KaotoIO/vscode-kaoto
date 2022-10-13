@@ -1,0 +1,61 @@
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+name: Build with main branch of kaoto-ui
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+    - name: Checkout vscode-kaoto
+      uses: actions/checkout@v3
+      with:
+        path: vscode-kaoto
+    - name: Checkout kaoto-ui
+      uses: actions/checkout@v3
+      with:
+        path: kaoto-ui
+        repository: KaotoIO/kaoto-ui
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+    - name: Install prerequisites
+      run: |
+        yarn global add rimraf
+        yarn global add vsce
+        yarn global add webpack-cli
+        yarn global add webpack
+        yarn global add webpack-merge
+    - name: Kaoto-ui link and build
+      run: |
+        cd kaoto-ui
+        yarn
+        yarn link
+        yarn build:lib
+    - name: yarn
+      working-directory: vscode-kaoto
+      run: |
+        cp package.json package.json.bak
+        sed -i '/kaoto-ui/d' package.json
+        yarn
+        cp -f package.json.bak package.json
+        yarn link kaoto-ui
+    - name: yarn build:dev
+      working-directory: vscode-kaoto
+      run: yarn build:dev
+    - name: vsix package
+      working-directory: vscode-kaoto
+      run: yarn pack:prod
+    - name: Archive vsix
+      uses: actions/upload-artifact@v3
+      with:
+        path: 'vscode-kaoto/dist/*.vsix'
