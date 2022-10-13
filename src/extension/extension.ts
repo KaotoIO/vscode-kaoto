@@ -32,6 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   const kaotoBackendOutputChannel = vscode.window.createOutputChannel(`Kaoto backend`);
   const backendProcess = child_process.spawnSync("docker", ["run", "--rm", "-d", "-p", "8081:8081", "kaotoio/backend"]);
+  handlePotentialErrorOnKaotoBackendStart(backendProcess, kaotoBackendOutputChannel);
   const filteredOutput = backendProcess.output.filter((s) => {
       return s !== undefined && s !== null && s.length > LENGTH_OF_DOCKER_CONTAINER_ID;
     });
@@ -59,6 +60,28 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   console.info("Extension is successfully setup.");
+}
+
+function handlePotentialErrorOnKaotoBackendStart(backendProcess: child_process.SpawnSyncReturns<Buffer>, kaotoBackendOutputChannel: vscode.OutputChannel) {
+	if (backendProcess.error) {
+		kaotoBackendOutputChannel.appendLine(backendProcess.error.message);
+		if (backendProcess.error.stack) {
+			kaotoBackendOutputChannel.appendLine(backendProcess.error.stack?.toString());
+		}
+		if (backendProcess.stderr) {
+			kaotoBackendOutputChannel.appendLine(backendProcess.stderr.toString('utf-8'));
+		}
+		if (backendProcess.stdout) {
+			kaotoBackendOutputChannel.appendLine(backendProcess.stdout.toString('utf-8'));
+		}
+		if (backendProcess.output) {
+			kaotoBackendOutputChannel.appendLine(backendProcess.output.toString());
+		}
+		throw new Error(
+			`Cannot activate the extension because the Kaoto backend cannot be launched.
+		Failed to start the Kaoto backend. See output named "Kaoto backend" for more details.
+		A common issue is that docker command is not available in system path.`);
+	}
 }
 
 export function deactivate() {
