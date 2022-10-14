@@ -31,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
   console.info("Kaoto Editor extension is alive.");
 
   const kaotoBackendOutputChannel = vscode.window.createOutputChannel(`Kaoto backend`);
-  const backendProcess = child_process.spawnSync("docker", ["run", "--rm", "-d", "-p", "8081:8081", "kaotoio/backend"]);
+  const backendProcess = child_process.spawnSync("docker", ["run", "--rm", "-d", "-p", "8081:8081", "kaotoio/backend:main"]);
   handlePotentialErrorOnKaotoBackendStart(backendProcess, kaotoBackendOutputChannel);
   const filteredOutput = backendProcess.output.filter((s) => {
       return s !== undefined && s !== null && s.length > LENGTH_OF_DOCKER_CONTAINER_ID;
