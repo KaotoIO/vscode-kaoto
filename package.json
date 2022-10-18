@@ -36,6 +36,7 @@
     "kaoto-ui": "0.3.1",
     "@patternfly/patternfly": "4.210.2",
     "@patternfly/react-core": "4.235.7",
+    "@redhat-developer/vscode-redhat-telemetry": "^0.4.3",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
@@ -66,6 +67,19 @@
     }
   },
   "contributes": {
+    "configuration": {
+      "properties": {
+        "redhat.telemetry.enabled": {
+          "type": "boolean",
+          "default": null,
+          "markdownDescription": "Enable usage data and errors to be sent to Red Hat servers. Read our [privacy statement](https://developers.redhat.com/article/tool-data-collection).",
+          "tags": [
+            "telemetry"
+          ],
+          "scope": "window"
+        }
+      }
+    },
     "customEditors": [
       {
         "viewType": "webviewEditorsKaoto",

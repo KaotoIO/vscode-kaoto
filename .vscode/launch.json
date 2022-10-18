@@ -8,7 +8,10 @@
       "runtimeExecutable": "${execPath}",
       "args": ["--extensionDevelopmentPath=${workspaceRoot}"],
       "outFiles": ["${workspaceRoot}/dist/**/*.js"],
-      "preLaunchTask": "npm: watch"
+      "preLaunchTask": "npm: watch",
+	  "env": {
+		"VSCODE_REDHAT_TELEMETRY_DEBUG":"true"
+	  }
     },
     {
       "name": "Run Extension (web)",
@@ -18,7 +21,10 @@
       "runtimeExecutable": "${execPath}",
       "args": ["--extensionDevelopmentPath=${workspaceRoot}", "--extensionDevelopmentKind=web"],
       "outFiles": ["${workspaceRoot}/dist/**/*.js"],
-      "preLaunchTask": "npm: watch"
+      "preLaunchTask": "npm: watch",
+	  "env": {
+		"VSCODE_REDHAT_TELEMETRY_DEBUG":"true"
+	  }
     }
   ]
 }

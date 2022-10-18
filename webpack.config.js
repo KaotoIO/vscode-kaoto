@@ -87,6 +87,7 @@ const commonConfig = (env) => {
         },
       ],
     },
+	ignoreWarnings: [/Failed to parse source map/],
     output: {
       path: path.resolve("./dist"),
       filename: "[name].js",
@@ -105,7 +106,7 @@ const commonConfig = (env) => {
       maxEntrypointSize: 30000000,
     },
     resolve: {
-      // Required for github.dev and `minimatch`, as Webpack 5 doesn't add polyfills automatically anymore.
+      // Required for github.dev, `minimatch` and vscode-redhat-telemetry, as Webpack 5 doesn't add polyfills automatically anymore.
       fallback: {
         path: require.resolve("path-browserify"),
         os: require.resolve("os-browserify/browser"),
@@ -113,6 +114,10 @@ const commonConfig = (env) => {
         child_process: false,
         net: false,
         buffer: require.resolve("buffer/"),
+		assert: false,
+		process: false,
+		stream: false,
+		util: false
       },
       extensions: [".tsx", ".ts", ".js", ".jsx"],
       modules: ["node_modules"],
