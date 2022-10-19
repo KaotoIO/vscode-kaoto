@@ -55,7 +55,10 @@
     "No Code Integration"
   ],
   "activationEvents": [
-    "onCustomEditor:webviewEditorsKaoto"
+    "onCustomEditor:webviewEditorsKaoto",
+    "workspaceContains:**/*.kaoto.yaml",
+    "workspaceContains:**/*.kaoto.yml",
+    "onStartupFinished"
   ],
   "capabilities": {
     "untrustedWorkspaces": {
