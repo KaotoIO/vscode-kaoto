@@ -149,7 +149,7 @@ module.exports = async (env) => [
   merge(commonConfig(env), {
     target: "webworker",
     entry: {
-      "extension/extensionWeb": "./src/extension/extension.ts",
+      "extension/extensionWeb": "./src/extension/extensionWeb.ts",
     },
   }),
   merge(commonConfig(env), {
