@@ -11,6 +11,7 @@ dist
 
 # testing
 /coverage
+.vscode-test-web
 
 # production
 /build
