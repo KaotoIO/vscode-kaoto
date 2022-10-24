@@ -5,10 +5,10 @@
 
 ### **This is a pre-release version to seek feedback from the community**
 
----
+## Prerequisites
 
-Create and edit kaoto files.
+- `docker` must be available on system path
 
 ## Features
 
-- Create and edit Kaoto (`.kaoto.yaml` and `.kaoto.yml`) files.
+- Create and edit Kaoto (`*.kaoto.yaml` and `*.kaoto.yml`) files.
