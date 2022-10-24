@@ -106,7 +106,7 @@ const commonConfig = (env) => {
       maxEntrypointSize: 30000000,
     },
     resolve: {
-      // Required for github.dev, `minimatch` and vscode-redhat-telemetry, as Webpack 5 doesn't add polyfills automatically anymore.
+      // Required for github.dev and `minimatch` as Webpack 5 doesn't add polyfills automatically anymore.
       fallback: {
         path: require.resolve("path-browserify"),
         os: require.resolve("os-browserify/browser"),
