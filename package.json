@@ -23,7 +23,7 @@
     "pack:prod": "vsce package --githubBranch main --no-dependencies --yarn -o ./dist/vscode_kaoto_$npm_package_version.vsix",
     "compile": "webpack",
     "watch": "webpack --env dev",
-    "run:webmode": "yarn vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
+    "run:webmode": "yarn vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --open-devtools ./resources"
   },
   "dependencies": {
     "@kie-tools-core/backend": "^0.24.0",
@@ -36,6 +36,7 @@
     "kaoto-ui": "0.3.1",
     "@patternfly/patternfly": "4.210.2",
     "@patternfly/react-core": "4.235.7",
+    "@redhat-developer/vscode-redhat-telemetry": "^0.4.3",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
@@ -66,6 +67,19 @@
     }
   },
   "contributes": {
+    "configuration": {
+      "properties": {
+        "redhat.telemetry.enabled": {
+          "type": "boolean",
+          "default": null,
+          "markdownDescription": "Enable usage data and errors to be sent to Red Hat servers. Read our [privacy statement](https://developers.redhat.com/article/tool-data-collection).",
+          "tags": [
+            "telemetry"
+          ],
+          "scope": "window"
+        }
+      }
+    },
     "customEditors": [
       {
         "viewType": "webviewEditorsKaoto",
@@ -94,6 +108,7 @@
   },
   "devDependencies": {
     "@types/react": "18.0.18",
+    "@vscode/test-web": "^0.0.32",
     "buffer": "^6.0.3",
     "css-loader": "^6.7.1",
     "file-loader": "^6.2.0",

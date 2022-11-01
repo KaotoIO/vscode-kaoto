@@ -19,15 +19,17 @@ import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
+import { getRedHatService, TelemetryService } from "@redhat-developer/vscode-redhat-telemetry";
 import * as vscode from "vscode";
 import * as child_process from "child_process";
 
 let backendProxy: VsCodeBackendProxy;
+let telemetryService: TelemetryService;
 
 const LENGTH_OF_DOCKER_CONTAINER_ID = 63;
 let dockerContainerID: string | undefined;
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   console.info("Kaoto Editor extension is alive.");
 
   const kaotoBackendOutputChannel = vscode.window.createOutputChannel(`Kaoto backend`);
@@ -60,6 +62,10 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   console.info("Extension is successfully setup.");
+  
+  const redhatService = await getRedHatService(context);  
+  telemetryService = await redhatService.getTelemetryService();
+  telemetryService.sendStartupEvent();
 }
 
 function handlePotentialErrorOnKaotoBackendStart(backendProcess: child_process.SpawnSyncReturns<Buffer>, kaotoBackendOutputChannel: vscode.OutputChannel) {
@@ -89,4 +95,6 @@ export function deactivate() {
     child_process.spawnSync("docker", ["stop", dockerContainerID]);
   }
   backendProxy?.stopServices();
+  
+  telemetryService.sendShutdownEvent();
 }
