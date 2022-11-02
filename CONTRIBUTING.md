@@ -75,14 +75,58 @@ Additional types are not mandated by the Conventional Commits specification, and
 (unless they include a BREAKING CHANGE). A scope may be provided to a commit’s type, to provide additional contextual information and 
 is contained within parenthesis, e.g., `feat(parser): add ability to parse arrays`.
 
-## How to launch VS Code extension during development
+## Development environment
 
-### Desktop
+### How to build locally
+
+Unil there is a release of `kaoto-ui`, the steps are relatively complicated:
+
+* In `kaoto-ui` local clone folder:
+  * `yarn`
+  * `yarn link`
+  * `yarn build:lib`
+* Open VS Code on `vscode-kaoto` local clone folder
+  * In `package.json`, remove the line with `kaoto-ui` dependency
+  * `yarn`
+  * Add back the line in `package.json` for `kaoto-ui` dependency
+  * `yarn link kaoto-ui`
+  * `yarn build:dev`
+  * `yarn pack:prod` to build the vsix binary
+
+You can have a look at the [GitHub Actions workflow](.github/workflows/main-kaoto.yaml) to ensure you have up to date steps.
+
+### How to launch VS Code extension during development
+
+#### Desktop
 
 Inside VS Code, launch the `Run and Debug configuration` called `Run Extension`.
 
-### Web
+#### Web
 
 This is available for future plan. This is not supported.
 
 You need to launch the script task `yarn run run:webmode`
+
+### How to test latest Kaoto UI
+
+If you'd like to test latest Kaoto UI and not rely on a released version, follow these steps:
+
+* In `kaoto-ui` local clone folder:
+  * `yarn`
+  * `yarn link`
+  * `yarn build:lib`
+* Open VS Code on `vscode-kaoto` local clone folder
+* In `package.json`, remove the line with kaoto-ui dependency
+* `yarn`
+* add back the line in `package.json` for kaoto-ui dependency
+* `yarn link kaoto-ui`
+* `yarn build:dev`
+* In `Run and debug` perspective, call the `Run Extension` launch configuration
+* In the new VS Code opened (which has `[Extension Development host]` in window title,
+  * Open a folder (use the one you want)
+  * Create a file named with the following pattern `*.kaoto.yaml`
+  * Open the file
+  
+### How to debug Kaoto UI embedded in VS Code
+
+The command `Developer: Toggle Developer Tools` gives access to classic developer tools for web applications. See [official documentation](https://code.visualstudio.com/api/extension-guides/webview#inspecting-and-debugging-webviews) for more details.
