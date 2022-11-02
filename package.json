@@ -34,8 +34,8 @@
     "@kie-tools-core/vscode-extension": "^0.25.0",
     "@kie-tools-core/workspace": "^0.25.0",
     "kaoto-ui": "0.3.1",
-    "@patternfly/patternfly": "4.210.2",
-    "@patternfly/react-core": "4.235.7",
+    "@patternfly/patternfly": "4.217.1",
+    "@patternfly/react-core": "4.250.1",
     "@redhat-developer/vscode-redhat-telemetry": "^0.4.3",
     "react": "18.2.0",
     "react-dom": "18.2.0"
