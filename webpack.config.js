@@ -174,8 +174,8 @@ module.exports = async (env) => [
               or: [
                 (input) => posixPath(input).includes("node_modules/@patternfly/react-core/dist/styles/assets/fonts"),
                 (input) => posixPath(input).includes("node_modules/@patternfly/react-core/dist/styles/assets/pficon"),
-                (input) => posixPath(input).includes("node_modules/@patternfly/patternfly/assets/fonts"),
-                (input) => posixPath(input).includes("node_modules/@patternfly/patternfly/assets/pficon"),
+                (input) => posixPath(input).includes("node_modules/@kaoto/kaoto-ui/node_modules/@patternfly/patternfly/assets/fonts"),
+                (input) => posixPath(input).includes("node_modules/@kaoto/kaoto-ui/node_modules/@patternfly/patternfly/assets/pficon"),
                 (input) =>
                   posixPath(input).includes("node_modules/monaco-editor/esm/vs/base/browser/ui/codicons/codicon"),
                 (input) =>
