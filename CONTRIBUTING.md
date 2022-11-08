@@ -95,7 +95,7 @@ This is available for future plan. This is not supported.
 
 You need to launch the script task `yarn run run:webmode`
 
-### How to test latest Kaoto UI
+### How to manually test latest Kaoto UI
 
 If you'd like to test latest Kaoto UI and not rely on a released version, follow these steps:
 
@@ -116,3 +116,9 @@ If you'd like to test latest Kaoto UI and not rely on a released version, follow
 ### How to debug Kaoto UI embedded in VS Code
 
 The command `Developer: Toggle Developer Tools` gives access to classic developer tools for web applications. See [official documentation](https://code.visualstudio.com/api/extension-guides/webview#inspecting-and-debugging-webviews) for more details.
+
+### How to launch automated tests
+
+`yarn run test-it`
+
+It is launching UI tests. Beware that it can take several minutes to start. Stay tuned for improvements to come later.
