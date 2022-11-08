@@ -1,6 +1,9 @@
 {
 	"baseUrl": ".",
-	"exclude": ["node_modules"],
+	"exclude": [
+		"node_modules",
+		".vscode-test",
+		"test-resources"],
 	"include": ["src"],
 	"compilerOptions": {
 	  "baseUrl": ".",
@@ -16,6 +19,6 @@
 	  "experimentalDecorators": true,
 	  "downlevelIteration": true,
 	  "skipLibCheck": true,
-	  "jsx": "react-jsx",
+	  "jsx": "react-jsx"
 	}
 }

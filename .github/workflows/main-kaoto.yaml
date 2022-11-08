@@ -49,6 +49,12 @@ jobs:
     - name: yarn build:dev
       working-directory: vscode-kaoto
       run: yarn build:dev
+    - name: Run UI Tests
+      uses: GabrielBB/xvfb-action@v1.6
+      with:
+        run: yarn run test:it
+        options: -screen 0 1920x1080x24
+        working-directory: vscode-kaoto
     - name: vsix package
       working-directory: vscode-kaoto
       run: yarn pack:prod
@@ -56,3 +62,15 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         path: 'vscode-kaoto/dist/*.vsix'
+    - name: Store VS Code logs
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: vscode-logs
+        path: vscode-kaoto/test-resources/settings/logs
+    - name: Store VS Code UI Tests screenshots on failure
+      uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: ui-test-screenshots
+        path: vscode-kaoto/test-resources/screenshots

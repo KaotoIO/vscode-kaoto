@@ -1,6 +1,6 @@
 .vscode/**
 .vscode-test/**
-out/test/**
+out/**
 src/**
 test/**
 .gitignore
@@ -12,3 +12,5 @@ vsc-extension-quickstart.md
 files-for-extension-testing
 test-resources/**
 test-resource
+test Fixture with speci@l chars
+uitest-resources
