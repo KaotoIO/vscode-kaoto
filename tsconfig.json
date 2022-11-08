@@ -1,8 +1,9 @@
 {
-	"extends": "./node_modules/@kaoto/kaoto-ui/tsconfig.lib.json",
+	"baseUrl": ".",
 	"exclude": ["node_modules"],
 	"include": ["src"],
 	"compilerOptions": {
+	  "baseUrl": ".",
 	  "lib": ["es6", "dom", "es2018.promise", "es2019", "esnext"],
 	  "target": "es5",
 	  "declaration": false,
