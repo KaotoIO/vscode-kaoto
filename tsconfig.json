@@ -1,5 +1,5 @@
 {
-	"extends": "./node_modules/kaoto-ui/tsconfig.lib.json",
+	"extends": "./node_modules/@kaoto/kaoto-ui/tsconfig.lib.json",
 	"exclude": ["node_modules"],
 	"include": ["src"],
 	"compilerOptions": {

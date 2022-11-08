@@ -48,7 +48,7 @@ jobs:
         sed -i '/kaoto-ui/d' package.json
         yarn
         cp -f package.json.bak package.json
-        yarn link kaoto-ui
+        yarn link @kaoto/kaoto-ui
     - name: yarn build:dev
       working-directory: vscode-kaoto
       run: yarn build:dev
