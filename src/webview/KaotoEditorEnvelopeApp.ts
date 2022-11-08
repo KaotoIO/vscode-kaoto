@@ -1,4 +1,4 @@
-import { KaotoEditorFactory } from "kaoto-ui/dist/lib/kogito-integration";
+import { KaotoEditorFactory } from "@kaoto/kaoto-ui/dist/lib/kogito-integration";
 import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 
 declare const acquireVsCodeApi: any;
