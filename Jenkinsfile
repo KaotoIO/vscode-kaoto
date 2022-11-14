@@ -14,7 +14,7 @@ node('rhel8'){
 
   stage 'Checkout vscode-kaoto code'
   deleteDir()
-  git branch: 'main', url: 'https://github.com/KaotoIO/vscode-kaoto.git'
+  git branch: '4-provideJobToPublishRelease-totest', url: 'https://github.com/apupier/vscode-kaoto.git'
 
   stage 'install vscode-kaoto build requirements'
   installBuildRequirements()
