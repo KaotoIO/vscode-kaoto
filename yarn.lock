@@ -54,10 +54,10 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@kaoto/kaoto-ui@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@kaoto/kaoto-ui/-/kaoto-ui-0.4.1.tgz#19e7b0bb147292baca0a80430428e096cdacd765"
-  integrity sha512-dW7YR1bADx0F/rbzJTXpi2qj0Sr8n73MdS0l4E9cf4aCq8JZuBeRFyhx6s4EiMcVlnKOkb81k9Fdw4gaJCDiHg==
+"@kaoto/kaoto-ui@0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@kaoto/kaoto-ui/-/kaoto-ui-0.4.3.tgz#f566a5826b9afd79f6aeac694d9826a9bf29d759"
+  integrity sha512-SKdUyxSlO7ZiNLQ+/09okMtF+JxsakrMb1az4226xFO/NmA/MTeD+PGXYu87kmXW0Ra9sM4MffmTZ+fK7z3qig==
   dependencies:
     "@kie-tools-core/editor" "0.25.0"
     "@kie-tools-core/guided-tour" "0.25.0"
@@ -72,7 +72,7 @@
     "@patternfly/react-log-viewer" "4.87.50"
     "@patternfly/react-table" "4.111.33"
     "@rhoas/app-services-ui-shared" "^0.16.4"
-    ajv "^8.8.2"
+    ajv "^8.11.2"
     dagre "^0.8.5"
     immer "^9.0.16"
     lodash.isequal "^4.5.0"
@@ -1033,10 +1033,10 @@ ajv@^6.12.5:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-ajv@^8.8.2:
-  version "8.11.0"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.11.0.tgz#977e91dd96ca669f54a11e23e378e33b884a565f"
-  integrity sha512-wGgprdCvMalC0BztXvitD2hC04YffAvtsUn93JbGXYLAtCUO4xd17mCCZQxUOItiBwZvJScWo8NIvQMQ71rdpg==
+ajv@^8.11.2:
+  version "8.11.2"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.11.2.tgz#aecb20b50607acf2569b6382167b65a96008bb78"
+  integrity sha512-E4bfmKAhGiSTvMfL1Myyycaub+cUEU2/IvpylXkUu7CHBkBj1f/ikdzbD7YQ6FKUbixDxeYvB/xY4fvyroDlQg==
   dependencies:
     fast-deep-equal "^3.1.1"
     json-schema-traverse "^1.0.0"

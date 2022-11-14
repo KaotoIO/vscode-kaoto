@@ -24,11 +24,11 @@
     "compile": "webpack",
     "watch": "webpack --env dev",
     "run:webmode": "yarn vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --open-devtools ./resources",
-	"test:it": "yarn test:it:clean && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run --yarn --uninstall_extension --extensions_dir ./test-resources out/*.test.js",
+    "test:it": "yarn test:it:clean && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run --yarn --uninstall_extension --extensions_dir ./test-resources out/*.test.js",
     "test:it:clean": "rimraf ./test-resources && rimraf ./out && rimraf *.vsix"
   },
   "dependencies": {
-    "@kaoto/kaoto-ui": "0.4.1",
+    "@kaoto/kaoto-ui": "0.4.3",
     "@kie-tools-core/backend": "^0.25.0",
     "@kie-tools-core/editor": "^0.25.0",
     "@kie-tools-core/i18n": "^0.25.0",

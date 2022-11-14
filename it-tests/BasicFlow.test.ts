@@ -47,5 +47,5 @@ async function checkCanvasLoaded(driver: WebDriver) {
 }
 
 async function checkPartOfTopBarLoaded(driver: WebDriver) {
-	await driver.wait(until.elementLocated(By.xpath("//span[text()='integration']")));
+	await driver.wait(until.elementLocated(By.xpath("//span[text()='my-integration-name']")));
 }
