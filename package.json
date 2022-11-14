@@ -45,7 +45,7 @@
   "main": "./dist/extension/extension.js",
   "browser": "./dist/extension/extensionWeb.js",
   "engines": {
-    "vscode": "^1.46.0"
+    "vscode": "^1.63.0"
   },
   "categories": [
     "Other"

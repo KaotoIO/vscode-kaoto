@@ -122,3 +122,27 @@ The command `Developer: Toggle Developer Tools` gives access to classic develope
 `yarn run test-it`
 
 It is launching UI tests. Beware that it can take several minutes to start. Stay tuned for improvements to come later.
+
+## How to provide a new release version on VS Code Marketplace
+
+* Check that the version in package.json has not been published yet
+    * If already published:
+        * Update version in `package.json`
+        * Push changes in a Pull Request
+        * Wait for Pull Request to be merged
+* Check build is working fine on [GitHub Actions](https://github.com/KaotoIO/vscode-kaoto/actions) and [Jenkins CI](https://studio-jenkins-csb-codeready.apps.ocp-c1.prod.psi.redhat.com/job/Fuse/job/VSCode/job/vscode-kaoto-release/)
+* Check that someone listed as _submitter_ in Jenkinsfile is available
+* Create a tag
+* Push the tag to vscode-kaoto repository
+* Start build on [Jenkins CI](https://studio-jenkins-csb-codeready.apps.ocp-c1.prod.psi.redhat.com/job/Fuse/job/VSCode/job/vscode-kaoto-release/) with _publishToMarketPlace_ and _publishToOVSX_ parameters checked
+* When the build hits the _Publish to Marketplace_ step, it will wait for an approval
+* It is possible to check that the produced vsix is valid by using the one pushed in [Jboss download area](https://download.jboss.org/jbosstools/vscode/snapshots/vscode-atlasmap/)
+* For someone in _submitter_ list:
+  * Ensure you are logged in
+  * Go to the console log of the build and click `Proceed`
+* Wait few minutes and check that it has been published on [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-kaoto) and [Open VSX Marketplace](https://open-vsx.org/extension/redhat/vscode-kaoto)
+* Keep build forever on Jenkins CI for later reference and edit build information to indicate the version
+* Prepare next iteration:
+    * Update version in `package.json`
+    * Push changes in a Pull Request
+    * Follow Pull Request until it is approved/merged
