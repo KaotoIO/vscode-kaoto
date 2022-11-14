@@ -11,7 +11,9 @@
 
 ## Features
 
-- Create and edit Kaoto (`*.kaoto.yaml` and `*.kaoto.yml`) files.
+- Edit Kaoto (`*.kaoto.yaml` and `*.kaoto.yml`) files.
+
+![Create file named demo.kaoto.yaml, it opens automatically, then add 2 steps in embedded Kaoto UI and save the editor](images/basicDemo.gif)
 
 ## Versions under the hood
 
