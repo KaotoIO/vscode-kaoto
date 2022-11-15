@@ -7,7 +7,7 @@
 
 ## Prerequisites
 
-- `docker` must be available on system path
+- Must be running on Linux
 
 ## Features
 
@@ -17,13 +17,12 @@
 
 ## Versions under the hood
 
-Kaoto UI is embedded in version 0.4.1. Kaoto backend is launched through `docker` using tag 0.4.0.
+Kaoto UI is embedded in version 0.4.1. Kaoto backend is launched natively using tag 0.4.0.
 
 ## Limitations
 
-- It is working only on Linux. The docker image used is not multi-arch.
-- `Deploy` button in Kaoto Editor is not working
-- The first time, the UI of the editor can take several minutes to load. It is the time to download a Docker image.
+- It is working only on Linux
+- Port 8081 must be available
 
 ## Data and Telemetry
 
