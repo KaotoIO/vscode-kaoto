@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import * as path from 'path';
 
 describe('Kaoto basic development flow', function () {
-	this.timeout(120000);
+	this.timeout(25000);
 
 	const workspaceFolder = path.join(__dirname, '../test Fixture with speci@l chars');
 
@@ -21,7 +21,6 @@ describe('Kaoto basic development flow', function () {
 	});
 
 	it('Open "empty.kaoto.yaml" file and check Kaoto UI is loading', async function () {
-		this.timeout(60000);
 		await VSBrowser.instance.openResources(path.join(workspaceFolder, 'empty.kaoto.yaml'));
 		const kaotoEditor = new CustomEditor();
 		assert.isFalse(await kaotoEditor.isDirty(), 'The Kaoto editor should not be dirty when opening it.');
@@ -33,7 +32,7 @@ describe('Kaoto basic development flow', function () {
 			} catch {
 				return false;
 			}
-		}, 50000); // if it is the first load, it can take a lot of time as it downloads the docker image
+		});
 		await checkPartOfTopBarLoaded(driver);
 		await checkCanvasLoaded(driver);
 		await kaotoWebview.switchBack();
