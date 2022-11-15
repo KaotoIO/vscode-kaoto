@@ -18,6 +18,7 @@
   },
   "scripts": {
     "lint": "yarn eslint ./src --ext .ts,.tsx",
+    "postinstall": "node ./scripts/postinstall.js",
     "build:prod": "rimraf dist && webpack && yarn pack:prod",
     "build:dev": "rimraf dist && webpack --env dev",
     "pack:prod": "vsce package --githubBranch main --no-dependencies --yarn -o ./dist/vscode_kaoto_$npm_package_version.vsix",
@@ -117,6 +118,7 @@
     "css-loader": "^6.7.1",
     "file-loader": "^6.2.0",
     "mocha": "^10.1.0",
+    "node-fetch": "2",
     "npm-link-shared": "^0.5.6",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
