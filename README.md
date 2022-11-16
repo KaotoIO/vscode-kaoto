@@ -9,7 +9,7 @@
 
 ## Prerequisites
 
-- Must be running on Linux or MacOS
+- Requires `Amd64` architecture
 
 ## Features
 
@@ -23,7 +23,7 @@ Kaoto UI is embedded in version 0.4.1. Kaoto backend is launched natively using 
 
 ## Limitations
 
-- It is working only on Linux and MacOS
+- Requires `Amd64` architecture
 - Port 8081 must be available
 
 ## Data and Telemetry

@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const fs = require('fs');
+const os = require('os');
 
 const downloadFile = (async (url, path) => {
   const res = await fetch(url);
@@ -9,13 +10,14 @@ const downloadFile = (async (url, path) => {
       res.body.on("error", reject);
       fileStream.on("finish", resolve);
   });
-  fs.chmodSync(path, fs.constants.S_IRWXU);
+  fs.chmodSync(path, "766");
 });
 
-const downloadKaotoBackendNativeExecutable = (backendVersion, platform) => {
-	downloadFile(`https://github.com/KaotoIO/kaoto-backend/releases/download/${backendVersion}/kaoto-${platform}`, `./binaries/kaoto-${platform}`);
+const downloadKaotoBackendNativeExecutable = (backendVersion, platform, extension) => {
+	downloadFile(`https://github.com/KaotoIO/kaoto-backend/releases/download/${backendVersion}/kaoto-${platform}`, `./binaries/kaoto-${platform}${extension}`);
 }
 
 const backendVersion = "v0.4.3";
-downloadKaotoBackendNativeExecutable(backendVersion, 'linux-amd64');
-downloadKaotoBackendNativeExecutable(backendVersion, 'macos-amd64');
+downloadKaotoBackendNativeExecutable(backendVersion, 'linux-amd64', '');
+downloadKaotoBackendNativeExecutable(backendVersion, 'macos-amd64', '');
+downloadKaotoBackendNativeExecutable(backendVersion, 'windows-amd64', '.exe');
