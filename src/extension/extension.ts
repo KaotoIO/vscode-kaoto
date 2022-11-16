@@ -22,6 +22,7 @@ import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import { getRedHatService, TelemetryService } from "@redhat-developer/vscode-redhat-telemetry";
 import * as vscode from "vscode";
 import * as child_process from "child_process";
+import * as os from "os";
 import * as path from 'path';
 import { TextDecoder } from 'util';
 
@@ -34,7 +35,7 @@ export async function activate(context: vscode.ExtensionContext) {
   console.info("Kaoto Editor extension is alive.");
 
   const kaotoBackendOutputChannel = vscode.window.createOutputChannel(`Kaoto backend`);
-  const nativeExecutable = context.asAbsolutePath(path.join("binaries", "kaoto-linux-amd64"));
+  const nativeExecutable = context.asAbsolutePath(path.join("binaries", getBinaryName()));
   backendProcess = child_process.spawn(nativeExecutable);
   backendProcess.on("close", (code, signal) => {
     if (kaotoBackendOutputChannel) {
@@ -73,6 +74,13 @@ export async function activate(context: vscode.ExtensionContext) {
   const redhatService = await getRedHatService(context);  
   telemetryService = await redhatService.getTelemetryService();
   telemetryService.sendStartupEvent();
+}
+
+function getBinaryName(): string {
+	if (os.platform() === "darwin") {
+		return "kaoto-macos-amd64";
+	}
+	return "kaoto-linux-amd64";
 }
 
 export function deactivate() {

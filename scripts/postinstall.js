@@ -12,4 +12,10 @@ const downloadFile = (async (url, path) => {
   fs.chmodSync(path, fs.constants.S_IRWXU);
 });
 
-downloadFile("https://github.com/KaotoIO/kaoto-backend/releases/download/v0.4.0/kaoto-linux-amd64", "./binaries/kaoto-linux-amd64");
+const downloadKaotoBackendNativeExecutable = (backendVersion, platform) => {
+	downloadFile(`https://github.com/KaotoIO/kaoto-backend/releases/download/${backendVersion}/kaoto-${platform}`, `./binaries/kaoto-${platform}`);
+}
+
+const backendVersion = "v0.4.0";
+downloadKaotoBackendNativeExecutable(backendVersion, 'linux-amd64');
+downloadKaotoBackendNativeExecutable(backendVersion, 'macos-amd64');
