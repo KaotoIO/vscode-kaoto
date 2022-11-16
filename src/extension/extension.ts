@@ -22,7 +22,7 @@ import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import { getRedHatService, TelemetryService } from "@redhat-developer/vscode-redhat-telemetry";
 import * as vscode from "vscode";
 import * as child_process from "child_process";
-import * as os from "os";
+import * as os from 'os';
 import * as path from 'path';
 import { TextDecoder } from 'util';
 
@@ -79,6 +79,8 @@ export async function activate(context: vscode.ExtensionContext) {
 function getBinaryName(): string {
 	if (os.platform() === "darwin") {
 		return "kaoto-macos-amd64";
+	} else if(os.platform() === 'win32') {
+		return "kaoto-windows-amd64.exe";
 	}
 	return "kaoto-linux-amd64";
 }
