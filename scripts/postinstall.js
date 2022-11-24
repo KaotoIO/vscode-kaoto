@@ -16,6 +16,6 @@ const downloadKaotoBackendNativeExecutable = (backendVersion, platform) => {
 	downloadFile(`https://github.com/KaotoIO/kaoto-backend/releases/download/${backendVersion}/kaoto-${platform}`, `./binaries/kaoto-${platform}`);
 }
 
-const backendVersion = "v0.4.0";
+const backendVersion = "v0.4.3";
 downloadKaotoBackendNativeExecutable(backendVersion, 'linux-amd64');
 downloadKaotoBackendNativeExecutable(backendVersion, 'macos-amd64');
