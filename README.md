@@ -23,6 +23,7 @@ Kaoto UI is embedded in version 0.4.1. Kaoto backend is launched natively using 
 
 - Requires `Amd64` architecture
 - Port 8081 must be available
+- Kaoto files are always written and overwritten with Linux-style end of line
 
 ## Data and Telemetry
 
