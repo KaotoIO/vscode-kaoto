@@ -1,5 +1,6 @@
 ## Kaoto Editor
 
+![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/redhat.vscode-kaoto.svg)
 ![vs-code-support](https://img.shields.io/badge/Visual%20Studio%20Code-1.46.0+-blue.svg)
 [![Build with released version of Kaoto UI](https://github.com/KaotoIO/vscode-kaoto/actions/workflows/ci.yaml/badge.svg)](https://github.com/KaotoIO/vscode-kaoto/actions/workflows/ci.yaml)
 [![Build with main branch of kaoto-ui](https://github.com/KaotoIO/vscode-kaoto/actions/workflows/main-kaoto.yaml/badge.svg)](https://github.com/KaotoIO/vscode-kaoto/actions/workflows/main-kaoto.yaml)
