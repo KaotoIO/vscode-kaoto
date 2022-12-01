@@ -1,3 +1,5 @@
+# 0.3.0
+
 # 0.2.0
 
 - Technical version to be able to push on Marketplace
