@@ -3,7 +3,7 @@
   "publisher": "redhat",
   "displayName": "Kaoto",
   "description": "Kaoto - No Code and low code Integration editor",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "preview": true,
   "license": "Apache-2.0",
   "repository": {
