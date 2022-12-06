@@ -30,25 +30,30 @@ let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
 
 let backendProcess: child_process.ChildProcessWithoutNullStreams | undefined;
+let kaotoBackendOutputChannel: vscode.OutputChannel | undefined;
 
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Kaoto Editor extension is alive.");
 
-  const kaotoBackendOutputChannel = vscode.window.createOutputChannel(`Kaoto backend`);
+  kaotoBackendOutputChannel = vscode.window.createOutputChannel(`Kaoto backend`);
   const nativeExecutable = context.asAbsolutePath(path.join("binaries", getBinaryName()));
   backendProcess = child_process.spawn(nativeExecutable);
   backendProcess.on("close", (code, signal) => {
     if (kaotoBackendOutputChannel) {
-      kaotoBackendOutputChannel.dispose();
+      kaotoBackendOutputChannel.append(`Kaoto backend process closed with code: ${code}`);
     }
   });
   backendProcess.stdout.on("error", function(error) {
-    kaotoBackendOutputChannel.append(`Failed to start Kaoto backend ${error.name} ${error.message}`);
+    if (kaotoBackendOutputChannel) {
+      kaotoBackendOutputChannel.append(`Failed to start Kaoto backend ${error.name} ${error.message}`);
+    }
   });
   backendProcess.stdout.on("data", function(data) {
-    const dec = new TextDecoder("utf-8");
-    const text = dec.decode(data);
-    kaotoBackendOutputChannel.append(text);
+    if (kaotoBackendOutputChannel) {
+      const dec = new TextDecoder("utf-8");
+      const text = dec.decode(data);
+      kaotoBackendOutputChannel.append(text);
+    }
   });
 
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
@@ -91,5 +96,9 @@ export function deactivate() {
   }
   backendProxy?.stopServices();
   
+  if (kaotoBackendOutputChannel != undefined) {
+    kaotoBackendOutputChannel.dispose();
+    kaotoBackendOutputChannel = undefined;
+  }
   telemetryService.sendShutdownEvent();
 }
