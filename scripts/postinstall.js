@@ -3,6 +3,7 @@ const fs = require('fs');
 const os = require('os');
 
 const downloadFile = (async (url, path) => {
+  console.log(`Will fetch backend binary from ${url}`);
   const res = await fetch(url);
   const fileStream = fs.createWriteStream(path);
   await new Promise((resolve, reject) => {
@@ -17,7 +18,7 @@ const downloadKaotoBackendNativeExecutable = (backendVersion, platform, extensio
 	downloadFile(`https://github.com/KaotoIO/kaoto-backend/releases/download/${backendVersion}/kaoto-${platform}`, `./binaries/kaoto-${platform}${extension}`);
 }
 
-const backendVersion = "v0.4.3";
+const backendVersion = "v0.5.1";
 downloadKaotoBackendNativeExecutable(backendVersion, 'linux-amd64', '');
 downloadKaotoBackendNativeExecutable(backendVersion, 'macos-amd64', '');
 downloadKaotoBackendNativeExecutable(backendVersion, 'windows-amd64', '.exe');
