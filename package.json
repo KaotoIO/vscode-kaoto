@@ -61,6 +61,8 @@
     "onCustomEditor:webviewEditorsKaoto",
     "workspaceContains:**/*.kaoto.yaml",
     "workspaceContains:**/*.kaoto.yml",
+    "workspaceContains:**/*.camel.yaml",
+    "workspaceContains:**/*.camel.yml",
     "onStartupFinished"
   ],
   "capabilities": {
@@ -88,7 +90,7 @@
         "displayName": "Kaoto Editor",
         "selector": [
           {
-            "filenamePattern": "*.{kaoto.yaml,kaoto.yml}"
+            "filenamePattern": "*.{kaoto,camel}.{yaml,yml}"
           }
         ]
       }

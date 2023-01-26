@@ -16,6 +16,7 @@
 ## Features
 
 - Edit Kaoto (`*.kaoto.yaml` and `*.kaoto.yml`) files.
+- Edit Camel files following pattern (`*.camel.yaml` and `*.camel.yml`). Beware that the unsupported elements by Kaoto are removed from the file.
 
 ![Create file named demo.kaoto.yaml, it opens automatically, then add 2 steps in embedded Kaoto UI and save the editor](images/basicDemo.gif)
 
@@ -28,6 +29,7 @@ Kaoto UI is embedded in version 0.6.1. Kaoto backend is launched natively using 
 - Requires `Amd64` architecture
 - Port 8081 must be available
 - Kaoto files are always written and overwritten with Linux-style end of line
+- Unsupported elements by Kaoto are removed from the files when opening them. The editor will open in dirty state in this case.
 
 ## Data and Telemetry
 
