@@ -8,7 +8,7 @@
 	"compilerOptions": {
 	  "baseUrl": ".",
 	  "lib": ["es6", "dom", "es2018.promise", "es2019", "esnext"],
-	  "target": "es5",
+	  "target": "ES6",
 	  "declaration": false,
 	  "declarationMap": false,
 	  "sourceMap": true,
@@ -19,6 +19,8 @@
 	  "experimentalDecorators": true,
 	  "downlevelIteration": true,
 	  "skipLibCheck": true,
-	  "jsx": "react-jsx"
+	  "jsx": "react-jsx",
+	  "moduleResolution":"Node",
+	  "esModuleInterop": true
 	}
 }
