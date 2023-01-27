@@ -1,17 +1,18 @@
 const fetch = require('node-fetch');
 const fs = require('fs');
-const os = require('os');
+const path = require('path');
 
-const downloadFile = (async (url, path) => {
-  console.log(`Will fetch backend binary from ${url}`);
+const downloadFile = (async (url, filePath) => {
+  console.log(`Will fetch backend binary from ${url} into ${path.resolve(filePath)}`);
   const res = await fetch(url);
-  const fileStream = fs.createWriteStream(path);
+  const fileStream = fs.createWriteStream(filePath);
   await new Promise((resolve, reject) => {
       res.body.pipe(fileStream);
       res.body.on("error", reject);
       fileStream.on("finish", resolve);
   });
-  fs.chmodSync(path, "766");
+  console.log(`Binary downloaded ${path.resolve(filePath)}`)
+  fs.chmodSync(filePath, "766");
 });
 
 const downloadKaotoBackendNativeExecutable = (backendVersion, platform, extension) => {
