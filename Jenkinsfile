@@ -10,7 +10,7 @@ def installBuildRequirements(){
 	sh "yarn global add webpack-merge"
 }
 
-node('rhel8'){
+node('rhel9'){
 
 	stage 'Checkout vscode-kaoto code'
 	deleteDir()
@@ -39,7 +39,7 @@ node('rhel8'){
 	stash name:'vsix', includes:vsix[0].path
 }
 
-node('rhel8'){
+node('rhel9'){
 	if(publishToMarketPlace.equals('true')){
 		timeout(time:5, unit:'DAYS') {
 			input message:'Approve deployment?', submitter: 'apupier, jraez, mariasde, ryordan, mmelko'
