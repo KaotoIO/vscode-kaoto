@@ -48,11 +48,23 @@ export async function activate(context: vscode.ExtensionContext) {
       kaotoBackendOutputChannel.append(`Failed to start Kaoto backend ${error.name} ${error.message}`);
     }
   });
+  backendProcess.stderr.on("error", function(error) {
+    if (kaotoBackendOutputChannel) {
+      kaotoBackendOutputChannel.append(`Error: ${error.name} ${error.message}`);
+    }
+  });
   backendProcess.stdout.on("data", function(data) {
     if (kaotoBackendOutputChannel) {
       const dec = new TextDecoder("utf-8");
       const text = dec.decode(data);
       kaotoBackendOutputChannel.append(text);
+    }
+  });
+  backendProcess.stderr.on("data", function(data) {
+    if (kaotoBackendOutputChannel) {
+      const dec = new TextDecoder("utf-8");
+      const text = dec.decode(data);
+      kaotoBackendOutputChannel.append(`Error: ` + text);
     }
   });
 
@@ -95,6 +107,9 @@ function getBinaryName(): string {
 
 export function deactivate() {
   if (backendProcess !== undefined) {
+    if (kaotoBackendOutputChannel !== undefined) {
+      kaotoBackendOutputChannel.append(`Kaoto backend is stopped during VS Code extension deactivation.`);
+    }
     backendProcess.kill();
   }
   backendProxy?.stopServices();
