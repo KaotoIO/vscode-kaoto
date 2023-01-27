@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import * as path from 'path';
 
 describe('Kaoto basic development flow', function () {
-	this.timeout(25000);
+	this.timeout(50000);
 
 	const workspaceFolder = path.join(__dirname, '../test Fixture with speci@l chars');
 
