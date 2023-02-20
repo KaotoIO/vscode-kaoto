@@ -115,6 +115,7 @@
     "@vscode/test-web": "^0.0.32",
     "buffer": "^6.0.3",
     "chai": "^4.3.7",
+    "constants-browserify": "^1.0.0",
     "css-loader": "^6.7.1",
     "file-loader": "^6.2.0",
     "mocha": "^10.1.0",
