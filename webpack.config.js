@@ -108,6 +108,7 @@ const commonConfig = (env) => {
     resolve: {
       // Required for github.dev and `minimatch` as Webpack 5 doesn't add polyfills automatically anymore.
       fallback: {
+        constants: require.resolve("constants-browserify"),
         path: require.resolve("path-browserify"),
         os: require.resolve("os-browserify/browser"),
         fs: false,
