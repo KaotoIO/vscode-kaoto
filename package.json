@@ -110,7 +110,7 @@
   },
   "devDependencies": {
     "@types/chai": "^4.3.4",
-    "@types/mocha": "^10.0.0",
+    "@types/mocha": "^10.0.1",
     "@types/react": "18.0.18",
     "@vscode/test-web": "^0.0.32",
     "buffer": "^6.0.3",
@@ -118,7 +118,7 @@
     "constants-browserify": "^1.0.0",
     "css-loader": "^6.7.1",
     "file-loader": "^6.2.0",
-    "mocha": "^10.1.0",
+    "mocha": "^10.2.0",
     "node-fetch": "2",
     "npm-link-shared": "^0.5.6",
     "os-browserify": "^0.3.0",
