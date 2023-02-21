@@ -1,5 +1,19 @@
 version: 2
 updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    ignore:
+      # Ignore dependencies that must be aligned to Kaoto UI version
+      - dependency-name: "@kaoto/*"
+      - dependency-name: "@kie-tools-core/*"
+      - dependency-name: "@patternfly/*"
+      - dependency-name: "react"
+      - dependency-name: "react-dom"
+      - dependency-name: "*-browserify"
+      - dependency-name: "*-loader"
+      - dependency-name: "webpack*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
