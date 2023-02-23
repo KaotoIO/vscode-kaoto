@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { waitUntil } from 'async-wait-until';
 import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
 import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
 import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
@@ -31,6 +32,7 @@ let telemetryService: TelemetryService;
 
 let backendProcess: child_process.ChildProcessWithoutNullStreams | undefined;
 let kaotoBackendOutputChannel: vscode.OutputChannel | undefined;
+let kaotoBackendWarmedUp: boolean = false;
 
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Kaoto Editor extension is alive.");
@@ -57,6 +59,9 @@ export async function activate(context: vscode.ExtensionContext) {
     if (kaotoBackendOutputChannel) {
       const dec = new TextDecoder("utf-8");
       const text = dec.decode(data);
+      if (!kaotoBackendWarmedUp && text.includes('Catalog class io.kaoto.backend.api.metadata.catalog.StepCatalog_Subclass warmed up in')) {
+        kaotoBackendWarmedUp = true;
+      }
       kaotoBackendOutputChannel.append(text);
     }
   });
@@ -70,6 +75,12 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
+
+  try {
+    await waitUntil(() => kaotoBackendWarmedUp, { timeout: 30000});
+  } catch {
+    kaotoBackendOutputChannel.append('Kaoto backend failed to warm up in 30 seconds.\n');
+  }
 
   KogitoVsCode.startExtension({
     extensionName: "redhat.vscode-kaoto",
@@ -88,8 +99,6 @@ export async function activate(context: vscode.ExtensionContext) {
     ]),
     backendProxy: backendProxy,
   });
-
-  console.info("Extension is successfully setup.");
   
   const redhatService = await getRedHatService(context);  
   telemetryService = await redhatService.getTelemetryService();
@@ -106,6 +115,7 @@ function getBinaryName(): string {
 }
 
 export function deactivate() {
+  kaotoBackendWarmedUp = false;
   if (backendProcess !== undefined) {
     if (kaotoBackendOutputChannel !== undefined) {
       kaotoBackendOutputChannel.append(`Kaoto backend is stopped during VS Code extension deactivation.`);
