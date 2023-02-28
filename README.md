@@ -22,7 +22,7 @@
 
 ## Versions under the hood
 
-Kaoto UI is embedded in version 0.6.1. Kaoto backend is launched natively using version 0.6.2.
+Kaoto UI is embedded in version 0.7.0. Kaoto backend is launched natively using version 0.7.0.
 
 ## Limitations
 
