@@ -1,6 +1,7 @@
-import { By, CustomEditor, EditorView,  until,  VSBrowser, WebDriver, WebView } from 'vscode-extension-tester';
+import { By, EditorView,  until,  VSBrowser, WebDriver } from 'vscode-extension-tester';
 import { assert } from 'chai';
 import * as path from 'path';
+import { openAndSwitchToKaotoFrame } from './Util';
 
 describe('Kaoto basic development flow', function () {
 	this.timeout(25000);
@@ -36,22 +37,6 @@ describe('Kaoto basic development flow', function () {
 		assert.isFalse(await kaotoEditor.isDirty(), 'The Kaoto editor should not be dirty after everything has loaded.');
 	});
 });
-
-async function openAndSwitchToKaotoFrame(workspaceFolder: string, fileNameToOpen: string, driver: WebDriver) {
-	await VSBrowser.instance.openResources(path.join(workspaceFolder, fileNameToOpen));
-	const kaotoEditor = new CustomEditor();
-	assert.isFalse(await kaotoEditor.isDirty(), 'The Kaoto editor should not be dirty when opening it.');
-	const kaotoWebview = new WebView();
-	await driver.wait(async () => {
-		try {
-			await kaotoWebview.switchToFrame();
-			return true;
-		} catch {
-			return false;
-		}
-	});
-	return { kaotoWebview, kaotoEditor };
-}
 
 async function checkEmptyCanvasLoaded(driver: WebDriver) {
 	await driver.wait(until.elementLocated(By.xpath("//div[text()='ADD A STEP']")));

@@ -4,6 +4,7 @@
   "displayName": "Kaoto",
   "description": "Kaoto - No Code and low code Integration editor",
   "version": "0.3.0",
+  "federatedModuleName": "kaoto",
   "preview": true,
   "license": "Apache-2.0",
   "repository": {
@@ -25,7 +26,7 @@
     "compile": "webpack",
     "watch": "webpack --env dev",
     "run:webmode": "yarn vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --open-devtools ./resources",
-    "test:it": "yarn test:it:clean && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run --yarn --uninstall_extension --extensions_dir ./test-resources out/*.test.js",
+    "test:it": "tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run --yarn --uninstall_extension --extensions_dir ./test-resources 'out/*.test.js'",
     "test:it:clean": "rimraf ./test-resources && rimraf ./out && rimraf *.vsix"
   },
   "dependencies": {

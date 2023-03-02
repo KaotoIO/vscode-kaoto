@@ -1,8 +1,12 @@
+const { dependencies, federatedModuleName } = require('./package.json');
 const { merge } = require("webpack-merge");
 const webpack = require('webpack');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const path = require("path");
 const BG_IMAGES_DIRNAME = "bgimages";
+
+let deps = {};
+Object.keys(dependencies).forEach((key) => { deps[key] = { eager: true } });
 
 function posixPath(pathStr) {
   return pathStr.split(path.sep).join(path.posix.sep);
@@ -132,6 +136,14 @@ const commonConfig = (env) => {
     plugins: [
       new webpack.DefinePlugin({
         'process.env.KAOTO_API': JSON.stringify("http://localhost:8081")
+      }),
+      new webpack.container.ModuleFederationPlugin({
+        name: federatedModuleName,
+        filename: 'remoteEntry.js',
+        library: { type: 'var', name: federatedModuleName },
+        shared: {
+          ...deps
+        }
       })
     ],
     externals: {
