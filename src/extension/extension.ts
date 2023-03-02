@@ -37,50 +37,10 @@ let kaotoBackendWarmedUp: boolean = false;
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Kaoto Editor extension is alive.");
 
-  kaotoBackendOutputChannel = vscode.window.createOutputChannel(`Kaoto backend`);
-  const nativeExecutable = context.asAbsolutePath(path.join("binaries", getBinaryName()));
-  backendProcess = child_process.spawn(nativeExecutable);
-  backendProcess.on("close", (code, signal) => {
-    if (kaotoBackendOutputChannel) {
-      kaotoBackendOutputChannel.append(`Kaoto backend process closed with code: ${code}`);
-    }
-  });
-  backendProcess.stdout.on("error", function(error) {
-    if (kaotoBackendOutputChannel) {
-      kaotoBackendOutputChannel.append(`Failed to start Kaoto backend ${error.name} ${error.message}`);
-    }
-  });
-  backendProcess.stderr.on("error", function(error) {
-    if (kaotoBackendOutputChannel) {
-      kaotoBackendOutputChannel.append(`Error: ${error.name} ${error.message}`);
-    }
-  });
-  backendProcess.stdout.on("data", function(data) {
-    if (kaotoBackendOutputChannel) {
-      const dec = new TextDecoder("utf-8");
-      const text = dec.decode(data);
-      if (!kaotoBackendWarmedUp && text.includes('Catalog class io.kaoto.backend.api.metadata.catalog.StepCatalog_Subclass warmed up in')) {
-        kaotoBackendWarmedUp = true;
-      }
-      kaotoBackendOutputChannel.append(text);
-    }
-  });
-  backendProcess.stderr.on("data", function(data) {
-    if (kaotoBackendOutputChannel) {
-      const dec = new TextDecoder("utf-8");
-      const text = dec.decode(data);
-      kaotoBackendOutputChannel.append(`Error: ` + text);
-    }
-  });
+  await warmupKaotoBackend();
 
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
-
-  try {
-    await waitUntil(() => kaotoBackendWarmedUp, { timeout: 30000});
-  } catch {
-    kaotoBackendOutputChannel.append('Kaoto backend failed to warm up in 30 seconds.\n');
-  }
 
   KogitoVsCode.startExtension({
     extensionName: "redhat.vscode-kaoto",
@@ -103,6 +63,50 @@ export async function activate(context: vscode.ExtensionContext) {
   const redhatService = await getRedHatService(context);  
   telemetryService = await redhatService.getTelemetryService();
   telemetryService.sendStartupEvent();
+
+  async function warmupKaotoBackend() {
+    kaotoBackendOutputChannel = vscode.window.createOutputChannel(`Kaoto backend`);
+    const nativeExecutable = context.asAbsolutePath(path.join("binaries", getBinaryName()));
+    backendProcess = child_process.spawn(nativeExecutable);
+    backendProcess.on("close", (code, _signal) => {
+      if (kaotoBackendOutputChannel) {
+        kaotoBackendOutputChannel.append(`Kaoto backend process closed with code: ${code}`);
+      }
+    });
+    backendProcess.stdout.on("error", function (error) {
+      if (kaotoBackendOutputChannel) {
+        kaotoBackendOutputChannel.append(`Failed to start Kaoto backend ${error.name} ${error.message}`);
+      }
+    });
+    backendProcess.stderr.on("error", function (error) {
+      if (kaotoBackendOutputChannel) {
+        kaotoBackendOutputChannel.append(`Error: ${error.name} ${error.message}`);
+      }
+    });
+    backendProcess.stdout.on("data", function (data) {
+      if (kaotoBackendOutputChannel) {
+        const dec = new TextDecoder("utf-8");
+        const text = dec.decode(data);
+        if (!kaotoBackendWarmedUp && text.includes('Catalog class io.kaoto.backend.api.metadata.catalog.StepCatalog_Subclass warmed up in')) {
+          kaotoBackendWarmedUp = true;
+        }
+        kaotoBackendOutputChannel.append(text);
+      }
+    });
+    backendProcess.stderr.on("data", function (data) {
+      if (kaotoBackendOutputChannel) {
+        const dec = new TextDecoder("utf-8");
+        const text = dec.decode(data);
+        kaotoBackendOutputChannel.append(`Error: ` + text);
+      }
+    });
+
+    try {
+      await waitUntil(() => kaotoBackendWarmedUp, { timeout: 30000 });
+    } catch {
+      kaotoBackendOutputChannel.append('Kaoto backend failed to warm up in 30 seconds.\n');
+    }
+  }
 }
 
 function getBinaryName(): string {
