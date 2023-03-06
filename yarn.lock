@@ -54,10 +54,10 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@kaoto/kaoto-ui@0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@kaoto/kaoto-ui/-/kaoto-ui-0.7.0.tgz#30aca29741e1ae2ca9ab6b272d59168780c922ef"
-  integrity sha512-cAly6oh4mX3H1M7uQc2d8n3WLOUEQmknxvL8fQC3bNW3i6hjXAKR3+DLYWlELqT6SzSjSEAS4L/GGUHxYfMT7Q==
+"@kaoto/kaoto-ui@0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@kaoto/kaoto-ui/-/kaoto-ui-0.7.1.tgz#e8f6417fbbdbbdca1d21927155123ab9b7f9c437"
+  integrity sha512-BPwk/yuN8l2W3yVywp/5AR6wNwc1/SS8EKwcZiRGmHqqer7CwgrJf1+06IpJWLM+OD8DpKbkIE0co4Q70c1WPg==
   dependencies:
     "@kie-tools-core/editor" "0.26.0"
     "@kie-tools-core/guided-tour" "0.26.0"
@@ -85,7 +85,7 @@
     elkjs "^0.8.2"
     immer "^9.0.19"
     lodash.isequal "^4.5.0"
-    monaco-editor "^0.36.0"
+    monaco-editor "^0.36.1"
     monaco-editor-webpack-plugin "^7.0.1"
     monaco-yaml "^4.0.4"
     react "18.2.0"
@@ -3367,7 +3367,7 @@ monaco-editor@^0.33.0:
   resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.33.0.tgz#842e244f3750a2482f8a29c676b5684e75ff34af"
   integrity sha512-VcRWPSLIUEgQJQIE0pVT8FcGBIgFoxz7jtqctE+IiCxWugD0DwgyQBcZBhdSrdMC84eumoqMZsGl2GTreOzwqw==
 
-monaco-editor@^0.36.0:
+monaco-editor@^0.36.1:
   version "0.36.1"
   resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.36.1.tgz#aad528c815605307473a1634612946921d8079b5"
   integrity sha512-/CaclMHKQ3A6rnzBzOADfwdSJ25BFoFT0Emxsc4zYVyav5SkK9iA6lEtIeuN/oRYbwPgviJT+t3l+sjFa28jYg==
