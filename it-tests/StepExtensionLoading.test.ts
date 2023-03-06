@@ -21,7 +21,7 @@ describe('Step extension loading test', function () {
 	});
 
 	it('Open "choice.camel.yaml" file and check Step extension is loading', async function () {
-		const { kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(workspaceFolder, 'choice.camel.yaml', driver);
+		const { kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(workspaceFolder, 'choice.camel.yaml', driver, true);
 		const stepChoiceXpath = By.xpath("//div[@data-testid='viz-step-choice']");
 		await driver.wait(until.elementLocated(stepChoiceXpath));
 		await (await driver.findElement(stepChoiceXpath)).click();
