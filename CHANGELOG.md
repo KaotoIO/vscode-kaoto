@@ -1,7 +1,7 @@
 # 0.3.0
 
 - Keep `Kaoto backend` output log available when Kaoto backend native executable cannot be launched. It allows to have more information what can be the issue.
-- Upgrade embedded Kaoto [UI](https://github.com/KaotoIO/kaoto-ui/releases/tag/v0.7.0) to 0.7.0 and [backend](https://github.com/KaotoIO/kaoto-backend/releases/tag/v0.7.0) to 0.7.0
+- Upgrade embedded Kaoto [UI](https://github.com/KaotoIO/kaoto-ui/releases/tag/v0.7.1) to 0.7.1 and [backend](https://github.com/KaotoIO/kaoto-backend/releases/tag/v0.7.1) to 0.7.1
 - Open Kaoto editor by default for `*.camel.(yaml|yml)` files
 - Avoid wipeout of content on restart with opened editors #144
 
