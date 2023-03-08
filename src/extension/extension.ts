@@ -70,17 +70,17 @@ export async function activate(context: vscode.ExtensionContext) {
     backendProcess = child_process.spawn(nativeExecutable);
     backendProcess.on("close", (code, _signal) => {
       if (kaotoBackendOutputChannel) {
-        kaotoBackendOutputChannel.append(`Kaoto backend process closed with code: ${code}`);
+        kaotoBackendOutputChannel.append(`Kaoto backend process closed with code: ${code}\n`);
       }
     });
     backendProcess.stdout.on("error", function (error) {
       if (kaotoBackendOutputChannel) {
-        kaotoBackendOutputChannel.append(`Failed to start Kaoto backend ${error.name} ${error.message}`);
+        kaotoBackendOutputChannel.append(`Failed to start Kaoto backend ${error.name} ${error.message}\n`);
       }
     });
     backendProcess.stderr.on("error", function (error) {
       if (kaotoBackendOutputChannel) {
-        kaotoBackendOutputChannel.append(`Error: ${error.name} ${error.message}`);
+        kaotoBackendOutputChannel.append(`Error: ${error.name} ${error.message}\n`);
       }
     });
     backendProcess.stdout.on("data", function (data) {
