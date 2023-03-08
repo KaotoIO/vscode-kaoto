@@ -28,7 +28,6 @@ Kaoto UI is embedded in version 1.0.0. Kaoto backend is launched natively using 
 ## Limitations
 
 - Requires `Amd64` architecture
-- Port 8081 must be available
 - Kaoto files are always written and overwritten with Linux-style end of line
 - Unsupported elements by Kaoto are removed from the files when opening them. The editor will open in dirty state in this case.
 

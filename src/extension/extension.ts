@@ -33,6 +33,7 @@ let telemetryService: TelemetryService;
 let backendProcess: child_process.ChildProcessWithoutNullStreams | undefined;
 let kaotoBackendOutputChannel: vscode.OutputChannel | undefined;
 let kaotoBackendWarmedUp: boolean = false;
+export let kaotoBackendPort :string;
 
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Kaoto Editor extension is alive.");
@@ -71,7 +72,7 @@ export async function activate(context: vscode.ExtensionContext) {
   async function warmupKaotoBackend() {
     kaotoBackendOutputChannel = vscode.window.createOutputChannel(`Kaoto backend`);
     const nativeExecutable = context.asAbsolutePath(path.join("binaries", getBinaryName()));
-    backendProcess = child_process.spawn(nativeExecutable);
+    backendProcess = child_process.spawn(nativeExecutable, ['-Dquarkus.http.port=0']);
     backendProcess.on("close", (code, _signal) => {
       if (kaotoBackendOutputChannel) {
         kaotoBackendOutputChannel.append(`Kaoto backend process closed with code: ${code}\n`);
@@ -88,12 +89,17 @@ export async function activate(context: vscode.ExtensionContext) {
       }
     });
     backendProcess.stdout.on("data", function (data) {
+      const dec = new TextDecoder("utf-8");
+      const text = dec.decode(data);
+      if (!kaotoBackendWarmedUp && text.includes('Catalog class io.kaoto.backend.api.metadata.catalog.StepCatalog_Subclass warmed up in')) {
+        kaotoBackendWarmedUp = true;
+      }
+      const suffixForListeningPort = 'Listening on: http://0.0.0.0:';
+      if (kaotoBackendPort === undefined && text.includes(suffixForListeningPort)) {
+        const textStartingWithPort = text.substring(text.indexOf(suffixForListeningPort) + suffixForListeningPort.length);
+        kaotoBackendPort = textStartingWithPort.substring(0, textStartingWithPort.indexOf('\n'));
+      }
       if (kaotoBackendOutputChannel) {
-        const dec = new TextDecoder("utf-8");
-        const text = dec.decode(data);
-        if (!kaotoBackendWarmedUp && text.includes('Catalog class io.kaoto.backend.api.metadata.catalog.StepCatalog_Subclass warmed up in')) {
-          kaotoBackendWarmedUp = true;
-        }
         kaotoBackendOutputChannel.append(text);
       }
     });
