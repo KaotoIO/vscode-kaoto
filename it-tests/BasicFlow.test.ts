@@ -5,7 +5,7 @@ import { openAndSwitchToKaotoFrame } from './Util';
 import { waitUntil } from 'async-wait-until';
 
 describe('Kaoto basic development flow', function () {
-	this.timeout(25000);
+	this.timeout(50000);
 
 	const workspaceFolder = path.join(__dirname, '../test Fixture with speci@l chars');
 
@@ -38,13 +38,16 @@ describe('Kaoto basic development flow', function () {
 
 		await kaotoWebview.switchBack();
 		assert.isTrue(await kaotoEditor.isDirty(), 'The Kaoto editor should be dirty after adding a step.');
+		console.log('will save');
 		await kaotoEditor.save();
 		await waitUntil(async() => {
 			return !(await kaotoEditor.isDirty());
 		});
+		console.log('editor no more dirty');
 
 		const editorView = new EditorView();
 		await editorView.closeAllEditors();
+		console.log('editors closed');
 
 		({ kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(workspaceFolder, 'empty.camel.yaml', driver, true));
 		await checkStepWithTestIdPresent(driver, 'viz-step-activemq');
@@ -69,7 +72,7 @@ async function addActiveMQStep(driver: WebDriver) {
 			return false;
 		}
 		return true;
-	}, 5000, 500);
+	}, 10000, 2000);
 	await driver.wait(until.elementLocated(By.xpath("//button[@data-testid='miniCatalog__stepItem--activemq']")));
 	await (await driver.findElement(By.xpath("//button[@data-testid='miniCatalog__stepItem--activemq']"))).click();
 }

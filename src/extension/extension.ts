@@ -102,9 +102,9 @@ export async function activate(context: vscode.ExtensionContext) {
     });
 
     try {
-      await waitUntil(() => kaotoBackendWarmedUp, { timeout: 30000 });
+      await waitUntil(() => kaotoBackendWarmedUp, { timeout: 60000 });
     } catch {
-      kaotoBackendOutputChannel.append('Kaoto backend failed to warm up in 30 seconds.\n');
+      kaotoBackendOutputChannel.append('Kaoto backend failed to warm up in 1 minute.\n');
     }
   }
 }
