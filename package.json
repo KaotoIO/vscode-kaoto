@@ -129,7 +129,7 @@
     "path-browserify": "^1.0.1",
     "raw-loader": "^4.0.2",
     "rimraf": "^4.1.4",
-    "sass": "^1.58.3",
+    "sass": "^1.59.1",
     "sass-loader": "^13.0.2",
     "source-map-loader": "^4.0.0",
     "style-loader": "^3.3.1",
