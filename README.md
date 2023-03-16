@@ -17,6 +17,7 @@
 
 - Edit Kaoto (`*.kaoto.yaml` and `*.kaoto.yml`) files.
 - Edit Camel files following pattern (`*.camel.yaml` and `*.camel.yml`). Beware that the unsupported elements by Kaoto are removed from the file.
+- Allow to edit `*.yaml` and `*.yml` when opening through contextual menu. Beware that the unsupported elements by Kaoto are removed from the file.
 
 ![Create file named demo.kaoto.yaml, it opens automatically, then add 2 steps in embedded Kaoto UI and save the editor](images/basicDemo.gif)
 

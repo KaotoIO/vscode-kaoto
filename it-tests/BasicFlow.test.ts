@@ -1,7 +1,7 @@
 import { By, EditorView,  until,  VSBrowser, WebDriver } from 'vscode-extension-tester';
 import { assert } from 'chai';
 import * as path from 'path';
-import { openAndSwitchToKaotoFrame } from './Util';
+import { checkEmptyCanvasLoaded, openAndSwitchToKaotoFrame } from './Util';
 import { waitUntil } from 'async-wait-until';
 
 describe('Kaoto basic development flow', function () {
@@ -88,10 +88,6 @@ async function clickOnAddAStep(driver: WebDriver) {
 
 async function checkStepWithTestIdPresent(driver: WebDriver, testId: string) {
 	await driver.wait(until.elementLocated(By.xpath(`//div[@data-testid='${testId}']`)));
-}
-
-async function checkEmptyCanvasLoaded(driver: WebDriver) {
-	await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='viz-step-slot']")));
 }
 
 async function checkIntegrationNameInTopBarLoaded(driver: WebDriver, name: string) {
