@@ -49,7 +49,7 @@ export async function activate(context: vscode.ExtensionContext) {
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping({
         type: "kaoto",
-        filePathGlob: "**/*.+(kaoto|camel).+(yml|yaml)",
+        filePathGlob: "**/**(.+(kaoto|camel)).+(yml|yaml)",
         resourcesPathPrefix: "dist/webview/editors/kaoto",
         envelopeContent: {
           type: EnvelopeContentType.PATH,
@@ -58,6 +58,10 @@ export async function activate(context: vscode.ExtensionContext) {
       }),
     ]),
     backendProxy: backendProxy,
+  });
+
+  vscode.commands.registerCommand('kaoto.open', (uri: vscode.Uri) => {
+    vscode.commands.executeCommand('vscode.openWith', uri, 'webviewEditorsKaoto');
   });
   
   const redhatService = await getRedHatService(context);  
