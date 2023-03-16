@@ -73,6 +73,27 @@
     }
   },
   "contributes": {
+    "commands": [
+      {
+        "command": "kaoto.open",
+        "title": "Open with Kaoto Graphical Editor for Camel"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "kaoto.open",
+          "when": "false"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "kaoto.open",
+          "when": "resourceExtname == .yaml || resourceExtname == .yml",
+          "group": "1_belowOpenWith"
+        }
+      ]
+    },
     "configuration": {
       "properties": {
         "redhat.telemetry.enabled": {
