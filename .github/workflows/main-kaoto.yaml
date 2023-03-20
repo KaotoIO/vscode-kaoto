@@ -31,7 +31,7 @@ jobs:
     - name: Install prerequisites
       run: |
         yarn global add rimraf
-        yarn global add vsce
+        yarn global add @vscode/vsce
         yarn global add webpack-cli
         yarn global add webpack
         yarn global add webpack-merge
