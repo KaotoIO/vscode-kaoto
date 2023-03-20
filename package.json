@@ -39,7 +39,7 @@
     "@kie-tools-core/vscode-extension": "^0.27.0",
     "@kie-tools-core/workspace": "^0.27.0",
     "@patternfly/react-core": "4.276.6",
-    "@redhat-developer/vscode-redhat-telemetry": "^0.5.4",
+    "@redhat-developer/vscode-redhat-telemetry": "^0.6.0",
     "async-wait-until": "^2.0.12",
     "react": "18.2.0",
     "react-dom": "18.2.0"
