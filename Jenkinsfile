@@ -7,7 +7,6 @@ def installBuildRequirements(){
 	sh "yarn global add @vscode/vsce"
 	sh "yarn global add webpack-cli"
 	sh "yarn global add webpack"
-	sh "yarn global add webpack-merge"
 }
 
 node('rhel9'){
