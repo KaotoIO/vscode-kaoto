@@ -4,7 +4,7 @@ def installBuildRequirements(){
 	def nodeHome = tool 'nodejs-lts'
 	env.PATH="${env.PATH}:${nodeHome}/bin"
 	sh "npm install --global yarn"
-	sh "yarn global add vsce"
+	sh "yarn global add @vscode/vsce"
 	sh "yarn global add webpack-cli"
 	sh "yarn global add webpack"
 	sh "yarn global add webpack-merge"
