@@ -8,9 +8,10 @@ export async function openAndSwitchToKaotoFrame(workspaceFolder: string, fileNam
 	if (checkNotDirty) {
 		assert.isFalse(await kaotoEditor.isDirty(), 'The Kaoto editor should not be dirty when opening it.');
 	}
-	const kaotoWebview = new WebView();
+	let kaotoWebview :WebView = new WebView();
 	await driver.wait(async () => {
 		try {
+			kaotoWebview = new WebView();
 			await kaotoWebview.switchToFrame();
 			return true;
 		} catch (exception){
