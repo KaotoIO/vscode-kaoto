@@ -17,6 +17,6 @@ export async function openAndSwitchToKaotoFrame(workspaceFolder: string, fileNam
 			console.log('failed to switch to frame ' + exception);
 			return false;
 		}
-	}, 20000, 'Failed to switch to frame',1000);
+	}, 30000, 'Failed to switch to frame', 1000);
 	return { kaotoWebview, kaotoEditor };
 }
