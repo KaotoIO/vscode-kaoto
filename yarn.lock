@@ -54,10 +54,10 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@kaoto/kaoto-ui@0.7.2":
-  version "0.7.2"
-  resolved "https://registry.yarnpkg.com/@kaoto/kaoto-ui/-/kaoto-ui-0.7.2.tgz#087209c585e2c526ddf423b9135f39f4707fb62b"
-  integrity sha512-1hkZYAH/KENaYdFx5HImc8WJ14wYPbsN8k96TOF3IqsLlQ0YO8LZ77lmDT+E2q48s+aEtONOX0knAYRxDjrv2Q==
+"@kaoto/kaoto-ui@0.7.3":
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/@kaoto/kaoto-ui/-/kaoto-ui-0.7.3.tgz#360899503416ae2c3b2440fdeca17dbb603fab87"
+  integrity sha512-63MqyD9DegF+y/LO3blugV2PjcuuSqBoRXY8cx1kky0Gbwi+aXkBv0OY+OkNu2ZTloue2E2bInAs+LPgavEvXA==
   dependencies:
     "@kie-tools-core/editor" "0.27.0"
     "@kie-tools-core/guided-tour" "0.27.0"
@@ -65,14 +65,14 @@
     "@kie-tools-core/notifications" "0.27.0"
     "@kie-tools-core/patternfly-base" "0.27.0"
     "@kie-tools-core/workspace" "0.27.0"
-    "@opentelemetry/api" "^1.4.0"
+    "@opentelemetry/api" "^1.4.1"
     "@opentelemetry/exporter-trace-otlp-http" "^0.35.1"
-    "@opentelemetry/instrumentation" "^0.35.1"
+    "@opentelemetry/instrumentation" "^0.36.0"
     "@opentelemetry/instrumentation-document-load" "^0.31.2"
     "@opentelemetry/instrumentation-fetch" "^0.35.1"
     "@opentelemetry/instrumentation-long-task" "^0.32.2"
     "@opentelemetry/instrumentation-user-interaction" "^0.32.1"
-    "@opentelemetry/resources" "^1.9.1"
+    "@opentelemetry/resources" "^1.10.0"
     "@opentelemetry/sdk-trace-web" "^1.9.1"
     "@patternfly/patternfly" "4.224.2"
     "@patternfly/react-code-editor" "4.82.113"
@@ -82,7 +82,7 @@
     "@patternfly/react-table" "4.112.39"
     "@rhoas/app-services-ui-shared" "^0.16.6"
     ajv "^8.12.0"
-    elkjs "^0.8.2"
+    dagre "^0.8.5"
     immer "^9.0.19"
     lodash.isequal "^4.5.0"
     monaco-editor "^0.36.1"
@@ -94,7 +94,7 @@
     react-monaco-editor "^0.48.0"
     react-router-dom "5.3.4"
     react-router-last-location "2.0.1"
-    reactflow "^11.5.6"
+    reactflow "^11.6.1"
     simple-zustand-devtools "^1.1.0"
     tar-webpack-plugin "^0.1.1"
     uniforms "^3.10.2"
@@ -260,10 +260,17 @@
     methods "^1.1.2"
     path-to-regexp "^6.2.1"
 
-"@opentelemetry/api@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@opentelemetry/api/-/api-1.4.0.tgz#2c91791a9ba6ca0a0f4aaac5e45d58df13639ac8"
-  integrity sha512-IgMK9i3sFGNUqPMbjABm0G26g0QCKCUBfglhQ7rQq6WcxbKfEHRcmwsoER4hZcuYqJgkYn2OeuoJIv7Jsftp7g==
+"@opentelemetry/api@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@opentelemetry/api/-/api-1.4.1.tgz#ff22eb2e5d476fbc2450a196e40dd243cc20c28f"
+  integrity sha512-O2yRJce1GOc6PAy3QxFM4NzFiWzvScDC1/5ihYBL6BUEVdq0XMWN01sppE+H6bBXbaFYipjwFLEWLg5PaSOThA==
+
+"@opentelemetry/core@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@opentelemetry/core/-/core-1.10.0.tgz#12626d19287030a16ec1101f8efcacb5198a89bb"
+  integrity sha512-H5/mfU3TsEBe/cnnLu3VCkzjqyRARmhxQGsT64KwafxjzkDh+c2Bk4n140Cg/xhgrjK2sFsxbJj6d0xZlVo/OQ==
+  dependencies:
+    "@opentelemetry/semantic-conventions" "1.10.0"
 
 "@opentelemetry/core@1.9.1", "@opentelemetry/core@^1.8.0":
   version "1.9.1"
@@ -331,6 +338,15 @@
     semver "^7.3.2"
     shimmer "^1.2.1"
 
+"@opentelemetry/instrumentation@^0.36.0":
+  version "0.36.0"
+  resolved "https://registry.yarnpkg.com/@opentelemetry/instrumentation/-/instrumentation-0.36.0.tgz#164cf6df250d77a5e293e2402719a38149592cc9"
+  integrity sha512-KQA0zqbUfX8xv6ucqEHxj5bq1H15vijmk1mii8Pz9LKRWa8P8CXSDrMUKRoOQXWO2UILPUyAn5htoTHnE9/HPg==
+  dependencies:
+    require-in-the-middle "^6.0.0"
+    semver "^7.3.2"
+    shimmer "^1.2.1"
+
 "@opentelemetry/otlp-exporter-base@0.35.1":
   version "0.35.1"
   resolved "https://registry.yarnpkg.com/@opentelemetry/otlp-exporter-base/-/otlp-exporter-base-0.35.1.tgz#535166608d5d36e6c959b2857d01245ee3a916b1"
@@ -348,13 +364,21 @@
     "@opentelemetry/sdk-metrics" "1.9.1"
     "@opentelemetry/sdk-trace-base" "1.9.1"
 
-"@opentelemetry/resources@1.9.1", "@opentelemetry/resources@^1.9.1":
+"@opentelemetry/resources@1.9.1":
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/@opentelemetry/resources/-/resources-1.9.1.tgz#5ad3d80ba968a3a0e56498ce4bc82a6a01f2682f"
   integrity sha512-VqBGbnAfubI+l+yrtYxeLyOoL358JK57btPMJDd3TCOV3mV5TNBmzvOfmesM4NeTyXuGJByd3XvOHvFezLn3rQ==
   dependencies:
     "@opentelemetry/core" "1.9.1"
     "@opentelemetry/semantic-conventions" "1.9.1"
+
+"@opentelemetry/resources@^1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@opentelemetry/resources/-/resources-1.10.0.tgz#79e8388899a79e13a830b3bd776cc8489a107b9b"
+  integrity sha512-bh4auHOdS0/cwSgviCPbkItLwLZRWCZKp/ns2soVwlWQMJH36FIHbcYJf7G9+Rthlc6u163VhUefho+eDrPVeA==
+  dependencies:
+    "@opentelemetry/core" "1.10.0"
+    "@opentelemetry/semantic-conventions" "1.10.0"
 
 "@opentelemetry/sdk-metrics@1.9.1":
   version "1.9.1"
@@ -382,6 +406,11 @@
     "@opentelemetry/core" "1.9.1"
     "@opentelemetry/sdk-trace-base" "1.9.1"
     "@opentelemetry/semantic-conventions" "1.9.1"
+
+"@opentelemetry/semantic-conventions@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@opentelemetry/semantic-conventions/-/semantic-conventions-1.10.0.tgz#2addef53b595c687c133922ecad0e850b9287fc9"
+  integrity sha512-Mzo5IyrI59YuYWeNoOZRXfUCc3upjmxCmczSm+pUgWprvSNfdOX70SVde84UxmuzU7MF1MEkPXKXTYG3ymRw2w==
 
 "@opentelemetry/semantic-conventions@1.9.1", "@opentelemetry/semantic-conventions@^1.0.0":
   version "1.9.1"
@@ -484,27 +513,27 @@
   resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-4.94.6.tgz#47c715721ad3dd315a523f352ba1a0de2b03f0bc"
   integrity sha512-tm7C6nat+uKMr1hrapis7hS3rN9cr41tpcCKhx6cod6FLU8KwF2Yt5KUxakhIOCEcE/M/EhXhAw/qejp8w0r7Q==
 
-"@reactflow/background@11.1.8":
-  version "11.1.8"
-  resolved "https://registry.yarnpkg.com/@reactflow/background/-/background-11.1.8.tgz#e804eb82ade6f70ab5f218dc767051083497c0f7"
-  integrity sha512-NYZwiEeKVc1qJbDRrRX5RgHbMMzofhzOAqz3teWtUIGju5d+kEf/vcx/35bLM+CZuhucL+OvJpRgCjKmViiTIw==
+"@reactflow/background@11.1.10":
+  version "11.1.10"
+  resolved "https://registry.yarnpkg.com/@reactflow/background/-/background-11.1.10.tgz#5457f00cf8a34e9c89cf46c387ba6f3952768970"
+  integrity sha512-BeNODSlZEaLkhOiZvGROrC7g/tdIt3qzzjguB0/wwDd/LXWj8bPxOAL4+1c9qnJszH2yCgww1U/QWe2xXc0hTg==
   dependencies:
-    "@reactflow/core" "11.5.5"
+    "@reactflow/core" "11.6.1"
     classcat "^5.0.3"
     zustand "^4.3.1"
 
-"@reactflow/controls@11.1.8":
-  version "11.1.8"
-  resolved "https://registry.yarnpkg.com/@reactflow/controls/-/controls-11.1.8.tgz#43c3756a53479382e34d495f4b123f45b8cf658f"
-  integrity sha512-QCG4q52HS/zmuBAFzmTFh4wkR6thmNDxSKHQPxTwfVIuQtV/oGpfz7zMaoU0ZSN84qSWl5UdzmV4PAC50tOAkQ==
+"@reactflow/controls@11.1.10":
+  version "11.1.10"
+  resolved "https://registry.yarnpkg.com/@reactflow/controls/-/controls-11.1.10.tgz#874d8fe73d4ca13623fc2253ce2951fa32fd8c11"
+  integrity sha512-7GiAhYdQFmfReafahkQPY+RnLISSIbgfqGfMghQyW/fuBQoV3lgqhthnb0Q4AtM4Bp/s/Jv3aHcdVdj3E3a2yw==
   dependencies:
-    "@reactflow/core" "11.5.5"
+    "@reactflow/core" "11.6.1"
     classcat "^5.0.3"
 
-"@reactflow/core@11.5.5":
-  version "11.5.5"
-  resolved "https://registry.yarnpkg.com/@reactflow/core/-/core-11.5.5.tgz#bced11d76fc200b4dc301f2f2b882c4f4ec3dad3"
-  integrity sha512-/FPnpvO9I4E6/mmfZInbsVusR214gzIZ2e2xgl9XJdBo90cWaqHgo0c5F2YPXX19R3mItzxveN+WlENFEOvdPg==
+"@reactflow/core@11.6.1":
+  version "11.6.1"
+  resolved "https://registry.yarnpkg.com/@reactflow/core/-/core-11.6.1.tgz#4c845298f4687ca4c2ce825ac06a6983a5813117"
+  integrity sha512-qKmXi9z1n6aycAGv+GYCNHgsGznCAyY73DsvOvPH99V/+2M3FtpOnQf6Am5HHfDsCk+h5vuRiT6hlv7Oi2Xn0w==
   dependencies:
     "@types/d3" "^7.4.0"
     "@types/d3-drag" "^3.0.1"
@@ -516,12 +545,12 @@
     d3-zoom "^3.0.0"
     zustand "^4.3.1"
 
-"@reactflow/minimap@11.3.8":
-  version "11.3.8"
-  resolved "https://registry.yarnpkg.com/@reactflow/minimap/-/minimap-11.3.8.tgz#f2324c2f038d75bf9f8b27d46d782f488038f341"
-  integrity sha512-hOW3FVP/ObRK3oZxvKSSKIIR/DRe1OR4KU+3AIHxTK6K2kt/D48zQU37fOmEasfohjBjsqEopK7Ux8tapTT0EA==
+"@reactflow/minimap@11.4.1":
+  version "11.4.1"
+  resolved "https://registry.yarnpkg.com/@reactflow/minimap/-/minimap-11.4.1.tgz#1cdc97bfe5744b81cc36cbeb059ac248f6e34464"
+  integrity sha512-1fEt0NQ51llDvEcnNnyFZlpfvZX9WhLBJMbAHFOVk2p3i2ppyKutj/l2TwYv/l3sDu2irc1G4GCwGagdddRHWQ==
   dependencies:
-    "@reactflow/core" "11.5.5"
+    "@reactflow/core" "11.6.1"
     "@types/d3-selection" "^3.0.3"
     "@types/d3-zoom" "^3.0.1"
     classcat "^5.0.3"
@@ -529,12 +558,12 @@
     d3-zoom "^3.0.0"
     zustand "^4.3.1"
 
-"@reactflow/node-toolbar@1.1.8":
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/@reactflow/node-toolbar/-/node-toolbar-1.1.8.tgz#36a97fb390b8c622fa98e7ffaf1b03c2f75f812a"
-  integrity sha512-/Aj5dfarrBRvPeyDk+CZef7InP4LXlhMnlMPw6hnT/P9lVVChe02knzzkeKiVGmiWKXWL/gOCDXBFp9tMtIAsQ==
+"@reactflow/node-toolbar@1.1.10":
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/@reactflow/node-toolbar/-/node-toolbar-1.1.10.tgz#416c671bcec82a362c811bbf965b943ac89e5b89"
+  integrity sha512-gvxQjj9huyaWnVhuu23DLzwooljAf9P55AIC3BnREqTEFd4IUBmS+Xca1yXNWsoS3hfVDjyV/fiBDcm2EXxEzw==
   dependencies:
-    "@reactflow/core" "11.5.5"
+    "@reactflow/core" "11.6.1"
     classcat "^5.0.3"
     zustand "^4.3.1"
 
@@ -1902,6 +1931,14 @@ d3-zoom@^3.0.0:
     d3-selection "2 - 3"
     d3-transition "2 - 3"
 
+dagre@^0.8.5:
+  version "0.8.5"
+  resolved "https://registry.yarnpkg.com/dagre/-/dagre-0.8.5.tgz#ba30b0055dac12b6c1fcc247817442777d06afee"
+  integrity sha512-/aTqmnRta7x7MCCpExk7HQL2O4owCT2h8NT//9I1OQ9vt29Pa0BzSAkR5lwFUcQ7491yVi/3CXU9jQ5o0Mn2Sw==
+  dependencies:
+    graphlib "^2.1.8"
+    lodash "^4.17.15"
+
 debug@2.6.9:
   version "2.6.9"
   resolved "https://registry.npmjs.org/debug/-/debug-2.6.9.tgz"
@@ -2089,11 +2126,6 @@ electron-to-chromium@^1.4.202:
   version "1.4.246"
   resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.246.tgz"
   integrity sha512-/wFCHUE+Hocqr/LlVGsuKLIw4P2lBWwFIDcNMDpJGzyIysQV4aycpoOitAs32FT94EHKnNqDR/CVZJFbXEufJA==
-
-elkjs@^0.8.2:
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/elkjs/-/elkjs-0.8.2.tgz#c37763c5a3e24e042e318455e0147c912a7c248e"
-  integrity sha512-L6uRgvZTH+4OF5NE/MBbzQx/WYpru1xCBE9respNj6qznEewGUIfhzmm7horWWxbNO2M0WckQypGctR8lH79xQ==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -2513,6 +2545,13 @@ graceful-fs@^4.1.10, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0,
   version "4.2.10"
   resolved "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.2.10.tgz"
   integrity sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==
+
+graphlib@^2.1.8:
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/graphlib/-/graphlib-2.1.8.tgz#5761d414737870084c92ec7b5dbcb0592c9d35da"
+  integrity sha512-jcLLfkpoVGmH7/InMC/1hIvOPSUh38oJtGhvrOFGzioE1DZ+0YW16RgmOJhHiuWTvGiJQ9Z1Ik43JvkRPRvE+A==
+  dependencies:
+    lodash "^4.17.15"
 
 has-flag@^3.0.0:
   version "3.0.0"
@@ -3121,7 +3160,7 @@ lodash.merge@4.6.2:
   resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
 
-lodash@^4.0.0, lodash@^4.17.14, lodash@^4.17.19:
+lodash@^4.0.0, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -4083,16 +4122,16 @@ react@18.2.0, react@^17.0.2:
   dependencies:
     loose-envify "^1.1.0"
 
-reactflow@^11.5.6:
-  version "11.5.6"
-  resolved "https://registry.yarnpkg.com/reactflow/-/reactflow-11.5.6.tgz#744e2aa6cfb2c376b560633377063c2a576f3eec"
-  integrity sha512-my4LUKT7H7t2mK/qy4n+bfAMgjqhHOhYGYrvzSWB4yPhOhamPGjs0Ted9G8JWEw15Svn7pHf8DppTHUfk5zH2g==
+reactflow@^11.6.1:
+  version "11.6.1"
+  resolved "https://registry.yarnpkg.com/reactflow/-/reactflow-11.6.1.tgz#9408c8d40a9d58110d2c35d77f8ef726a267b9c5"
+  integrity sha512-1KpBHljqSDO+yHJCkpbupRdOvYVGmCtnY8Km8iTQNo3Bq/ivYbX4SDpAIL5inqoJu8chPP00DNSLuDcMqRJcZw==
   dependencies:
-    "@reactflow/background" "11.1.8"
-    "@reactflow/controls" "11.1.8"
-    "@reactflow/core" "11.5.5"
-    "@reactflow/minimap" "11.3.8"
-    "@reactflow/node-toolbar" "1.1.8"
+    "@reactflow/background" "11.1.10"
+    "@reactflow/controls" "11.1.10"
+    "@reactflow/core" "11.6.1"
+    "@reactflow/minimap" "11.4.1"
+    "@reactflow/node-toolbar" "1.1.10"
 
 read@^1.0.7:
   version "1.0.7"
@@ -4161,6 +4200,15 @@ require-in-the-middle@^5.0.3:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/require-in-the-middle/-/require-in-the-middle-5.2.0.tgz#4b71e3cc7f59977100af9beb76bf2d056a5a6de2"
   integrity sha512-efCx3b+0Z69/LGJmm9Yvi4cqEdxnoGnxYxGxBghkkTTFeXRtTCmmhO0AnAfHz59k957uTSuy8WaHqOs8wbYUWg==
+  dependencies:
+    debug "^4.1.1"
+    module-details-from-path "^1.0.3"
+    resolve "^1.22.1"
+
+require-in-the-middle@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/require-in-the-middle/-/require-in-the-middle-6.0.0.tgz#01cc6416286fb5e672d0fe031d996f8bc202509d"
+  integrity sha512-+dtWQ7l2lqQDxheaG3jjyN1QI37gEwvzACSgjYi4/C2y+ZTUMeRW8BIOm+9NBKvwaMBUSZfPXVOt1skB0vBkRw==
   dependencies:
     debug "^4.1.1"
     module-details-from-path "^1.0.3"
