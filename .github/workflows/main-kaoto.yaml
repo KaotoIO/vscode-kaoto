@@ -34,7 +34,6 @@ jobs:
         yarn global add vsce
         yarn global add webpack-cli
         yarn global add webpack
-        yarn global add webpack-merge
     - name: Kaoto-ui link and build
       run: |
         cd kaoto-ui
