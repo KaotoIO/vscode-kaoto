@@ -4,14 +4,15 @@ import { CustomEditor, VSBrowser, WebDriver, WebView } from 'vscode-extension-te
 
 export async function openAndSwitchToKaotoFrame(workspaceFolder: string, fileNameToOpen: string, driver: WebDriver, checkNotDirty: boolean) {
 	await VSBrowser.instance.openResources(path.join(workspaceFolder, fileNameToOpen));
-	const kaotoEditor = new CustomEditor();
+	let kaotoEditor = new CustomEditor();
 	if (checkNotDirty) {
 		assert.isFalse(await kaotoEditor.isDirty(), 'The Kaoto editor should not be dirty when opening it.');
 	}
-	let kaotoWebview :WebView = new WebView();
+	let kaotoWebview :WebView = await kaotoEditor.getWebView();
 	await driver.wait(async () => {
 		try {
-			kaotoWebview = new WebView();
+			kaotoEditor = new CustomEditor();
+			kaotoWebview = await kaotoEditor.getWebView();
 			await kaotoWebview.switchToFrame();
 			return true;
 		} catch (exception){
