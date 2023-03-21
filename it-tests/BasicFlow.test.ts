@@ -23,6 +23,11 @@ describe('Kaoto basic development flow', function () {
 	});
 
 	it('Open "emptyKameletBinding.kaoto.yaml" file and check Kaoto UI is loading', async function () {
+		// Ugly workaround to wait that VS Code instance and its extensions have started before playing with it.
+		// This is the first test to be played so putting this sleep only here.
+		// See https://github.com/KaotoIO/vscode-kaoto/issues/202 to fix issue related to that
+		await driver.sleep(5000);
+
 		const { kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(workspaceFolder, 'emptyKameletBinding.kaoto.yaml', driver, true);
 		await checkIntegrationNameInTopBarLoaded(driver, 'my-integration-name');
 		await checkEmptyCanvasLoaded(driver);
