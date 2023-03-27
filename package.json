@@ -30,7 +30,7 @@
     "test:it:clean": "rimraf ./test-resources && rimraf ./out && rimraf *.vsix"
   },
   "dependencies": {
-    "@kaoto/kaoto-ui": "0.7.4",
+    "@kaoto/kaoto-ui": "0.7.5",
     "@kie-tools-core/backend": "^0.27.0",
     "@kie-tools-core/editor": "^0.27.0",
     "@kie-tools-core/i18n": "^0.27.0",
@@ -142,7 +142,7 @@
     "buffer": "^6.0.3",
     "chai": "^4.3.7",
     "constants-browserify": "^1.0.0",
-    "css-loader": "^6.7.1",
+    "css-loader": "6.7.3",
     "file-loader": "^6.2.0",
     "mocha": "^10.2.0",
     "node-fetch": "2",
@@ -161,8 +161,8 @@
     "url-loader": "^4.1.1",
     "vscode-extension-tester": "5.5.1",
     "web-worker": "^1.2.0",
-    "webpack": "5.73.0",
-    "webpack-cli": "^4.10.0",
+    "webpack": "5.76.3",
+    "webpack-cli": "5.0.1",
     "webpack-merge": "^5.8.0"
   },
   "resolutions": {
