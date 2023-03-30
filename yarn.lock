@@ -1036,10 +1036,10 @@
   dependencies:
     "@types/node" "*"
 
-"@vscode/test-web@^0.0.36":
-  version "0.0.36"
-  resolved "https://registry.yarnpkg.com/@vscode/test-web/-/test-web-0.0.36.tgz#4ff3fa1987b106bf02b62f2fe3cf8dd050c39238"
-  integrity sha512-2jQM4Q9MQQVLmjk3DmBkwgP4U/y7lzZIQkAdLpLmyPzCMPJJ86K6n7XlnZ8d8iNKJQR+Xm3PsX22GG1cWkkGgw==
+"@vscode/test-web@^0.0.37":
+  version "0.0.37"
+  resolved "https://registry.yarnpkg.com/@vscode/test-web/-/test-web-0.0.37.tgz#85e933653aacc76e821ccf87bdf6911f66c2210b"
+  integrity sha512-bNayxg9m9Wv7Yk8dr1Vh/Cfz7VWn3Sa9ZNJ4ohRImYj+7Nw2QfxCtlTs/iYhGKm6s0LJsTxylZ11hYJUKgPpmA==
   dependencies:
     "@koa/cors" "^4.0.0"
     "@koa/router" "^12.0.0"
@@ -1053,7 +1053,7 @@
     koa-mount "^4.0.0"
     koa-static "^5.0.0"
     minimist "^1.2.8"
-    playwright "^1.32.0"
+    playwright "^1.32.1"
     vscode-uri "^3.0.7"
 
 "@vscode/vsce@^2.18.0":
@@ -3873,17 +3873,17 @@ pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
-playwright-core@1.32.0:
-  version "1.32.0"
-  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.32.0.tgz#730c2d1988d30377480b925aaa6c1b1e2442d67e"
-  integrity sha512-Z9Ij17X5Z3bjpp6XKujGBp9Gv4eViESac9aDmwgQFUEJBW0K80T21m/Z+XJQlu4cNsvPygw33b6V1Va6Bda5zQ==
+playwright-core@1.32.1:
+  version "1.32.1"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.32.1.tgz#5a10c32403323b07d75ea428ebeed866a80b76a1"
+  integrity sha512-KZYUQC10mXD2Am1rGlidaalNGYk3LU1vZqqNk0gT4XPty1jOqgup8KDP8l2CUlqoNKhXM5IfGjWgW37xvGllBA==
 
-playwright@^1.32.0:
-  version "1.32.0"
-  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.32.0.tgz#963bfd67d2e97b557154e517e228473ab2a7ec24"
-  integrity sha512-zQVzxTGoC/ak2Zu0l3CeBGQ6z5oOka5ecUOk+5QbmAerih6CaVsjY9BjjhiN+UOImd3xLiNeCcmLEWcXlz1Dlg==
+playwright@^1.32.1:
+  version "1.32.1"
+  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.32.1.tgz#c48195850740fbdbd7702f37e5a891b13259f689"
+  integrity sha512-GnEizysWMvoqHC3I9l8+4/ZxeLwLNdJJG76xdKGxzOcIZDcw5RSk/FKrFb5CuA+zcLpjIM2p9eR9Z4CuUDkWXg==
   dependencies:
-    playwright-core "1.32.0"
+    playwright-core "1.32.1"
 
 popper.js@^1.16.0:
   version "1.16.1"
