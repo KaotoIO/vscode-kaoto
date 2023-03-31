@@ -1,3 +1,5 @@
+# 0.4.0
+
 # 0.3.0
 
 - Keep `Kaoto backend` output log available when Kaoto backend native executable cannot be launched. It allows to have more information what can be the issue.
