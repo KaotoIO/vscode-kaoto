@@ -1,5 +1,7 @@
 # 0.4.0
 
+- Upgrade embedded Kaoto [UI](https://github.com/KaotoIO/kaoto-ui/releases/tag/v1.0.0-rc1) to 1.0.0-rc1 and [backend](https://github.com/KaotoIO/kaoto-backend/releases/tag/v1.0.0-rc1) to 1.0.0-rc1
+
 # 0.3.0
 
 - Keep `Kaoto backend` output log available when Kaoto backend native executable cannot be launched. It allows to have more information what can be the issue.
