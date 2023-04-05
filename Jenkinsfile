@@ -41,7 +41,7 @@ node('rhel9'){
 node('rhel9'){
 	if(publishToMarketPlace.equals('true')){
 		timeout(time:5, unit:'DAYS') {
-			input message:'Approve deployment?', submitter: 'apupier, jraez, mariasde, ryordan, mmelko'
+			input message:'Approve deployment?', submitter: 'apupier, jraez, mariasde, ryordan, mmelko, djelinek'
 		}
 
 		stage 'Publish to Marketplaces'
