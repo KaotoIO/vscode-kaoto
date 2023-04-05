@@ -3374,10 +3374,10 @@ monaco-marker-data-provider@^1.0.0:
   resolved "https://registry.yarnpkg.com/monaco-marker-data-provider/-/monaco-marker-data-provider-1.1.1.tgz#0ca69f367152f5aa12cec2bda95f32b7403e876f"
   integrity sha512-PGB7TJSZE5tmHzkxv/OEwK2RGNC2A7dcq4JRJnnj31CUAsfmw0Gl+1QTrH0W0deKhcQmQM0YVPaqgQ+0wCt8Mg==
 
-monaco-page-objects@^3.5.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/monaco-page-objects/-/monaco-page-objects-3.5.0.tgz#3c660c688dd5117968d0758d44ea7f8ff4089a08"
-  integrity sha512-u0yF6lz1+ENpf8H2vSjO5yPq9N3MgO0n6cebYU0fRvbJpQVgj4qDyL4LR4CNR5P7+xgqbAqTBFqd0vLmjRIKWQ==
+monaco-page-objects@^3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/monaco-page-objects/-/monaco-page-objects-3.5.1.tgz#c60e9480dbd260b561f39a977b16bfd06156a8e9"
+  integrity sha512-iuxvHxROB4HPqQ1hTIliHzU271GrnWWVQoWn78yjsYgMY2gktfJTFhumaXyQ+ASw/N0Zqp18FW4AFKe5Tq8+Ew==
   dependencies:
     clipboardy "^2.3.0"
     clone-deep "^4.0.1"
@@ -4916,10 +4916,10 @@ vscode-extension-tester-locators@^3.4.1:
   resolved "https://registry.yarnpkg.com/vscode-extension-tester-locators/-/vscode-extension-tester-locators-3.4.1.tgz#73d975b8f8a4ea6205a7d62e5064d6ffe84725cd"
   integrity sha512-RgkEsj4VKCe3Ft+agMtgMIEq93m+W8Bwlb3jrTKE8+mr/HSrzJL+p09jIz0HVdC9SCbChWaxMDyRli696Ex/5A==
 
-vscode-extension-tester@5.5.1:
-  version "5.5.1"
-  resolved "https://registry.yarnpkg.com/vscode-extension-tester/-/vscode-extension-tester-5.5.1.tgz#623c8a30da3efd3f4b8d2882e4e7396655d44796"
-  integrity sha512-kzoJNxoDxLgplXe+24Nr+4YV+73JgqO7II4KR0kuGlyqx2VwE4GqXulTAVG5C2ZQz3B79TFm3T8HD+DnA4ZfFw==
+vscode-extension-tester@5.5.2:
+  version "5.5.2"
+  resolved "https://registry.yarnpkg.com/vscode-extension-tester/-/vscode-extension-tester-5.5.2.tgz#90fee8f4d077740d4a5df3628a7b365f54fac155"
+  integrity sha512-+vRgJ7vdH5vsoF1kD4T7c0urxp5KETXuSeNvJcvsT+hBlWABdBjPHvyydtK7SQmcPKB4DtmsZVH2s2UX1+4GiA==
   dependencies:
     "@types/selenium-webdriver" "^4.1.12"
     "@vscode/vsce" "^2.18.0"
@@ -4930,7 +4930,7 @@ vscode-extension-tester@5.5.1:
     got "^11.8.6"
     hpagent "^1.2.0"
     js-yaml "^4.1.0"
-    monaco-page-objects "^3.5.0"
+    monaco-page-objects "^3.5.1"
     sanitize-filename "^1.6.3"
     selenium-webdriver "^4.8.1"
     targz "^1.0.1"
