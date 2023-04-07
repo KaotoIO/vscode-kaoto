@@ -137,7 +137,7 @@
     "@types/chai": "^4.3.4",
     "@types/mocha": "^10.0.1",
     "@types/react": "18.0.33",
-    "@vscode/test-web": "^0.0.37",
+    "@vscode/test-web": "^0.0.41",
     "@vscode/vsce": "^2.18.0",
     "buffer": "^6.0.3",
     "chai": "^4.3.7",
