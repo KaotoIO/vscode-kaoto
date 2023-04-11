@@ -54,10 +54,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@kaoto/kaoto-ui@1.0.0-rc1":
-  version "1.0.0-rc1"
-  resolved "https://registry.yarnpkg.com/@kaoto/kaoto-ui/-/kaoto-ui-1.0.0-rc1.tgz#25e056524ac27fcff13f75eba100c0a11d74d72a"
-  integrity sha512-jVsEjWklC5PIdGLLauGIy5lTYPz/wcC4zeO33LolFnDCodndXkqdu/0q2c1e/Hsi0lUjoPjN0owD2mt9pzBwlw==
+"@kaoto/kaoto-ui@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@kaoto/kaoto-ui/-/kaoto-ui-1.0.0.tgz#12b9462be087f034e5c4205cc8cc5ec8e5597bc7"
+  integrity sha512-A7CmChmJZSLjGbopDsVuWu9sVKqNLyRZO4AKk/8WBfpYQaDhvNxw1ei5lg5z/5R89OYXJwWWSSLO4iYooqcNCg==
   dependencies:
     "@kie-tools-core/editor" "0.27.0"
     "@kie-tools-core/guided-tour" "0.27.0"
@@ -100,8 +100,8 @@
     tar-webpack-plugin "^0.1.1"
     uniforms "^3.10.2"
     uniforms-bridge-json-schema "^3.10.2"
-    use-debounce "9.0.3"
-    web-vitals "3.3.0"
+    use-debounce "9.0.4"
+    web-vitals "3.3.1"
     zundo "^2.0.0-beta.11"
     zustand "^4.3.7"
 
@@ -4876,10 +4876,10 @@ url-loader@^4.1.1:
     mime-types "^2.1.27"
     schema-utils "^3.0.0"
 
-use-debounce@9.0.3:
-  version "9.0.3"
-  resolved "https://registry.yarnpkg.com/use-debounce/-/use-debounce-9.0.3.tgz#bac660c19ab7b38662e08608fee23c7ad303f532"
-  integrity sha512-FhtlbDtDXILJV7Lix5OZj5yX/fW1tzq+VrvK1fnT2bUrPOGruU9Rw8NCEn+UI9wopfERBEZAOQ8lfeCJPllgnw==
+use-debounce@9.0.4:
+  version "9.0.4"
+  resolved "https://registry.yarnpkg.com/use-debounce/-/use-debounce-9.0.4.tgz#51d25d856fbdfeb537553972ce3943b897f1ac85"
+  integrity sha512-6X8H/mikbrt0XE8e+JXRtZ8yYVvKkdYRfmIhWZYsP8rcNs9hk3APV8Ua2mFkKRLcJKVdnX2/Vwrmg2GWKUQEaQ==
 
 use-sync-external-store@1.2.0:
   version "1.2.0"
@@ -4967,10 +4967,10 @@ watchpack@^2.4.0:
     glob-to-regexp "^0.4.1"
     graceful-fs "^4.1.2"
 
-web-vitals@3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/web-vitals/-/web-vitals-3.3.0.tgz#2e14bcbb3acf71d00c49519ab92cc517511476d5"
-  integrity sha512-GZsEmJBNclIpViS/7QVOTr7Kbt4BgLeR7kQ5zCCtJVuiWsA+K6xTXaoEXssvl8yYFICEyNmA2Nr+vgBYTnS4bA==
+web-vitals@3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/web-vitals/-/web-vitals-3.3.1.tgz#f80e4fd01784476c023c8b2c4219075bbe96f64d"
+  integrity sha512-LTfY5GjcY3ngFzNsYFSYL+AmVmlWrzPTUxSMDis2rZbf+SzT7HH3NH4Y/l45XOlrAIunOBeURN9qtBHkRskAiA==
 
 web-worker@^1.2.0:
   version "1.2.0"
@@ -5014,10 +5014,10 @@ webpack-sources@^3.2.3:
   resolved "https://registry.yarnpkg.com/webpack-sources/-/webpack-sources-3.2.3.tgz#2d4daab8451fd4b240cc27055ff6a0c2ccea0cde"
   integrity sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==
 
-webpack@5.77.0:
-  version "5.77.0"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.77.0.tgz#dea3ad16d7ea6b84aa55fa42f4eac9f30e7eb9b4"
-  integrity sha512-sbGNjBr5Ya5ss91yzjeJTLKyfiwo5C628AFjEa6WSXcZa4E+F57om3Cc8xLb1Jh0b243AWuSYRf3dn7HVeFQ9Q==
+webpack@5.78.0:
+  version "5.78.0"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.78.0.tgz#836452a12416af2a7beae906b31644cb2562f9e6"
+  integrity sha512-gT5DP72KInmE/3azEaQrISjTvLYlSM0j1Ezhht/KLVkrqtv10JoP/RXhwmX/frrutOPuSq3o5Vq0ehR/4Vmd1g==
   dependencies:
     "@types/eslint-scope" "^3.7.3"
     "@types/estree" "^0.0.51"
