@@ -5,6 +5,8 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const path = require("path");
 const BG_IMAGES_DIRNAME = "bgimages";
 
+const kaotoUIpkg = require('@kaoto/kaoto-ui/package.json');
+
 let deps = {};
 Object.keys(dependencies).forEach((key) => { deps[key] = { eager: true } });
 
@@ -135,7 +137,8 @@ const commonConfig = (env) => {
     },
     plugins: [
       new webpack.DefinePlugin({
-        'process.env.KAOTO_API': JSON.stringify("http://localhost:8081")
+        'process.env.KAOTO_API': JSON.stringify("http://localhost:8081"),
+        'KAOTO_VERSION': JSON.stringify(kaotoUIpkg.version),
       }),
       new webpack.container.ModuleFederationPlugin({
         name: federatedModuleName,
