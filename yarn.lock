@@ -4895,10 +4895,10 @@ vscode-extension-tester-locators@^3.4.1:
   resolved "https://registry.yarnpkg.com/vscode-extension-tester-locators/-/vscode-extension-tester-locators-3.4.1.tgz#73d975b8f8a4ea6205a7d62e5064d6ffe84725cd"
   integrity sha512-RgkEsj4VKCe3Ft+agMtgMIEq93m+W8Bwlb3jrTKE8+mr/HSrzJL+p09jIz0HVdC9SCbChWaxMDyRli696Ex/5A==
 
-vscode-extension-tester@5.5.2:
-  version "5.5.2"
-  resolved "https://registry.yarnpkg.com/vscode-extension-tester/-/vscode-extension-tester-5.5.2.tgz#90fee8f4d077740d4a5df3628a7b365f54fac155"
-  integrity sha512-+vRgJ7vdH5vsoF1kD4T7c0urxp5KETXuSeNvJcvsT+hBlWABdBjPHvyydtK7SQmcPKB4DtmsZVH2s2UX1+4GiA==
+vscode-extension-tester@5.5.3:
+  version "5.5.3"
+  resolved "https://registry.yarnpkg.com/vscode-extension-tester/-/vscode-extension-tester-5.5.3.tgz#da000f796639af08180b6be1da4a7c168118366a"
+  integrity sha512-oWfd+j8qXK5OJy3lpC7YmsIotI8BSrOxj3cFGNC3ukDJV3zqk8DW6GAwWxnS22NXQp3AYcsIaed9eDGPc+Ix3Q==
   dependencies:
     "@types/selenium-webdriver" "^4.1.12"
     "@vscode/vsce" "^2.18.0"
