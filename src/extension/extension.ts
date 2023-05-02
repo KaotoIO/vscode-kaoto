@@ -71,7 +71,7 @@ export async function activate(context: vscode.ExtensionContext) {
   async function warmupKaotoBackend() {
     kaotoBackendOutputChannel = vscode.window.createOutputChannel(`Kaoto backend`);
     const nativeExecutable = context.asAbsolutePath(path.join("binaries", getBinaryName()));
-    backendProcess = child_process.spawn(nativeExecutable);
+    backendProcess = child_process.spawn(nativeExecutable, ['-Dquarkus.http.port=8097']);
     backendProcess.on("close", (code, _signal) => {
       if (kaotoBackendOutputChannel) {
         kaotoBackendOutputChannel.append(`Kaoto backend process closed with code: ${code}\n`);
