@@ -36,6 +36,7 @@
 ### Requirements
 
 - Requires `Amd64` architecture.
+- For Linux, GLIBC 2.32+. Which means for instance RHEL 9+ or Fedora 33+.
 
 ### Limitations
 
