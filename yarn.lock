@@ -3353,10 +3353,10 @@ monaco-marker-data-provider@^1.0.0:
   resolved "https://registry.yarnpkg.com/monaco-marker-data-provider/-/monaco-marker-data-provider-1.1.1.tgz#0ca69f367152f5aa12cec2bda95f32b7403e876f"
   integrity sha512-PGB7TJSZE5tmHzkxv/OEwK2RGNC2A7dcq4JRJnnj31CUAsfmw0Gl+1QTrH0W0deKhcQmQM0YVPaqgQ+0wCt8Mg==
 
-monaco-page-objects@^3.5.1:
-  version "3.5.1"
-  resolved "https://registry.yarnpkg.com/monaco-page-objects/-/monaco-page-objects-3.5.1.tgz#c60e9480dbd260b561f39a977b16bfd06156a8e9"
-  integrity sha512-iuxvHxROB4HPqQ1hTIliHzU271GrnWWVQoWn78yjsYgMY2gktfJTFhumaXyQ+ASw/N0Zqp18FW4AFKe5Tq8+Ew==
+monaco-page-objects@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/monaco-page-objects/-/monaco-page-objects-3.6.0.tgz#bf7c95465fc798c6625bc6f7cd794e211fa6c5d7"
+  integrity sha512-hMhILl3pc73+FHdnQ1No9I4WqfQsbvTdwHeGL0oZC2rjSp6zn+MJpJqVLRyppJYvSWC0RXJENMgUKunzqrKBPg==
   dependencies:
     clipboardy "^2.3.0"
     clone-deep "^4.0.1"
@@ -4890,15 +4890,15 @@ vary@^1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-vscode-extension-tester-locators@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/vscode-extension-tester-locators/-/vscode-extension-tester-locators-3.4.1.tgz#73d975b8f8a4ea6205a7d62e5064d6ffe84725cd"
-  integrity sha512-RgkEsj4VKCe3Ft+agMtgMIEq93m+W8Bwlb3jrTKE8+mr/HSrzJL+p09jIz0HVdC9SCbChWaxMDyRli696Ex/5A==
+vscode-extension-tester-locators@^3.4.2:
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/vscode-extension-tester-locators/-/vscode-extension-tester-locators-3.4.2.tgz#a405376855ceec3cebe38c5ae53f59b67f319ba2"
+  integrity sha512-ytJkUTDJ9Wj7pJgg3ocHXkTAQO90XY3YzqSFZkB6t96H0osAvjP26MYqB6QMNG9AA6w34hLJRPBscadi35f4LA==
 
-vscode-extension-tester@5.5.3:
-  version "5.5.3"
-  resolved "https://registry.yarnpkg.com/vscode-extension-tester/-/vscode-extension-tester-5.5.3.tgz#da000f796639af08180b6be1da4a7c168118366a"
-  integrity sha512-oWfd+j8qXK5OJy3lpC7YmsIotI8BSrOxj3cFGNC3ukDJV3zqk8DW6GAwWxnS22NXQp3AYcsIaed9eDGPc+Ix3Q==
+vscode-extension-tester@5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/vscode-extension-tester/-/vscode-extension-tester-5.6.0.tgz#1647ea2f7255b800b6f246c3e387f31e6678d20f"
+  integrity sha512-HOhjeV4tY8kb1ieBjC+ThWSZfhcpxgpSDpZa0d+G6vsA5xOwRsNQQFk26SKlv+IkSD5kSzrxh665+xSMGECsdQ==
   dependencies:
     "@types/selenium-webdriver" "^4.1.12"
     "@vscode/vsce" "^2.18.0"
@@ -4909,12 +4909,12 @@ vscode-extension-tester@5.5.3:
     got "^11.8.6"
     hpagent "^1.2.0"
     js-yaml "^4.1.0"
-    monaco-page-objects "^3.5.1"
+    monaco-page-objects "^3.6.0"
     sanitize-filename "^1.6.3"
     selenium-webdriver "^4.8.1"
     targz "^1.0.1"
     unzip-stream "^0.3.1"
-    vscode-extension-tester-locators "^3.4.1"
+    vscode-extension-tester-locators "^3.4.2"
 
 vscode-languageserver-textdocument@^1.0.0:
   version "1.0.8"
