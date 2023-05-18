@@ -1,3 +1,5 @@
+# 0.7.0
+
 # 0.6.0
 
 - Change default port of emebedded Kaoto backend from `8081` to `8097`
