@@ -136,7 +136,7 @@
   "devDependencies": {
     "@types/chai": "^4.3.5",
     "@types/mocha": "^10.0.1",
-    "@types/react": "18.2.6",
+    "@types/react": "18.2.7",
     "@vscode/test-web": "^0.0.43",
     "@vscode/vsce": "^2.19.0",
     "buffer": "^6.0.3",
