@@ -28,23 +28,14 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: '16'
-    - name: Install prerequisites
+    - name: Kaoto-ui build
+      working-directory: kaoto-ui
       run: |
-        yarn global add rimraf
-        yarn global add @vscode/vsce
-        yarn global add webpack-cli
-        yarn global add webpack
-    - name: Kaoto-ui link and build
-      run: |
-        cd kaoto-ui
         yarn
-        yarn link
         yarn build:lib
-    - name: yarn
+    - name: yarn link kaoto-ui
       working-directory: vscode-kaoto
-      run: |
-        yarn
-        yarn link @kaoto/kaoto-ui
+      run: yarn link ../kaoto-ui
     - name: yarn build:dev
       working-directory: vscode-kaoto
       run: yarn build:dev
