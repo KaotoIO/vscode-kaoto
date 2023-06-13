@@ -32,6 +32,8 @@ describe('Kaoto basic development flow', function () {
 		await checkIntegrationNameInTopBarLoaded(driver, 'my-integration-name');
 		await checkEmptyCanvasLoaded(driver);
 		await kaotoWebview.switchBack();
+		// let time to change to be propagted to dirtiness
+		await driver.sleep(5000);
 		assert.isFalse(await kaotoEditor.isDirty(), 'The Kaoto editor should not be dirty after everything has loaded.');
 	});
 
