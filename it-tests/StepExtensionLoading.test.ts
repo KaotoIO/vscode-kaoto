@@ -1,6 +1,6 @@
-import { By, EditorView,  until,  VSBrowser, WebDriver } from 'vscode-extension-tester';
+import { By, EditorView, until, VSBrowser, WebDriver } from 'vscode-extension-tester';
 import * as path from 'path';
-import { openAndSwitchToKaotoFrame } from './Util';
+import { getWebDriver, openAndSwitchToKaotoFrame } from './Util';
 import waitUntil from 'async-wait-until';
 
 describe('Step extension loading test', function () {
@@ -10,34 +10,45 @@ describe('Step extension loading test', function () {
 
   let driver: WebDriver;
 
-  before(async function() {
+  before(async function () {
     this.timeout(60_000);
-    driver = VSBrowser.instance.driver;
-    await VSBrowser.instance.openResources(workspaceFolder);
+    driver = await getWebDriver(workspaceFolder);
   });
 
-  afterEach(async function() {
+  afterEach(async function () {
     const editorView = new EditorView();
     await editorView.closeAllEditors();
   });
 
   it('Open "choice.camel.yaml" file and check Step extension is loading', async function () {
-    const { kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(workspaceFolder, 'choice.camel.yaml', driver, true);
+    const { kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(
+      workspaceFolder,
+      'choice.camel.yaml',
+      driver,
+      true
+    );
     const stepChoiceXpath = By.xpath("//div[@data-testid='viz-step-choice']");
     await driver.wait(until.elementLocated(stepChoiceXpath));
 
-    await waitUntil(async () => {
-      try {
-        await (await driver.findElement(stepChoiceXpath)).click();
-      } catch {
-        console.log('Clicked on step failed surely due to Kaoto UI redrawing the content of the canvas. Will retry as a workaround');
-        return false;
-      }
-      return true;
-    }, 10_000, 2_000);
+    await waitUntil(
+      async () => {
+        try {
+          await (await driver.findElement(stepChoiceXpath)).click();
+        } catch {
+          console.log(
+            'Clicked on step failed surely due to Kaoto UI redrawing the content of the canvas. Will retry as a workaround'
+          );
+          return false;
+        }
+        return true;
+      },
+      10_000,
+      2_000
+    );
 
-    await driver.wait(until.elementLocated(By.xpath("//button[@data-testid='choice-add-when-button']")));
+    await driver.wait(
+      until.elementLocated(By.xpath("//button[@data-testid='choice-add-when-button']"))
+    );
     await kaotoWebview.switchBack();
   });
-
 });
