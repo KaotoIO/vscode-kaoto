@@ -3,7 +3,7 @@
 
 const fs = require('fs');
 
-// Setup: Place this file in `.yarn/plugins/list-plugin.js` and the following
+// Setup: Place this file in `.yarn/plugins/plugin-list.js` and the following
 // to `.yarnrc.yml`:
 //
 // ```
