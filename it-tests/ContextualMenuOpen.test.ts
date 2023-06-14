@@ -1,7 +1,17 @@
-import { ActivityBar, ContextMenu, EditorView,  SideBarView,  TextEditor, ViewControl,  ViewSection,  VSBrowser, WebDriver } from 'vscode-extension-tester';
+import {
+  ActivityBar,
+  ContextMenu,
+  EditorView,
+  SideBarView,
+  TextEditor,
+  ViewControl,
+  ViewSection,
+  VSBrowser,
+  WebDriver,
+} from 'vscode-extension-tester';
 import { assert, expect } from 'chai';
 import * as path from 'path';
-import { checkEmptyCanvasLoaded, switchToKaotoFrame } from './Util';
+import { checkEmptyCanvasLoaded, getWebDriver, switchToKaotoFrame } from './Util';
 
 describe('Contextual menu opening', function () {
   this.timeout(60_000);
@@ -10,13 +20,12 @@ describe('Contextual menu opening', function () {
 
   let driver: WebDriver;
 
-  before(async function() {
+  before(async function () {
     this.timeout(60_000);
-    driver = VSBrowser.instance.driver;
-    await VSBrowser.instance.openResources(workspaceFolder);
+    driver = await getWebDriver(workspaceFolder);
   });
 
-  afterEach(async function() {
+  afterEach(async function () {
     const editorView = new EditorView();
     await editorView.closeAllEditors();
   });
@@ -29,15 +38,17 @@ describe('Contextual menu opening', function () {
     }
 
     const control: ViewControl | undefined = await new ActivityBar().getViewControl('Explorer');
-    if(control === undefined) {
+    if (control === undefined) {
       assert.fail('Not found the Explorer view');
     }
     const explorerView: SideBarView = await control.openView();
-    const workspaceSection: ViewSection = await explorerView.getContent().getSection('test Fixture with speci@l chars');
+    const workspaceSection: ViewSection = await explorerView
+      .getContent()
+      .getSection('test Fixture with speci@l chars');
     await workspaceSection.expand();
     const myYamlItem = await workspaceSection.findItem('my.yaml');
-    if(myYamlItem === undefined) {
-      assert.fail('Cannot find the my.yaml file in explorer.')
+    if (myYamlItem === undefined) {
+      assert.fail('Cannot find the my.yaml file in explorer.');
     }
     const contextMenu: ContextMenu = await myYamlItem.openContextMenu();
     await (await contextMenu.getItem('Open with Kaoto Graphical Editor for Camel'))?.click();
