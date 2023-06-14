@@ -3,6 +3,7 @@ import { assert } from 'chai';
 import * as path from 'path';
 import { checkEmptyCanvasLoaded, openAndSwitchToKaotoFrame } from './Util';
 import { waitUntil } from 'async-wait-until';
+import * as fs from 'fs-extra';
 
 describe('Kaoto basic development flow', function () {
   this.timeout(60_000);
@@ -14,7 +15,14 @@ describe('Kaoto basic development flow', function () {
   before(async function() {
     this.timeout(60_000);
     driver = VSBrowser.instance.driver;
+
+    fs.copySync(path.join(workspaceFolder, 'empty.camel.yaml'), path.join(workspaceFolder, 'empty_copy.camel.yaml'));
     await VSBrowser.instance.openResources(workspaceFolder);
+  });
+
+  after(function() {
+    this.timeout(10_000);
+    fs.rmSync(path.join(workspaceFolder, 'empty_copy.camel.yaml'));
   });
 
   afterEach(async function() {
@@ -36,7 +44,7 @@ describe('Kaoto basic development flow', function () {
   });
 
   it('Open "empty.camel.yaml" file, check Kaoto UI is loading, add a step and save', async function () {
-    let { kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(workspaceFolder, 'empty.camel.yaml', driver, false);
+    let { kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(workspaceFolder, 'empty_copy.camel.yaml', driver, false);
     await checkEmptyCanvasLoaded(driver);
     await addActiveMQStep(driver);
     await checkStepWithTestIdPresent(driver, 'viz-step-activemq');
@@ -54,7 +62,7 @@ describe('Kaoto basic development flow', function () {
     await editorView.closeAllEditors();
     console.log('editors closed');
 
-    ({ kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(workspaceFolder, 'empty.camel.yaml', driver, true));
+    ({ kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(workspaceFolder, 'empty_copy.camel.yaml', driver, true));
     await checkStepWithTestIdPresent(driver, 'viz-step-activemq');
     await kaotoWebview.switchBack();
   });
