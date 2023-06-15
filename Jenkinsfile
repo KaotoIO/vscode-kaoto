@@ -4,9 +4,6 @@ def installBuildRequirements(){
 	def nodeHome = tool 'nodejs-lts'
 	env.PATH="${env.PATH}:${nodeHome}/bin"
 	sh "npm install --global yarn"
-	sh "yarn global add @vscode/vsce"
-	sh "yarn global add webpack-cli"
-	sh "yarn global add webpack"
 }
 
 node('rhel9'){
@@ -30,7 +27,7 @@ node('rhel9'){
 
 	stage 'Package vscode-kaoto'
 	def packageJson = readJSON file: 'package.json'
-	sh "vsce package --yarn -o vscode-kaoto-${packageJson.version}-${env.BUILD_NUMBER}.vsix"
+	sh "yarn vsce package --yarn -o vscode-kaoto-${packageJson.version}-${env.BUILD_NUMBER}.vsix"
 
 	stage 'Upload vscode-kaoto to staging'
 	def vsix = findFiles(glob: '**.vsix')
@@ -49,7 +46,7 @@ node('rhel9'){
 		def vsix = findFiles(glob: '**.vsix')
 		// VS Code Marketplace
 		withCredentials([[$class: 'StringBinding', credentialsId: 'vscode_java_marketplace', variable: 'TOKEN']]) {
-			sh 'vsce publish -p ${TOKEN} --packagePath' + " ${vsix[0].path}"
+			sh 'yarn vsce publish -p ${TOKEN} --packagePath' + " ${vsix[0].path}"
 		}
 
 		// Open-vsx Marketplace
