@@ -137,7 +137,7 @@
     "@types/chai": "^4.3.5",
     "@types/fs-extra": "^11.0.1",
     "@types/mocha": "^10.0.1",
-    "@types/react": "18.2.6",
+    "@types/react": "18.2.12",
     "@vscode/test-web": "^0.0.43",
     "@vscode/vsce": "^2.19.0",
     "buffer": "^6.0.3",
@@ -168,7 +168,7 @@
     "webpack-merge": "^5.8.0"
   },
   "resolutions": {
-    "@types/react": "18.2.6",
+    "@types/react": "18.2.12",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "zundo": "2.0.0-beta.19"
