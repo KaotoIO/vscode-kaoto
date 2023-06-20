@@ -161,7 +161,7 @@
     "tsconfig-paths-webpack-plugin": "^4.0.1",
     "typescript": "^5.0.4",
     "url-loader": "^4.1.1",
-    "vscode-extension-tester": "^5.7.1",
+    "vscode-extension-tester": "^5.8.0",
     "web-worker": "^1.2.0",
     "webpack": "5.78.0",
     "webpack-cli": "5.0.1",
