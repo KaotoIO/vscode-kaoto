@@ -249,40 +249,7 @@ module.exports = async (env) => [
         },
         {
           test: /\.(jpg|jpeg|png|gif)$/i,
-          include: [
-            {
-              or: [
-                (input) => posixPath(input).includes("src"),
-                (input) => posixPath(input).includes("dist/lib/assets/images"),
-                (input) => posixPath(input).includes("node_modules/@kaoto/kaoto-ui/dist/lib/assets/images"),
-                (input) => posixPath(input).includes("node_modules/@patternfly/patternfly/assets/images"),
-                (input) => posixPath(input).includes("node_modules/@patternfly/react-styles/css/assets/images"),
-                (input) => posixPath(input).includes("node_modules/@patternfly/react-core/dist/styles/assets/images"),
-                (input) =>
-                  posixPath(input).includes(
-                    "node_modules/@patternfly/react-core/node_modules/@patternfly/react-styles/css/assets/images"
-                  ),
-                (input) =>
-                  posixPath(input).includes(
-                    "node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css/assets/images"
-                  ),
-                (input) =>
-                  posixPath(input).includes(
-                    "node_modules/@patternfly/react-inline-edit-extension/node_modules/@patternfly/react-styles/css/assets/images"
-                  ),
-              ],
-            },
-          ],
-          use: [
-            {
-              loader: "url-loader",
-              options: {
-                limit: 5000,
-                outputPath: "images",
-                name: "[name].[ext]",
-              },
-            },
-          ],
+          type: "asset/resource",
         },
       ],
     },
