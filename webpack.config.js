@@ -199,39 +199,25 @@ module.exports = async (env) => [
               ],
             },
           ],
-          use: {
-            loader: "file-loader",
-            options: {
-              // Limit at 50k. larger files emitted into separate files
-              limit: 5000,
-              outputPath: "fonts",
-              name: "[name].[ext]",
-            },
-          },
+          type: 'asset',
+          generator: {
+            filename: 'fonts/[name].[ext]',
+          }
         },
         {
           test: /\.svg$/,
           include: (input) => input.indexOf("background-filter.svg") > 1,
-          use: [
-            {
-              loader: "url-loader",
-              options: {
-                limit: 5000,
-                outputPath: "svgs",
-                name: "[name].[ext]",
-              },
-            },
-          ],
+          type: 'asset',
+          generator: {
+            filename: 'svgs/[name].[ext]',
+          }
         },
         {
           test: /\.svg$/,
           // only process SVG modules with this loader if they live under a 'bgimages' directory
           // this is primarily useful when applying a CSS background using an SVG
           include: (input) => input.indexOf(BG_IMAGES_DIRNAME) > -1,
-          use: {
-            loader: "svg-url-loader",
-            options: {},
-          },
+          type: 'asset',
         },
         {
           test: /\.svg$/,
@@ -242,14 +228,11 @@ module.exports = async (env) => [
             input.indexOf("fonts") === -1 &&
             input.indexOf("background-filter") === -1 &&
             input.indexOf("pficon") === -1,
-          use: {
-            loader: "raw-loader",
-            options: {},
-          },
+          type: "asset/source",
         },
         {
           test: /\.(jpg|jpeg|png|gif)$/i,
-          type: "asset/resource",
+          type: "asset",
         },
       ],
     },

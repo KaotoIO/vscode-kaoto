@@ -3366,18 +3366,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-loader@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "file-loader@npm:6.2.0"
-  dependencies:
-    loader-utils: ^2.0.0
-    schema-utils: ^3.0.0
-  peerDependencies:
-    webpack: ^4.0.0 || ^5.0.0
-  checksum: faf43eecf233f4897b0150aaa874eeeac214e4f9de49738a9e0ef734a30b5260059e85b7edadf852b98e415f875bd5f12587768a93fd52aaf2e479ecf95fab20
-  languageName: node
-  linkType: hard
-
 "file-selector@npm:^0.1.8":
   version: 0.1.19
   resolution: "file-selector@npm:0.1.19"
@@ -4585,7 +4573,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loader-utils@npm:^2.0.0, loader-utils@npm:^2.0.2":
+"loader-utils@npm:^2.0.2":
   version: 2.0.4
   resolution: "loader-utils@npm:2.0.4"
   dependencies:
@@ -5925,18 +5913,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"raw-loader@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "raw-loader@npm:4.0.2"
-  dependencies:
-    loader-utils: ^2.0.0
-    schema-utils: ^3.0.0
-  peerDependencies:
-    webpack: ^4.0.0 || ^5.0.0
-  checksum: 51cc1b0d0e8c37c4336b5318f3b2c9c51d6998ad6f56ea09612afcfefc9c1f596341309e934a744ae907177f28efc9f1654eacd62151e82853fcc6d37450e795
-  languageName: node
-  linkType: hard
-
 "rc@npm:^1.2.7":
   version: 1.2.8
   resolution: "rc@npm:1.2.8"
@@ -6394,7 +6370,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"schema-utils@npm:^3.0.0, schema-utils@npm:^3.1.0, schema-utils@npm:^3.1.1":
+"schema-utils@npm:^3.1.0, schema-utils@npm:^3.1.1":
   version: 3.2.0
   resolution: "schema-utils@npm:3.2.0"
   dependencies:
@@ -7289,23 +7265,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"url-loader@npm:^4.1.1":
-  version: 4.1.1
-  resolution: "url-loader@npm:4.1.1"
-  dependencies:
-    loader-utils: ^2.0.0
-    mime-types: ^2.1.27
-    schema-utils: ^3.0.0
-  peerDependencies:
-    file-loader: "*"
-    webpack: ^4.0.0 || ^5.0.0
-  peerDependenciesMeta:
-    file-loader:
-      optional: true
-  checksum: c1122a992c6cff70a7e56dfc2b7474534d48eb40b2cc75467cde0c6972e7597faf8e43acb4f45f93c2473645dfd803bcbc20960b57544dd1e4c96e77f72ba6fd
-  languageName: node
-  linkType: hard
-
 "use-debounce@npm:9.0.4":
   version: 9.0.4
   resolution: "use-debounce@npm:9.0.4"
@@ -7424,14 +7383,12 @@ __metadata:
     chai: ^4.3.7
     constants-browserify: ^1.0.0
     css-loader: 6.7.3
-    file-loader: ^6.2.0
     fs-extra: ^11.1.1
     mocha: ^10.2.0
     node-fetch: 2
     npm-link-shared: ^0.5.6
     os-browserify: ^0.3.0
     path-browserify: ^1.0.1
-    raw-loader: ^4.0.2
     react: 18.2.0
     react-dom: 18.2.0
     rimraf: ^5.0.1
@@ -7442,7 +7399,6 @@ __metadata:
     ts-loader: 9.4.2
     tsconfig-paths-webpack-plugin: ^4.0.1
     typescript: ^5.0.4
-    url-loader: ^4.1.1
     vscode-extension-tester: ^5.8.0
     web-worker: ^1.2.0
     webpack: 5.78.0
