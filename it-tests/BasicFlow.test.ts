@@ -39,7 +39,8 @@ describe('Kaoto basic development flow', function () {
       driver,
       true
     );
-    await checkIntegrationNameInTopBarLoaded(driver, 'my-integration-name');
+    // TODO: adapt when name of the route will be visible
+    //await checkIntegrationNameInTopBarLoaded(driver, 'my-integration-name');
     await checkEmptyCanvasLoaded(driver);
     await kaotoWebview.switchBack();
     assert.isFalse(
