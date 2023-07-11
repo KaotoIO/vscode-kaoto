@@ -1,6 +1,7 @@
 const { dependencies, federatedModuleName } = require('./package.json');
 const { merge } = require("webpack-merge");
 const webpack = require('webpack');
+const PermissionsOutputPlugin = require('webpack-permissions-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const path = require("path");
 const BG_IMAGES_DIRNAME = "bgimages";
@@ -147,6 +148,11 @@ const commonConfig = (env) => {
         shared: {
           ...deps
         }
+      }),
+      new PermissionsOutputPlugin({
+        buildFolders: [
+          path.resolve(__dirname, 'binaries/')
+        ]
       })
     ],
     externals: {
