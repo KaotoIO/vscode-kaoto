@@ -81,7 +81,8 @@ is contained within parenthesis, e.g., `feat(parser): add ability to parse array
 
 * `yarn`
 * `yarn build:dev`
-* `yarn pack:prod` to build the vsix binary
+* `yarn build:prod`
+* `yarn vsce package --no-dependencies --yarn` to build the vsix binary
 
 ### How to launch VS Code extension during development
 

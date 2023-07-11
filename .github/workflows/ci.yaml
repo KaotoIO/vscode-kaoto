@@ -26,6 +26,8 @@ jobs:
       run: yarn --network-timeout 1000000
     - name: yarn build:dev
       run: yarn build:dev
+    - name: yarn build:prod
+      run: yarn build:prod
     - name: Run UI Tests on Linux
       run: xvfb-run -a yarn run test:it
       if: ${{ matrix.os == 'ubuntu-latest' }}
@@ -33,11 +35,11 @@ jobs:
       run: yarn run test:it
       if: ${{ matrix.os != 'ubuntu-latest' }}
     - name: vsix package
-      run: yarn pack:prod
+      run: yarn vsce package --no-dependencies --yarn
     - name: Archive vsix
       uses: actions/upload-artifact@v3
       with:
-        path: 'dist/*.vsix'
+        path: '*.vsix'
     - name: Store VS Code logs
       uses: actions/upload-artifact@v3
       if: always()

@@ -18,6 +18,7 @@ node('rhel9'){
 	stage 'Build vscode-kaoto'
 	sh "yarn"
 	sh "yarn build:dev"
+	sh "yarn build:prod"
 
 	stage('Test') {
 		wrap([$class: 'Xvnc']) {
@@ -27,7 +28,7 @@ node('rhel9'){
 
 	stage 'Package vscode-kaoto'
 	def packageJson = readJSON file: 'package.json'
-	sh "yarn vsce package --yarn -o vscode-kaoto-${packageJson.version}-${env.BUILD_NUMBER}.vsix"
+	sh "yarn vsce package --no-dependencies --yarn -o vscode-kaoto-${packageJson.version}-${env.BUILD_NUMBER}.vsix"
 
 	stage 'Upload vscode-kaoto to staging'
 	def vsix = findFiles(glob: '**.vsix')
