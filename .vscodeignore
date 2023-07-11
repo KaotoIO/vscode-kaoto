@@ -14,3 +14,4 @@ test-resources/**
 test-resource
 test Fixture with speci@l chars
 uitest-resources
+.yarn/**

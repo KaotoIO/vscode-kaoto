@@ -39,16 +39,19 @@ jobs:
     - name: yarn build:dev
       working-directory: vscode-kaoto
       run: yarn build:dev
+    - name: yarn build:prod
+      working-directory: vscode-kaoto
+      run: yarn build:prod
     - name: Run UI Tests
       working-directory: vscode-kaoto
       run: xvfb-run -a yarn run test:it
     - name: vsix package
       working-directory: vscode-kaoto
-      run: yarn pack:prod
+      run: yarn vsce package --no-dependencies --yarn
     - name: Archive vsix
       uses: actions/upload-artifact@v3
       with:
-        path: 'vscode-kaoto/dist/*.vsix'
+        path: 'vscode-kaoto/*.vsix'
     - name: Store VS Code logs
       uses: actions/upload-artifact@v3
       if: always()
