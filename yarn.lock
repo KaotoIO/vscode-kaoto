@@ -2178,6 +2178,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bluebird@npm:^3.4.7, bluebird@npm:^3.7.2":
+  version: 3.7.2
+  resolution: "bluebird@npm:3.7.2"
+  checksum: 869417503c722e7dc54ca46715f70e15f4d9c602a423a02c825570862d12935be59ed9c7ba34a9b31f186c017c23cac6b54e35446f8353059c101da73eac22ef
+  languageName: node
+  linkType: hard
+
 "bluebird@npm:~3.4.1":
   version: 3.4.7
   resolution: "bluebird@npm:3.4.7"
@@ -3195,6 +3202,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"err-code@npm:^1.0.0":
+  version: 1.1.2
+  resolution: "err-code@npm:1.1.2"
+  checksum: a1c6a194d21084241c09e0ea78db4c503030042098048903f2d940ef48c1484bbf97e99d32d6b35e5f8871dd6b292fabf904f115914f5792a591157ac6584e31
+  languageName: node
+  linkType: hard
+
 "err-code@npm:^2.0.2":
   version: 2.0.3
   resolution: "err-code@npm:2.0.3"
@@ -3325,6 +3339,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"extend@npm:^3.0.0":
+  version: 3.0.2
+  resolution: "extend@npm:3.0.2"
+  checksum: a50a8309ca65ea5d426382ff09f33586527882cf532931cb08ca786ea3146c0553310bda688710ff61d7668eba9f96b923fe1420cdf56a2c3eaf30fcab87b515
+  languageName: node
+  linkType: hard
+
 "fast-deep-equal@npm:^3.1.1":
   version: 3.1.3
   resolution: "fast-deep-equal@npm:3.1.3"
@@ -3377,12 +3398,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"file-js@npm:0.3.0":
+  version: 0.3.0
+  resolution: "file-js@npm:0.3.0"
+  dependencies:
+    bluebird: ^3.4.7
+    minimatch: ^3.0.3
+    proper-lockfile: ^1.2.0
+  checksum: 5469717eb2cf13471387fc7c5cb67bbdeb020e0668b7df2726421196bba4c8972c6c11994bf27ebf3a37e6d3f1bf0e8094c237779000d3a88af6a9a4b31f939a
+  languageName: node
+  linkType: hard
+
 "file-selector@npm:^0.1.8":
   version: 0.1.19
   resolution: "file-selector@npm:0.1.19"
   dependencies:
     tslib: ^2.0.1
   checksum: 5b105a3ede9139729ada72d6653ae3f4387a7bf2585e8700f9fa53f22457d1f88304fdde9ad7b43b694a5610d67058302257f448a75248fc2225880bca6df5df
+  languageName: node
+  linkType: hard
+
+"filehound@npm:^1.17.6":
+  version: 1.17.6
+  resolution: "filehound@npm:1.17.6"
+  dependencies:
+    bluebird: ^3.7.2
+    file-js: 0.3.0
+    lodash: ^4.17.21
+    minimatch: ^5.0.0
+    moment: ^2.29.1
+    unit-compare: ^1.0.1
+  checksum: 2fd979a802304c6a28acc5d533efabfa06d683375d8fe1595734a2231b3d3bbfc2ba034260501ad62c9d67e2bb945e17754c200e5bd691cba5803489e6ec4579
   languageName: node
   linkType: hard
 
@@ -4868,7 +4914,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^5.0.1":
+"minimatch@npm:^5.0.0, minimatch@npm:^5.0.1":
   version: 5.1.6
   resolution: "minimatch@npm:5.1.6"
   dependencies:
@@ -5040,6 +5086,13 @@ __metadata:
   version: 1.0.3
   resolution: "module-details-from-path@npm:1.0.3"
   checksum: 378a8a26013889aa3086bfb0776b7860c5bb957336253e1ba5d779c2f239a218930b145ca76e52c1dd7c8079d52b2af64b8eec30822f81ffdb0dfa27d6fe6f33
+  languageName: node
+  linkType: hard
+
+"moment@npm:^2.14.1, moment@npm:^2.29.1":
+  version: 2.29.4
+  resolution: "moment@npm:2.29.4"
+  checksum: 0ec3f9c2bcba38dc2451b1daed5daded747f17610b92427bebe1d08d48d8b7bdd8d9197500b072d14e326dd0ccf3e326b9e3d07c5895d3d49e39b6803b76e80e
   languageName: node
   linkType: hard
 
@@ -5844,6 +5897,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"proper-lockfile@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "proper-lockfile@npm:1.2.0"
+  dependencies:
+    err-code: ^1.0.0
+    extend: ^3.0.0
+    graceful-fs: ^4.1.2
+    retry: ^0.10.0
+  checksum: 84483e8a5aeb65a2cc9dcdab57ba700c3e8077ed533a60233c155d53b943ae98bd428ff7c082d7a6538cdad1a85ad4ca41e5a051a38d596ac5f45f0cee80f873
+  languageName: node
+  linkType: hard
+
 "proxy-from-env@npm:^1.1.0":
   version: 1.1.0
   resolution: "proxy-from-env@npm:1.1.0"
@@ -6255,6 +6320,13 @@ __metadata:
   dependencies:
     lowercase-keys: ^3.0.0
   checksum: e0cc9be30df4f415d6d83cdede3c5c887cd4a73e7cc1708bcaab1d50a28d15acb68460ac5b02bcc55a42f3d493729c8856427dcf6e57e6e128ad05cba4cfb95e
+  languageName: node
+  linkType: hard
+
+"retry@npm:^0.10.0":
+  version: 0.10.1
+  resolution: "retry@npm:0.10.1"
+  checksum: 133ef7c2028bcb09544a6fb9bed9f8266fffeaf72c855f73c2918ace9ef2abd7ccba03744564bcd1a8e948ed70518f8970852f46e649f9e3db6fefb0148cda35
   languageName: node
   linkType: hard
 
@@ -7221,6 +7293,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"unit-compare@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "unit-compare@npm:1.0.1"
+  dependencies:
+    moment: ^2.14.1
+  checksum: c2f4d163f0c600d0b26b79b76648517f52005ed47d1e07d45e414a04f6bfb8e5a83fa8f52787f0790caf66a7c2ad1249a5e2d57f3067189e4a5b17749c3007de
+  languageName: node
+  linkType: hard
+
 "universalify@npm:^2.0.0":
   version: 2.0.0
   resolution: "universalify@npm:2.0.0"
@@ -7415,6 +7496,7 @@ __metadata:
     webpack: 5.78.0
     webpack-cli: 5.0.1
     webpack-merge: ^5.8.0
+    webpack-permissions-plugin: ^1.0.9
   languageName: unknown
   linkType: soft
 
@@ -7518,6 +7600,15 @@ __metadata:
     clone-deep: ^4.0.1
     wildcard: ^2.0.0
   checksum: 64fe2c23aacc5f19684452a0e84ec02c46b990423aee6fcc5c18d7d471155bd14e9a6adb02bd3656eb3e0ac2532c8e97d69412ad14c97eeafe32fa6d10050872
+  languageName: node
+  linkType: hard
+
+"webpack-permissions-plugin@npm:^1.0.9":
+  version: 1.0.9
+  resolution: "webpack-permissions-plugin@npm:1.0.9"
+  dependencies:
+    filehound: ^1.17.6
+  checksum: ce0183b88b792828eac7e8fd4e113a90959f2df3ac88f82fe99db78bde17a0ee6a4d81673ed2b360731b0ba338c28b72824fc8ee5b2cb235666bf91abcacfa27
   languageName: node
   linkType: hard
 
