@@ -28,14 +28,14 @@ jobs:
       run: yarn build:dev
     - name: yarn build:prod
       run: yarn build:prod
-    - name: Run UI Tests on Linux
-      run: xvfb-run -a yarn run test:it
-      if: ${{ matrix.os == 'ubuntu-latest' }}
-    - name: Run UI Tests on Other OSes than Linux
-      run: yarn run test:it
-      if: ${{ matrix.os != 'ubuntu-latest' }}
     - name: vsix package
       run: yarn vsce package --no-dependencies --yarn
+    - name: Run UI Tests on Linux
+      run: xvfb-run -a yarn run test:it:with-prebuilt-vsix
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+    - name: Run UI Tests on Other OSes than Linux
+      run: yarn run test:it:with-prebuilt-vsix
+      if: ${{ matrix.os != 'ubuntu-latest' }}
     - name: Archive vsix
       uses: actions/upload-artifact@v3
       with:

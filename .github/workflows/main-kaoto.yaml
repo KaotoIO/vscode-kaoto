@@ -42,12 +42,12 @@ jobs:
     - name: yarn build:prod
       working-directory: vscode-kaoto
       run: yarn build:prod
-    - name: Run UI Tests
-      working-directory: vscode-kaoto
-      run: xvfb-run -a yarn run test:it
     - name: vsix package
       working-directory: vscode-kaoto
       run: yarn vsce package --no-dependencies --yarn
+    - name: Run UI Tests
+      working-directory: vscode-kaoto
+      run: xvfb-run -a yarn run test:it:with-prebuilt-vsix
     - name: Archive vsix
       uses: actions/upload-artifact@v3
       with:
