@@ -138,7 +138,8 @@ const commonConfig = (env) => {
     },
     plugins: [
       new webpack.DefinePlugin({
-        'process.env.KAOTO_API': JSON.stringify("http://localhost:8097"),
+        'KAOTO_API': JSON.stringify("http://localhost:8097"),
+        'process.env.KAOTO_API': JSON.stringify("http://localhost:8097"), // to remove with Kaoto 1.1.0
         'KAOTO_VERSION': JSON.stringify(kaotoUIpkg.version),
       }),
       new webpack.container.ModuleFederationPlugin({
