@@ -138,7 +138,7 @@
     "@types/chai": "^4.3.5",
     "@types/fs-extra": "^11.0.1",
     "@types/mocha": "^10.0.1",
-    "@types/react": "18.2.13",
+    "@types/react": "18.2.14",
     "@vscode/test-web": "^0.0.44",
     "@vscode/vsce": "^2.19.0",
     "buffer": "^6.0.3",
@@ -167,7 +167,7 @@
     "webpack-permissions-plugin": "^1.0.9"
   },
   "resolutions": {
-    "@types/react": "18.2.13",
+    "@types/react": "18.2.14",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "zundo": "2.0.0-beta.19"
