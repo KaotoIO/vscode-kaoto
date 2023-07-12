@@ -342,15 +342,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kie-tools-core/monaco-editor@npm:^0.30.0":
-  version: 0.30.0
-  resolution: "@kie-tools-core/monaco-editor@npm:0.30.0"
-  dependencies:
-    monaco-editor: ^0.33.0
-  checksum: af99f547c513b2a2ec90e3e51d2ce9827bf03a6fd677c13837d621f9128edb7904c977f80bee0a99e8cf1c785607651565e5d3554d21f23bb92ff35a2714979e
-  languageName: node
-  linkType: hard
-
 "@kie-tools-core/notifications@npm:0.27.0":
   version: 0.27.0
   resolution: "@kie-tools-core/notifications@npm:0.27.0"
@@ -392,7 +383,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kie-tools-core/patternfly-base@npm:0.30.0, @kie-tools-core/patternfly-base@npm:^0.30.0":
+"@kie-tools-core/patternfly-base@npm:0.30.0":
   version: 0.30.0
   resolution: "@kie-tools-core/patternfly-base@npm:0.30.0"
   checksum: 7b293bba6b4185a65fd4d5f2bfd164d25bc92988550050da80898804e6841900a08e0fbdd217ef4aa7a731f93d74babdee80c560ace8b64d911e882bf3e73576
@@ -433,7 +424,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kie-tools-core/workspace@npm:0.30.0, @kie-tools-core/workspace@npm:^0.30.0":
+"@kie-tools-core/workspace@npm:0.30.0":
   version: 0.30.0
   resolution: "@kie-tools-core/workspace@npm:0.30.0"
   dependencies:
@@ -7458,10 +7449,7 @@ __metadata:
     "@kie-tools-core/backend": ^0.30.0
     "@kie-tools-core/editor": ^0.30.0
     "@kie-tools-core/i18n": ^0.30.0
-    "@kie-tools-core/monaco-editor": ^0.30.0
-    "@kie-tools-core/patternfly-base": ^0.30.0
     "@kie-tools-core/vscode-extension": ^0.30.0
-    "@kie-tools-core/workspace": ^0.30.0
     "@patternfly/react-core": 4.276.8
     "@redhat-developer/vscode-redhat-telemetry": ^0.6.1
     "@types/chai": ^4.3.5
