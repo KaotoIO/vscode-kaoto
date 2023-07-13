@@ -130,7 +130,8 @@ If you'd like to test latest Kaoto backend and not rely on a released version, f
 
 * In `src/extension.ts`, comment call to `await warmupKaotoBackend()` in `activate` method.
 * Start Kaoto backend the way you prefer on `localhost:8097`. For instance [in dev mode](https://github.com/KaotoIO/kaoto-backend#running-the-dev-mode), from kaoto-backend repository, call `mvn quarkus:dev -pl api -Dquarkus.http.port=8097`.
-* Wait that the Kaoto backend ends to warmup all catalogs (usually takes less than 5 seconds)
+** Take care that the Kaoto backend started correctly. In case you have VS Code Kaoto installed, you might have port conflict issues, which will lead to use an old version of the backend.
+** Wait that the Kaoto backend ends to warmup all catalogs (usually takes less than 5 seconds)
 * In `Run and debug` perspective, call the `Run Extension` launch configuration
 
 ### How to launch automated tests
