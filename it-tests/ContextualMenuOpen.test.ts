@@ -63,7 +63,7 @@ describe('Contextual menu opening', function () {
     const filePath = path.join(workspaceFolder, 'my.yaml');
     await VSBrowser.instance.openResources(filePath);
     const editor = new TextEditor();
-    expect(await editor.getTextAtLine(1)).contains('- from:');
+    expect(await editor.getTextAtLine(1)).contains('- route:');
     await editor.save();
   });
 });
