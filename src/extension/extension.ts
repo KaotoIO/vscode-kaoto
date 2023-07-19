@@ -63,15 +63,15 @@ export async function activate(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand('kaoto.open', (uri: vscode.Uri) => {
     vscode.commands.executeCommand('vscode.openWith', uri, 'webviewEditorsKaoto');
   });
-  
-  const redhatService = await getRedHatService(context);  
+
+  const redhatService = await getRedHatService(context);
   telemetryService = await redhatService.getTelemetryService();
   telemetryService.sendStartupEvent();
 
   async function warmupKaotoBackend() {
     kaotoBackendOutputChannel = vscode.window.createOutputChannel(`Kaoto backend`);
     const nativeExecutable = context.asAbsolutePath(path.join("binaries", getBinaryName()));
-    backendProcess = child_process.spawn(nativeExecutable, ['-Dquarkus.http.port=8097']);
+    backendProcess = child_process.spawn(nativeExecutable, ['-Dquarkus.http.port=8097', '-Dquarkus.http.cors.origins=/^vscode-webview://.*/']);
     backendProcess.on("close", (code, _signal) => {
       if (kaotoBackendOutputChannel) {
         kaotoBackendOutputChannel.append(`Kaoto backend process closed with code: ${code}\n`);
@@ -131,7 +131,7 @@ export function deactivate() {
     backendProcess.kill();
   }
   backendProxy?.stopServices();
-  
+
   if (kaotoBackendOutputChannel != undefined) {
     kaotoBackendOutputChannel.dispose();
     kaotoBackendOutputChannel = undefined;
