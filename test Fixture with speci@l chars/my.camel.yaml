@@ -1,5 +1,7 @@
-- from:
-    uri: timer:demo
-    steps:
-    - log:
-        message: my message logged
+- route:
+    id: camelroute51
+    from:
+      uri: timer:demo
+      steps:
+      - log:
+          message: my message logged

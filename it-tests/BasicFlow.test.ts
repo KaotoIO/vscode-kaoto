@@ -6,14 +6,13 @@ import { waitUntil } from 'async-wait-until';
 import * as fs from 'fs-extra';
 
 describe('Kaoto basic development flow', function () {
-  this.timeout(60_000);
+  this.timeout(90_000);
 
   const workspaceFolder = path.join(__dirname, '../test Fixture with speci@l chars');
 
   let driver: WebDriver;
 
   before(async function () {
-    this.timeout(60_000);
     fs.copySync(
       path.join(workspaceFolder, 'empty.camel.yaml'),
       path.join(workspaceFolder, 'empty_copy.camel.yaml')
@@ -23,7 +22,6 @@ describe('Kaoto basic development flow', function () {
   });
 
   after(function () {
-    this.timeout(10_000);
     fs.rmSync(path.join(workspaceFolder, 'empty_copy.camel.yaml'));
   });
 

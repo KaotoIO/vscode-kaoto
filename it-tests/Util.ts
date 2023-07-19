@@ -20,12 +20,12 @@ export async function switchToKaotoFrame(driver: WebDriver, checkNotDirty: boole
       'The Kaoto editor should not be dirty when opening it.'
     );
   }
-  let kaotoWebview: WebView = await kaotoEditor.getWebView();
+  let kaotoWebview: WebView = kaotoEditor.getWebView();
   await driver.wait(
     async () => {
       try {
         kaotoEditor = new CustomEditor();
-        kaotoWebview = await kaotoEditor.getWebView();
+        kaotoWebview = kaotoEditor.getWebView();
         await kaotoWebview.switchToFrame();
         return true;
       } catch (exception) {
