@@ -21,7 +21,7 @@ describe('Contextual menu opening', function () {
   let driver: WebDriver;
 
   before(async function () {
-    this.timeout(60_000);
+    this.timeout(120_000);
     driver = await getWebDriver(workspaceFolder);
   });
 
