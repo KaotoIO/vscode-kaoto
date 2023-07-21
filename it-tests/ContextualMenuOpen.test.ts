@@ -8,10 +8,11 @@ import {
   ViewSection,
   VSBrowser,
   WebDriver,
+  Workbench,
 } from 'vscode-extension-tester';
 import { assert, expect } from 'chai';
 import * as path from 'path';
-import { checkEmptyCanvasLoaded, getWebDriver, switchToKaotoFrame } from './Util';
+import { checkEmptyCanvasLoaded, switchToKaotoFrame } from './Util';
 
 describe('Contextual menu opening', function () {
   this.timeout(60_000);
@@ -22,7 +23,7 @@ describe('Contextual menu opening', function () {
 
   before(async function () {
     this.timeout(60_000);
-    driver = await getWebDriver(workspaceFolder);
+    driver = VSBrowser.instance.driver;
   });
 
   afterEach(async function () {
@@ -46,6 +47,7 @@ describe('Contextual menu opening', function () {
       .getContent()
       .getSection('test Fixture with speci@l chars');
     await workspaceSection.expand();
+    await new Workbench().executeCommand('Refresh Explorer');
     const myYamlItem = await workspaceSection.findItem('my.yaml');
     if (myYamlItem === undefined) {
       assert.fail('Cannot find the my.yaml file in explorer.');

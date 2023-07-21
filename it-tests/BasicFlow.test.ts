@@ -1,7 +1,7 @@
 import { By, EditorView, until, VSBrowser, WebDriver } from 'vscode-extension-tester';
 import { assert } from 'chai';
 import * as path from 'path';
-import { checkEmptyCanvasLoaded, getWebDriver, openAndSwitchToKaotoFrame } from './Util';
+import { checkEmptyCanvasLoaded, openAndSwitchToKaotoFrame } from './Util';
 import { waitUntil } from 'async-wait-until';
 import * as fs from 'fs-extra';
 
@@ -18,7 +18,7 @@ describe('Kaoto basic development flow', function () {
       path.join(workspaceFolder, 'empty_copy.camel.yaml')
     );
 
-    driver = await getWebDriver(workspaceFolder);
+    driver = VSBrowser.instance.driver;
   });
 
   after(function () {

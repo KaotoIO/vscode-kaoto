@@ -1,6 +1,6 @@
 import { By, EditorView, until, VSBrowser, WebDriver } from 'vscode-extension-tester';
 import * as path from 'path';
-import { getWebDriver, openAndSwitchToKaotoFrame } from './Util';
+import { openAndSwitchToKaotoFrame } from './Util';
 import waitUntil from 'async-wait-until';
 
 describe('Step extension loading test', function () {
@@ -12,7 +12,7 @@ describe('Step extension loading test', function () {
 
   before(async function () {
     this.timeout(60_000);
-    driver = await getWebDriver(workspaceFolder);
+    driver = VSBrowser.instance.driver;
   });
 
   afterEach(async function () {
