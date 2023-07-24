@@ -32,10 +32,10 @@ jobs:
       working-directory: kaoto-ui
       run: |
         yarn
-        yarn build:lib
+        yarn workspace @kaoto/kaoto-ui run build:lib
     - name: yarn link kaoto-ui
       working-directory: vscode-kaoto
-      run: yarn link ../kaoto-ui
+      run: yarn link ../kaoto-ui/packages/kaoto-ui
     - name: yarn build:dev
       working-directory: vscode-kaoto
       run: yarn build:dev
