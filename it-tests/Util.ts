@@ -33,7 +33,7 @@ export async function switchToKaotoFrame(driver: WebDriver, checkNotDirty: boole
         return false;
       }
     },
-    20000,
+    30000,
     'Failed to switch to frame',
     1000
   );
@@ -42,19 +42,4 @@ export async function switchToKaotoFrame(driver: WebDriver, checkNotDirty: boole
 
 export async function checkEmptyCanvasLoaded(driver: WebDriver) {
   await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='viz-step-slot']")));
-}
-
-export async function getWebDriver(workspaceFolder?: string): Promise<WebDriver> {
-  const driver = VSBrowser.instance.driver;
-
-  if (workspaceFolder) {
-    await VSBrowser.instance.openResources(workspaceFolder);
-  }
-
-  // Ugly workaround to wait that VS Code instance and its extensions have started before playing with it.
-  // This is the first test to be played so putting this sleep only here.
-  // See https://github.com/KaotoIO/vscode-kaoto/issues/202 to fix issue related to that
-  await driver.sleep(5_000);
-
-  return driver;
 }
