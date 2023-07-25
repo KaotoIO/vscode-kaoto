@@ -38,7 +38,9 @@ jobs:
       if: ${{ matrix.os != 'ubuntu-latest' }}
     - name: Archive vsix
       uses: actions/upload-artifact@v3
+      if: ${{ matrix.os == 'ubuntu-latest' }}
       with:
+        name: 'vscode-kaoto-vsix'
         path: '*.vsix'
     - name: Store VS Code logs
       uses: actions/upload-artifact@v3
