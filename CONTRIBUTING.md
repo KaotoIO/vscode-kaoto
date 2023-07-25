@@ -102,11 +102,11 @@ If you'd like to test latest Kaoto UI and not rely on a released version, follow
 
 * In `kaoto-ui` local clone folder:
   * `yarn`
-  * `yarn build:lib`
+  * `yarn workspace @kaoto/kaoto-ui run build:lib`
 * Open VS Code on `vscode-kaoto` local clone folder
 * `yarn`
-* `yarn link` _\<kaoto-ui local clone folder uri>_
-  * i.e. `yarn link ~/repositories/kaoto-ui`
+* `yarn link` _\<kaoto-ui local clone folder uri>/packages/kaoto-ui_
+  * i.e. `yarn link ~/repositories/kaoto-ui/packages/kaoto-ui`
 * `yarn build:dev`
 * In `Run and debug` perspective, call the `Run Extension` launch configuration
 * In the new VS Code opened (which has `[Extension Development host]` in window title),
@@ -115,8 +115,8 @@ If you'd like to test latest Kaoto UI and not rely on a released version, follow
   * Open the file
 
 To return to the default Kaoto UI version, just write on `vscode-kaoto` local clone folder:
-* `yarn unlink` _\<kaoto-ui local clone folder uri>_
-  * i.e. `yarn unlink ~/repositories/kaoto-ui`
+* `yarn unlink` _\<kaoto-ui local clone folder uri>/packages/kaoto-ui_
+  * i.e. `yarn unlink ~/repositories/kaoto-ui/packages/kaoto-ui`
 
 More information about [linking](https://yarnpkg.com/cli/link) and [unlinking](https://yarnpkg.com/cli/unlink) local packages with [yarn](https://yarnpkg.com/)
 
