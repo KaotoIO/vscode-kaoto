@@ -1,10 +1,12 @@
-const { dependencies, federatedModuleName } = require('./package.json');
+const { name, dependencies, federatedModuleName } = require('./package.json');
 const { merge } = require("webpack-merge");
 const webpack = require('webpack');
 const PermissionsOutputPlugin = require('webpack-permissions-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const path = require("path");
 const BG_IMAGES_DIRNAME = "bgimages";
+const { GitRevisionPlugin } = require('git-revision-webpack-plugin');
+const gitRevisionPlugin = new GitRevisionPlugin();
 
 const kaotoUIpkg = require('@kaoto/kaoto-ui/package.json');
 
@@ -138,9 +140,16 @@ const commonConfig = (env) => {
     },
     plugins: [
       new webpack.DefinePlugin({
-        'KAOTO_API': JSON.stringify("http://localhost:8097"),
-        'process.env.KAOTO_API': JSON.stringify("http://localhost:8097"), // to remove with Kaoto 1.1.0
-        'KAOTO_VERSION': JSON.stringify(kaotoUIpkg.version),
+        KAOTO_VERSION: JSON.stringify(kaotoUIpkg.version),
+        KAOTO_API: JSON.stringify("http://localhost:8097"),
+
+        BUILD_INFO: {
+          NAME: JSON.stringify(name),
+          VERSION: JSON.stringify(gitRevisionPlugin.version()),
+          COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
+          BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
+          LASTCOMMITDATETIME: JSON.stringify(gitRevisionPlugin.lastcommitdatetime()),
+        },
       }),
       new webpack.container.ModuleFederationPlugin({
         name: federatedModuleName,
