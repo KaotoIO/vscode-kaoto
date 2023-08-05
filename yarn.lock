@@ -1477,7 +1477,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/selenium-webdriver@npm:^4.1.12":
+"@types/selenium-webdriver@npm:^4.1.15":
   version: 4.1.15
   resolution: "@types/selenium-webdriver@npm:4.1.15"
   dependencies:
@@ -1532,41 +1532,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/vsce@npm:^2.19.0":
-  version: 2.19.0
-  resolution: "@vscode/vsce@npm:2.19.0"
-  dependencies:
-    azure-devops-node-api: ^11.0.1
-    chalk: ^2.4.2
-    cheerio: ^1.0.0-rc.9
-    commander: ^6.1.0
-    glob: ^7.0.6
-    hosted-git-info: ^4.0.2
-    jsonc-parser: ^3.2.0
-    keytar: ^7.7.0
-    leven: ^3.1.0
-    markdown-it: ^12.3.2
-    mime: ^1.3.4
-    minimatch: ^3.0.3
-    parse-semver: ^1.1.1
-    read: ^1.0.7
-    semver: ^5.1.0
-    tmp: ^0.2.1
-    typed-rest-client: ^1.8.4
-    url-join: ^4.0.1
-    xml2js: ^0.5.0
-    yauzl: ^2.3.1
-    yazl: ^2.2.2
-  dependenciesMeta:
-    keytar:
-      optional: true
-  bin:
-    vsce: vsce
-  checksum: 9f06978c431949041dfeb790953427fc8e1f2ba614824b9ab5ad715b20baf7a5d680144dfd9d800c26a23e15fefa3cc0ffec432dc9970fd6751c4b0794ca7a0f
-  languageName: node
-  linkType: hard
-
-"@vscode/vsce@npm:^2.20.1":
+"@vscode/vsce@npm:^2.20.0, @vscode/vsce@npm:^2.20.1":
   version: 2.20.1
   resolution: "@vscode/vsce@npm:2.20.1"
   dependencies:
@@ -2645,10 +2611,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"compare-versions@npm:^5.0.1, compare-versions@npm:^5.0.3":
-  version: 5.0.3
-  resolution: "compare-versions@npm:5.0.3"
-  checksum: f66a4bb6ef8ff32031cc92c04dea4bbead039e72a7f6c7df7ef05f5a42ddca9202f8875b7449add54181e73b89f039662a8760c8db0ab036c4e8f653a7cd29c1
+"compare-versions@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "compare-versions@npm:6.0.0"
+  checksum: bf2fa355b2139cbdb0576f2f0328c112dd3c2eb808eff8b70b808b3ed05f8a40b8317c323ff4797a6a5a7ab32d508876749584c626ee5840dc0119361afffc4d
   languageName: node
   linkType: hard
 
@@ -5117,19 +5083,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-page-objects@npm:^3.8.0":
-  version: 3.8.0
-  resolution: "monaco-page-objects@npm:3.8.0"
+"monaco-page-objects@npm:^3.9.0":
+  version: 3.9.0
+  resolution: "monaco-page-objects@npm:3.9.0"
   dependencies:
     clipboardy: ^3.0.0
     clone-deep: ^4.0.1
-    compare-versions: ^5.0.3
+    compare-versions: ^6.0.0
     fs-extra: ^11.1.1
     ts-essentials: ^9.3.2
   peerDependencies:
     selenium-webdriver: ^4.6.1
     typescript: ">=4.6.2"
-  checksum: 57d5c8d7880c47b9f90413b94c180756426a62e9a53a0dce912cc0549013e076e1bb34f345a7208bbb6a2fb9a3fa59d159140020821d0a946e8b112b8a1145cb
+  checksum: b7b49d208811d9129acad4f3e441d2ce1a07a52316b7f00f9c78e3c1f71154ae96f6a23d45ced5b0edaa10b448153c12c934f1e1e4573dd4d4a9c779e9fa34be
   languageName: node
   linkType: hard
 
@@ -7405,41 +7371,41 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vscode-extension-tester-locators@npm:^3.6.0":
-  version: 3.6.0
-  resolution: "vscode-extension-tester-locators@npm:3.6.0"
+"vscode-extension-tester-locators@npm:^3.7.0":
+  version: 3.7.0
+  resolution: "vscode-extension-tester-locators@npm:3.7.0"
   peerDependencies:
-    monaco-page-objects: ^3.8.0
+    monaco-page-objects: ^3.9.0
     selenium-webdriver: ^4.6.1
-  checksum: e7957e8aa259105bc652c5b2aef72453e6d7af3810d720467d7ef5e7f13a4eb8b7ba4b9a19d71ca9b944367fc6242ebab11e8156199eed218781ac4ed786c38b
+  checksum: 55567817245872addf3100a8b3dc8798b39049a120530054c2d9bf8b3e6135257f6bef448aaeb783acf003d742d3bc2accbd77c0f33e20a32f0cb00a4a315fe4
   languageName: node
   linkType: hard
 
-"vscode-extension-tester@npm:^5.8.0":
-  version: 5.8.0
-  resolution: "vscode-extension-tester@npm:5.8.0"
+"vscode-extension-tester@npm:^5.9.0":
+  version: 5.9.0
+  resolution: "vscode-extension-tester@npm:5.9.0"
   dependencies:
-    "@types/selenium-webdriver": ^4.1.12
-    "@vscode/vsce": ^2.19.0
+    "@types/selenium-webdriver": ^4.1.15
+    "@vscode/vsce": ^2.20.0
     commander: ^11.0.0
-    compare-versions: ^5.0.1
+    compare-versions: ^6.0.0
     fs-extra: ^11.1.0
     glob: ^8.1.0
     got: ^13.0.0
     hpagent: ^1.2.0
     js-yaml: ^4.1.0
-    monaco-page-objects: ^3.8.0
+    monaco-page-objects: ^3.9.0
     sanitize-filename: ^1.6.3
     selenium-webdriver: ^4.10.0
     targz: ^1.0.1
     unzipper: ^0.10.14
-    vscode-extension-tester-locators: ^3.6.0
+    vscode-extension-tester-locators: ^3.7.0
   peerDependencies:
     mocha: ">=5.2.0"
     typescript: ">=4.6.2"
   bin:
     extest: out/cli.js
-  checksum: 383779233a8f56a73c51ef41bd9c1cdff2389e6f445ab3e79879b928df1fe784456854db8c0ec38f2466a3d45e5ededa225f392701d37632df85576bfbd0d892
+  checksum: b1fc0fbaa4cd0a632f965247c2f49ac91a54d59562be53d82f5646777a740dd6a258ccac631b797cfb70e10e2759569528edceaa040b780bb14c6026af930a63
   languageName: node
   linkType: hard
 
@@ -7481,7 +7447,7 @@ __metadata:
     ts-loader: 9.4.4
     tsconfig-paths-webpack-plugin: ^4.0.1
     typescript: ^5.0.4
-    vscode-extension-tester: ^5.8.0
+    vscode-extension-tester: ^5.9.0
     web-worker: ^1.2.0
     webpack: 5.88.2
     webpack-cli: 5.1.4
