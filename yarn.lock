@@ -721,6 +721,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@patternfly/react-core@npm:4.276.11":
+  version: 4.276.11
+  resolution: "@patternfly/react-core@npm:4.276.11"
+  dependencies:
+    "@patternfly/react-icons": ^4.93.7
+    "@patternfly/react-styles": ^4.92.8
+    "@patternfly/react-tokens": ^4.94.7
+    focus-trap: 6.9.2
+    react-dropzone: 9.0.0
+    tippy.js: 5.1.2
+    tslib: ^2.0.0
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18
+    react-dom: ^16.8 || ^17 || ^18
+  checksum: 1bacb8ba497ec3f3e8fe181192ee6af6ecad82e31b3462b13ba7a952583a1cd3caae51634a766dfa5f52cda162e61e9bb9520ae35f0721c0ab963a1e0164ca0f
+  languageName: node
+  linkType: hard
+
 "@patternfly/react-core@npm:4.276.8":
   version: 4.276.8
   resolution: "@patternfly/react-core@npm:4.276.8"
@@ -3514,7 +3532,7 @@ __metadata:
 
 "fsevents@patch:fsevents@~2.3.2#~builtin<compat/fsevents>":
   version: 2.3.2
-  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=18f3a7"
   dependencies:
     node-gyp: latest
   conditions: os=darwin
@@ -6233,7 +6251,7 @@ __metadata:
 
 "resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.1#~builtin<compat/resolve>":
   version: 1.22.3
-  resolution: "resolve@patch:resolve@npm%3A1.22.3#~builtin<compat/resolve>::version=1.22.3&hash=c3c19d"
+  resolution: "resolve@patch:resolve@npm%3A1.22.3#~builtin<compat/resolve>::version=1.22.3&hash=07638b"
   dependencies:
     is-core-module: ^2.12.0
     path-parse: ^1.0.7
@@ -7180,11 +7198,11 @@ __metadata:
 
 "typescript@patch:typescript@^5.0.4#~builtin<compat/typescript>":
   version: 5.1.6
-  resolution: "typescript@patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"
+  resolution: "typescript@patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=701156"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: f53bfe97f7c8b2b6d23cf572750d4e7d1e0c5fff1c36d859d0ec84556a827b8785077bc27676bf7e71fae538e517c3ecc0f37e7f593be913d884805d931bc8be
+  checksum: 21e88b0a0c0226f9cb9fd25b9626fb05b4c0f3fddac521844a13e1f30beb8f14e90bd409a9ac43c812c5946d714d6e0dee12d5d02dfc1c562c5aacfa1f49b606
   languageName: node
   linkType: hard
 
@@ -7418,7 +7436,7 @@ __metadata:
     "@kie-tools-core/editor": ^0.30.0
     "@kie-tools-core/i18n": ^0.30.0
     "@kie-tools-core/vscode-extension": ^0.30.0
-    "@patternfly/react-core": 4.276.8
+    "@patternfly/react-core": 4.276.11
     "@redhat-developer/vscode-redhat-telemetry": ^0.6.1
     "@types/chai": ^4.3.5
     "@types/fs-extra": ^11.0.1
