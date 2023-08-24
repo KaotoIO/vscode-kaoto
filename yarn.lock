@@ -94,17 +94,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/kaoto-ui@npm:1.1.0":
-  version: 1.1.0
-  resolution: "@kaoto/kaoto-ui@npm:1.1.0"
+"@kaoto/kaoto-ui@npm:1.2.1":
+  version: 1.2.1
+  resolution: "@kaoto/kaoto-ui@npm:1.2.1"
   dependencies:
-    "@kie-tools-core/editor": 0.30.0
+    "@kie-tools-core/editor": 0.31.0
     "@kie-tools-core/guided-tour": 0.28.0
-    "@kie-tools-core/monaco-editor": 0.30.0
-    "@kie-tools-core/notifications": 0.30.0
-    "@kie-tools-core/patternfly-base": 0.30.0
-    "@kie-tools-core/workspace": 0.30.0
-    "@kie-tools/uniforms-patternfly": 0.30.0
+    "@kie-tools-core/monaco-editor": 0.31.0
+    "@kie-tools-core/notifications": 0.31.0
+    "@kie-tools-core/patternfly-base": 0.31.0
+    "@kie-tools-core/workspace": 0.31.0
+    "@kie-tools/uniforms-patternfly": 0.31.0
     "@opentelemetry/api": ^1.4.1
     "@opentelemetry/exporter-trace-otlp-http": ^0.41.0
     "@opentelemetry/instrumentation": ^0.41.0
@@ -114,12 +114,12 @@ __metadata:
     "@opentelemetry/instrumentation-user-interaction": ^0.33.0
     "@opentelemetry/resources": ^1.14.0
     "@opentelemetry/sdk-trace-web": ^1.14.0
-    "@patternfly/patternfly": 4.224.2
-    "@patternfly/react-code-editor": 4.82.115
-    "@patternfly/react-core": 4.276.8
-    "@patternfly/react-icons": 4.93.6
+    "@patternfly/patternfly": 4.224.5
+    "@patternfly/react-code-editor": 4.82.118
+    "@patternfly/react-core": 4.276.11
+    "@patternfly/react-icons": 4.93.7
     "@patternfly/react-log-viewer": 4.87.100
-    "@patternfly/react-table": 4.113.0
+    "@patternfly/react-table": 4.113.3
     "@rhoas/app-services-ui-shared": ^0.16.6
     ajv: ^8.12.0
     dagre: ^0.8.5
@@ -127,7 +127,7 @@ __metadata:
     immer: ^10.0.2
     lodash.clonedeep: ^4.5.0
     lodash.isequal: ^4.5.0
-    monaco-editor: ^0.40.0
+    monaco-editor: ^0.41.0
     monaco-editor-webpack-plugin: ^7.0.1
     monaco-yaml: ^4.0.4
     react: 18.2.0
@@ -143,7 +143,7 @@ __metadata:
     uniforms-bridge-json-schema: ^3.10.2
     use-debounce: 9.0.4
     web-vitals: 3.4.0
-    zundo: 2.0.0-beta.23
+    zundo: 2.0.0-beta.24
     zustand: ^4.3.8
   peerDependencies:
     "@patternfly/patternfly": "*"
@@ -151,53 +151,46 @@ __metadata:
     "@types/react": "*"
     react: "*"
     react-dom: "*"
-  dependenciesMeta:
-    "@4tw/cypress-drag-drop":
-      built: true
-    cypress:
-      built: true
-    cypress-file-upload:
-      built: true
-  checksum: 57efaa43b799d36d11fde9762386c14dd514e8e0a3278df6992f4e1e033a83c1353868402358e94d95e6ff2d524aebc109fea702bb6045ad98138088103de0cb
+  checksum: 0f30d105fedc185333a157f0832b556d937071713ae80ac02704e0dd6cc237c0206d624dfe95003eea511cb2cc2725d54d535e81ceb74727fd9bf13a4209ec2e
   languageName: node
   linkType: hard
 
-"@kie-tools-core/backend@npm:0.30.0, @kie-tools-core/backend@npm:^0.30.0":
-  version: 0.30.0
-  resolution: "@kie-tools-core/backend@npm:0.30.0"
+"@kie-tools-core/backend@npm:0.31.0":
+  version: 0.31.0
+  resolution: "@kie-tools-core/backend@npm:0.31.0"
   dependencies:
-    "@kie-tools-core/i18n": 0.30.0
-    "@kie-tools-core/notifications": 0.30.0
-    "@kie-tools-core/workspace": 0.30.0
+    "@kie-tools-core/i18n": 0.31.0
+    "@kie-tools-core/notifications": 0.31.0
+    "@kie-tools-core/workspace": 0.31.0
     axios: ^0.27.2
     fast-xml-parser: ^4.2.4
     portfinder: ^1.0.32
     semver: ^7.3.5
     sinon: ^11.1.1
-  checksum: 790c8bd163ff7f5b0d8e80250e1fa0b917a46e0709cafef20908fd87299f7cf223289bb163cec3d2309dea31fc6fc72624fb33193cdf0404c7b4964ec383c621
+  checksum: d7a027c265198c426e70621c2f52b07bed3a19a8277b9eaa706507300a2d260ff33c87bdb7dcc059ace02cc8a0fde49cdedc119ef21c2c8cbfcc1e5c4f80b1b0
   languageName: node
   linkType: hard
 
-"@kie-tools-core/editor@npm:0.30.0, @kie-tools-core/editor@npm:^0.30.0":
-  version: 0.30.0
-  resolution: "@kie-tools-core/editor@npm:0.30.0"
+"@kie-tools-core/editor@npm:0.31.0":
+  version: 0.31.0
+  resolution: "@kie-tools-core/editor@npm:0.31.0"
   dependencies:
-    "@kie-tools-core/backend": 0.30.0
-    "@kie-tools-core/envelope": 0.30.0
-    "@kie-tools-core/envelope-bus": 0.30.0
-    "@kie-tools-core/i18n": 0.30.0
-    "@kie-tools-core/keyboard-shortcuts": 0.30.0
-    "@kie-tools-core/notifications": 0.30.0
-    "@kie-tools-core/operating-system": 0.30.0
-    "@kie-tools-core/patternfly-base": 0.30.0
-    "@kie-tools-core/workspace": 0.30.0
+    "@kie-tools-core/backend": 0.31.0
+    "@kie-tools-core/envelope": 0.31.0
+    "@kie-tools-core/envelope-bus": 0.31.0
+    "@kie-tools-core/i18n": 0.31.0
+    "@kie-tools-core/keyboard-shortcuts": 0.31.0
+    "@kie-tools-core/notifications": 0.31.0
+    "@kie-tools-core/operating-system": 0.31.0
+    "@kie-tools-core/patternfly-base": 0.31.0
+    "@kie-tools-core/workspace": 0.31.0
     "@patternfly/react-core": ^4.276.6
     "@patternfly/react-icons": ^4.93.6
     csstype: ^3.0.11
     minimatch: ^3.0.5
     react: ^17.0.2
     react-dom: ^17.0.2
-  checksum: e42cc6dfcbf3d3eb47569fb5e6d264cfc8cfc27b66dcb89f806678301480c81c77b26fc81b3ce272e9969c2ae87e419bcf628768dcb6080b740dfca9d765549e
+  checksum: e2dfd1fedd372ad1cc775d08abffeb3d6951dd4bfbda680f2bbded38d852ea88a752eac92390a7323b7e9fa3e016b4924ffcb85848baea6e32b4955bc5558cc1
   languageName: node
   linkType: hard
 
@@ -211,25 +204,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kie-tools-core/envelope-bus@npm:0.30.0":
-  version: 0.30.0
-  resolution: "@kie-tools-core/envelope-bus@npm:0.30.0"
+"@kie-tools-core/envelope-bus@npm:0.31.0":
+  version: 0.31.0
+  resolution: "@kie-tools-core/envelope-bus@npm:0.31.0"
   dependencies:
     react: ^17.0.2
     react-dom: ^17.0.2
-  checksum: c1d06a845bad2cb31044f92721305054c6d47fb5d39b77a8aa5dc6d6c32987c1d04d6594d61ac0c9576a8e2d42c103d5ffde6d03c2d948b1117bbfc63119bb4a
+  checksum: b4a3e886dda5b79ceaef528f0994e7eef0d970c5099634b94fa1f8c0b83e35bc929d4459cbfe16f83107ed9ca5ee4647ff440a15dcb54d08813cadc3d6ac330a
   languageName: node
   linkType: hard
 
-"@kie-tools-core/envelope@npm:0.30.0":
-  version: 0.30.0
-  resolution: "@kie-tools-core/envelope@npm:0.30.0"
+"@kie-tools-core/envelope@npm:0.31.0":
+  version: 0.31.0
+  resolution: "@kie-tools-core/envelope@npm:0.31.0"
   dependencies:
-    "@kie-tools-core/envelope-bus": 0.30.0
+    "@kie-tools-core/envelope-bus": 0.31.0
     csstype: ^3.0.11
     react: ^17.0.2
     react-dom: ^17.0.2
-  checksum: 5548dc872cc674d3bd02abb0c5ec1ae7e0d730f457f9cdabf1ccef9e5dc196c28de36e4cd04f44c9bba1f0932e32bbd194c80ca6c2770e68b00747d619126fff
+  checksum: edabe01d6f5591afc9b20d2999560fbd5295975518f2e550505606e72fa69cf7907b2c5c133166526019ce06c3a0105cfeb64e8e07f2748d8fba53915269def8
   languageName: node
   linkType: hard
 
@@ -258,50 +251,50 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kie-tools-core/i18n@npm:0.30.0, @kie-tools-core/i18n@npm:^0.30.0":
-  version: 0.30.0
-  resolution: "@kie-tools-core/i18n@npm:0.30.0"
+"@kie-tools-core/i18n@npm:0.31.0":
+  version: 0.31.0
+  resolution: "@kie-tools-core/i18n@npm:0.31.0"
   dependencies:
     react: ^17.0.2
     react-dom: ^17.0.2
-  checksum: 3f79573812ec9416453af9cd53549d45cbb8587c6683fc45913d6a855032dcef1e53c43a26313497d607861abd6f7f251846a53723228771853c19c8bd06bf69
+  checksum: 720de5874550816bd2f3a262cb2c3e036c283536e11bff5827cbdfad2313269e7119e519694728f018ae761d10955a22878a643d4bf51ad268687179b7b6f19a
   languageName: node
   linkType: hard
 
-"@kie-tools-core/keyboard-shortcuts@npm:0.30.0":
-  version: 0.30.0
-  resolution: "@kie-tools-core/keyboard-shortcuts@npm:0.30.0"
+"@kie-tools-core/keyboard-shortcuts@npm:0.31.0":
+  version: 0.31.0
+  resolution: "@kie-tools-core/keyboard-shortcuts@npm:0.31.0"
   dependencies:
-    "@kie-tools-core/envelope-bus": 0.30.0
-    "@kie-tools-core/operating-system": 0.30.0
+    "@kie-tools-core/envelope-bus": 0.31.0
+    "@kie-tools-core/operating-system": 0.31.0
     react: ^17.0.2
-  checksum: befebff692088c7f57029fbd6644caec28068e8a23da931859d452ea7761206531579f169ec0251dc06220e9e377cd8902a09ad2f8a1ec337f2de5161c49e92c
+  checksum: 8d93fb8205b7a05b44c6a10c9d9b8609ce76c8403691be5f40c5a5f6ef7b061d72188862da47a7a246ee9eabc3a155c493bc7ce5e9c2a002b7b2ba01595d4d6e
   languageName: node
   linkType: hard
 
-"@kie-tools-core/monaco-editor@npm:0.30.0":
-  version: 0.30.0
-  resolution: "@kie-tools-core/monaco-editor@npm:0.30.0"
+"@kie-tools-core/monaco-editor@npm:0.31.0":
+  version: 0.31.0
+  resolution: "@kie-tools-core/monaco-editor@npm:0.31.0"
   dependencies:
     monaco-editor: ^0.33.0
-  checksum: af99f547c513b2a2ec90e3e51d2ce9827bf03a6fd677c13837d621f9128edb7904c977f80bee0a99e8cf1c785607651565e5d3554d21f23bb92ff35a2714979e
+  checksum: bd254fcda5ba4d3fde172a5e15a13905689816965f649ed2e0702c725a2a9881fb73d8a518249323dbdf26d3ff19e448641144871a20075a2ea8a1c6dd25a042
   languageName: node
   linkType: hard
 
-"@kie-tools-core/notifications@npm:0.30.0":
-  version: 0.30.0
-  resolution: "@kie-tools-core/notifications@npm:0.30.0"
+"@kie-tools-core/notifications@npm:0.31.0":
+  version: 0.31.0
+  resolution: "@kie-tools-core/notifications@npm:0.31.0"
   dependencies:
-    "@kie-tools-core/i18n": 0.30.0
-    "@kie-tools-core/workspace": 0.30.0
-  checksum: fb904d3119916464133373f81550fe00438b37786ad969267318f1dfe0ff59a20543d1784cb0dae6c37264dd8eeece70b05e5d81c7730911c19cd6f460464b0f
+    "@kie-tools-core/i18n": 0.31.0
+    "@kie-tools-core/workspace": 0.31.0
+  checksum: b2795218959d0c6215713a4ce44b856663b782b8e08f090e43f3877f47cdbd1b143471421cd2affbb005133cc6ee877d8a8a08d502488b823d7a5f7eafa9e6ae
   languageName: node
   linkType: hard
 
-"@kie-tools-core/operating-system@npm:0.30.0":
-  version: 0.30.0
-  resolution: "@kie-tools-core/operating-system@npm:0.30.0"
-  checksum: 55c66b5c269deb040fc1af31c897f186613e7fcfc2f221dfe327b093b994a2809fe11ee99c77cfe9bc3c1c36f628aa794aab4fcce06f51f9404a907ca9fb8778
+"@kie-tools-core/operating-system@npm:0.31.0":
+  version: 0.31.0
+  resolution: "@kie-tools-core/operating-system@npm:0.31.0"
+  checksum: 9a7ac41b028db2e1d4097e40a566c92b95b4d1264331fe2c9b71e2dced0e598ef7c2a4bbfb89f5ede434777c5596725f39d75f333a37721fa562a3641b7ea08e
   languageName: node
   linkType: hard
 
@@ -312,50 +305,50 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kie-tools-core/patternfly-base@npm:0.30.0":
-  version: 0.30.0
-  resolution: "@kie-tools-core/patternfly-base@npm:0.30.0"
-  checksum: 7b293bba6b4185a65fd4d5f2bfd164d25bc92988550050da80898804e6841900a08e0fbdd217ef4aa7a731f93d74babdee80c560ace8b64d911e882bf3e73576
+"@kie-tools-core/patternfly-base@npm:0.31.0":
+  version: 0.31.0
+  resolution: "@kie-tools-core/patternfly-base@npm:0.31.0"
+  checksum: b186ae8f19b402f4d8724a72557d41725dcb27b1449bdfc51624d3460043c79b66f478466d80d2507048029ad24812194afdb85d04b432389c3f0e3fdd577d01
   languageName: node
   linkType: hard
 
-"@kie-tools-core/vscode-extension@npm:^0.30.0":
-  version: 0.30.0
-  resolution: "@kie-tools-core/vscode-extension@npm:0.30.0"
+"@kie-tools-core/vscode-extension@npm:0.31.0":
+  version: 0.31.0
+  resolution: "@kie-tools-core/vscode-extension@npm:0.31.0"
   dependencies:
-    "@kie-tools-core/backend": 0.30.0
-    "@kie-tools-core/editor": 0.30.0
-    "@kie-tools-core/envelope-bus": 0.30.0
-    "@kie-tools-core/i18n": 0.30.0
-    "@kie-tools-core/keyboard-shortcuts": 0.30.0
-    "@kie-tools-core/notifications": 0.30.0
-    "@kie-tools-core/vscode-java-code-completion": 0.30.0
-    "@kie-tools-core/workspace": 0.30.0
-    "@types/vscode": ^1.66.0
+    "@kie-tools-core/backend": 0.31.0
+    "@kie-tools-core/editor": 0.31.0
+    "@kie-tools-core/envelope-bus": 0.31.0
+    "@kie-tools-core/i18n": 0.31.0
+    "@kie-tools-core/keyboard-shortcuts": 0.31.0
+    "@kie-tools-core/notifications": 0.31.0
+    "@kie-tools-core/vscode-java-code-completion": 0.31.0
+    "@kie-tools-core/workspace": 0.31.0
+    "@types/vscode": 1.67.0
     minimatch: ^3.0.5
-  checksum: 4dd1335236c3747696d19295b74cd487d30f811b8edde4d6582404297ba5866576085eefe663363cf8b0feabefbcee4960ee3176a5b92e7fdf1f71c2f08e32c8
+  checksum: 08c57921fa8f0a8500f78204c5d68477b33e748bfb2034f4722cbacc69aa5e7d972b6362fda428e36617b92029fdba99ee56405ca7907ffd4229e585f836780f
   languageName: node
   linkType: hard
 
-"@kie-tools-core/vscode-java-code-completion@npm:0.30.0":
-  version: 0.30.0
-  resolution: "@kie-tools-core/vscode-java-code-completion@npm:0.30.0"
-  checksum: 9986d192fb6d51d5042485f44b687f87c2e9a1b755f607b5e779b18778dcff56e0735f42afc6367768e189cd957d88556791e2b01b2957b4bc827d7e9613cc6e
+"@kie-tools-core/vscode-java-code-completion@npm:0.31.0":
+  version: 0.31.0
+  resolution: "@kie-tools-core/vscode-java-code-completion@npm:0.31.0"
+  checksum: f901b07bbcd63f8865b5660b638e5d7ac4b9fad2c0e8253be7109b8f3dfe56aa37f0b101c97469a679723894c690941f95411006537a81f1f68d3a22ec420c68
   languageName: node
   linkType: hard
 
-"@kie-tools-core/workspace@npm:0.30.0":
-  version: 0.30.0
-  resolution: "@kie-tools-core/workspace@npm:0.30.0"
+"@kie-tools-core/workspace@npm:0.31.0":
+  version: 0.31.0
+  resolution: "@kie-tools-core/workspace@npm:0.31.0"
   dependencies:
-    "@kie-tools-core/operating-system": 0.30.0
-  checksum: 2052e2ee2d1c5316adf27ca47dccf0950ddd45a40972316314d016b011516691288b1b7bc0453051f8d907a239ee8309a63c7274ec59debf05d6d234e15466f8
+    "@kie-tools-core/operating-system": 0.31.0
+  checksum: 6a5d2b013c40bbbe5d268dd0b1c166d1c1c4f917018309d9ca45b6c642663c72fc149e0196694ffe4ba03465e1045cf2579f17f36ee980a016c7f7fa574f1ed5
   languageName: node
   linkType: hard
 
-"@kie-tools/uniforms-patternfly@npm:0.30.0":
-  version: 0.30.0
-  resolution: "@kie-tools/uniforms-patternfly@npm:0.30.0"
+"@kie-tools/uniforms-patternfly@npm:0.31.0":
+  version: 0.31.0
+  resolution: "@kie-tools/uniforms-patternfly@npm:0.31.0"
   dependencies:
     "@types/invariant": ^2.2.35
     invariant: ^2.2.4
@@ -363,7 +356,7 @@ __metadata:
     react: ^17.0.2
     react-dom: ^17.0.2
     uniforms: ^3.10.2
-  checksum: 08f65468fdd93bc2b87bcc85c34d0c640164baef43189d4e5b564cbef1197e4b6391aa5cbb3ead2c1522c1f342ce72257ec975b80c0969c3137042e5b557586e
+  checksum: 153f578014ef6d126079a5701de7ad8f73aa1c04e807e4adead8a7f552f33a140b047a7016a8ffddb1be57ff1131a67fb907a83784ce1bd792aca5deaf711a4e
   languageName: node
   linkType: hard
 
@@ -697,37 +690,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/patternfly@npm:4.224.2":
-  version: 4.224.2
-  resolution: "@patternfly/patternfly@npm:4.224.2"
-  checksum: 564a6b5e041e2168b6632171e31c9c325f1438350a5e51edd61cba621fa1281d26e3ae185829033c7c35a9d01044dc4eac6e9be1ee9857b205beaf414350b210
+"@patternfly/patternfly@npm:4.224.5":
+  version: 4.224.5
+  resolution: "@patternfly/patternfly@npm:4.224.5"
+  checksum: d3abaf471e128c13b7711c9be24da6290e9d016173043ca4706e25231ef81959aaea659918d187e01194851304b7e0f9cdf7107b048d709089c21dc8dbf05938
   languageName: node
   linkType: hard
 
-"@patternfly/react-code-editor@npm:4.82.115":
-  version: 4.82.115
-  resolution: "@patternfly/react-code-editor@npm:4.82.115"
+"@patternfly/react-code-editor@npm:4.82.118":
+  version: 4.82.118
+  resolution: "@patternfly/react-code-editor@npm:4.82.118"
   dependencies:
-    "@patternfly/react-core": ^4.276.8
-    "@patternfly/react-icons": ^4.93.6
-    "@patternfly/react-styles": ^4.92.6
+    "@patternfly/react-core": ^4.276.11
+    "@patternfly/react-icons": ^4.93.7
+    "@patternfly/react-styles": ^4.92.8
     react-dropzone: 9.0.0
     tslib: ^2.0.0
   peerDependencies:
     react: ^16.8 || ^17 || ^18
     react-dom: ^16.8 || ^17 || ^18
     react-monaco-editor: ^0.51.0
-  checksum: ed7ea6742106e3f912e129c205c15346d0831631a1da3e84d74ce052de86ae4fc1775bd6b8312229866ceb2e4fbd852adc787b218bf95b6610e509a3732b7ad2
+  checksum: 6a7e7541894b141ad5c59f08ae9400e6a501854698d19c4c9a1e582e3a38d20519dceef9763722ac3b5aa10fc72ce555ecf8b32b3f8ce57795667ae63630e130
   languageName: node
   linkType: hard
 
-"@patternfly/react-core@npm:4.276.8":
-  version: 4.276.8
-  resolution: "@patternfly/react-core@npm:4.276.8"
+"@patternfly/react-core@npm:4.276.11":
+  version: 4.276.11
+  resolution: "@patternfly/react-core@npm:4.276.11"
   dependencies:
-    "@patternfly/react-icons": ^4.93.6
-    "@patternfly/react-styles": ^4.92.6
-    "@patternfly/react-tokens": ^4.94.6
+    "@patternfly/react-icons": ^4.93.7
+    "@patternfly/react-styles": ^4.92.8
+    "@patternfly/react-tokens": ^4.94.7
     focus-trap: 6.9.2
     react-dropzone: 9.0.0
     tippy.js: 5.1.2
@@ -735,11 +728,11 @@ __metadata:
   peerDependencies:
     react: ^16.8 || ^17 || ^18
     react-dom: ^16.8 || ^17 || ^18
-  checksum: e17806345aa9972867e8a9854cb3067ac7f9b06006bfd833b4ba3d3c71c2f8c76765b30b5511c3a214a254dc5c41ac53c6040ced726c65fcc3b0e0ec162051f7
+  checksum: 1bacb8ba497ec3f3e8fe181192ee6af6ecad82e31b3462b13ba7a952583a1cd3caae51634a766dfa5f52cda162e61e9bb9520ae35f0721c0ab963a1e0164ca0f
   languageName: node
   linkType: hard
 
-"@patternfly/react-core@npm:^4.273.1, @patternfly/react-core@npm:^4.276.6, @patternfly/react-core@npm:^4.276.8":
+"@patternfly/react-core@npm:^4.273.1, @patternfly/react-core@npm:^4.276.6":
   version: 4.276.10
   resolution: "@patternfly/react-core@npm:4.276.10"
   dependencies:
@@ -757,17 +750,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-icons@npm:4.93.6":
-  version: 4.93.6
-  resolution: "@patternfly/react-icons@npm:4.93.6"
+"@patternfly/react-core@npm:^4.276.11":
+  version: 4.276.12
+  resolution: "@patternfly/react-core@npm:4.276.12"
+  dependencies:
+    "@patternfly/react-icons": ^4.93.7
+    "@patternfly/react-styles": ^4.92.8
+    "@patternfly/react-tokens": ^4.94.7
+    focus-trap: 6.9.2
+    react-dropzone: 9.0.0
+    tippy.js: 5.1.2
+    tslib: ^2.0.0
   peerDependencies:
     react: ^16.8 || ^17 || ^18
     react-dom: ^16.8 || ^17 || ^18
-  checksum: 4d314d49a5252ee4c30089641f5b3cd852f683aa550a144df729682edfcfd2eef011a6e10a671e21a4342f906b17b0bde25daff2615f3996625550daba42f629
+  checksum: e58f3538e53622bfab496af9d269446f1b09b1cdf86dfcfd1e62960090f1cc222a486972d53a60021e1faa7454807e57f021c0c0cc5c302b0b4ea3c00523cced
   languageName: node
   linkType: hard
 
-"@patternfly/react-icons@npm:^4.93.4, @patternfly/react-icons@npm:^4.93.6, @patternfly/react-icons@npm:^4.93.7":
+"@patternfly/react-icons@npm:4.93.7, @patternfly/react-icons@npm:^4.93.4, @patternfly/react-icons@npm:^4.93.6, @patternfly/react-icons@npm:^4.93.7":
   version: 4.93.7
   resolution: "@patternfly/react-icons@npm:4.93.7"
   peerDependencies:
@@ -794,31 +795,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-styles@npm:^4.92.4, @patternfly/react-styles@npm:^4.92.6, @patternfly/react-styles@npm:^4.92.8":
+"@patternfly/react-styles@npm:^4.92.4, @patternfly/react-styles@npm:^4.92.8":
   version: 4.92.8
   resolution: "@patternfly/react-styles@npm:4.92.8"
   checksum: ab4cd3d57c96bb1988a3d635388108aeac1fb310be2678f06ea9c3ce47517c005ae47cbc93b7f90fa6208356282104dfbaa4a04980b7024b4c8129cd8c838687
   languageName: node
   linkType: hard
 
-"@patternfly/react-table@npm:4.113.0":
-  version: 4.113.0
-  resolution: "@patternfly/react-table@npm:4.113.0"
+"@patternfly/react-table@npm:4.113.3":
+  version: 4.113.3
+  resolution: "@patternfly/react-table@npm:4.113.3"
   dependencies:
-    "@patternfly/react-core": ^4.276.8
-    "@patternfly/react-icons": ^4.93.6
-    "@patternfly/react-styles": ^4.92.6
-    "@patternfly/react-tokens": ^4.94.6
+    "@patternfly/react-core": ^4.276.11
+    "@patternfly/react-icons": ^4.93.7
+    "@patternfly/react-styles": ^4.92.8
+    "@patternfly/react-tokens": ^4.94.7
     lodash: ^4.17.19
     tslib: ^2.0.0
   peerDependencies:
     react: ^16.8 || ^17 || ^18
     react-dom: ^16.8 || ^17 || ^18
-  checksum: 18bb3e0ac225e38d1bc31af40703027f25fcc66b43e163af07306a97a8911c696c7bbeb3c3fed6aea900c959c2256cc4c28674f5d85963d43e268b035ae400fa
+  checksum: 218d17a21d34132f5475cdcf077428dfc3af475689f948a5a5239b03bfda9fa85790bdb13c2795e96c0e703f1161f361b398268717462f7078f2e1540ab2eaad
   languageName: node
   linkType: hard
 
-"@patternfly/react-tokens@npm:^4.94.6, @patternfly/react-tokens@npm:^4.94.7":
+"@patternfly/react-tokens@npm:^4.94.7":
   version: 4.94.7
   resolution: "@patternfly/react-tokens@npm:4.94.7"
   checksum: 726fe4d9edd996b228f02c02586e51969af72b846f8b14fa3090f476bb831bd8a12f8530d51baafe9d5aa21fb007553b57e2d96da5f3b03f6f9e174e5d640af9
@@ -1493,10 +1494,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/vscode@npm:^1.66.0":
-  version: 1.79.0
-  resolution: "@types/vscode@npm:1.79.0"
-  checksum: 74409a58fec216d8252585b1f9534b45133a820530a25a6c38f5f197a4a2e56df8b24282d6c7c5117d07fede9c4721180b0db3b45f6f99871059dac1a7e6cebc
+"@types/vscode@npm:1.67.0":
+  version: 1.67.0
+  resolution: "@types/vscode@npm:1.67.0"
+  checksum: 7a201a40c9d70065cc4cc18e0601b226842376d47389dd0767f4b5014bc3a6503e6208384fe1c06a0e5f17077a306ad4d5a2ae3e5d2a276b20166af8256c8097
   languageName: node
   linkType: hard
 
@@ -5067,10 +5068,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-editor@npm:^0.40.0":
-  version: 0.40.0
-  resolution: "monaco-editor@npm:0.40.0"
-  checksum: 9f879c254bfb9907cc0b23d26bd4bcaaabf9a2cfbd9926574e06ea94f4b9e5807299db9cae1f35820da6242d5d13d9382cb9db48b1340c54ba06620c242c25c7
+"monaco-editor@npm:^0.41.0":
+  version: 0.41.0
+  resolution: "monaco-editor@npm:0.41.0"
+  checksum: 873a8b4eb98d789dffa7509dc0875b277127f14d2a53215b7fee9c49f394d52727bd97f8700858e1f9da323988882274e7110f718cf06e457b02aa16ec32f6c4
   languageName: node
   linkType: hard
 
@@ -7413,12 +7414,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto/kaoto-ui": 1.1.0
-    "@kie-tools-core/backend": ^0.30.0
-    "@kie-tools-core/editor": ^0.30.0
-    "@kie-tools-core/i18n": ^0.30.0
-    "@kie-tools-core/vscode-extension": ^0.30.0
-    "@patternfly/react-core": 4.276.8
+    "@kaoto/kaoto-ui": 1.2.1
+    "@kie-tools-core/backend": 0.31.0
+    "@kie-tools-core/editor": 0.31.0
+    "@kie-tools-core/i18n": 0.31.0
+    "@kie-tools-core/vscode-extension": 0.31.0
+    "@patternfly/react-core": 4.276.11
     "@redhat-developer/vscode-redhat-telemetry": ^0.6.1
     "@types/chai": ^4.3.5
     "@types/fs-extra": ^11.0.1
