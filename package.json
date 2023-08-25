@@ -155,7 +155,7 @@
     "style-loader": "3.3.3",
     "ts-loader": "9.4.4",
     "tsconfig-paths-webpack-plugin": "^4.0.1",
-    "typescript": "^5.0.4",
+    "typescript": "^5.2.2",
     "vscode-extension-tester": "^5.9.0",
     "web-worker": "^1.2.0",
     "webpack": "5.88.2",
