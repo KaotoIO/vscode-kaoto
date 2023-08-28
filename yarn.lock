@@ -1533,7 +1533,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/vsce@npm:^2.20.0, @vscode/vsce@npm:^2.20.1":
+"@vscode/vsce@npm:^2.20.1":
   version: 2.20.1
   resolution: "@vscode/vsce@npm:2.20.1"
   dependencies:
@@ -2612,10 +2612,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"compare-versions@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "compare-versions@npm:6.0.0"
-  checksum: bf2fa355b2139cbdb0576f2f0328c112dd3c2eb808eff8b70b808b3ed05f8a40b8317c323ff4797a6a5a7ab32d508876749584c626ee5840dc0119361afffc4d
+"compare-versions@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "compare-versions@npm:6.1.0"
+  checksum: d4e2a45706a023d8d0b6680338b66b79e20bd02d1947f0ac6531dab634cbed89fa373b3f03d503c5e489761194258d6e1bae67a07f88b1efc61648454f2d47e7
   languageName: node
   linkType: hard
 
@@ -5084,19 +5084,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-page-objects@npm:^3.9.0":
-  version: 3.9.0
-  resolution: "monaco-page-objects@npm:3.9.0"
+"monaco-page-objects@npm:^3.9.1":
+  version: 3.9.1
+  resolution: "monaco-page-objects@npm:3.9.1"
   dependencies:
     clipboardy: ^3.0.0
     clone-deep: ^4.0.1
-    compare-versions: ^6.0.0
+    compare-versions: ^6.1.0
     fs-extra: ^11.1.1
     ts-essentials: ^9.3.2
   peerDependencies:
     selenium-webdriver: ^4.6.1
     typescript: ">=4.6.2"
-  checksum: b7b49d208811d9129acad4f3e441d2ce1a07a52316b7f00f9c78e3c1f71154ae96f6a23d45ced5b0edaa10b448153c12c934f1e1e4573dd4d4a9c779e9fa34be
+  checksum: cfaf14dc4ef0e80e10b9fb63ed5c397d31dd7bb64b8af6633c8dedf51bc4157f464c85de5b5f60aa550493c0fb534dbbeb82b1fbb50ebdd4cddbad898acc3def
   languageName: node
   linkType: hard
 
@@ -6406,7 +6406,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"selenium-webdriver@npm:^4.10.0":
+"selenium-webdriver@npm:4.10.0":
   version: 4.10.0
   resolution: "selenium-webdriver@npm:4.10.0"
   dependencies:
@@ -7372,41 +7372,41 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vscode-extension-tester-locators@npm:^3.7.0":
-  version: 3.7.0
-  resolution: "vscode-extension-tester-locators@npm:3.7.0"
+"vscode-extension-tester-locators@npm:^3.7.1":
+  version: 3.7.1
+  resolution: "vscode-extension-tester-locators@npm:3.7.1"
   peerDependencies:
-    monaco-page-objects: ^3.9.0
+    monaco-page-objects: ^3.9.1
     selenium-webdriver: ^4.6.1
-  checksum: 55567817245872addf3100a8b3dc8798b39049a120530054c2d9bf8b3e6135257f6bef448aaeb783acf003d742d3bc2accbd77c0f33e20a32f0cb00a4a315fe4
+  checksum: 95a4b23d42a7194cda3c02bc938cd3a3330e6df93a19e18195f0be0ecd53b0d06cf62d466cec39128bb8ffabf178a2e7f96f76acd3f436ebbfc823b5e2197ca9
   languageName: node
   linkType: hard
 
-"vscode-extension-tester@npm:^5.9.0":
-  version: 5.9.0
-  resolution: "vscode-extension-tester@npm:5.9.0"
+"vscode-extension-tester@npm:^5.9.1":
+  version: 5.9.1
+  resolution: "vscode-extension-tester@npm:5.9.1"
   dependencies:
     "@types/selenium-webdriver": ^4.1.15
-    "@vscode/vsce": ^2.20.0
+    "@vscode/vsce": ^2.20.1
     commander: ^11.0.0
-    compare-versions: ^6.0.0
+    compare-versions: ^6.1.0
     fs-extra: ^11.1.0
     glob: ^8.1.0
     got: ^13.0.0
     hpagent: ^1.2.0
     js-yaml: ^4.1.0
-    monaco-page-objects: ^3.9.0
+    monaco-page-objects: ^3.9.1
     sanitize-filename: ^1.6.3
-    selenium-webdriver: ^4.10.0
+    selenium-webdriver: 4.10.0
     targz: ^1.0.1
     unzipper: ^0.10.14
-    vscode-extension-tester-locators: ^3.7.0
+    vscode-extension-tester-locators: ^3.7.1
   peerDependencies:
     mocha: ">=5.2.0"
     typescript: ">=4.6.2"
   bin:
     extest: out/cli.js
-  checksum: b1fc0fbaa4cd0a632f965247c2f49ac91a54d59562be53d82f5646777a740dd6a258ccac631b797cfb70e10e2759569528edceaa040b780bb14c6026af930a63
+  checksum: 5e2faa42ec3a1cae57b8b8ae867d4faac20bffcb8339d8d07eb8b8115ef9b9da2b9d8f1c80309a8213ed33d6654bb65b25a3f6b799ef1364a31a0429200f42b8
   languageName: node
   linkType: hard
 
@@ -7448,7 +7448,7 @@ __metadata:
     ts-loader: 9.4.4
     tsconfig-paths-webpack-plugin: ^4.0.1
     typescript: ^5.2.2
-    vscode-extension-tester: ^5.9.0
+    vscode-extension-tester: ^5.9.1
     web-worker: ^1.2.0
     webpack: 5.88.2
     webpack-cli: 5.1.4
