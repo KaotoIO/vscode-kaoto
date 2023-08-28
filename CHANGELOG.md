@@ -1,3 +1,5 @@
+# 0.9.0
+
 # 0.8.0
 
 - Upgrade embedded Kaoto [UI](https://github.com/KaotoIO/kaoto-ui/releases/tag/v1.2.1) to 1.2.1 and [backend](https://github.com/KaotoIO/kaoto-backend/releases/tag/v1.2.0) to 1.2.0
@@ -8,7 +10,7 @@
 
 # 0.6.0
 
-- Change default port of emebedded Kaoto backend from `8081` to `8097`
+- Change default port of embedded Kaoto backend from `8081` to `8097`
 
 # 0.5.0
 
