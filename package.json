@@ -137,7 +137,7 @@
     "@types/mocha": "^10.0.1",
     "@types/react": "18.2.21",
     "@vscode/test-web": "^0.0.44",
-    "@vscode/vsce": "^2.20.1",
+    "@vscode/vsce": "^2.21.0",
     "buffer": "^6.0.3",
     "chai": "^4.3.8",
     "constants-browserify": "^1.0.0",
