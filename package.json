@@ -132,7 +132,7 @@
     ]
   },
   "devDependencies": {
-    "@types/chai": "^4.3.5",
+    "@types/chai": "^4.3.6",
     "@types/fs-extra": "^11.0.1",
     "@types/mocha": "^10.0.1",
     "@types/react": "18.2.21",
