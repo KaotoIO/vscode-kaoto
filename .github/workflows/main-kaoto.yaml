@@ -17,11 +17,11 @@ jobs:
 
     steps:
     - name: Checkout vscode-kaoto
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: vscode-kaoto
     - name: Checkout kaoto-ui
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: kaoto-ui
         repository: KaotoIO/kaoto-ui
