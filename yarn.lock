@@ -94,9 +94,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/kaoto-ui@npm:1.2.1":
-  version: 1.2.1
-  resolution: "@kaoto/kaoto-ui@npm:1.2.1"
+"@kaoto/kaoto-ui@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@kaoto/kaoto-ui@npm:1.3.0"
   dependencies:
     "@kie-tools-core/editor": 0.31.0
     "@kie-tools-core/guided-tour": 0.28.0
@@ -106,20 +106,20 @@ __metadata:
     "@kie-tools-core/workspace": 0.31.0
     "@kie-tools/uniforms-patternfly": 0.31.0
     "@opentelemetry/api": ^1.4.1
-    "@opentelemetry/exporter-trace-otlp-http": ^0.41.0
-    "@opentelemetry/instrumentation": ^0.41.0
+    "@opentelemetry/exporter-trace-otlp-http": ^0.43.0
+    "@opentelemetry/instrumentation": ^0.43.0
     "@opentelemetry/instrumentation-document-load": ^0.33.0
-    "@opentelemetry/instrumentation-fetch": ^0.41.0
+    "@opentelemetry/instrumentation-fetch": ^0.43.0
     "@opentelemetry/instrumentation-long-task": ^0.33.0
     "@opentelemetry/instrumentation-user-interaction": ^0.33.0
     "@opentelemetry/resources": ^1.14.0
     "@opentelemetry/sdk-trace-web": ^1.14.0
     "@patternfly/patternfly": 4.224.5
-    "@patternfly/react-code-editor": 4.82.118
-    "@patternfly/react-core": 4.276.11
+    "@patternfly/react-code-editor": 4.82.119
+    "@patternfly/react-core": 4.276.12
     "@patternfly/react-icons": 4.93.7
-    "@patternfly/react-log-viewer": 4.87.100
-    "@patternfly/react-table": 4.113.3
+    "@patternfly/react-log-viewer": 4.87.101
+    "@patternfly/react-table": 4.113.4
     "@rhoas/app-services-ui-shared": ^0.16.6
     ajv: ^8.12.0
     dagre: ^0.8.5
@@ -132,7 +132,7 @@ __metadata:
     monaco-yaml: ^4.0.4
     react: 18.2.0
     react-dom: 18.2.0
-    react-error-boundary: 4.0.10
+    react-error-boundary: 4.0.11
     react-monaco-editor: ^0.53.0
     react-router-dom: 5.3.4
     react-router-last-location: 2.0.1
@@ -143,7 +143,7 @@ __metadata:
     uniforms-bridge-json-schema: ^3.10.2
     use-debounce: 9.0.4
     web-vitals: 3.4.0
-    zundo: 2.0.0-beta.24
+    zundo: 2.0.0-beta.25
     zustand: ^4.3.8
   peerDependencies:
     "@patternfly/patternfly": "*"
@@ -151,7 +151,7 @@ __metadata:
     "@types/react": "*"
     react: "*"
     react-dom: "*"
-  checksum: 0f30d105fedc185333a157f0832b556d937071713ae80ac02704e0dd6cc237c0206d624dfe95003eea511cb2cc2725d54d535e81ceb74727fd9bf13a4209ec2e
+  checksum: a4e53d2ce4cbf0287851ce95a8ec46a2748326e851fb6a037db502957919b4ed768ad831c3dd50b9f31f92c27015c1c22f9a1d9d0f853245f96cd0897091e1c5
   languageName: node
   linkType: hard
 
@@ -406,13 +406,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/api-logs@npm:0.41.0":
-  version: 0.41.0
-  resolution: "@opentelemetry/api-logs@npm:0.41.0"
+"@opentelemetry/api-logs@npm:0.43.0":
+  version: 0.43.0
+  resolution: "@opentelemetry/api-logs@npm:0.43.0"
   dependencies:
     "@opentelemetry/api": ^1.0.0
-    tslib: ^2.3.1
-  checksum: 343e45513b59960ea14897434b8624338facb82fdbf19cb7a9c9a15b8ffe3d04f9e2a3f7cb66e59e12db20858a1dfb90f1f1d26c5104a10c7e27e535aa2c8977
+  checksum: 55f327fa93cc37a8803adbef9511cf42df69bd36cd6a9c9ea35f4d8df0cd318ccae1ad86b067343e380f376173e91f412cc3660312359bf53251e08bc3f7a754
   languageName: node
   linkType: hard
 
@@ -446,19 +445,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/exporter-trace-otlp-http@npm:^0.41.0":
-  version: 0.41.0
-  resolution: "@opentelemetry/exporter-trace-otlp-http@npm:0.41.0"
+"@opentelemetry/core@npm:1.17.0":
+  version: 1.17.0
+  resolution: "@opentelemetry/core@npm:1.17.0"
   dependencies:
-    "@opentelemetry/core": 1.15.0
-    "@opentelemetry/otlp-exporter-base": 0.41.0
-    "@opentelemetry/otlp-transformer": 0.41.0
-    "@opentelemetry/resources": 1.15.0
-    "@opentelemetry/sdk-trace-base": 1.15.0
-    tslib: ^2.3.1
+    "@opentelemetry/semantic-conventions": 1.17.0
+  peerDependencies:
+    "@opentelemetry/api": ">=1.0.0 <1.7.0"
+  checksum: 8f66bc47f2b9cae429830c91840515d6d70793c27fa139e661a7ae05c503d4a7244b5d52e3526cd32401a5a662775bb04546ca1e3ec20dc7124e6d0bb901f176
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/exporter-trace-otlp-http@npm:^0.43.0":
+  version: 0.43.0
+  resolution: "@opentelemetry/exporter-trace-otlp-http@npm:0.43.0"
+  dependencies:
+    "@opentelemetry/core": 1.17.0
+    "@opentelemetry/otlp-exporter-base": 0.43.0
+    "@opentelemetry/otlp-transformer": 0.43.0
+    "@opentelemetry/resources": 1.17.0
+    "@opentelemetry/sdk-trace-base": 1.17.0
   peerDependencies:
     "@opentelemetry/api": ^1.0.0
-  checksum: 2713c9ef61ffc14d23071d8ac676c52cb860bfc37719cf846fba8e0c2202c5bebe03e179d4c460c7d8f46da7f1e5e6c471acb3d98c8f7b59e5e8252981bf3c8f
+  checksum: d529f104c03fa1c75398ee19e2a1e5ce590114fc67b3f6f2a2dba152720f5ebdf6a36da56d63f32f18de1b26f83ff76b5c0d7bb1e9e2c36e3ce4ef97a0709e80
   languageName: node
   linkType: hard
 
@@ -478,18 +487,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/instrumentation-fetch@npm:^0.41.0":
-  version: 0.41.0
-  resolution: "@opentelemetry/instrumentation-fetch@npm:0.41.0"
+"@opentelemetry/instrumentation-fetch@npm:^0.43.0":
+  version: 0.43.0
+  resolution: "@opentelemetry/instrumentation-fetch@npm:0.43.0"
   dependencies:
-    "@opentelemetry/core": 1.15.0
-    "@opentelemetry/instrumentation": 0.41.0
-    "@opentelemetry/sdk-trace-web": 1.15.0
-    "@opentelemetry/semantic-conventions": 1.15.0
-    tslib: ^2.3.1
+    "@opentelemetry/core": 1.17.0
+    "@opentelemetry/instrumentation": 0.43.0
+    "@opentelemetry/sdk-trace-web": 1.17.0
+    "@opentelemetry/semantic-conventions": 1.17.0
   peerDependencies:
     "@opentelemetry/api": ^1.0.0
-  checksum: 3f0b6788b0f115ca4079c600b65997e6535fe0fc085122b8056596069b4e0f03410f1e93269cfa2137d30b63df2148c0def4975d006e3e24d0d6ee43060729db
+  checksum: cb3c84d29ecebfd40080ec87f8ba4c17de9998542eb53569fdb64a1d32c387ee43f504baaebddfa49004013701b399c7b965b1243fb0911183e3ac7a4489207a
   languageName: node
   linkType: hard
 
@@ -522,7 +530,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/instrumentation@npm:0.41.0, @opentelemetry/instrumentation@npm:^0.41.0":
+"@opentelemetry/instrumentation@npm:0.43.0, @opentelemetry/instrumentation@npm:^0.43.0":
+  version: 0.43.0
+  resolution: "@opentelemetry/instrumentation@npm:0.43.0"
+  dependencies:
+    "@types/shimmer": ^1.0.2
+    import-in-the-middle: 1.4.2
+    require-in-the-middle: ^7.1.1
+    semver: ^7.5.2
+    shimmer: ^1.2.1
+  peerDependencies:
+    "@opentelemetry/api": ^1.3.0
+  checksum: 6ebb916fcce79884b931f0098fbe3e12835437226b7afab43ae64580e27b74747157e2ed2c1584952e42bd21c6e1c72ecbcf260143241b43f8e62803f6ece3a6
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/instrumentation@npm:^0.41.0":
   version: 0.41.0
   resolution: "@opentelemetry/instrumentation@npm:0.41.0"
   dependencies:
@@ -538,32 +561,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/otlp-exporter-base@npm:0.41.0":
-  version: 0.41.0
-  resolution: "@opentelemetry/otlp-exporter-base@npm:0.41.0"
+"@opentelemetry/otlp-exporter-base@npm:0.43.0":
+  version: 0.43.0
+  resolution: "@opentelemetry/otlp-exporter-base@npm:0.43.0"
   dependencies:
-    "@opentelemetry/core": 1.15.0
-    tslib: ^2.3.1
+    "@opentelemetry/core": 1.17.0
   peerDependencies:
     "@opentelemetry/api": ^1.0.0
-  checksum: 27bd1d0804752776ef6ff050c19517c4893dcc726c9f453edd2acf7d6b0fd0f765e05ddb0b88f7bfe17c0aa943a5da934eb6de5c45016985524f99ea81e6aa83
+  checksum: 4fdd70b6ec301126b98cc81d39c08c21a53598eac580c12578b7d617233c3ba46eaf21aac3a64d65d30eed72caea39b72c4438abd3f38d1e8f5e62156236b0ae
   languageName: node
   linkType: hard
 
-"@opentelemetry/otlp-transformer@npm:0.41.0":
-  version: 0.41.0
-  resolution: "@opentelemetry/otlp-transformer@npm:0.41.0"
+"@opentelemetry/otlp-transformer@npm:0.43.0":
+  version: 0.43.0
+  resolution: "@opentelemetry/otlp-transformer@npm:0.43.0"
   dependencies:
-    "@opentelemetry/api-logs": 0.41.0
-    "@opentelemetry/core": 1.15.0
-    "@opentelemetry/resources": 1.15.0
-    "@opentelemetry/sdk-logs": 0.41.0
-    "@opentelemetry/sdk-metrics": 1.15.0
-    "@opentelemetry/sdk-trace-base": 1.15.0
-    tslib: ^2.3.1
+    "@opentelemetry/api-logs": 0.43.0
+    "@opentelemetry/core": 1.17.0
+    "@opentelemetry/resources": 1.17.0
+    "@opentelemetry/sdk-logs": 0.43.0
+    "@opentelemetry/sdk-metrics": 1.17.0
+    "@opentelemetry/sdk-trace-base": 1.17.0
   peerDependencies:
-    "@opentelemetry/api": ">=1.3.0 <1.5.0"
-  checksum: 476280434fcdead4679c3b2d5075e0cc5c3cb6a2fed27fc39d3cbb49ef774901cc67b360e12c8faa5a3f07a6cb52bcf40f3d739ede90433e467664cf3d3500e4
+    "@opentelemetry/api": ">=1.3.0 <1.7.0"
+  checksum: b5b3875b188833661419c2bec1ea2dd81bffa6f4f44938a96ee8009e601010c5963cca5bffee9583d83860996100c1e839d580e466e50332cc97c3a026436e5c
   languageName: node
   linkType: hard
 
@@ -592,31 +613,41 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/sdk-logs@npm:0.41.0":
-  version: 0.41.0
-  resolution: "@opentelemetry/sdk-logs@npm:0.41.0"
+"@opentelemetry/resources@npm:1.17.0":
+  version: 1.17.0
+  resolution: "@opentelemetry/resources@npm:1.17.0"
   dependencies:
-    "@opentelemetry/core": 1.15.0
-    "@opentelemetry/resources": 1.15.0
-    tslib: ^2.3.1
+    "@opentelemetry/core": 1.17.0
+    "@opentelemetry/semantic-conventions": 1.17.0
   peerDependencies:
-    "@opentelemetry/api": ">=1.4.0 <1.5.0"
-    "@opentelemetry/api-logs": ">=0.39.1"
-  checksum: 5818607d9a39868910554cc413012dd07273ecbb24fbe8ba289d68a867e974a07fdfc374f7ed3619ab8a3ce6f7ef6dce359ea9051ec7da88d4539c50befca46a
+    "@opentelemetry/api": ">=1.0.0 <1.7.0"
+  checksum: 517dba494be0a55ff489b086b8ba33401993d7231483c5e37ff8bc2d360846064ea71cb37b0e7fed39de4f8291a0cccdbd3724e8d9751c72c09ecc66a312f2f4
   languageName: node
   linkType: hard
 
-"@opentelemetry/sdk-metrics@npm:1.15.0":
-  version: 1.15.0
-  resolution: "@opentelemetry/sdk-metrics@npm:1.15.0"
+"@opentelemetry/sdk-logs@npm:0.43.0":
+  version: 0.43.0
+  resolution: "@opentelemetry/sdk-logs@npm:0.43.0"
   dependencies:
-    "@opentelemetry/core": 1.15.0
-    "@opentelemetry/resources": 1.15.0
-    lodash.merge: ^4.6.2
-    tslib: ^2.3.1
+    "@opentelemetry/core": 1.17.0
+    "@opentelemetry/resources": 1.17.0
   peerDependencies:
-    "@opentelemetry/api": ">=1.3.0 <1.5.0"
-  checksum: 6ca53712a7b9e0df778ff42f1ca7bdb0302fc12e89eff41347ab1c8fab37308444bebf55f13fa16c20932796a56ab7a61ed1a2d77899772d933b688133a5b985
+    "@opentelemetry/api": ">=1.4.0 <1.7.0"
+    "@opentelemetry/api-logs": ">=0.39.1"
+  checksum: b162e71245329bd0c7a2f91c2d761a2ae10285079c447ae899d79d7a6db82369347f0015f2bf61dac9a71598763df09f94d5ab358347d9d6f3cf137aa348e390
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/sdk-metrics@npm:1.17.0":
+  version: 1.17.0
+  resolution: "@opentelemetry/sdk-metrics@npm:1.17.0"
+  dependencies:
+    "@opentelemetry/core": 1.17.0
+    "@opentelemetry/resources": 1.17.0
+    lodash.merge: ^4.6.2
+  peerDependencies:
+    "@opentelemetry/api": ">=1.3.0 <1.7.0"
+  checksum: 4f42e7be9c9425f1f2442d1ab333287d42f196b1295ac996aa28e2b414a4a1a034a8857f08ce23a6f32567735682421620f6b63de7c4592d0dc1dd4f487ce8ef
   languageName: node
   linkType: hard
 
@@ -647,7 +678,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/sdk-trace-web@npm:1.15.0, @opentelemetry/sdk-trace-web@npm:^1.14.0, @opentelemetry/sdk-trace-web@npm:^1.15.0":
+"@opentelemetry/sdk-trace-base@npm:1.17.0":
+  version: 1.17.0
+  resolution: "@opentelemetry/sdk-trace-base@npm:1.17.0"
+  dependencies:
+    "@opentelemetry/core": 1.17.0
+    "@opentelemetry/resources": 1.17.0
+    "@opentelemetry/semantic-conventions": 1.17.0
+  peerDependencies:
+    "@opentelemetry/api": ">=1.0.0 <1.7.0"
+  checksum: e009969df4edccb6898fd7af2941f9f27c530e195429309a4057ae6cb8080e4cd008fb9437acb361ccf64ca40e2a8747309cb3545916c68587eb45adb012b2db
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/sdk-trace-web@npm:1.17.0":
+  version: 1.17.0
+  resolution: "@opentelemetry/sdk-trace-web@npm:1.17.0"
+  dependencies:
+    "@opentelemetry/core": 1.17.0
+    "@opentelemetry/sdk-trace-base": 1.17.0
+    "@opentelemetry/semantic-conventions": 1.17.0
+  peerDependencies:
+    "@opentelemetry/api": ">=1.0.0 <1.7.0"
+  checksum: 7fff2df3d08fc7ccff5ff9f4ac801f586450e4e2b310ca0adc88616ba9668aa6cc15279ef0241380ea2fb1798fded376cff0b009443cb1915988c2c88e39fed7
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/sdk-trace-web@npm:^1.14.0, @opentelemetry/sdk-trace-web@npm:^1.15.0":
   version: 1.15.0
   resolution: "@opentelemetry/sdk-trace-web@npm:1.15.0"
   dependencies:
@@ -690,6 +747,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@opentelemetry/semantic-conventions@npm:1.17.0":
+  version: 1.17.0
+  resolution: "@opentelemetry/semantic-conventions@npm:1.17.0"
+  checksum: 3cb99118b3720aed37fa71d9b6c38847a481d5287653275477d30126de9e548f63a302efbd8a2086a747442880598bbde95ef17f8016dce45b85798696f12be4
+  languageName: node
+  linkType: hard
+
 "@patternfly/patternfly@npm:4.224.5":
   version: 4.224.5
   resolution: "@patternfly/patternfly@npm:4.224.5"
@@ -697,11 +761,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-code-editor@npm:4.82.118":
-  version: 4.82.118
-  resolution: "@patternfly/react-code-editor@npm:4.82.118"
+"@patternfly/react-code-editor@npm:4.82.119":
+  version: 4.82.119
+  resolution: "@patternfly/react-code-editor@npm:4.82.119"
   dependencies:
-    "@patternfly/react-core": ^4.276.11
+    "@patternfly/react-core": ^4.276.12
     "@patternfly/react-icons": ^4.93.7
     "@patternfly/react-styles": ^4.92.8
     react-dropzone: 9.0.0
@@ -710,47 +774,11 @@ __metadata:
     react: ^16.8 || ^17 || ^18
     react-dom: ^16.8 || ^17 || ^18
     react-monaco-editor: ^0.51.0
-  checksum: 6a7e7541894b141ad5c59f08ae9400e6a501854698d19c4c9a1e582e3a38d20519dceef9763722ac3b5aa10fc72ce555ecf8b32b3f8ce57795667ae63630e130
+  checksum: b7dddbe325c5729ceb0504ceecede88621c4d891325fc55a82f740d3602eea36bcac66a2ca5c904eeada2da1f4b8643189d443ff386ac17c0d55e37e25d55abb
   languageName: node
   linkType: hard
 
-"@patternfly/react-core@npm:4.276.11":
-  version: 4.276.11
-  resolution: "@patternfly/react-core@npm:4.276.11"
-  dependencies:
-    "@patternfly/react-icons": ^4.93.7
-    "@patternfly/react-styles": ^4.92.8
-    "@patternfly/react-tokens": ^4.94.7
-    focus-trap: 6.9.2
-    react-dropzone: 9.0.0
-    tippy.js: 5.1.2
-    tslib: ^2.0.0
-  peerDependencies:
-    react: ^16.8 || ^17 || ^18
-    react-dom: ^16.8 || ^17 || ^18
-  checksum: 1bacb8ba497ec3f3e8fe181192ee6af6ecad82e31b3462b13ba7a952583a1cd3caae51634a766dfa5f52cda162e61e9bb9520ae35f0721c0ab963a1e0164ca0f
-  languageName: node
-  linkType: hard
-
-"@patternfly/react-core@npm:^4.273.1, @patternfly/react-core@npm:^4.276.6":
-  version: 4.276.10
-  resolution: "@patternfly/react-core@npm:4.276.10"
-  dependencies:
-    "@patternfly/react-icons": ^4.93.7
-    "@patternfly/react-styles": ^4.92.8
-    "@patternfly/react-tokens": ^4.94.7
-    focus-trap: 6.9.2
-    react-dropzone: 9.0.0
-    tippy.js: 5.1.2
-    tslib: ^2.0.0
-  peerDependencies:
-    react: ^16.8 || ^17 || ^18
-    react-dom: ^16.8 || ^17 || ^18
-  checksum: 43345fbc4794f61a71089608b082c48edd2df7415421a37464570d920d3d5fda517a1cda3d3c695275af15361c3e22b064586a7d9c3d2a0923bdbdf54b7ea16b
-  languageName: node
-  linkType: hard
-
-"@patternfly/react-core@npm:^4.276.11":
+"@patternfly/react-core@npm:4.276.12, @patternfly/react-core@npm:^4.276.12":
   version: 4.276.12
   resolution: "@patternfly/react-core@npm:4.276.12"
   dependencies:
@@ -768,7 +796,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-icons@npm:4.93.7, @patternfly/react-icons@npm:^4.93.4, @patternfly/react-icons@npm:^4.93.6, @patternfly/react-icons@npm:^4.93.7":
+"@patternfly/react-core@npm:^4.276.6":
+  version: 4.276.10
+  resolution: "@patternfly/react-core@npm:4.276.10"
+  dependencies:
+    "@patternfly/react-icons": ^4.93.7
+    "@patternfly/react-styles": ^4.92.8
+    "@patternfly/react-tokens": ^4.94.7
+    focus-trap: 6.9.2
+    react-dropzone: 9.0.0
+    tippy.js: 5.1.2
+    tslib: ^2.0.0
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18
+    react-dom: ^16.8 || ^17 || ^18
+  checksum: 43345fbc4794f61a71089608b082c48edd2df7415421a37464570d920d3d5fda517a1cda3d3c695275af15361c3e22b064586a7d9c3d2a0923bdbdf54b7ea16b
+  languageName: node
+  linkType: hard
+
+"@patternfly/react-icons@npm:4.93.7, @patternfly/react-icons@npm:^4.93.6, @patternfly/react-icons@npm:^4.93.7":
   version: 4.93.7
   resolution: "@patternfly/react-icons@npm:4.93.7"
   peerDependencies:
@@ -778,35 +824,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-log-viewer@npm:4.87.100":
-  version: 4.87.100
-  resolution: "@patternfly/react-log-viewer@npm:4.87.100"
+"@patternfly/react-log-viewer@npm:4.87.101":
+  version: 4.87.101
+  resolution: "@patternfly/react-log-viewer@npm:4.87.101"
   dependencies:
-    "@patternfly/react-core": ^4.273.1
-    "@patternfly/react-icons": ^4.93.4
-    "@patternfly/react-styles": ^4.92.4
+    "@patternfly/react-core": ^4.276.6
+    "@patternfly/react-icons": ^4.93.6
+    "@patternfly/react-styles": ^4.92.6
     memoize-one: ^5.1.0
-    resize-observer-polyfill: ^1.5.1
-    tslib: ^2.0.0
+    monaco-editor: ^0.33.0
   peerDependencies:
     react: ^16.8 || ^17 || ^18
     react-dom: ^16.8 || ^17 || ^18
-  checksum: 3401e4a6c763c0b0dc7d4ffc6fc604fb9839c683a561dda785228b88d57cfdeb4175970cfb2e137423703e0c12401bc8e3159312bb54414ca7c1c97d15ac359e
+  checksum: 5a85cbaaea150737bc246874129bd7a36d1c2da98f306477ab50529dcd5d226b5918b130e65040db0348fa810f63bfa547149e68b6158adbe33db98f16577441
   languageName: node
   linkType: hard
 
-"@patternfly/react-styles@npm:^4.92.4, @patternfly/react-styles@npm:^4.92.8":
+"@patternfly/react-styles@npm:^4.92.6, @patternfly/react-styles@npm:^4.92.8":
   version: 4.92.8
   resolution: "@patternfly/react-styles@npm:4.92.8"
   checksum: ab4cd3d57c96bb1988a3d635388108aeac1fb310be2678f06ea9c3ce47517c005ae47cbc93b7f90fa6208356282104dfbaa4a04980b7024b4c8129cd8c838687
   languageName: node
   linkType: hard
 
-"@patternfly/react-table@npm:4.113.3":
-  version: 4.113.3
-  resolution: "@patternfly/react-table@npm:4.113.3"
+"@patternfly/react-table@npm:4.113.4":
+  version: 4.113.4
+  resolution: "@patternfly/react-table@npm:4.113.4"
   dependencies:
-    "@patternfly/react-core": ^4.276.11
+    "@patternfly/react-core": ^4.276.12
     "@patternfly/react-icons": ^4.93.7
     "@patternfly/react-styles": ^4.92.8
     "@patternfly/react-tokens": ^4.94.7
@@ -815,7 +860,7 @@ __metadata:
   peerDependencies:
     react: ^16.8 || ^17 || ^18
     react-dom: ^16.8 || ^17 || ^18
-  checksum: 218d17a21d34132f5475cdcf077428dfc3af475689f948a5a5239b03bfda9fa85790bdb13c2795e96c0e703f1161f361b398268717462f7078f2e1540ab2eaad
+  checksum: 35c254a126e7f29abbe81b567c12e943cf9a68e4d79cbdc35ce6f1a28733c0b905a6a33ce547c3092490e1a45852be3829eaf166bbc9ccb895d2d5d4c027dd37
   languageName: node
   linkType: hard
 
@@ -4093,6 +4138,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"import-in-the-middle@npm:1.4.2":
+  version: 1.4.2
+  resolution: "import-in-the-middle@npm:1.4.2"
+  dependencies:
+    acorn: ^8.8.2
+    acorn-import-assertions: ^1.9.0
+    cjs-module-lexer: ^1.2.2
+    module-details-from-path: ^1.0.3
+  checksum: 52971f821e9a3c94834cd5cf0ab5178321c07d4f4babd547b3cb24c4de21670d05b42ca1523890e7e90525c3bba6b7db7e54cf45421919b0b2712a34faa96ea5
+  languageName: node
+  linkType: hard
+
 "import-local@npm:^3.0.2":
   version: 3.1.0
   resolution: "import-local@npm:3.1.0"
@@ -6037,14 +6094,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-error-boundary@npm:4.0.10":
-  version: 4.0.10
-  resolution: "react-error-boundary@npm:4.0.10"
+"react-error-boundary@npm:4.0.11":
+  version: 4.0.11
+  resolution: "react-error-boundary@npm:4.0.11"
   dependencies:
     "@babel/runtime": ^7.12.5
   peerDependencies:
     react: ">=16.13.1"
-  checksum: 4ad4864d2a5fc2264a24d03e83176e6a70d7adbe3c1edbdc5b0bd452a695104bc59456e23b5aea1b9729220672fe46614221daa8b3bd59327968d4aa7eb8bc71
+  checksum: b3c157fea4e8f78411e9aa0fbf5241f6907b66ede1cd8b7bb22faaeb0339ebeb3dc8e63bf90ef3f740bfa8fd994ca6edf975089cd371b664ad6c2735e7512d38
   languageName: node
   linkType: hard
 
@@ -6224,13 +6281,6 @@ __metadata:
     module-details-from-path: ^1.0.3
     resolve: ^1.22.1
   checksum: 5ed219d12aec4d0f098029827f9e929d8e0ca4f2fe01f23a9b02169e57c5157cced9e7acaef6a871d3f56646f2cb807b08f2f23d66912ee53eca16cb88eff743
-  languageName: node
-  linkType: hard
-
-"resize-observer-polyfill@npm:^1.5.1":
-  version: 1.5.1
-  resolution: "resize-observer-polyfill@npm:1.5.1"
-  checksum: 57e7f79489867b00ba43c9c051524a5c8f162a61d5547e99333549afc23e15c44fd43f2f318ea0261ea98c0eb3158cca261e6f48d66e1ed1cd1f340a43977094
   languageName: node
   linkType: hard
 
@@ -7501,12 +7551,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto/kaoto-ui": 1.2.1
+    "@kaoto/kaoto-ui": 1.3.0
     "@kie-tools-core/backend": 0.31.0
     "@kie-tools-core/editor": 0.31.0
     "@kie-tools-core/i18n": 0.31.0
     "@kie-tools-core/vscode-extension": 0.31.0
-    "@patternfly/react-core": 4.276.11
+    "@patternfly/react-core": 4.276.12
     "@redhat-developer/vscode-redhat-telemetry": ^0.7.0
     "@types/chai": ^4.3.6
     "@types/fs-extra": ^11.0.2
