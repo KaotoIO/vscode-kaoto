@@ -1,3 +1,5 @@
+# 0.10.0
+
 # 0.9.0
 
 - Upgrade embedded Kaoto [UI](https://github.com/KaotoIO/kaoto-ui/releases/tag/v1.3.0) and [backend](https://github.com/KaotoIO/kaoto-backend/releases/tag/v1.3.0) to 1.3.0
