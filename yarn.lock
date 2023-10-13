@@ -796,6 +796,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@patternfly/react-core@npm:4.277.0":
+  version: 4.277.0
+  resolution: "@patternfly/react-core@npm:4.277.0"
+  dependencies:
+    "@patternfly/react-icons": ^4.93.7
+    "@patternfly/react-styles": ^4.92.8
+    "@patternfly/react-tokens": ^4.94.7
+    focus-trap: 6.9.2
+    react-dropzone: 9.0.0
+    tippy.js: 5.1.2
+    tslib: ^2.0.0
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18
+    react-dom: ^16.8 || ^17 || ^18
+  checksum: 4ff2929e6e80d15f86db534ac5e90542f74d159ddc583c782fddc47ba692f47debb587568fcfad505fe364c44f1f4151d854670bf64b29ba827a7ff611258caf
+  languageName: node
+  linkType: hard
+
 "@patternfly/react-core@npm:^4.276.6":
   version: 4.276.10
   resolution: "@patternfly/react-core@npm:4.276.10"
@@ -3608,7 +3626,7 @@ __metadata:
 
 "fsevents@patch:fsevents@~2.3.2#~builtin<compat/fsevents>":
   version: 2.3.2
-  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=18f3a7"
   dependencies:
     node-gyp: latest
   conditions: os=darwin
@@ -6339,7 +6357,7 @@ __metadata:
 
 "resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.1#~builtin<compat/resolve>":
   version: 1.22.3
-  resolution: "resolve@patch:resolve@npm%3A1.22.3#~builtin<compat/resolve>::version=1.22.3&hash=c3c19d"
+  resolution: "resolve@patch:resolve@npm%3A1.22.3#~builtin<compat/resolve>::version=1.22.3&hash=07638b"
   dependencies:
     is-core-module: ^2.12.0
     path-parse: ^1.0.7
@@ -7318,7 +7336,7 @@ __metadata:
 
 "typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>":
   version: 5.2.2
-  resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=14eedb"
+  resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=701156"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
@@ -7556,7 +7574,7 @@ __metadata:
     "@kie-tools-core/editor": 0.31.0
     "@kie-tools-core/i18n": 0.31.0
     "@kie-tools-core/vscode-extension": 0.31.0
-    "@patternfly/react-core": 4.276.12
+    "@patternfly/react-core": 4.277.0
     "@redhat-developer/vscode-redhat-telemetry": ^0.7.0
     "@types/chai": ^4.3.6
     "@types/fs-extra": ^11.0.2

@@ -36,7 +36,7 @@
     "@kie-tools-core/editor": "0.31.0",
     "@kie-tools-core/i18n": "0.31.0",
     "@kie-tools-core/vscode-extension": "0.31.0",
-    "@patternfly/react-core": "4.276.12",
+    "@patternfly/react-core": "4.277.0",
     "@redhat-developer/vscode-redhat-telemetry": "^0.7.0",
     "async-wait-until": "^2.0.12",
     "react": "18.2.0",
