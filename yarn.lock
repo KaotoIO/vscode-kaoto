@@ -1541,12 +1541,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/selenium-webdriver@npm:^4.1.15":
-  version: 4.1.15
-  resolution: "@types/selenium-webdriver@npm:4.1.15"
+"@types/selenium-webdriver@npm:^4.1.17":
+  version: 4.1.18
+  resolution: "@types/selenium-webdriver@npm:4.1.18"
   dependencies:
     "@types/ws": "*"
-  checksum: 810ccb9155ca35cc8a6d25e8ba326b29e738b3afce62109f015ceb2007d30b0e818d9f39ff62a9ce9f5f6207ed9d38081cd5ceb3880ee0f694660085ac0e8631
+  checksum: f8687204676788228f6d6474f33e57d19e705f457b8294d30b55336ba0ed21eea05e75989f8f549eaf8883ea93cbcaeac9bded34ccc7eec8814e5f2ee19420a8
   languageName: node
   linkType: hard
 
@@ -1596,40 +1596,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/vsce@npm:^2.20.1":
-  version: 2.20.1
-  resolution: "@vscode/vsce@npm:2.20.1"
-  dependencies:
-    azure-devops-node-api: ^11.0.1
-    chalk: ^2.4.2
-    cheerio: ^1.0.0-rc.9
-    commander: ^6.1.0
-    glob: ^7.0.6
-    hosted-git-info: ^4.0.2
-    jsonc-parser: ^3.2.0
-    keytar: ^7.7.0
-    leven: ^3.1.0
-    markdown-it: ^12.3.2
-    mime: ^1.3.4
-    minimatch: ^3.0.3
-    parse-semver: ^1.1.1
-    read: ^1.0.7
-    semver: ^7.5.2
-    tmp: ^0.2.1
-    typed-rest-client: ^1.8.4
-    url-join: ^4.0.1
-    xml2js: ^0.5.0
-    yauzl: ^2.3.1
-    yazl: ^2.2.2
-  dependenciesMeta:
-    keytar:
-      optional: true
-  bin:
-    vsce: vsce
-  checksum: b0fb3ed03fa09f700ced42986c4a5a5231cb13308e5f10517a3117895a5260854f8d8d38c0805ea7a444d327933482546b65ca5009e85b15e86fba0372cc444f
-  languageName: node
-  linkType: hard
-
 "@vscode/vsce@npm:^2.21.0":
   version: 2.21.0
   resolution: "@vscode/vsce@npm:2.21.0"
@@ -1661,6 +1627,40 @@ __metadata:
   bin:
     vsce: vsce
   checksum: 1618059f53d8b56c65e67a1aaf0af9b5eb666a3031c5ab0bfb761794110627fc0ff59d1641effcbce57104f2b27013cfcc2a6c40b9a9629965fadb1706b6f35b
+  languageName: node
+  linkType: hard
+
+"@vscode/vsce@npm:^2.21.1":
+  version: 2.21.1
+  resolution: "@vscode/vsce@npm:2.21.1"
+  dependencies:
+    azure-devops-node-api: ^11.0.1
+    chalk: ^2.4.2
+    cheerio: ^1.0.0-rc.9
+    commander: ^6.2.1
+    glob: ^7.0.6
+    hosted-git-info: ^4.0.2
+    jsonc-parser: ^3.2.0
+    keytar: ^7.7.0
+    leven: ^3.1.0
+    markdown-it: ^12.3.2
+    mime: ^1.3.4
+    minimatch: ^3.0.3
+    parse-semver: ^1.1.1
+    read: ^1.0.7
+    semver: ^7.5.2
+    tmp: ^0.2.1
+    typed-rest-client: ^1.8.4
+    url-join: ^4.0.1
+    xml2js: ^0.5.0
+    yauzl: ^2.3.1
+    yazl: ^2.2.2
+  dependenciesMeta:
+    keytar:
+      optional: true
+  bin:
+    vsce: vsce
+  checksum: d597d97683ef9e592383a33906313534fc40ca2a030fc63c226451e3754baa013845f93b93e7648396a8d79106626ad65b60733fa03c47e4964ee98c6b7b6734
   languageName: node
   linkType: hard
 
@@ -2711,7 +2711,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^6.1.0, commander@npm:^6.2.1":
+"commander@npm:^6.2.1":
   version: 6.2.1
   resolution: "commander@npm:6.2.1"
   checksum: d7090410c0de6bc5c67d3ca41c41760d6d268f3c799e530aafb73b7437d1826bbf0d2a3edac33f8b57cc9887b4a986dce307fa5557e109be40eadb7c43b21742
@@ -3773,7 +3773,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^10.3.7":
+"glob@npm:^10.3.10, glob@npm:^10.3.7":
   version: 10.3.10
   resolution: "glob@npm:10.3.10"
   dependencies:
@@ -3799,19 +3799,6 @@ __metadata:
     once: ^1.3.0
     path-is-absolute: ^1.0.0
   checksum: 29452e97b38fa704dabb1d1045350fb2467cf0277e155aa9ff7077e90ad81d1ea9d53d3ee63bd37c05b09a065e90f16aec4a65f5b8de401d1dac40bc5605d133
-  languageName: node
-  linkType: hard
-
-"glob@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "glob@npm:8.1.0"
-  dependencies:
-    fs.realpath: ^1.0.0
-    inflight: ^1.0.4
-    inherits: 2
-    minimatch: ^5.0.1
-    once: ^1.3.0
-  checksum: 92fbea3221a7d12075f26f0227abac435de868dd0736a17170663783296d0dd8d3d532a5672b4488a439bf5d7fb85cdd07c11185d6cd39184f0385cbdfb86a47
   languageName: node
   linkType: hard
 
@@ -5015,7 +5002,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^5.0.0, minimatch@npm:^5.0.1":
+"minimatch@npm:^5.0.0":
   version: 5.1.6
   resolution: "minimatch@npm:5.1.6"
   dependencies:
@@ -5239,19 +5226,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-page-objects@npm:^3.9.1":
-  version: 3.9.1
-  resolution: "monaco-page-objects@npm:3.9.1"
+"monaco-page-objects@npm:^3.10.0":
+  version: 3.10.0
+  resolution: "monaco-page-objects@npm:3.10.0"
   dependencies:
     clipboardy: ^3.0.0
     clone-deep: ^4.0.1
     compare-versions: ^6.1.0
     fs-extra: ^11.1.1
-    ts-essentials: ^9.3.2
+    ts-essentials: ^9.4.1
   peerDependencies:
     selenium-webdriver: ^4.6.1
     typescript: ">=4.6.2"
-  checksum: cfaf14dc4ef0e80e10b9fb63ed5c397d31dd7bb64b8af6633c8dedf51bc4157f464c85de5b5f60aa550493c0fb534dbbeb82b1fbb50ebdd4cddbad898acc3def
+  checksum: 41ac0cb4d4843ff1ce5060fd394c3cb455652c60dd348123c1e2a3152c5caae85d0de14a622b2a6726d486469792eb7abed026c025622509150acc5abfd79549
   languageName: node
   linkType: hard
 
@@ -6571,14 +6558,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"selenium-webdriver@npm:4.10.0":
-  version: 4.10.0
-  resolution: "selenium-webdriver@npm:4.10.0"
+"selenium-webdriver@npm:^4.13.0":
+  version: 4.14.0
+  resolution: "selenium-webdriver@npm:4.14.0"
   dependencies:
     jszip: ^3.10.1
     tmp: ^0.2.1
-    ws: ">=8.13.0"
-  checksum: fae9bbfa69d28ed1d143234a5ce0350bee7d41178b88f9812c69b2099ac99df8037f3fafee14efb65af3d91356f163e8a43a36151bf48eff1515415ccd17cb75
+    ws: ">=8.14.2"
+  checksum: 9ffc4c9e0f04814d348cce8b2a864ac64993837e3d25ac64c715b7856776aecbb55618d344e35e190c52e2613d5c56b23da51ebcad1a0727534d1c2d0c84977f
   languageName: node
   linkType: hard
 
@@ -7228,12 +7215,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-essentials@npm:^9.3.2":
-  version: 9.3.2
-  resolution: "ts-essentials@npm:9.3.2"
+"ts-essentials@npm:^9.4.1":
+  version: 9.4.1
+  resolution: "ts-essentials@npm:9.4.1"
   peerDependencies:
     typescript: ">=4.1.0"
-  checksum: 88726b3f9bdc8f59f9a998bb925c989268d7e2f24d29ac13545e457d3ac8ee5472c78990eaa415b4c58244d55b989985a999345d6845055f5a58bb0f098c6f44
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 3a7404b88549a005eb19881348905bc76faec2438f1997a9cccb8ecdaaef481b88896fea91353c14435f6d4354259a1c527c438b353353c9de526a9c593ab7d0
   languageName: node
   linkType: hard
 
@@ -7549,41 +7539,41 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vscode-extension-tester-locators@npm:^3.7.1":
-  version: 3.7.1
-  resolution: "vscode-extension-tester-locators@npm:3.7.1"
+"vscode-extension-tester-locators@npm:^3.8.0":
+  version: 3.8.0
+  resolution: "vscode-extension-tester-locators@npm:3.8.0"
   peerDependencies:
-    monaco-page-objects: ^3.9.1
+    monaco-page-objects: ^3.10.0
     selenium-webdriver: ^4.6.1
-  checksum: 95a4b23d42a7194cda3c02bc938cd3a3330e6df93a19e18195f0be0ecd53b0d06cf62d466cec39128bb8ffabf178a2e7f96f76acd3f436ebbfc823b5e2197ca9
+  checksum: c22ec2d84fc615a7671f205bfb5e23d783d5bdf54d4c337471735cb2acfa714ea2be206e9908f6456a80cc84898aa62eb71353f18356e5a21ad096cb343f4004
   languageName: node
   linkType: hard
 
-"vscode-extension-tester@npm:^5.9.1":
-  version: 5.9.1
-  resolution: "vscode-extension-tester@npm:5.9.1"
+"vscode-extension-tester@npm:^5.10.0":
+  version: 5.10.0
+  resolution: "vscode-extension-tester@npm:5.10.0"
   dependencies:
-    "@types/selenium-webdriver": ^4.1.15
-    "@vscode/vsce": ^2.20.1
+    "@types/selenium-webdriver": ^4.1.17
+    "@vscode/vsce": ^2.21.1
     commander: ^11.0.0
     compare-versions: ^6.1.0
     fs-extra: ^11.1.0
-    glob: ^8.1.0
+    glob: ^10.3.10
     got: ^13.0.0
     hpagent: ^1.2.0
     js-yaml: ^4.1.0
-    monaco-page-objects: ^3.9.1
+    monaco-page-objects: ^3.10.0
     sanitize-filename: ^1.6.3
-    selenium-webdriver: 4.10.0
+    selenium-webdriver: ^4.13.0
     targz: ^1.0.1
     unzipper: ^0.10.14
-    vscode-extension-tester-locators: ^3.7.1
+    vscode-extension-tester-locators: ^3.8.0
   peerDependencies:
     mocha: ">=5.2.0"
     typescript: ">=4.6.2"
   bin:
     extest: out/cli.js
-  checksum: 5e2faa42ec3a1cae57b8b8ae867d4faac20bffcb8339d8d07eb8b8115ef9b9da2b9d8f1c80309a8213ed33d6654bb65b25a3f6b799ef1364a31a0429200f42b8
+  checksum: e4d615c50cd03fff80e6c7174429df2835399dc183b0d0d1a0b41360dedf176f788df6ae7e2522a86765fe49b342602084dd0d56a1f9c26ce90f0e2fef21b8fe
   languageName: node
   linkType: hard
 
@@ -7625,7 +7615,7 @@ __metadata:
     ts-loader: 9.4.4
     tsconfig-paths-webpack-plugin: ^4.0.1
     typescript: ^5.2.2
-    vscode-extension-tester: ^5.9.1
+    vscode-extension-tester: ^5.10.0
     web-worker: ^1.2.0
     webpack: 5.88.2
     webpack-cli: 5.1.4
@@ -7863,9 +7853,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:>=8.13.0":
-  version: 8.13.0
-  resolution: "ws@npm:8.13.0"
+"ws@npm:>=8.14.2":
+  version: 8.14.2
+  resolution: "ws@npm:8.14.2"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ">=5.0.2"
@@ -7874,7 +7864,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 53e991bbf928faf5dc6efac9b8eb9ab6497c69feeb94f963d648b7a3530a720b19ec2e0ec037344257e05a4f35bd9ad04d9de6f289615ffb133282031b18c61c
+  checksum: 3ca0dad26e8cc6515ff392b622a1467430814c463b3368b0258e33696b1d4bed7510bc7030f7b72838b9fdeb8dbd8839cbf808367d6aae2e1d668ce741d4308b
   languageName: node
   linkType: hard
 
