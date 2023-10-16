@@ -6,7 +6,7 @@ def installBuildRequirements(){
 	sh "npm install --global yarn"
 }
 
-node('rhel9'){
+node('rhel8'){
 
 	stage 'Checkout vscode-kaoto code'
 	deleteDir()
@@ -20,11 +20,12 @@ node('rhel9'){
 	sh "yarn build:dev"
 	sh "yarn build:prod"
 
-	stage('Test') {
-		wrap([$class: 'Xvnc']) {
-			sh "yarn test:it"
-		}
-	}
+// Because vscode-extension-tester requires Node 18.15.x, we cannot play tests on Jenkins for now. they are played on GitHub Actions
+//	stage('Test') {
+//		wrap([$class: 'Xvnc']) {
+//			sh "yarn test:it"
+//		}
+//	}
 
 	stage 'Package vscode-kaoto'
 	def packageJson = readJSON file: 'package.json'
