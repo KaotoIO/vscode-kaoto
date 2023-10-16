@@ -37,7 +37,7 @@ node('rhel8'){
 	stash name:'vsix', includes:vsix[0].path
 }
 
-node('rhel9'){
+node('rhel8'){
 	if(publishToMarketPlace.equals('true')){
 		timeout(time:5, unit:'DAYS') {
 			input message:'Approve deployment?', submitter: 'apupier, mariasde, ryordan, mmelko, djelinek, ricmarti, toigaras'
