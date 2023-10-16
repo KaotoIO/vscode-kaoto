@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy
 
 def installBuildRequirements(){
-	def nodeHome = tool 'nodejs-lts-16'
+	def nodeHome = tool 'nodejs-lts'
 	env.PATH="${env.PATH}:${nodeHome}/bin"
 	sh "npm install --global yarn"
 }

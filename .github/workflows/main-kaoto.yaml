@@ -27,7 +27,7 @@ jobs:
         repository: KaotoIO/kaoto-ui
     - uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '18.15.x'
     - name: Kaoto-ui build
       working-directory: kaoto-ui
       run: |
