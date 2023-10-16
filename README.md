@@ -46,8 +46,8 @@
 
 ### Embedded
 
-- [Kaoto UI](https://github.com/KaotoIO/kaoto-ui) in version [1.3.0](https://github.com/KaotoIO/kaoto-ui/releases/tag/v1.3.0).
-- [Kaoto Backend](https://github.com/KaotoIO/kaoto-backend) in version [1.3.0](https://github.com/KaotoIO/kaoto-backend/releases/tag/v1.3.0).
+- [Kaoto UI](https://github.com/KaotoIO/kaoto-ui) in version [1.4.0](https://github.com/KaotoIO/kaoto-ui/releases/tag/v1.4.0).
+- [Kaoto Backend](https://github.com/KaotoIO/kaoto-backend) in version [1.4.0](https://github.com/KaotoIO/kaoto-backend/releases/tag/v1.4.0).
 
 ### Issues
 
