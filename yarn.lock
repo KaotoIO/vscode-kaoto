@@ -896,6 +896,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@playwright/browser-chromium@npm:^1.38.1":
+  version: 1.39.0
+  resolution: "@playwright/browser-chromium@npm:1.39.0"
+  dependencies:
+    playwright-core: 1.39.0
+  checksum: 43cbcef98ee5c8e704f18770f53d7fcb20e11d11dfaef790b6d5fd1abd27cc71c032272a15cfb7c6b3f1ce8a4b8f707000b5318d745594ac5f9f300928414ac3
+  languageName: node
+  linkType: hard
+
 "@reactflow/background@npm:11.2.4":
   version: 11.2.4
   resolution: "@reactflow/background@npm:11.2.4"
@@ -1573,26 +1582,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/test-web@npm:^0.0.45":
-  version: 0.0.45
-  resolution: "@vscode/test-web@npm:0.0.45"
+"@vscode/test-web@npm:^0.0.47":
+  version: 0.0.47
+  resolution: "@vscode/test-web@npm:0.0.47"
   dependencies:
     "@koa/cors": ^4.0.0
     "@koa/router": ^12.0.0
+    "@playwright/browser-chromium": ^1.38.1
     gunzip-maybe: ^1.4.2
     http-proxy-agent: ^7.0.0
-    https-proxy-agent: ^7.0.1
+    https-proxy-agent: ^7.0.2
     koa: ^2.14.2
     koa-morgan: ^1.0.1
     koa-mount: ^4.0.0
     koa-static: ^5.0.0
     minimist: ^1.2.8
-    playwright: ^1.37.1
+    playwright: ^1.38.1
     tar-fs: ^3.0.4
     vscode-uri: ^3.0.7
   bin:
     vscode-test-web: out/index.js
-  checksum: 3a2475112fb8a0edfc8c9fdbd2f1671baa5c3f9281b7f86ebb541683a2dec90432f3c84f19943aed8a057a43f7241a0b0bb19a2eb054263f4f264542b574a82b
+  checksum: 0b26532f3e5d6369b9dfb674c1f3d356a38e6f77bb687a1c076f9ffaa9c9cd5d9f70c854cd7cd4348dac6dc430150476aee7aa5044d0cf835b505a25bf5404d1
   languageName: node
   linkType: hard
 
@@ -3582,7 +3592,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fsevents@npm:~2.3.2":
+"fsevents@npm:2.3.2, fsevents@npm:~2.3.2":
   version: 2.3.2
   resolution: "fsevents@npm:2.3.2"
   dependencies:
@@ -3592,7 +3602,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fsevents@patch:fsevents@~2.3.2#~builtin<compat/fsevents>":
+"fsevents@patch:fsevents@2.3.2#~builtin<compat/fsevents>, fsevents@patch:fsevents@~2.3.2#~builtin<compat/fsevents>":
   version: 2.3.2
   resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
   dependencies:
@@ -4035,13 +4045,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"https-proxy-agent@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "https-proxy-agent@npm:7.0.1"
+"https-proxy-agent@npm:^7.0.2":
+  version: 7.0.2
+  resolution: "https-proxy-agent@npm:7.0.2"
   dependencies:
     agent-base: ^7.0.2
     debug: 4
-  checksum: 2d765c31865071373771f53abdd72912567b76015a4eff61094f586194192950cd89257d50f0e621807a16c083bc8cad5852e3885c6ba154d2ce721a18fac248
+  checksum: 088969a0dd476ea7a0ed0a2cf1283013682b08f874c3bc6696c83fa061d2c157d29ef0ad3eb70a2046010bb7665573b2388d10fdcb3e410a66995e5248444292
   languageName: node
   linkType: hard
 
@@ -5787,23 +5797,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.37.1":
-  version: 1.37.1
-  resolution: "playwright-core@npm:1.37.1"
+"playwright-core@npm:1.39.0":
+  version: 1.39.0
+  resolution: "playwright-core@npm:1.39.0"
   bin:
     playwright-core: cli.js
-  checksum: 69f818da2230057584140d5b3af7778a4f4a822b5b18d133abfc5d259128becb943c343a2ddf6b0635277a69f28983e83e2bc3fce23595ececb1e410475b6368
+  checksum: 556e78dee4f9890facf2af8249972e0d6e01a5ae98737b0f6b0166c660a95ffee4cb79350335b1ef96430a0ef01d3669daae9099fa46c8d403d11c623988238b
   languageName: node
   linkType: hard
 
-"playwright@npm:^1.37.1":
-  version: 1.37.1
-  resolution: "playwright@npm:1.37.1"
+"playwright@npm:^1.38.1":
+  version: 1.39.0
+  resolution: "playwright@npm:1.39.0"
   dependencies:
-    playwright-core: 1.37.1
+    fsevents: 2.3.2
+    playwright-core: 1.39.0
+  dependenciesMeta:
+    fsevents:
+      optional: true
   bin:
     playwright: cli.js
-  checksum: 99406ef3e15b83a659cb23ef1d92d9935789aad430580d1e0371087dfdf266891483c6f97cfa06bf5f49f081eacd44245d05d20714f98531edef4cc317044d6b
+  checksum: 96d8ca5aa25465c1c5d554d0d6071981d55e22477800ff8f5d47a53ca75193d60ece2df538a01b7165b3277dd5493c67603a5acda713029df7fbd95ce2417bc9
   languageName: node
   linkType: hard
 
@@ -7558,7 +7572,7 @@ __metadata:
     "@types/fs-extra": ^11.0.2
     "@types/mocha": ^10.0.3
     "@types/react": 18.2.21
-    "@vscode/test-web": ^0.0.45
+    "@vscode/test-web": ^0.0.47
     "@vscode/vsce": ^2.21.1
     async-wait-until: ^2.0.12
     buffer: ^6.0.3
