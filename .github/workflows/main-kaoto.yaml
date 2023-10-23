@@ -25,7 +25,7 @@ jobs:
       with:
         path: kaoto-ui
         repository: KaotoIO/kaoto-ui
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: '18.15.x'
     - name: Kaoto-ui build
