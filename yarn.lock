@@ -796,6 +796,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@patternfly/react-core@npm:4.278.0, @patternfly/react-core@npm:^4.277.0":
+  version: 4.278.0
+  resolution: "@patternfly/react-core@npm:4.278.0"
+  dependencies:
+    "@patternfly/react-icons": ^4.93.7
+    "@patternfly/react-styles": ^4.92.8
+    "@patternfly/react-tokens": ^4.94.7
+    focus-trap: 6.9.2
+    react-dropzone: 9.0.0
+    tippy.js: 5.1.2
+    tslib: ^2.0.0
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18
+    react-dom: ^16.8 || ^17 || ^18
+  checksum: a1b151d9324ccbe389b016293db4130fdcedc45959f25cee74eb9171354c91e2b37e53ed79f7211fa81fd50ca90a286d848fc2b2ea9e56a60beb4115d70b9682
+  languageName: node
+  linkType: hard
+
 "@patternfly/react-core@npm:^4.276.6":
   version: 4.276.10
   resolution: "@patternfly/react-core@npm:4.276.10"
@@ -811,24 +829,6 @@ __metadata:
     react: ^16.8 || ^17 || ^18
     react-dom: ^16.8 || ^17 || ^18
   checksum: 43345fbc4794f61a71089608b082c48edd2df7415421a37464570d920d3d5fda517a1cda3d3c695275af15361c3e22b064586a7d9c3d2a0923bdbdf54b7ea16b
-  languageName: node
-  linkType: hard
-
-"@patternfly/react-core@npm:^4.277.0":
-  version: 4.278.0
-  resolution: "@patternfly/react-core@npm:4.278.0"
-  dependencies:
-    "@patternfly/react-icons": ^4.93.7
-    "@patternfly/react-styles": ^4.92.8
-    "@patternfly/react-tokens": ^4.94.7
-    focus-trap: 6.9.2
-    react-dropzone: 9.0.0
-    tippy.js: 5.1.2
-    tslib: ^2.0.0
-  peerDependencies:
-    react: ^16.8 || ^17 || ^18
-    react-dom: ^16.8 || ^17 || ^18
-  checksum: a1b151d9324ccbe389b016293db4130fdcedc45959f25cee74eb9171354c91e2b37e53ed79f7211fa81fd50ca90a286d848fc2b2ea9e56a60beb4115d70b9682
   languageName: node
   linkType: hard
 
@@ -3604,7 +3604,7 @@ __metadata:
 
 "fsevents@patch:fsevents@2.3.2#~builtin<compat/fsevents>, fsevents@patch:fsevents@~2.3.2#~builtin<compat/fsevents>":
   version: 2.3.2
-  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=18f3a7"
   dependencies:
     node-gyp: latest
   conditions: os=darwin
@@ -6366,7 +6366,7 @@ __metadata:
 
 "resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.1#~builtin<compat/resolve>":
   version: 1.22.3
-  resolution: "resolve@patch:resolve@npm%3A1.22.3#~builtin<compat/resolve>::version=1.22.3&hash=c3c19d"
+  resolution: "resolve@patch:resolve@npm%3A1.22.3#~builtin<compat/resolve>::version=1.22.3&hash=07638b"
   dependencies:
     is-core-module: ^2.12.0
     path-parse: ^1.0.7
@@ -7328,7 +7328,7 @@ __metadata:
 
 "typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>":
   version: 5.2.2
-  resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=14eedb"
+  resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=701156"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
@@ -7566,7 +7566,7 @@ __metadata:
     "@kie-tools-core/editor": 0.31.0
     "@kie-tools-core/i18n": 0.31.0
     "@kie-tools-core/vscode-extension": 0.31.0
-    "@patternfly/react-core": 4.277.0
+    "@patternfly/react-core": 4.278.0
     "@redhat-developer/vscode-redhat-telemetry": ^0.7.0
     "@types/chai": ^4.3.8
     "@types/fs-extra": ^11.0.2
