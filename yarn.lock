@@ -171,6 +171,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kie-tools-core/backend@npm:0.32.0":
+  version: 0.32.0
+  resolution: "@kie-tools-core/backend@npm:0.32.0"
+  dependencies:
+    "@kie-tools-core/i18n": 0.32.0
+    "@kie-tools-core/notifications": 0.32.0
+    "@kie-tools-core/workspace": 0.32.0
+    axios: ^0.27.2
+    fast-xml-parser: ^4.3.1
+    portfinder: ^1.0.32
+    semver: ^7.5.4
+    sinon: ^11.1.1
+  checksum: 7c338dfe0ccfaa2b9c37dff38860462cc339466ae1f99e5039d4fe682bfc5d036348c894f84f3cbc7d4d8b5c88e0f7a9e806a977d76973600b0811c0c2453dca
+  languageName: node
+  linkType: hard
+
 "@kie-tools-core/editor@npm:0.31.0":
   version: 0.31.0
   resolution: "@kie-tools-core/editor@npm:0.31.0"
@@ -194,6 +210,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kie-tools-core/editor@npm:0.32.0":
+  version: 0.32.0
+  resolution: "@kie-tools-core/editor@npm:0.32.0"
+  dependencies:
+    "@kie-tools-core/backend": 0.32.0
+    "@kie-tools-core/envelope": 0.32.0
+    "@kie-tools-core/envelope-bus": 0.32.0
+    "@kie-tools-core/i18n": 0.32.0
+    "@kie-tools-core/keyboard-shortcuts": 0.32.0
+    "@kie-tools-core/notifications": 0.32.0
+    "@kie-tools-core/operating-system": 0.32.0
+    "@kie-tools-core/patternfly-base": 0.32.0
+    "@kie-tools-core/workspace": 0.32.0
+    "@patternfly/react-core": ^4.276.6
+    "@patternfly/react-icons": ^4.93.6
+    csstype: ^3.0.11
+    minimatch: ^3.0.5
+    react: ^17.0.2
+    react-dom: ^17.0.2
+  checksum: 6649b6dcef81d004bac0f9a5f5c9c51b43f30460ef2c87272412d8064b5b7920fc86b19ce848d0603c07afe11e250300a0cab62ad7b6c3f4cbb9d94ba491bf01
+  languageName: node
+  linkType: hard
+
 "@kie-tools-core/envelope-bus@npm:0.28.0":
   version: 0.28.0
   resolution: "@kie-tools-core/envelope-bus@npm:0.28.0"
@@ -214,6 +253,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kie-tools-core/envelope-bus@npm:0.32.0":
+  version: 0.32.0
+  resolution: "@kie-tools-core/envelope-bus@npm:0.32.0"
+  dependencies:
+    react: ^17.0.2
+    react-dom: ^17.0.2
+  checksum: 676ac6978ac89bae4a6380da52a5b55ca30217cb397bbf279c076deb4b1b643fff88788fc9043383d29719f17f7d1c1f56ebab93e93cd7fb80ec987938fb86bc
+  languageName: node
+  linkType: hard
+
 "@kie-tools-core/envelope@npm:0.31.0":
   version: 0.31.0
   resolution: "@kie-tools-core/envelope@npm:0.31.0"
@@ -223,6 +272,18 @@ __metadata:
     react: ^17.0.2
     react-dom: ^17.0.2
   checksum: edabe01d6f5591afc9b20d2999560fbd5295975518f2e550505606e72fa69cf7907b2c5c133166526019ce06c3a0105cfeb64e8e07f2748d8fba53915269def8
+  languageName: node
+  linkType: hard
+
+"@kie-tools-core/envelope@npm:0.32.0":
+  version: 0.32.0
+  resolution: "@kie-tools-core/envelope@npm:0.32.0"
+  dependencies:
+    "@kie-tools-core/envelope-bus": 0.32.0
+    csstype: ^3.0.11
+    react: ^17.0.2
+    react-dom: ^17.0.2
+  checksum: c80f02f7dabe3e9f64ae7ce22a9af313e1954787b0d6c5db676482fed16b45cf6e833cf3760b596d549ec5253b93b4345b7c4a8e34ca2fb12fa78389abd9df57
   languageName: node
   linkType: hard
 
@@ -261,6 +322,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kie-tools-core/i18n@npm:0.32.0":
+  version: 0.32.0
+  resolution: "@kie-tools-core/i18n@npm:0.32.0"
+  dependencies:
+    react: ^17.0.2
+    react-dom: ^17.0.2
+  checksum: 6fa171f17d40a10fbfa5df0b4c68c360d2ac84fde6a6a016645dcfa059814e40a0054b2bc3234123fb35c1802c032bf00792603163be8d5d6388a273d66de5c2
+  languageName: node
+  linkType: hard
+
 "@kie-tools-core/keyboard-shortcuts@npm:0.31.0":
   version: 0.31.0
   resolution: "@kie-tools-core/keyboard-shortcuts@npm:0.31.0"
@@ -269,6 +340,17 @@ __metadata:
     "@kie-tools-core/operating-system": 0.31.0
     react: ^17.0.2
   checksum: 8d93fb8205b7a05b44c6a10c9d9b8609ce76c8403691be5f40c5a5f6ef7b061d72188862da47a7a246ee9eabc3a155c493bc7ce5e9c2a002b7b2ba01595d4d6e
+  languageName: node
+  linkType: hard
+
+"@kie-tools-core/keyboard-shortcuts@npm:0.32.0":
+  version: 0.32.0
+  resolution: "@kie-tools-core/keyboard-shortcuts@npm:0.32.0"
+  dependencies:
+    "@kie-tools-core/envelope-bus": 0.32.0
+    "@kie-tools-core/operating-system": 0.32.0
+    react: ^17.0.2
+  checksum: afc71049a14166cc3789a3e3b655a53af912aa27c3ac6b0924de245e9dfea1a35664490bba0a6bd0992972fa4074a8e717088fdd07baa360644829ddeebfa282
   languageName: node
   linkType: hard
 
@@ -291,10 +373,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kie-tools-core/notifications@npm:0.32.0":
+  version: 0.32.0
+  resolution: "@kie-tools-core/notifications@npm:0.32.0"
+  dependencies:
+    "@kie-tools-core/i18n": 0.32.0
+    "@kie-tools-core/workspace": 0.32.0
+  checksum: 3d31a4a8b7d0c740a72511831b00b55c588f1bac4ca49c81bb9e2556ee858652607d23e2a49d698a81cffb76921b66fd99036bdcd16e348578e131620a48646b
+  languageName: node
+  linkType: hard
+
 "@kie-tools-core/operating-system@npm:0.31.0":
   version: 0.31.0
   resolution: "@kie-tools-core/operating-system@npm:0.31.0"
   checksum: 9a7ac41b028db2e1d4097e40a566c92b95b4d1264331fe2c9b71e2dced0e598ef7c2a4bbfb89f5ede434777c5596725f39d75f333a37721fa562a3641b7ea08e
+  languageName: node
+  linkType: hard
+
+"@kie-tools-core/operating-system@npm:0.32.0":
+  version: 0.32.0
+  resolution: "@kie-tools-core/operating-system@npm:0.32.0"
+  checksum: a2e95735bfdfdb13879326207374873400438fcf510a3cd0f830f2fe97ec99753e7dd53091198d0be055d9524bc286656a00ca52ab3b2c9e8cd279a4b3be8fdb
   languageName: node
   linkType: hard
 
@@ -309,6 +408,13 @@ __metadata:
   version: 0.31.0
   resolution: "@kie-tools-core/patternfly-base@npm:0.31.0"
   checksum: b186ae8f19b402f4d8724a72557d41725dcb27b1449bdfc51624d3460043c79b66f478466d80d2507048029ad24812194afdb85d04b432389c3f0e3fdd577d01
+  languageName: node
+  linkType: hard
+
+"@kie-tools-core/patternfly-base@npm:0.32.0":
+  version: 0.32.0
+  resolution: "@kie-tools-core/patternfly-base@npm:0.32.0"
+  checksum: 88c1094a39e1aef2a4c2e6f4d17c871c11ad5c00b57d815bc5840b060c3fdfbf5e5e0c4a28d006d7197042be2b5a096ab01e5908957970a1b9990e41caea87bf
   languageName: node
   linkType: hard
 
@@ -343,6 +449,15 @@ __metadata:
   dependencies:
     "@kie-tools-core/operating-system": 0.31.0
   checksum: 6a5d2b013c40bbbe5d268dd0b1c166d1c1c4f917018309d9ca45b6c642663c72fc149e0196694ffe4ba03465e1045cf2579f17f36ee980a016c7f7fa574f1ed5
+  languageName: node
+  linkType: hard
+
+"@kie-tools-core/workspace@npm:0.32.0":
+  version: 0.32.0
+  resolution: "@kie-tools-core/workspace@npm:0.32.0"
+  dependencies:
+    "@kie-tools-core/operating-system": 0.32.0
+  checksum: a9695c14a42a03db533b9566cd85c30e4dd656a74e75cafc80d8c06a6f61446f8025b86516fb328915ce4e201c43fd7dc8c57c646cc94764799d152cd18806aa
   languageName: node
   linkType: hard
 
@@ -3407,6 +3522,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-xml-parser@npm:^4.3.1":
+  version: 4.3.2
+  resolution: "fast-xml-parser@npm:4.3.2"
+  dependencies:
+    strnum: ^1.0.5
+  bin:
+    fxparser: src/cli/cli.js
+  checksum: d507ce2efa5fd13d0a5ba28bd76dd68f2fc30ad8748357c37b70f360d19417866d79e35a688af067d5bceaaa796033fa985206aef9692f7a421e1326b6e73309
+  languageName: node
+  linkType: hard
+
 "fastest-levenshtein@npm:^1.0.12":
   version: 1.0.16
   resolution: "fastest-levenshtein@npm:1.0.16"
@@ -3604,7 +3730,7 @@ __metadata:
 
 "fsevents@patch:fsevents@2.3.2#~builtin<compat/fsevents>, fsevents@patch:fsevents@~2.3.2#~builtin<compat/fsevents>":
   version: 2.3.2
-  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=18f3a7"
   dependencies:
     node-gyp: latest
   conditions: os=darwin
@@ -6366,7 +6492,7 @@ __metadata:
 
 "resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.1#~builtin<compat/resolve>":
   version: 1.22.3
-  resolution: "resolve@patch:resolve@npm%3A1.22.3#~builtin<compat/resolve>::version=1.22.3&hash=c3c19d"
+  resolution: "resolve@patch:resolve@npm%3A1.22.3#~builtin<compat/resolve>::version=1.22.3&hash=07638b"
   dependencies:
     is-core-module: ^2.12.0
     path-parse: ^1.0.7
@@ -7328,7 +7454,7 @@ __metadata:
 
 "typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>":
   version: 5.2.2
-  resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=14eedb"
+  resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=701156"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
@@ -7563,7 +7689,7 @@ __metadata:
   dependencies:
     "@kaoto/kaoto-ui": 1.4.0
     "@kie-tools-core/backend": 0.31.0
-    "@kie-tools-core/editor": 0.31.0
+    "@kie-tools-core/editor": 0.32.0
     "@kie-tools-core/i18n": 0.31.0
     "@kie-tools-core/vscode-extension": 0.31.0
     "@patternfly/react-core": 4.277.0
