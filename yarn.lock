@@ -171,6 +171,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kie-tools-core/backend@npm:0.32.0":
+  version: 0.32.0
+  resolution: "@kie-tools-core/backend@npm:0.32.0"
+  dependencies:
+    "@kie-tools-core/i18n": 0.32.0
+    "@kie-tools-core/notifications": 0.32.0
+    "@kie-tools-core/workspace": 0.32.0
+    axios: ^0.27.2
+    fast-xml-parser: ^4.3.1
+    portfinder: ^1.0.32
+    semver: ^7.5.4
+    sinon: ^11.1.1
+  checksum: 7c338dfe0ccfaa2b9c37dff38860462cc339466ae1f99e5039d4fe682bfc5d036348c894f84f3cbc7d4d8b5c88e0f7a9e806a977d76973600b0811c0c2453dca
+  languageName: node
+  linkType: hard
+
 "@kie-tools-core/editor@npm:0.31.0":
   version: 0.31.0
   resolution: "@kie-tools-core/editor@npm:0.31.0"
@@ -261,6 +277,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kie-tools-core/i18n@npm:0.32.0":
+  version: 0.32.0
+  resolution: "@kie-tools-core/i18n@npm:0.32.0"
+  dependencies:
+    react: ^17.0.2
+    react-dom: ^17.0.2
+  checksum: 6fa171f17d40a10fbfa5df0b4c68c360d2ac84fde6a6a016645dcfa059814e40a0054b2bc3234123fb35c1802c032bf00792603163be8d5d6388a273d66de5c2
+  languageName: node
+  linkType: hard
+
 "@kie-tools-core/keyboard-shortcuts@npm:0.31.0":
   version: 0.31.0
   resolution: "@kie-tools-core/keyboard-shortcuts@npm:0.31.0"
@@ -291,10 +317,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kie-tools-core/notifications@npm:0.32.0":
+  version: 0.32.0
+  resolution: "@kie-tools-core/notifications@npm:0.32.0"
+  dependencies:
+    "@kie-tools-core/i18n": 0.32.0
+    "@kie-tools-core/workspace": 0.32.0
+  checksum: 3d31a4a8b7d0c740a72511831b00b55c588f1bac4ca49c81bb9e2556ee858652607d23e2a49d698a81cffb76921b66fd99036bdcd16e348578e131620a48646b
+  languageName: node
+  linkType: hard
+
 "@kie-tools-core/operating-system@npm:0.31.0":
   version: 0.31.0
   resolution: "@kie-tools-core/operating-system@npm:0.31.0"
   checksum: 9a7ac41b028db2e1d4097e40a566c92b95b4d1264331fe2c9b71e2dced0e598ef7c2a4bbfb89f5ede434777c5596725f39d75f333a37721fa562a3641b7ea08e
+  languageName: node
+  linkType: hard
+
+"@kie-tools-core/operating-system@npm:0.32.0":
+  version: 0.32.0
+  resolution: "@kie-tools-core/operating-system@npm:0.32.0"
+  checksum: a2e95735bfdfdb13879326207374873400438fcf510a3cd0f830f2fe97ec99753e7dd53091198d0be055d9524bc286656a00ca52ab3b2c9e8cd279a4b3be8fdb
   languageName: node
   linkType: hard
 
@@ -343,6 +386,15 @@ __metadata:
   dependencies:
     "@kie-tools-core/operating-system": 0.31.0
   checksum: 6a5d2b013c40bbbe5d268dd0b1c166d1c1c4f917018309d9ca45b6c642663c72fc149e0196694ffe4ba03465e1045cf2579f17f36ee980a016c7f7fa574f1ed5
+  languageName: node
+  linkType: hard
+
+"@kie-tools-core/workspace@npm:0.32.0":
+  version: 0.32.0
+  resolution: "@kie-tools-core/workspace@npm:0.32.0"
+  dependencies:
+    "@kie-tools-core/operating-system": 0.32.0
+  checksum: a9695c14a42a03db533b9566cd85c30e4dd656a74e75cafc80d8c06a6f61446f8025b86516fb328915ce4e201c43fd7dc8c57c646cc94764799d152cd18806aa
   languageName: node
   linkType: hard
 
@@ -3407,6 +3459,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-xml-parser@npm:^4.3.1":
+  version: 4.3.2
+  resolution: "fast-xml-parser@npm:4.3.2"
+  dependencies:
+    strnum: ^1.0.5
+  bin:
+    fxparser: src/cli/cli.js
+  checksum: d507ce2efa5fd13d0a5ba28bd76dd68f2fc30ad8748357c37b70f360d19417866d79e35a688af067d5bceaaa796033fa985206aef9692f7a421e1326b6e73309
+  languageName: node
+  linkType: hard
+
 "fastest-levenshtein@npm:^1.0.12":
   version: 1.0.16
   resolution: "fastest-levenshtein@npm:1.0.16"
@@ -3604,7 +3667,7 @@ __metadata:
 
 "fsevents@patch:fsevents@2.3.2#~builtin<compat/fsevents>, fsevents@patch:fsevents@~2.3.2#~builtin<compat/fsevents>":
   version: 2.3.2
-  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=18f3a7"
   dependencies:
     node-gyp: latest
   conditions: os=darwin
@@ -6366,7 +6429,7 @@ __metadata:
 
 "resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.1#~builtin<compat/resolve>":
   version: 1.22.3
-  resolution: "resolve@patch:resolve@npm%3A1.22.3#~builtin<compat/resolve>::version=1.22.3&hash=c3c19d"
+  resolution: "resolve@patch:resolve@npm%3A1.22.3#~builtin<compat/resolve>::version=1.22.3&hash=07638b"
   dependencies:
     is-core-module: ^2.12.0
     path-parse: ^1.0.7
@@ -7328,7 +7391,7 @@ __metadata:
 
 "typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>":
   version: 5.2.2
-  resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=14eedb"
+  resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=701156"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
@@ -7562,7 +7625,7 @@ __metadata:
   resolution: "vscode-kaoto@workspace:."
   dependencies:
     "@kaoto/kaoto-ui": 1.4.0
-    "@kie-tools-core/backend": 0.31.0
+    "@kie-tools-core/backend": 0.32.0
     "@kie-tools-core/editor": 0.31.0
     "@kie-tools-core/i18n": 0.31.0
     "@kie-tools-core/vscode-extension": 0.31.0
