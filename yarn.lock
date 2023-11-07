@@ -369,15 +369,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@koa/router@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "@koa/router@npm:12.0.0"
+"@koa/router@npm:^12.0.1":
+  version: 12.0.1
+  resolution: "@koa/router@npm:12.0.1"
   dependencies:
+    debug: ^4.3.4
     http-errors: ^2.0.0
     koa-compose: ^4.1.0
     methods: ^1.1.2
     path-to-regexp: ^6.2.1
-  checksum: 5529629f7517dba20319cf70b66c5a6111673019f6d196cd500a7b90e6663c99848c188f1bce17415d46c7b20b06566d432299a53affe0a15d05b9213917b9f6
+  checksum: 4b8d3940cbf898bca86bfe62d5d4633c4e436a537410c801f6ac3f5e804bdd257559439ab94408a22f3bd0f6b25d88859bfb80fe3a6f3954b73f79a6fb04a339
   languageName: node
   linkType: hard
 
@@ -896,7 +897,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/browser-chromium@npm:^1.38.1":
+"@playwright/browser-chromium@npm:^1.39.0":
   version: 1.39.0
   resolution: "@playwright/browser-chromium@npm:1.39.0"
   dependencies:
@@ -1582,13 +1583,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/test-web@npm:^0.0.47":
-  version: 0.0.47
-  resolution: "@vscode/test-web@npm:0.0.47"
+"@vscode/test-web@npm:^0.0.48":
+  version: 0.0.48
+  resolution: "@vscode/test-web@npm:0.0.48"
   dependencies:
     "@koa/cors": ^4.0.0
-    "@koa/router": ^12.0.0
-    "@playwright/browser-chromium": ^1.38.1
+    "@koa/router": ^12.0.1
+    "@playwright/browser-chromium": ^1.39.0
     gunzip-maybe: ^1.4.2
     http-proxy-agent: ^7.0.0
     https-proxy-agent: ^7.0.2
@@ -1597,12 +1598,12 @@ __metadata:
     koa-mount: ^4.0.0
     koa-static: ^5.0.0
     minimist: ^1.2.8
-    playwright: ^1.38.1
+    playwright: ^1.39.0
     tar-fs: ^3.0.4
-    vscode-uri: ^3.0.7
+    vscode-uri: ^3.0.8
   bin:
     vscode-test-web: out/index.js
-  checksum: 0b26532f3e5d6369b9dfb674c1f3d356a38e6f77bb687a1c076f9ffaa9c9cd5d9f70c854cd7cd4348dac6dc430150476aee7aa5044d0cf835b505a25bf5404d1
+  checksum: 068b1cac9eca327e472e4d3b98c6f1a3d8525d7f207003fb60300a110996519a0d6bc12b7e314a82990bea5aee261c686e4f7bb6ba77fa03aabcd6b0d8e48d12
   languageName: node
   linkType: hard
 
@@ -5806,7 +5807,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright@npm:^1.38.1":
+"playwright@npm:^1.39.0":
   version: 1.39.0
   resolution: "playwright@npm:1.39.0"
   dependencies:
@@ -7572,7 +7573,7 @@ __metadata:
     "@types/fs-extra": ^11.0.3
     "@types/mocha": ^10.0.3
     "@types/react": 18.2.36
-    "@vscode/test-web": ^0.0.47
+    "@vscode/test-web": ^0.0.48
     "@vscode/vsce": ^2.21.1
     async-wait-until: ^2.0.12
     buffer: ^6.0.3
@@ -7618,10 +7619,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vscode-uri@npm:^3.0.0, vscode-uri@npm:^3.0.7":
+"vscode-uri@npm:^3.0.0":
   version: 3.0.7
   resolution: "vscode-uri@npm:3.0.7"
   checksum: c899a0334f9f6ba53021328e083f6307978c09b94407d7e5fe86fcd8fcb8f1da0cb344123a335e55769055007a46d51aff83f9ee1dfc0296ee54b78f34ef0e4f
+  languageName: node
+  linkType: hard
+
+"vscode-uri@npm:^3.0.8":
+  version: 3.0.8
+  resolution: "vscode-uri@npm:3.0.8"
+  checksum: 514249126850c0a41a7d8c3c2836cab35983b9dc1938b903cfa253b9e33974c1416d62a00111385adcfa2b98df456437ab704f709a2ecca76a90134ef5eb4832
   languageName: node
   linkType: hard
 
