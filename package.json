@@ -31,12 +31,11 @@
     "test:it:clean": "rimraf ./test-resources && rimraf ./out && rimraf *.vsix"
   },
   "dependencies": {
-    "@kaoto/kaoto-ui": "1.4.0",
-    "@kie-tools-core/backend": "0.31.0",
-    "@kie-tools-core/editor": "0.31.0",
-    "@kie-tools-core/i18n": "0.31.0",
-    "@kie-tools-core/vscode-extension": "0.31.0",
-    "@patternfly/react-core": "4.277.0",
+    "@kaoto-next/ui": "0.2.0",
+    "@kie-tools-core/backend": "0.32.0",
+    "@kie-tools-core/editor": "0.32.0",
+    "@kie-tools-core/i18n": "0.32.0",
+    "@kie-tools-core/vscode-extension": "0.32.0",
     "@redhat-developer/vscode-redhat-telemetry": "^0.7.0",
     "async-wait-until": "^2.0.12",
     "react": "18.2.0",
@@ -169,7 +168,9 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "semver": "7.5.2",
-    "zundo": "2.0.0-beta.23"
+    "zundo": "2.0.0-beta.23",
+    "@kaoto-next/ui": "portal:/home/rmartinez/repos/kaoto-next/packages/ui",
+    "@kaoto-next/camel-catalog": "portal:/home/rmartinez/repos/kaoto-next/packages/camel-catalog"
   },
   "packageManager": "yarn@3.6.1"
 }

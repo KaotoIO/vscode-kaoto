@@ -6,7 +6,7 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const path = require("path");
 const BG_IMAGES_DIRNAME = "bgimages";
 
-const kaotoUIpkg = require('@kaoto/kaoto-ui/package.json');
+// const kaotoUIpkg = require('@kaoto/kaoto-ui/package.json');
 
 let deps = {};
 Object.keys(dependencies).forEach((key) => { deps[key] = { eager: true } });
@@ -140,21 +140,21 @@ const commonConfig = (env) => {
       new webpack.DefinePlugin({
         'KAOTO_API': JSON.stringify("http://localhost:8097"),
         'process.env.KAOTO_API': JSON.stringify("http://localhost:8097"), // to remove with Kaoto 1.1.0
-        'KAOTO_VERSION': JSON.stringify(kaotoUIpkg.version),
+        'KAOTO_VERSION': '1' //JSON.stringify(kaotoUIpkg.version),
       }),
-      new webpack.container.ModuleFederationPlugin({
-        name: federatedModuleName,
-        filename: 'remoteEntry.js',
-        library: { type: 'var', name: federatedModuleName },
-        shared: {
-          ...deps
-        }
-      }),
-      new PermissionsOutputPlugin({
-        buildFolders: [
-          path.resolve(__dirname, 'binaries/')
-        ]
-      })
+      // new webpack.container.ModuleFederationPlugin({
+      //   name: federatedModuleName,
+      //   filename: 'remoteEntry.js',
+      //   library: { type: 'var', name: federatedModuleName },
+      //   shared: {
+      //     ...deps
+      //   }
+      // }),
+      // new PermissionsOutputPlugin({
+      //   buildFolders: [
+      //     path.resolve(__dirname, 'binaries/')
+      //   ]
+      // })
     ],
     externals: {
       vscode: "commonjs vscode",
@@ -197,8 +197,8 @@ module.exports = async (env) => [
               or: [
                 (input) => posixPath(input).includes("node_modules/@patternfly/react-core/dist/styles/assets/fonts"),
                 (input) => posixPath(input).includes("node_modules/@patternfly/react-core/dist/styles/assets/pficon"),
-                (input) => posixPath(input).includes("node_modules/@kaoto/kaoto-ui/node_modules/@patternfly/patternfly/assets/fonts"),
-                (input) => posixPath(input).includes("node_modules/@kaoto/kaoto-ui/node_modules/@patternfly/patternfly/assets/pficon"),
+                // (input) => posixPath(input).includes("node_modules/@kaoto/kaoto-ui/node_modules/@patternfly/patternfly/assets/fonts"),
+                // (input) => posixPath(input).includes("node_modules/@kaoto/kaoto-ui/node_modules/@patternfly/patternfly/assets/pficon"),
                 (input) =>
                   posixPath(input).includes("node_modules/monaco-editor/esm/vs/base/browser/ui/codicons/codicon"),
                 (input) =>
