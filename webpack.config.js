@@ -235,7 +235,7 @@ module.exports = async (env) => [
             input.indexOf("fonts") === -1 &&
             input.indexOf("background-filter") === -1 &&
             input.indexOf("pficon") === -1,
-          type: "asset/source",
+          type: "asset",
         },
         {
           test: /\.(jpg|jpeg|png|gif)$/i,
