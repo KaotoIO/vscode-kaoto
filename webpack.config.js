@@ -1,6 +1,7 @@
 const { dependencies, federatedModuleName } = require('./package.json');
 const { merge } = require("webpack-merge");
 const webpack = require('webpack');
+const CopyPlugin = require("copy-webpack-plugin");
 const PermissionsOutputPlugin = require('webpack-permissions-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const path = require("path");
@@ -141,6 +142,11 @@ const commonConfig = (env) => {
         'KAOTO_API': JSON.stringify("http://localhost:8097"),
         'process.env.KAOTO_API': JSON.stringify("http://localhost:8097"), // to remove with Kaoto 1.1.0
         'KAOTO_VERSION': '1' //JSON.stringify(kaotoUIpkg.version),
+      }),
+      new CopyPlugin({
+        patterns: [
+          { from: "node_modules/@kaoto-next/ui/lib/camel-catalog", to: "webview/editors/kaoto/camel-catalog" },
+        ],
       }),
       // new webpack.container.ModuleFederationPlugin({
       //   name: federatedModuleName,
