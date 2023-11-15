@@ -19,7 +19,6 @@
   },
   "scripts": {
     "lint": "yarn eslint ./src --ext .ts,.tsx",
-    "postinstall": "node ./scripts/postinstall.js",
     "build:prod": "rimraf dist && webpack",
     "build:dev": "rimraf dist && webpack --env dev",
     "build:test:it": "tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true",
@@ -164,14 +163,17 @@
     "webpack-permissions-plugin": "^1.0.9"
   },
   "resolutions": {
-    "@types/react": "18.2.21",
     "import-in-the-middle": "1.4.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "semver": "7.5.2",
-    "zundo": "2.0.0-beta.23",
-    "@kaoto-next/ui": "portal:/home/apupier/git/kaoto-next/packages/ui",
-    "@kaoto-next/camel-catalog": "portal:/home/apupier/git/kaoto-next/packages/camel-catalog"
+    "@patternfly/patternfly": "^5.0.0",
+    "@patternfly/react-code-editor": "^5.0.0",
+    "@patternfly/react-core": "^5.0.0",
+    "@patternfly/react-icons": "^5.0.0",
+    "@patternfly/react-table": "^5.0.0",
+    "@patternfly/react-topology": "^5.0.0",
+    "@kaoto-next/ui": "portal:/home/ricmarti/repos/kaoto-next/packages/ui"
   },
   "packageManager": "yarn@3.6.1"
 }

@@ -18,7 +18,7 @@ import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/ba
 import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
 import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
+import * as KogitoVsCode from "@kie-tools-core/vscode-extension/dist";
 import { TelemetryService, getRedHatService } from "@redhat-developer/vscode-redhat-telemetry";
 import * as vscode from "vscode";
 
