@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { waitUntil } from 'async-wait-until';
 import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
 import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
 import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
@@ -22,22 +21,12 @@ import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import { getRedHatService, TelemetryService } from "@redhat-developer/vscode-redhat-telemetry";
 import * as vscode from "vscode";
-import * as child_process from "child_process";
-import * as os from 'os';
-import * as path from 'path';
-import { TextDecoder } from 'util';
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
 
-let backendProcess: child_process.ChildProcessWithoutNullStreams | undefined;
-let kaotoBackendOutputChannel: vscode.OutputChannel | undefined;
-let kaotoBackendWarmedUp: boolean = false;
-
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Kaoto Editor extension is alive.");
-
-  await warmupKaotoBackend();
 
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
@@ -67,74 +56,9 @@ export async function activate(context: vscode.ExtensionContext) {
   const redhatService = await getRedHatService(context);
   telemetryService = await redhatService.getTelemetryService();
   telemetryService.sendStartupEvent();
-
-  async function warmupKaotoBackend() {
-    kaotoBackendOutputChannel = vscode.window.createOutputChannel(`Kaoto backend`);
-    const nativeExecutable = context.asAbsolutePath(path.join("binaries", getBinaryName()));
-    backendProcess = child_process.spawn(nativeExecutable, ['-Dquarkus.http.port=8097', '-Dquarkus.http.cors.origins=/^vscode-webview://.*/']);
-    backendProcess.on("close", (code, _signal) => {
-      if (kaotoBackendOutputChannel) {
-        kaotoBackendOutputChannel.append(`Kaoto backend process closed with code: ${code}\n`);
-      }
-    });
-    backendProcess.stdout.on("error", function (error) {
-      if (kaotoBackendOutputChannel) {
-        kaotoBackendOutputChannel.append(`Failed to start Kaoto backend ${error.name} ${error.message}\n`);
-      }
-    });
-    backendProcess.stderr.on("error", function (error) {
-      if (kaotoBackendOutputChannel) {
-        kaotoBackendOutputChannel.append(`Error: ${error.name} ${error.message}\n`);
-      }
-    });
-    backendProcess.stdout.on("data", function (data) {
-      if (kaotoBackendOutputChannel) {
-        const dec = new TextDecoder("utf-8");
-        const text = dec.decode(data);
-        if (!kaotoBackendWarmedUp && text.includes('Catalog class io.kaoto.backend.api.metadata.catalog.StepCatalog_Subclass warmed up in')) {
-          kaotoBackendWarmedUp = true;
-        }
-        kaotoBackendOutputChannel.append(text);
-      }
-    });
-    backendProcess.stderr.on("data", function (data) {
-      if (kaotoBackendOutputChannel) {
-        const dec = new TextDecoder("utf-8");
-        const text = dec.decode(data);
-        kaotoBackendOutputChannel.append(`Error: ` + text);
-      }
-    });
-
-    try {
-      await waitUntil(() => kaotoBackendWarmedUp, { timeout: 60000 });
-    } catch {
-      kaotoBackendOutputChannel.append('Kaoto backend failed to warm up in 1 minute.\n');
-    }
-  }
-}
-
-function getBinaryName(): string {
-	if (os.platform() === "darwin") {
-		return "kaoto-macos-amd64";
-	} else if(os.platform() === 'win32') {
-		return "kaoto-windows-amd64.exe";
-	}
-	return "kaoto-linux-amd64";
 }
 
 export function deactivate() {
-  kaotoBackendWarmedUp = false;
-  if (backendProcess !== undefined) {
-    if (kaotoBackendOutputChannel !== undefined) {
-      kaotoBackendOutputChannel.append(`Kaoto backend is stopped during VS Code extension deactivation.`);
-    }
-    backendProcess.kill();
-  }
   backendProxy?.stopServices();
-
-  if (kaotoBackendOutputChannel != undefined) {
-    kaotoBackendOutputChannel.dispose();
-    kaotoBackendOutputChannel = undefined;
-  }
   telemetryService.sendShutdownEvent();
 }

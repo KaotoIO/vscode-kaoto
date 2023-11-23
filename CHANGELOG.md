@@ -1,3 +1,7 @@
+# 0.11.0
+
+- Remove kaoto backend v1: reduced size of bundle and no more requirements on architecture
+
 # 0.10.0
 
 - Upgrade embedded Kaoto [UI](https://github.com/KaotoIO/kaoto-ui/releases/tag/v1.4.0) and [backend](https://github.com/KaotoIO/kaoto-backend/releases/tag/v1.4.0) to 1.3.0

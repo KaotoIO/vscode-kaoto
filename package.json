@@ -19,7 +19,6 @@
   },
   "scripts": {
     "lint": "yarn eslint ./src --ext .ts,.tsx",
-    "postinstall": "node ./scripts/postinstall.js",
     "build:prod": "rimraf dist && webpack",
     "build:dev": "rimraf dist && webpack --env dev",
     "build:test:it": "tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true",
@@ -38,7 +37,6 @@
     "@kie-tools-core/vscode-extension": "0.31.0",
     "@patternfly/react-core": "4.277.0",
     "@redhat-developer/vscode-redhat-telemetry": "^0.7.1",
-    "async-wait-until": "^2.0.12",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
@@ -138,6 +136,7 @@
     "@types/react": "18.2.37",
     "@vscode/test-web": "^0.0.48",
     "@vscode/vsce": "^2.22.0",
+    "async-wait-until": "^2.0.12",
     "buffer": "^6.0.3",
     "chai": "^4.3.10",
     "constants-browserify": "^1.0.0",
