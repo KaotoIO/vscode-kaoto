@@ -1,16 +1,6 @@
-const { dependencies, federatedModuleName } = require('./package.json');
-const { merge } = require("webpack-merge");
-const webpack = require('webpack');
-const PermissionsOutputPlugin = require('webpack-permissions-plugin');
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const path = require("path");
-const BG_IMAGES_DIRNAME = "bgimages";
-
-const kaotoUIpkg = require('@kaoto/kaoto-ui/package.json');
-
-let deps = {};
-Object.keys(dependencies).forEach((key) => { deps[key] = { eager: true } });
-
+const { merge } = require('webpack-merge');
+const CopyPlugin = require('copy-webpack-plugin');
+const path = require('path');
 function posixPath(pathStr) {
   return pathStr.split(path.sep).join(path.posix.sep);
 }
@@ -128,33 +118,19 @@ const commonConfig = (env) => {
       alias: {
         "react": path.resolve('./node_modules/react'),
         "react-dom": path.resolve('./node_modules/react-dom'),
-        "@patternfly/react-core": path.resolve('./node_modules/@patternfly/react-core')
+        "@patternfly/react-core": path.resolve('./node_modules/@patternfly/react-core'),
+        "@patternfly/react-topology": path.resolve('./node_modules/@patternfly/react-topology')
       },
-      plugins: [
-        new TsconfigPathsPlugin({
-          configFile: path.resolve(__dirname, './tsconfig.json'),
-        }),
-      ],
     },
     plugins: [
-      new webpack.DefinePlugin({
-        'KAOTO_API': JSON.stringify("http://localhost:8097"),
-        'process.env.KAOTO_API': JSON.stringify("http://localhost:8097"), // to remove with Kaoto 1.1.0
-        'KAOTO_VERSION': JSON.stringify(kaotoUIpkg.version),
-      }),
-      new webpack.container.ModuleFederationPlugin({
-        name: federatedModuleName,
-        filename: 'remoteEntry.js',
-        library: { type: 'var', name: federatedModuleName },
-        shared: {
-          ...deps
-        }
-      }),
-      new PermissionsOutputPlugin({
-        buildFolders: [
-          path.resolve(__dirname, 'binaries/')
+      new CopyPlugin({
+        patterns: [
+          {
+            from: 'node_modules/@kaoto-next/ui/lib/camel-catalog',
+            to: 'webview/editors/kaoto/camel-catalog',
+          },
         ]
-      })
+      }),
     ],
     externals: {
       vscode: "commonjs vscode",
@@ -197,8 +173,6 @@ module.exports = async (env) => [
               or: [
                 (input) => posixPath(input).includes("node_modules/@patternfly/react-core/dist/styles/assets/fonts"),
                 (input) => posixPath(input).includes("node_modules/@patternfly/react-core/dist/styles/assets/pficon"),
-                (input) => posixPath(input).includes("node_modules/@kaoto/kaoto-ui/node_modules/@patternfly/patternfly/assets/fonts"),
-                (input) => posixPath(input).includes("node_modules/@kaoto/kaoto-ui/node_modules/@patternfly/patternfly/assets/pficon"),
                 (input) =>
                   posixPath(input).includes("node_modules/monaco-editor/esm/vs/base/browser/ui/codicons/codicon"),
                 (input) =>
@@ -212,33 +186,7 @@ module.exports = async (env) => [
           }
         },
         {
-          test: /\.svg$/,
-          include: (input) => input.indexOf("background-filter.svg") > 1,
-          type: 'asset',
-          generator: {
-            filename: 'svgs/[name].[ext]',
-          }
-        },
-        {
-          test: /\.svg$/,
-          // only process SVG modules with this loader if they live under a 'bgimages' directory
-          // this is primarily useful when applying a CSS background using an SVG
-          include: (input) => input.indexOf(BG_IMAGES_DIRNAME) > -1,
-          type: 'asset',
-        },
-        {
-          test: /\.svg$/,
-          // only process SVG modules with this loader when they don't live under a 'bgimages',
-          // 'fonts', or 'pficon' directory, those are handled with other loaders
-          include: (input) =>
-            input.indexOf(BG_IMAGES_DIRNAME) === -1 &&
-            input.indexOf("fonts") === -1 &&
-            input.indexOf("background-filter") === -1 &&
-            input.indexOf("pficon") === -1,
-          type: "asset/source",
-        },
-        {
-          test: /\.(jpg|jpeg|png|gif)$/i,
+          test: /\.(svg|jpg|jpeg|png|gif)$/i,
           type: "asset",
         },
       ],
