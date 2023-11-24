@@ -1,6 +1,6 @@
 # 0.11.0
 
-- Use Kaoto-next 0.3.0 instead of Kaoto Ui + Kaoto backend
+- Use Kaoto-next 0.3.0 instead of Kaoto UI + Kaoto backend
 - Remove kaoto backend v1: reduced size of bundle and no more requirements on architecture
 
 # 0.10.0

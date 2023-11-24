@@ -5,7 +5,7 @@ on:
     branches: [ main, feat/kaoto-next ]
   workflow_dispatch:
 
-name: Build with main branch of kaoto-ui
+name: Build with main branch of kaoto-next
 
 jobs:
   build:
@@ -33,13 +33,13 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
     - name: Kaoto build
-      working-directory: kaoto-ui
+      working-directory: kaoto-next
       run: |
         yarn
         yarn workspace @kaoto-next/ui run build:lib
-    - name: yarn link kaoto-ui
+    - name: yarn link kaoto-next
       working-directory: vscode-kaoto
-      run: yarn link ../kaoto-ui/packages/kaoto-ui
+      run: yarn link ../kaoto-next/packages/ui
     - name: yarn build:dev
       working-directory: vscode-kaoto
       run: yarn build:dev
