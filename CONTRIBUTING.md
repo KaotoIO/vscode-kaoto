@@ -96,31 +96,32 @@ This is available for future plan. This is not supported.
 
 You need to launch the script task `yarn run run:webmode`
 
-### How to manually test latest Kaoto UI
+### How to manually test latest Kaoto
 
-If you'd like to test latest Kaoto UI and not rely on a released version, follow these steps:
+If you'd like to test latest Kaoto and not rely on a released version, follow these steps:
 
-* In `kaoto-ui` local clone folder:
+* In `kaoto-next` local clone folder:
   * `yarn`
-  * `yarn workspace @kaoto/kaoto-ui run build:lib`
+  * `yarn workspace @kaoto-next/camel-catalog run build`
+  * `yarn workspace @kaoto-next/ui run build:lib`
 * Open VS Code on `vscode-kaoto` local clone folder
 * `yarn`
-* `yarn link` _\<kaoto-ui local clone folder uri>/packages/kaoto-ui_
-  * i.e. `yarn link ~/repositories/kaoto-ui/packages/kaoto-ui`
+* `yarn link` _\<kaoto-next local clone folder uri>/packages/kaoto-_
+  * i.e. `yarn link ~/repositories/kaoto-next/packages/ui`
 * `yarn build:dev`
 * In `Run and debug` perspective, call the `Run Extension` launch configuration
 * In the new VS Code opened (which has `[Extension Development host]` in window title),
   * Open a folder (use the one you want)
-  * Create a file named with the following pattern `*.kaoto.yaml`
+  * Create a file named with the following pattern `*.camel.yaml`
   * Open the file
 
-To return to the default Kaoto UI version, just write on `vscode-kaoto` local clone folder:
-* `yarn unlink` _\<kaoto-ui local clone folder uri>/packages/kaoto-ui_
-  * i.e. `yarn unlink ~/repositories/kaoto-ui/packages/kaoto-ui`
+To return to the default Kaoto version, just write on `vscode-kaoto` local clone folder:
+* `yarn unlink` _\<kaoto-next local clone folder uri>/packages/ui_
+  * i.e. `yarn unlink ~/repositories/kaoto-next/packages/ui`
 
 More information about [linking](https://yarnpkg.com/cli/link) and [unlinking](https://yarnpkg.com/cli/unlink) local packages with [yarn](https://yarnpkg.com/)
 
-### How to debug Kaoto UI embedded in VS Code
+### How to debug Kaoto embedded in VS Code
 
 The command `Developer: Toggle Developer Tools` gives access to classic developer tools for web applications. See [official documentation](https://code.visualstudio.com/api/extension-guides/webview#inspecting-and-debugging-webviews) for more details.
 

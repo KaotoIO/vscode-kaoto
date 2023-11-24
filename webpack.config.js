@@ -135,8 +135,11 @@ const commonConfig = (env) => {
         before: {
             // Workaround to https://github.com/patternfly/react-topology/issues/118
             include: [
-              'node_modules/@patternfly/react-topology/dist/esm/css/index.ts'
-            ]
+              'node_modules/@patternfly/react-topology/dist/esm/css/index.ts',
+              // next lines are used when doing development with main branch of Kaoto next
+              './../kaoto-next/node_modules/@patternfly/react-topology/dist/esm/css/index.ts'
+            ],
+            allowRootAndOutside: true
         }
     })
     ],

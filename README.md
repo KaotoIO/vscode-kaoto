@@ -36,11 +36,10 @@
 ### Limitations
 
 - Kaoto files are always written and overwritten with `Linux-style` end of line (EOL).
-- Unsupported elements by Kaoto are removed from the files when opening them. The editor will open in dirty state in this case.
 
 ### Embedded
 
-- [Kaoto UI](https://github.com/KaotoIO/kaoto-ui) in version [1.4.0](https://github.com/KaotoIO/kaoto-ui/releases/tag/v1.4.0).
+- [Kaoto](https://github.com/KaotoIO/kaoto-next) in version [0.3.0](https://github.com/KaotoIO/kaoto-next/releases/tag/v0.3.0).
 
 ### Issues
 
