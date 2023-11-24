@@ -1,8 +1,8 @@
 on:
   push:
-    branches: [ main ]
+    branches: [ main, feat/kaoto-next ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, feat/kaoto-next ]
   workflow_dispatch:
 
 name: Build with main branch of kaoto-ui
@@ -20,19 +20,23 @@ jobs:
       uses: actions/checkout@v4
       with:
         path: vscode-kaoto
-    - name: Checkout kaoto-ui
+    - name: Checkout Kaoto
       uses: actions/checkout@v4
       with:
-        path: kaoto-ui
-        repository: KaotoIO/kaoto-ui
+        path: kaoto-next
+        repository: KaotoIO/kaoto-next
     - uses: actions/setup-node@v4
       with:
         node-version: '18.15.x'
-    - name: Kaoto-ui build
+    - uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+    - name: Kaoto build
       working-directory: kaoto-ui
       run: |
         yarn
-        yarn workspace @kaoto/kaoto-ui run build:lib
+        yarn workspace @kaoto-next/ui run build:lib
     - name: yarn link kaoto-ui
       working-directory: vscode-kaoto
       run: yarn link ../kaoto-ui/packages/kaoto-ui
