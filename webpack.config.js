@@ -1,5 +1,6 @@
 const { merge } = require('webpack-merge');
 const CopyPlugin = require('copy-webpack-plugin');
+const RemovePlugin = require('remove-files-webpack-plugin');
 const path = require('path');
 function posixPath(pathStr) {
   return pathStr.split(path.sep).join(path.posix.sep);
@@ -76,7 +77,7 @@ const commonConfig = (env) => {
                 transpileOnly,
                 compilerOptions: {
                   ...importsNotUsedAsValues,
-                  sourceMap: sourceMaps,
+                  sourceMap: sourceMaps
                 },
               },
             },
@@ -118,8 +119,7 @@ const commonConfig = (env) => {
       alias: {
         "react": path.resolve('./node_modules/react'),
         "react-dom": path.resolve('./node_modules/react-dom'),
-        "@patternfly/react-core": path.resolve('./node_modules/@patternfly/react-core'),
-        "@patternfly/react-topology": path.resolve('./node_modules/@patternfly/react-topology')
+        "@patternfly/react-core": path.resolve('./node_modules/@patternfly/react-core')
       },
     },
     plugins: [
@@ -131,6 +131,14 @@ const commonConfig = (env) => {
           },
         ]
       }),
+      new RemovePlugin({
+        before: {
+            // Workaround to https://github.com/patternfly/react-topology/issues/118
+            include: [
+              'node_modules/@patternfly/react-topology/dist/esm/css/index.ts'
+            ]
+        }
+    })
     ],
     externals: {
       vscode: "commonjs vscode",
