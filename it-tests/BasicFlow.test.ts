@@ -30,14 +30,15 @@ describe('Kaoto basic development flow', function () {
     await editorView.closeAllEditors();
   });
 
-  it('Open "emptyKameletBinding.kaoto.yaml" file and check Kaoto UI is loading', async function () {
+  it('Open "emptyPipe.kaoto.yaml" file and check Kaoto UI is loading', async function () {
     const { kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(
       workspaceFolder,
-      'emptyKameletBinding.kaoto.yaml',
+      'emptyPipe.kaoto.yaml',
       driver,
       true
     );
-    await checkIntegrationNameInTopBarLoaded(driver, 'my-integration-name');
+    // Route name is not displayed with Kaoto next
+    // await checkIntegrationNameInTopBarLoaded(driver, 'my-integration-name');
     await checkEmptyCanvasLoaded(driver);
     await kaotoWebview.switchBack();
     assert.isFalse(
@@ -54,8 +55,9 @@ describe('Kaoto basic development flow', function () {
       false
     );
     await checkEmptyCanvasLoaded(driver);
+    await createNewRoute(driver);
     await addActiveMQStep(driver);
-    await checkStepWithTestIdPresent(driver, 'viz-step-activemq');
+    await checkStepWithTestIdPresent(driver, 'custom-node__amqp-*');
 
     await kaotoWebview.switchBack();
     assert.isTrue(
@@ -79,7 +81,7 @@ describe('Kaoto basic development flow', function () {
       driver,
       true
     ));
-    await checkStepWithTestIdPresent(driver, 'viz-step-activemq');
+    await checkStepWithTestIdPresent(driver, 'custom-node__amqp-*');
     await kaotoWebview.switchBack();
   });
 
@@ -90,8 +92,8 @@ describe('Kaoto basic development flow', function () {
       driver,
       true
     );
-    await checkStepWithTestIdPresent(driver, 'viz-step-timer');
-    await checkStepWithTestIdPresent(driver, 'viz-step-log');
+    await checkStepWithTestIdPresent(driver, 'custom-node__timer-*');
+    await checkStepWithTestIdPresent(driver, 'custom-node__tlog-*');
     await kaotoWebview.switchBack();
     assert.isFalse(
       await kaotoEditor.isDirty(),
@@ -100,36 +102,29 @@ describe('Kaoto basic development flow', function () {
   });
 });
 
-async function addActiveMQStep(driver: WebDriver) {
-  await waitUntil(
-    async () => {
-      try {
-        await clickOnAddAStep(driver);
-      } catch {
-        console.log(
-          'Clicked on step failed surely due to Kaoto UI redrawing the content of the canvas. Will retry as a workaround'
-        );
-        return false;
-      }
-      return true;
-    },
-    10_000,
-    2_000
-  );
-  await driver.wait(
-    until.elementLocated(By.xpath("//button[@data-testid='miniCatalog__stepItem--activemq']"))
-  );
-  await (
-    await driver.findElement(By.xpath("//button[@data-testid='miniCatalog__stepItem--activemq']"))
-  ).click();
+async function createNewRoute(driver: WebDriver) {
+  await (await driver.findElement(By.xpath("//button[@data-testid='dsl-list-btn']"))).click();
 }
 
-async function clickOnAddAStep(driver: WebDriver) {
-  await (await driver.findElement(By.xpath("//div[@data-testid='viz-step-slot']"))).click();
+async function addActiveMQStep(driver: WebDriver) {
+  console.log('will add an activemq step');
+  await driver.wait(
+    until.elementLocated(By.xpath("(//g[@class='pf-topology__node__action-icon'])[0]"))
+  );
+  await (await driver.findElement(By.xpath("(//g[@class='pf-topology__node__action-icon'])[0]"))).click();
+
+  console.log('open context menu opened, will click on insert');
+  await (await driver.findElement(By.xpath("//li[@date-testid='context-menu-item-insert']"))).click();
+  
+  console.log('will click on the activemq tile');
+  await driver.wait(
+    until.elementLocated(By.xpath("//div[@data-testid='tile-activemq']"))
+  );
+  await (await driver.findElement(By.xpath("//div[@data-testid='tile-activemq']"))).click();
 }
 
 async function checkStepWithTestIdPresent(driver: WebDriver, testId: string) {
-  await driver.wait(until.elementLocated(By.xpath(`//div[@data-testid='${testId}']`)));
+  await driver.wait(until.elementLocated(By.xpath(`//g[@data-testid='${testId}']`)));
 }
 
 async function checkIntegrationNameInTopBarLoaded(driver: WebDriver, name: string) {
