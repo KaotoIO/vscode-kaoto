@@ -146,10 +146,10 @@ async function addActiveMQStep(driver: WebDriver) {
 
 async function checkStepWithTestIdPresent(driver: WebDriver, testId: string) {
   console.log(`check step starts with testId = ${testId}`);
-  console.log(`//g[starts-with(@data-testid, '${testId}')]`);
   await driver.wait(
-    until.elementLocated(By.xpath(`//g[starts-with(@data-testid, '${testId}')]`)
+    until.elementLocated(By.xpath(`//*[name='g' and starts-with(@data-testid,'${testId}')]`)
   ));
+  console.log(`step with id ${testId} found`);
 }
 
 async function checkIntegrationNameInTopBarLoaded(driver: WebDriver, name: string) {
