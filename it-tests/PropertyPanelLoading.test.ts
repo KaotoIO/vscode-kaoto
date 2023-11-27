@@ -36,9 +36,7 @@ describe('property panel loading test', function () {
       until.elementLocated(By.className('pf-v5-c-card')
     ), 5_000);
 
-    console.log('try to close property panel');
     await (await driver.findElement(By.xpath("//button[@data-testid='close-side-bar']"))).click();
-    console.log('wait until property panel is no located');
     try {
       await driver.wait(
         until.elementLocated(By.className('pf-v5-c-card')

@@ -78,16 +78,13 @@ describe('Kaoto basic development flow', function () {
       await kaotoEditor.isDirty(),
       'The Kaoto editor should be dirty after adding a step.'
     );
-    console.log('will save');
     await kaotoEditor.save();
     await waitUntil(async () => {
       return !(await kaotoEditor.isDirty());
     });
-    console.log('editor no more dirty');
 
     const editorView = new EditorView();
     await editorView.closeAllEditors();
-    console.log('editors closed');
 
     ({ kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(
       workspaceFolder,
@@ -123,21 +120,16 @@ async function createNewRoute(driver: WebDriver) {
 }
 
 async function addActiveMQStep(driver: WebDriver) {
-  console.log('will add an activemq step');
   await driver.wait(
     until.elementLocated(By.className('pf-topology__node__action-icon'))
   );
-  console.log('will click node action btn');
   await (await driver.findElement(By.className('pf-topology__node__action-icon'))).click();
 
-  console.log('will wait for opened context menu');
   await driver.wait(
     until.elementLocated(By.className('pf-v5-c-dropdown pf-m-expanded'))
   );
-  console.log('context menu opened, will click on insert');
   await (await driver.findElement(By.xpath("//li[@data-testid='context-menu-item-insert']"))).click();
   
-  console.log('will click on the activemq tile');
   await driver.wait(
     until.elementLocated(By.xpath("//div[@data-testid='tile-activemq']"))
   );
@@ -145,11 +137,9 @@ async function addActiveMQStep(driver: WebDriver) {
 }
 
 async function checkStepWithTestIdPresent(driver: WebDriver, testId: string) {
-  console.log(`check step starts with testId = ${testId}`);
   await driver.wait(
     until.elementLocated(By.xpath(`//\*[name()='g' and starts-with(@data-testid,'${testId}')]`)
   ), 5_000);
-  console.log(`step with id ${testId} found`);
 }
 
 async function checkIntegrationNameInTopBarLoaded(driver: WebDriver, name: string) {
