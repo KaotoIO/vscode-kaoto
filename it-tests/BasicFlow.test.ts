@@ -85,7 +85,7 @@ describe('Kaoto basic development flow', function () {
     await kaotoWebview.switchBack();
   });
 
-  it.skip('Open Camel file and check Kaoto UI is loading', async function () {
+  it('Open Camel file and check Kaoto UI is loading', async function () {
     const { kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(
       workspaceFolder,
       'my.camel.yaml',
@@ -93,7 +93,7 @@ describe('Kaoto basic development flow', function () {
       true
     );
     await checkStepWithTestIdPresent(driver, 'custom-node__timer-*');
-    await checkStepWithTestIdPresent(driver, 'custom-node__tlog-*');
+    await checkStepWithTestIdPresent(driver, 'custom-node__log-*');
     await kaotoWebview.switchBack();
     assert.isFalse(
       await kaotoEditor.isDirty(),
