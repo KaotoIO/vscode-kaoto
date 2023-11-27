@@ -1,4 +1,4 @@
-import { By, EditorView, until, VSBrowser, WebDriver } from 'vscode-extension-tester';
+import { By, EditorView, until, VSBrowser, WebDriver, WebView } from 'vscode-extension-tester';
 import { assert } from 'chai';
 import * as path from 'path';
 import { checkEmptyCanvasLoaded, openAndSwitchToKaotoFrame } from './Util';
@@ -11,6 +11,7 @@ describe('Kaoto basic development flow', function () {
   const workspaceFolder = path.join(__dirname, '../test Fixture with speci@l chars');
 
   let driver: WebDriver;
+  let globalKaotoWebView: WebView;
 
   before(async function () {
     fs.copySync(
@@ -26,6 +27,13 @@ describe('Kaoto basic development flow', function () {
   });
 
   afterEach(async function () {
+    if (globalKaotoWebView !== undefined) {
+      try {
+        await globalKaotoWebView.switchBack();
+      } catch {
+        // probably test not failed in Kaoto UI, just continue
+      }
+    }
     const editorView = new EditorView();
     await editorView.closeAllEditors();
   });
@@ -37,6 +45,7 @@ describe('Kaoto basic development flow', function () {
       driver,
       true
     );
+    globalKaotoWebView = kaotoWebview;
     // Route name is not displayed with Kaoto next
     // await checkIntegrationNameInTopBarLoaded(driver, 'my-integration-name');
     await checkEmptyCanvasLoaded(driver);
@@ -54,6 +63,7 @@ describe('Kaoto basic development flow', function () {
       driver,
       false
     );
+    globalKaotoWebView = kaotoWebview;
     await checkEmptyCanvasLoaded(driver);
     await createNewRoute(driver);
     await addActiveMQStep(driver);
@@ -81,6 +91,7 @@ describe('Kaoto basic development flow', function () {
       driver,
       true
     ));
+    globalKaotoWebView = kaotoWebview;
     await checkStepWithTestIdPresent(driver, 'custom-node__activemq');
     await kaotoWebview.switchBack();
   });
@@ -92,6 +103,7 @@ describe('Kaoto basic development flow', function () {
       driver,
       true
     );
+    globalKaotoWebView = kaotoWebview;
     await checkStepWithTestIdPresent(driver, 'custom-node__timer-*');
     await checkStepWithTestIdPresent(driver, 'custom-node__log-*');
     await kaotoWebview.switchBack();
