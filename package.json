@@ -135,7 +135,7 @@
     "@types/chai": "^4.3.11",
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.6",
-    "@types/react": "18.2.37",
+    "@types/react": "18.2.39",
     "@vscode/test-web": "^0.0.48",
     "@vscode/vsce": "^2.22.0",
     "buffer": "^6.0.3",
@@ -164,7 +164,7 @@
     "webpack-permissions-plugin": "^1.0.9"
   },
   "resolutions": {
-    "@types/react": "18.2.37",
+    "@types/react": "18.2.39",
     "import-in-the-middle": "1.4.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
