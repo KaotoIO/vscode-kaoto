@@ -108,8 +108,8 @@ describe('Kaoto basic development flow', function () {
       true
     );
     globalKaotoWebView = kaotoWebview;
-    await checkStepWithTestIdPresent(driver, 'custom-node__timer-*');
-    await checkStepWithTestIdPresent(driver, 'custom-node__log-*');
+    await checkStepWithTestIdPresent(driver, 'custom-node__timer');
+    await checkStepWithTestIdPresent(driver, 'custom-node__log');
     await kaotoWebview.switchBack();
     assert.isFalse(
       await kaotoEditor.isDirty(),
@@ -147,8 +147,8 @@ async function addActiveMQStep(driver: WebDriver) {
 async function checkStepWithTestIdPresent(driver: WebDriver, testId: string) {
   console.log(`check step starts with testId = ${testId}`);
   await driver.wait(
-    until.elementLocated(By.xpath(`//*[name='g' and starts-with(@data-testid,'${testId}')]`)
-  ));
+    until.elementLocated(By.xpath(`//\*[name()='g' and starts-with(@data-testid,'${testId}')]`)
+  ), 5_000);
   console.log(`step with id ${testId} found`);
 }
 
