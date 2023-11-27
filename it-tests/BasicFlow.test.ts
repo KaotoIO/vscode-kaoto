@@ -5,6 +5,8 @@ import { checkEmptyCanvasLoaded, openAndSwitchToKaotoFrame } from './Util';
 import { waitUntil } from 'async-wait-until';
 import * as fs from 'fs-extra';
 
+const logging = require('selenium-webdriver/lib/logging');
+
 describe('Kaoto basic development flow', function () {
   this.timeout(90_000);
 
@@ -14,6 +16,8 @@ describe('Kaoto basic development flow', function () {
   let globalKaotoWebView: WebView;
 
   before(async function () {
+    const logger = logging.getLogger('webdriver');
+    logger.setLevel(logging.Level.DEBUG);
     fs.copySync(
       path.join(workspaceFolder, 'empty.camel.yaml'),
       path.join(workspaceFolder, 'empty_copy.camel.yaml')
