@@ -128,7 +128,7 @@ async function addActiveMQStep(driver: WebDriver) {
   await driver.wait(
     until.elementLocated(By.className('pf-v5-c-dropdown pf-m-expanded'))
   );
-  await (await driver.findElement(By.xpath("//li[@data-testid='context-menu-item-insert']"))).click();
+  await (await driver.findElement(By.xpath("//*[@data-testid='context-menu-item-insert']"))).click();
   
   await driver.wait(
     until.elementLocated(By.xpath("//div[@data-testid='tile-activemq']"))
