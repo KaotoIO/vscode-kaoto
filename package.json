@@ -30,7 +30,7 @@
     "test:it:clean": "rimraf ./test-resources && rimraf ./out && rimraf *.vsix"
   },
   "dependencies": {
-    "@kaoto-next/ui": "0.6.0",
+    "@kaoto-next/ui": "0.7.0",
     "@kie-tools-core/backend": "0.32.0",
     "@kie-tools-core/editor": "0.32.0",
     "@kie-tools-core/i18n": "0.32.0",
