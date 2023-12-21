@@ -1,11 +1,9 @@
-import { By, EditorView, until, VSBrowser, WebDriver, WebView } from 'vscode-extension-tester';
+import { By, EditorView, until, VSBrowser, WebDriver, WebView, logging } from 'vscode-extension-tester';
 import { assert } from 'chai';
 import * as path from 'path';
 import { checkEmptyCanvasLoaded, openAndSwitchToKaotoFrame } from './Util';
 import { waitUntil } from 'async-wait-until';
 import * as fs from 'fs-extra';
-
-const logging = require('selenium-webdriver/lib/logging');
 
 describe('Kaoto basic development flow', function () {
   this.timeout(90_000);
@@ -50,8 +48,7 @@ describe('Kaoto basic development flow', function () {
       true
     );
     globalKaotoWebView = kaotoWebview;
-    // Route name is not displayed with Kaoto next
-    // await checkIntegrationNameInTopBarLoaded(driver, 'my-integration-name');
+    await checkIntegrationNameInTopBarLoaded(driver, 'my-integration-name');
     await checkEmptyCanvasLoaded(driver);
     await kaotoWebview.switchBack();
     assert.isFalse(
@@ -128,7 +125,7 @@ async function addActiveMQStep(driver: WebDriver) {
   await driver.wait(
     until.elementLocated(By.className('pf-v5-c-dropdown pf-m-expanded'))
   );
-  await (await driver.findElement(By.xpath("//*[@data-testid='context-menu-item-insert']"))).click();
+  await (await driver.findElement(By.xpath("//\*[@data-testid='context-menu-item-insert']"))).click();
   
   await driver.wait(
     until.elementLocated(By.xpath("//div[@data-testid='tile-activemq']"))
@@ -143,5 +140,7 @@ async function checkStepWithTestIdPresent(driver: WebDriver, testId: string) {
 }
 
 async function checkIntegrationNameInTopBarLoaded(driver: WebDriver, name: string) {
-  await driver.wait(until.elementLocated(By.xpath(`//span[text()='${name}']`)));
+  await driver.wait(
+    until.elementLocated(By.xpath(`//span[@data-testid='flows-list-route-id' and text()='${name}']`)
+  ), 5_000, `Unable to locate integration name '${name} in top bar!'`);
 }
