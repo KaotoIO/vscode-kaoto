@@ -2,7 +2,7 @@ import { By, EditorView, until, VSBrowser, WebDriver, WebView } from 'vscode-ext
 import * as path from 'path';
 import { openAndSwitchToKaotoFrame } from './Util';
 
-describe('property panel loading test', function () {
+describe('Property panel loading test', function () {
   this.timeout(60_000);
 
   const workspaceFolder = path.join(__dirname, '../test Fixture with speci@l chars');
@@ -23,24 +23,28 @@ describe('property panel loading test', function () {
   });
 
   it('Open "choice.camel.yaml" file and check property panel is loading and closing', async function () {
-    console.log('### beggining');
     kaotoWebview = (await openAndSwitchToKaotoFrame(
       workspaceFolder,
       'choice.camel.yaml',
       driver,
       true
     )).kaotoWebview;
-    console.log('### webview opened');
     const stepWhenXpath = By.xpath(`//\*[name()='g' and starts-with(@data-testid,'custom-node__when')]`)
     await driver.wait(until.elementLocated(stepWhenXpath), 5_000);
-    console.log('### when step node found');
     await (await driver.findElement(stepWhenXpath)).click();
     await driver.wait(
       until.elementLocated(By.className('pf-v5-c-card')
     ), 5_000);
-    console.log('### config panel opened');
 
-    await (await driver.findElement(By.xpath("//button[@data-testid='close-side-bar']"))).click();
+    const closeBtn = await driver.findElement(By.xpath("//button[@data-testid='close-side-bar']"));
+    if (process.platform === 'darwin') {
+      // from some reason this extra dynamic wait is needed on macOS
+      await driver.wait(async () => {
+        return await closeBtn.isDisplayed();
+      }, 5_000, 'Close button is not displayed!');
+    }
+    await closeBtn.click();
+
     try {
       await driver.wait(
         until.elementLocated(By.className('pf-v5-c-card')
