@@ -41,10 +41,7 @@ describe.only('Property panel loading test', function () {
     await driver.wait(async () => {
       return await closeBtn.isEnabled() && await closeBtn.isDisplayed();
     }, 5_000, 'Close button is not displayed!');
-    // await driver.wait(
-    //   until.elementLocated(closeBtnLocator
-    // ), 5_000, 'Close BTN is not located!');
-    await closeBtn.click();
+    await (await driver.findElement(closeBtnLocator)).click();
 
     try {
       await driver.wait(
