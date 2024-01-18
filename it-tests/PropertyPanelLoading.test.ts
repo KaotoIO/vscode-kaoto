@@ -37,10 +37,14 @@ describe.only('Property panel loading test', function () {
     ), 5_000);
 
     const closeBtnLocator = By.xpath("//button[@data-testid='close-side-bar']");
+    const closeBtn = await driver.findElement(closeBtnLocator);
     await driver.wait(async () => {
-      return await (await driver.findElement(closeBtnLocator)).isDisplayed();
+      return await closeBtn.isEnabled() && await closeBtn.isDisplayed();
     }, 5_000, 'Close button is not displayed!');
-    await (await driver.findElement(closeBtnLocator)).click();
+    // await driver.wait(
+    //   until.elementLocated(closeBtnLocator
+    // ), 5_000, 'Close BTN is not located!');
+    await closeBtn.click();
 
     try {
       await driver.wait(
