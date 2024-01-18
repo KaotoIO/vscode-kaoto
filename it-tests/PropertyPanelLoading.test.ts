@@ -2,7 +2,7 @@ import { By, EditorView, until, VSBrowser, WebDriver, WebView } from 'vscode-ext
 import * as path from 'path';
 import { openAndSwitchToKaotoFrame } from './Util';
 
-describe.only('Property panel loading test', function () {
+describe('Property panel loading test', function () {
   this.timeout(60_000);
 
   const workspaceFolder = path.join(__dirname, '../test Fixture with speci@l chars');
