@@ -23,18 +23,22 @@ describe('property panel loading test', function () {
   });
 
   it('Open "choice.camel.yaml" file and check property panel is loading and closing', async function () {
+    console.log('### beggining');
     kaotoWebview = (await openAndSwitchToKaotoFrame(
       workspaceFolder,
       'choice.camel.yaml',
       driver,
       true
     )).kaotoWebview;
+    console.log('### webview opened');
     const stepWhenXpath = By.xpath(`//\*[name()='g' and starts-with(@data-testid,'custom-node__when')]`)
     await driver.wait(until.elementLocated(stepWhenXpath), 5_000);
+    console.log('### when step node found');
     await (await driver.findElement(stepWhenXpath)).click();
     await driver.wait(
       until.elementLocated(By.className('pf-v5-c-card')
     ), 5_000);
+    console.log('### config panel opened');
 
     await (await driver.findElement(By.xpath("//button[@data-testid='close-side-bar']"))).click();
     try {
