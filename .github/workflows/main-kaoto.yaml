@@ -15,6 +15,9 @@ jobs:
       matrix:
         os: [ubuntu-latest]
 
+    env:
+      TEST_RESOURCES: test-resources
+
     steps:
     - name: Checkout vscode-kaoto
       uses: actions/checkout@v4
