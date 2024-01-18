@@ -2,7 +2,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, feat/kaoto-next ]
   workflow_dispatch:
 
 name: Build with released version of Kaoto
