@@ -16,6 +16,9 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest,  windows-latest]
 
+    env:
+      TEST_RESOURCES: test-resources
+
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -50,13 +53,7 @@ jobs:
         path: test-resources/settings/logs
     - name: Store VS Code UI Tests screenshots on failure
       uses: actions/upload-artifact@v3
-      if: ${{ failure() && matrix.os != 'macos-latest' }}
+      if: failure()
       with:
         name: ui-test-screenshots-${{ matrix.os }}
         path: test-resources/screenshots
-    - name: Store VS Code UI Tests screenshots on failure on Mac
-      uses: actions/upload-artifact@v3
-      if: ${{ failure() && matrix.os == 'macos-latest' }}
-      with:
-        name: ui-test-screenshots-${{ matrix.os }}
-        path: /var/folders/**/test-resources/screenshots
