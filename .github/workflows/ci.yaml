@@ -50,7 +50,13 @@ jobs:
         path: test-resources/settings/logs
     - name: Store VS Code UI Tests screenshots on failure
       uses: actions/upload-artifact@v3
-      if: failure()
+      if: ${{ failure() && matrix.os != 'macos-latest' }}
       with:
         name: ui-test-screenshots-${{ matrix.os }}
         path: test-resources/screenshots
+    - name: Store VS Code UI Tests screenshots on failure on Mac
+      uses: actions/upload-artifact@v3
+      if: ${{ failure() && matrix.os == 'macos-latest' }}
+      with:
+        name: ui-test-screenshots-${{ matrix.os }}
+        path: /var/folders/**/test-resources/screenshots
