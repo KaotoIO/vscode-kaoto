@@ -2,7 +2,7 @@ import { By, EditorView, until, VSBrowser, WebDriver, WebView } from 'vscode-ext
 import * as path from 'path';
 import { openAndSwitchToKaotoFrame } from './Util';
 
-describe('property panel loading test', function () {
+describe.only('Property panel loading test', function () {
   this.timeout(60_000);
 
   const workspaceFolder = path.join(__dirname, '../test Fixture with speci@l chars');
@@ -36,11 +36,13 @@ describe('property panel loading test', function () {
       until.elementLocated(By.className('pf-v5-c-card')
     ), 5_000);
 
-    const closebtn = await driver.findElement(By.xpath("//button[@data-testid='close-side-bar']"));
+    const closeBtn = await driver.findElement(By.xpath("//button[@data-testid='close-side-bar']"));
     await driver.wait(async () => {
-      return await closebtn.isDisplayed();
+      const isDisplayed = await closeBtn.isDisplayed();
+      console.log(`close btn isDisplayed value = ${isDisplayed}`);
+      return isDisplayed;
     }, 5_000, 'Close button is not displayed!');
-    await closebtn.click();
+    await closeBtn.click();
 
     try {
       await driver.wait(
