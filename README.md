@@ -39,7 +39,7 @@
 
 ### Embedded
 
-- [Kaoto](https://github.com/KaotoIO/kaoto-next) in version [0.3.0](https://github.com/KaotoIO/kaoto-next/releases/tag/v0.3.0).
+- [Kaoto](https://github.com/KaotoIO/kaoto-next) in version [0.8.0](https://github.com/KaotoIO/kaoto-next/releases/tag/v0.8.0).
 
 ### Issues
 
