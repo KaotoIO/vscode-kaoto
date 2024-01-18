@@ -38,6 +38,7 @@ describe.only('Property panel loading test', function () {
 
     const closeBtn = await driver.findElement(By.xpath("//button[@data-testid='close-side-bar']"));
     if (process.platform === 'darwin') {
+      // from some reason this extra dynamic wait is needed on macOS
       await driver.wait(async () => {
         return await closeBtn.isDisplayed();
       }, 5_000, 'Close button is not displayed!');
