@@ -36,15 +36,11 @@ describe.only('Property panel loading test', function () {
       until.elementLocated(By.className('pf-v5-c-card')
     ), 5_000);
 
-    const closeBtn = await driver.findElement(By.xpath("//button[@data-testid='close-side-bar']"));
-    if(process.platform === 'darwin') {
-      await driver.wait(async () => {
-        const isDisplayed = await closeBtn.isDisplayed();
-        console.log(`close btn isDisplayed value = ${isDisplayed}`);
-        return isDisplayed;
-      }, 5_000, 'Close button is not displayed!');
-    }
-    await closeBtn.click();
+    const closeBtnLocator = By.xpath("//button[@data-testid='close-side-bar']");
+    await driver.wait(async () => {
+      return await (await driver.findElement(closeBtnLocator)).isDisplayed();
+    }, 5_000, 'Close button is not displayed!');
+    await (await driver.findElement(closeBtnLocator)).click();
 
     try {
       await driver.wait(
