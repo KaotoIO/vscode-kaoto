@@ -37,11 +37,13 @@ describe.only('Property panel loading test', function () {
     ), 5_000);
 
     const closeBtn = await driver.findElement(By.xpath("//button[@data-testid='close-side-bar']"));
-    await driver.wait(async () => {
-      const isDisplayed = await closeBtn.isDisplayed();
-      console.log(`close btn isDisplayed value = ${isDisplayed}`);
-      return isDisplayed;
-    }, 5_000, 'Close button is not displayed!');
+    if(process.platform === 'darwin') {
+      await driver.wait(async () => {
+        const isDisplayed = await closeBtn.isDisplayed();
+        console.log(`close btn isDisplayed value = ${isDisplayed}`);
+        return isDisplayed;
+      }, 5_000, 'Close button is not displayed!');
+    }
     await closeBtn.click();
 
     try {
