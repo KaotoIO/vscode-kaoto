@@ -59,6 +59,8 @@
     "workspaceContains:**/*.kaoto.yml",
     "workspaceContains:**/*.camel.yaml",
     "workspaceContains:**/*.camel.yml",
+    "workspaceContains:**/*.kamelet.yaml",
+    "workspaceContains:**/*.kamelet.yml",
     "onStartupFinished"
   ],
   "capabilities": {
@@ -107,7 +109,7 @@
         "displayName": "Kaoto Editor",
         "selector": [
           {
-            "filenamePattern": "*.{kaoto,camel}.{yaml,yml}"
+            "filenamePattern": "*.{kaoto,camel,kamelet}.{yaml,yml}"
           }
         ]
       }
