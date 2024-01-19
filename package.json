@@ -43,7 +43,7 @@
   "main": "./dist/extension/extension.js",
   "browser": "./dist/extension/extensionWeb.js",
   "engines": {
-    "vscode": "^1.46.0"
+    "vscode": "^1.74.0"
   },
   "categories": [
     "Other"
@@ -55,7 +55,6 @@
     "No Code Integration"
   ],
   "activationEvents": [
-    "onCustomEditor:webviewEditorsKaoto",
     "workspaceContains:**/*.kaoto.yaml",
     "workspaceContains:**/*.kaoto.yml",
     "workspaceContains:**/*.camel.yaml",
