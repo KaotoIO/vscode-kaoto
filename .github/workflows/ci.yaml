@@ -45,6 +45,17 @@ jobs:
       with:
         name: 'vscode-kaoto-vsix'
         path: '*.vsix'
+    - name: Generate SBOM
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+          npm install --global @cyclonedx/cyclonedx-npm
+          cyclonedx-npm --omit dev --output-file manifest.json
+    - name: Store SBOM
+      uses: actions/upload-artifact@v4
+      if: matrix.os == 'ubuntu-latest'
+      with:
+        name: sbom
+        path: manifest.json
     - name: Store VS Code logs
       uses: actions/upload-artifact@v4
       if: always()
