@@ -38,7 +38,7 @@ export async function activate(context: vscode.ExtensionContext) {
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping({
         type: "kaoto",
-        filePathGlob: "**/**(.+(kaoto|camel)).+(yml|yaml)",
+        filePathGlob: "**/**(.+(kaoto|camel|kamelet)).+(yml|yaml)",
         resourcesPathPrefix: "dist/webview/editors/kaoto",
         envelopeContent: {
           type: EnvelopeContentType.PATH,

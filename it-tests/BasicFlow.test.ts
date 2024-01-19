@@ -110,6 +110,25 @@ describe('Kaoto basic development flow', function () {
       'The Kaoto editor should not be dirty after everything has loaded.'
     );
   });
+
+  it('Open Kamelet file and check Kaoto UI is loading', async function () {
+    const { kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(
+      workspaceFolder,
+      'my.kamelet.yaml',
+      driver,
+      true
+    );
+    globalKaotoWebView = kaotoWebview;
+    await checkStepWithTestIdPresent(driver, 'custom-node__timer');
+    await checkStepWithTestIdPresent(driver, 'custom-node__https');
+    await checkStepWithTestIdPresent(driver, 'custom-node__kamelet:sink');
+    await kaotoWebview.switchBack();
+    assert.isFalse(
+      await kaotoEditor.isDirty(),
+      'The Kaoto editor should not be dirty after everything has loaded.'
+    );
+  });
+
 });
 
 async function createNewRoute(driver: WebDriver) {
