@@ -45,6 +45,15 @@
 
 Something is not working properly? In that case, feel free to [open issues, add feature requests, report bugs, etc.](https://github.com/KaotoIO/vscode-kaoto/issues).
 
+### Snapshots versions
+
+If you're eager to test latest snapshots, there are 2 kind of binary (`*.vsix`) available:
+
+* Snapshot based on main branch of VS Code Kaoto using a released version of Kaoto. Pick latest on [this site](https://download.jboss.org/jbosstools/vscode/snapshots/vscode-kaoto/)
+* Snapshot based on main branch of VS Code Kaoto using the main branch of Kaoto (at time of last build of VS Code Kaoto main branch). Click on latest finished of [this workflow](https://github.com/KaotoIO/vscode-kaoto/actions/workflows/main-kaoto.yaml?query=branch%3Amain), then download the artifact named `vsix-from-main-branch-of-kaoto`, then extract the vsix binary from `vsix-from-main-branch-of-kaoto.zip` downloaded.
+
+To install the vsix binary, see the [official documentation](https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix).
+
 ### Get Involved
 
 If you'd like to help us get better, we appreciate it!
