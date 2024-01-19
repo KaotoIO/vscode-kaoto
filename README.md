@@ -39,9 +39,9 @@
 
 ### Embedded
 
-- [Kaoto](https://github.com/KaotoIO/kaoto-next) in version [0.8.0](https://github.com/KaotoIO/kaoto-next/releases/tag/v0.8.0).
+- [Kaoto 2 preview release](https://github.com/KaotoIO/kaoto-next) in version [0.8.0](https://github.com/KaotoIO/kaoto-next/releases/tag/v0.8.0).
 
-### Issues
+###  Issues
 
 Something is not working properly? In that case, feel free to [open issues, add feature requests, report bugs, etc.](https://github.com/KaotoIO/vscode-kaoto/issues).
 
