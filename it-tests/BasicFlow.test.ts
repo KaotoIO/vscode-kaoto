@@ -1,7 +1,7 @@
 import { By, EditorView, until, VSBrowser, WebDriver, WebView, logging } from 'vscode-extension-tester';
 import { assert } from 'chai';
 import * as path from 'path';
-import { checkEmptyCanvasLoaded, openAndSwitchToKaotoFrame } from './Util';
+import { checkEmptyCanvasLoaded, checkTopologyLoaded, openAndSwitchToKaotoFrame } from './Util';
 import { waitUntil } from 'async-wait-until';
 import * as fs from 'fs-extra';
 
@@ -49,7 +49,7 @@ describe('Kaoto basic development flow', function () {
     );
     globalKaotoWebView = kaotoWebview;
     await checkIntegrationNameInTopBarLoaded(driver, 'my-integration-name');
-    await checkEmptyCanvasLoaded(driver);
+    await checkTopologyLoaded(driver);
     await kaotoWebview.switchBack();
     assert.isFalse(
       await kaotoEditor.isDirty(),

@@ -41,5 +41,9 @@ export async function switchToKaotoFrame(driver: WebDriver, checkNotDirty: boole
 }
 
 export async function checkEmptyCanvasLoaded(driver: WebDriver) {
+  await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='visualization-empty-state']")));
+}
+
+export async function checkTopologyLoaded(driver: WebDriver) {
   await driver.wait(until.elementLocated(By.xpath("//div[@data-test-id='topology']")));
 }
