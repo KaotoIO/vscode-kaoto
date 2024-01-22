@@ -94,11 +94,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto-next/ui@npm:0.8.0":
-  version: 0.8.0
-  resolution: "@kaoto-next/ui@npm:0.8.0"
+"@kaoto-next/ui@npm:2.0.0-TP1-RC1":
+  version: 2.0.0-TP1-RC1
+  resolution: "@kaoto-next/ui@npm:2.0.0-TP1-RC1"
   dependencies:
-    "@kaoto-next/uniforms-patternfly": ^0.5.0
+    "@kaoto-next/uniforms-patternfly": ^0.5.7
     "@kie-tools-core/editor": 0.32.0
     "@kie-tools-core/notifications": 0.32.0
     "@patternfly/patternfly": ^5.0.0
@@ -110,6 +110,7 @@ __metadata:
     "@types/uuid": ^9.0.2
     ajv: ^8.12.0
     ajv-formats: ^2.1.1
+    clsx: ^2.1.0
     html-to-image: ^1.11.11
     lodash.get: ^4.4.2
     lodash.set: ^4.3.2
@@ -125,13 +126,13 @@ __metadata:
     uuid: ^9.0.0
     yaml: ^2.3.2
     zustand: ^4.3.9
-  checksum: cd49dd6bec76cb4f43fe8511816a1c58b9601313591ac9a264d01cfa936d30256890a5eed3514ba8abeb859019ed90ee6136c1358d4330e903915802436ad512
+  checksum: 2784e6b9cae989c0d014b062e93e41b6a13c8236440feebe399631d749536b6c9b5d1c224d0bee5ebcfbf5750b2347a1e714b8a3c977a3a373d7b3416f25c519
   languageName: node
   linkType: hard
 
-"@kaoto-next/uniforms-patternfly@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@kaoto-next/uniforms-patternfly@npm:0.5.0"
+"@kaoto-next/uniforms-patternfly@npm:^0.5.7":
+  version: 0.5.7
+  resolution: "@kaoto-next/uniforms-patternfly@npm:0.5.7"
   dependencies:
     "@types/invariant": ^2.2.35
     invariant: ^2.2.4
@@ -139,7 +140,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     uniforms: 4.0.0-alpha.5
-  checksum: d50f480d7647fee7f97d851c6783431846fd8459623728df154f4b92673870f67bcd3f49d67ec89f101317b544e2b338886eb74b1c77cffbc0cc31eb1a3f7ee1
+  checksum: 169e3e39fc12591d039347500b7fc8acc1c4c6a5d7c6261896a434409de8c848bd20e59ce03a6b47c822b9f52e869a4c4ab1b372a2e0b922edf31e02d5ed524c
   languageName: node
   linkType: hard
 
@@ -2150,6 +2151,13 @@ __metadata:
     kind-of: ^6.0.2
     shallow-clone: ^3.0.0
   checksum: 770f912fe4e6f21873c8e8fbb1e99134db3b93da32df271d00589ea4a29dbe83a9808a322c93f3bcaf8584b8b4fa6fc269fc8032efbaa6728e0c9886c74467d2
+  languageName: node
+  linkType: hard
+
+"clsx@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "clsx@npm:2.1.0"
+  checksum: 43fefc29b6b49c9476fbce4f8b1cc75c27b67747738e598e6651dd40d63692135dc60b18fa1c5b78a2a9ba8ae6fd2055a068924b94e20b42039bd53b78b98e1d
   languageName: node
   linkType: hard
 
@@ -7671,7 +7679,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto-next/ui": 0.8.0
+    "@kaoto-next/ui": 2.0.0-TP1-RC1
     "@kie-tools-core/backend": 0.32.0
     "@kie-tools-core/editor": 0.32.0
     "@kie-tools-core/i18n": 0.32.0
