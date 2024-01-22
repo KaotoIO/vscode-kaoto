@@ -40,7 +40,7 @@
 
 ### Embedded
 
-- [Kaoto 2 preview release](https://github.com/KaotoIO/kaoto-next) in version [0.8.0](https://github.com/KaotoIO/kaoto-next/releases/tag/v0.8.0).
+- [Kaoto 2 preview release](https://github.com/KaotoIO/kaoto-next) in version [2.0.0-TP1-RC1](https://github.com/KaotoIO/kaoto-next/releases/tag/v2.0.0-TP1-RC1).
 
 ###  Issues
 
