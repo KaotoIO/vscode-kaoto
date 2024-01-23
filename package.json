@@ -61,6 +61,10 @@
     "workspaceContains:**/*.camel.yml",
     "workspaceContains:**/*.kamelet.yaml",
     "workspaceContains:**/*.kamelet.yml",
+    "workspaceContains:**/*.camel-k.yaml",
+    "workspaceContains:**/*.camel-k.yml",
+    "workspaceContains:**/*.pipe.yaml",
+    "workspaceContains:**/*.pipe.yml",
     "onStartupFinished"
   ],
   "capabilities": {
