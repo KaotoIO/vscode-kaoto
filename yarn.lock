@@ -94,11 +94,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto-next/ui@npm:2.0.0-TP1-RC1":
-  version: 2.0.0-TP1-RC1
-  resolution: "@kaoto-next/ui@npm:2.0.0-TP1-RC1"
+"@kaoto-next/ui@npm:2.0.0-TP1-RC2":
+  version: 2.0.0-TP1-RC2
+  resolution: "@kaoto-next/ui@npm:2.0.0-TP1-RC2"
   dependencies:
-    "@kaoto-next/uniforms-patternfly": ^0.5.7
+    "@kaoto-next/uniforms-patternfly": ^0.6.1
     "@kie-tools-core/editor": 0.32.0
     "@kie-tools-core/notifications": 0.32.0
     "@patternfly/patternfly": ^5.0.0
@@ -126,21 +126,22 @@ __metadata:
     uuid: ^9.0.0
     yaml: ^2.3.2
     zustand: ^4.3.9
-  checksum: 2784e6b9cae989c0d014b062e93e41b6a13c8236440feebe399631d749536b6c9b5d1c224d0bee5ebcfbf5750b2347a1e714b8a3c977a3a373d7b3416f25c519
+  checksum: 620f17fcbd29c2ca335a420de3cc53b4d67a73710bf43a7693dbbe2516038117688708e8155a8f895d211ae276efbbacb31c09207b73f6b9d4dd4a33d62535a7
   languageName: node
   linkType: hard
 
-"@kaoto-next/uniforms-patternfly@npm:^0.5.7":
-  version: 0.5.7
-  resolution: "@kaoto-next/uniforms-patternfly@npm:0.5.7"
+"@kaoto-next/uniforms-patternfly@npm:^0.6.1":
+  version: 0.6.1
+  resolution: "@kaoto-next/uniforms-patternfly@npm:0.6.1"
   dependencies:
     "@types/invariant": ^2.2.35
     invariant: ^2.2.4
     lodash: ^4.17.21
     react: ^18.2.0
     react-dom: ^18.2.0
+    sass: ^1.70.0
     uniforms: 4.0.0-alpha.5
-  checksum: 169e3e39fc12591d039347500b7fc8acc1c4c6a5d7c6261896a434409de8c848bd20e59ce03a6b47c822b9f52e869a4c4ab1b372a2e0b922edf31e02d5ed524c
+  checksum: 11c13a7947395a6b2533061408f4d2fb38cb6f317117a7b8afce708044dca5d38d618c9a1da520e1d493e1226412d0f17fb56447f28a66e6d488c0d36f1cb9d6
   languageName: node
   linkType: hard
 
@@ -7679,7 +7680,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto-next/ui": 2.0.0-TP1-RC1
+    "@kaoto-next/ui": 2.0.0-TP1-RC2
     "@kie-tools-core/backend": 0.32.0
     "@kie-tools-core/editor": 0.32.0
     "@kie-tools-core/i18n": 0.32.0

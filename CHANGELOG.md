@@ -1,6 +1,6 @@
 # 0.11.0
 
-- Use Kaoto 2 preview release (technically kaoto-next 2.0.0-TP1-RC1) instead of Kaoto UI + Kaoto backend
+- Use Kaoto 2 preview release (technically kaoto-next 2.0.0-TP1-RC2) instead of Kaoto UI + Kaoto backend
 - Remove kaoto backend v1: reduced size of bundle and no more requirements on architecture
 - Open Kaoto editor by default for `*.kamelet.(yaml|yml)` files
 
