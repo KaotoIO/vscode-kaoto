@@ -1,3 +1,6 @@
+# 0.12.0
+
+
 # 0.11.0
 
 - Use Kaoto 2 preview release (technically kaoto-next 2.0.0-TP1) instead of Kaoto UI + Kaoto backend
