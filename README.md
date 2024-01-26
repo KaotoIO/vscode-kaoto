@@ -1,9 +1,10 @@
 <h1 align="center">
-  <img src="./images/logo-kaoto-dark.png">
+  <img src="./images/logo-kaoto-dark.png" alt="Kaoto">
 </h1>
 
 <p align="center">
   <a href="https://marketplace.visualstudio.com/items?itemName=redhat.vscode-kaoto"><img src="https://img.shields.io/visual-studio-marketplace/v/redhat.vscode-kaoto?style=for-the-badge" alt="Marketplace Version"/></a>
+  <a href="https://github.com/KaotoIO/kaoto-next/releases"><img alt="Kaoto UI version" src="https://img.shields.io/badge/Kaoto_UI-2.0.0--TP1.2-orange?style=for-the-badge"></a>
   <img src="https://img.shields.io/badge/VS%20Code-1.74.0+-blue?style=for-the-badge" alt="Visual Studio Code Support"/>
   <a href="https://github.com/KaotoIO/vscode-kaoto/blob/main/LICENSE"><img src="https://img.shields.io/github/license/KaotoIO/vscode-kaoto?color=blue&style=for-the-badge" alt="License"/></a>
   <a href="https://camel.zulipchat.com/#narrow/stream/258729-camel-tooling"><img src="https://img.shields.io/badge/zulip-join_chat-brightgreen?color=yellow&style=for-the-badge" alt="Zulip"/></a></br>
@@ -42,7 +43,7 @@
 
 - [Kaoto 2 preview release](https://github.com/KaotoIO/kaoto-next) in version [2.0.0-TP1.2](https://github.com/KaotoIO/kaoto-next/releases/tag/v2.0.0-TP1.2).
 
-###  Issues
+### Issues
 
 Something is not working properly? In that case, feel free to [open issues, add feature requests, report bugs, etc.](https://github.com/KaotoIO/vscode-kaoto/issues).
 
@@ -50,8 +51,8 @@ Something is not working properly? In that case, feel free to [open issues, add 
 
 If you're eager to test latest snapshots, there are 2 kind of binary (`*.vsix`) available:
 
-* Snapshot based on main branch of VS Code Kaoto using a released version of Kaoto. Pick latest on [this site](https://download.jboss.org/jbosstools/vscode/snapshots/vscode-kaoto/)
-* Snapshot based on main branch of VS Code Kaoto using the main branch of Kaoto (at time of last build of VS Code Kaoto main branch). Click on latest finished of [this workflow](https://github.com/KaotoIO/vscode-kaoto/actions/workflows/main-kaoto.yaml?query=branch%3Amain), then download the artifact named `vsix-from-main-branch-of-kaoto`, then extract the vsix binary from `vsix-from-main-branch-of-kaoto.zip` downloaded.
+- Snapshot based on main branch of VS Code Kaoto using a released version of Kaoto. Pick latest on [this site](https://download.jboss.org/jbosstools/vscode/snapshots/vscode-kaoto/)
+- Snapshot based on main branch of VS Code Kaoto using the main branch of Kaoto (at time of last build of VS Code Kaoto main branch). Click on latest finished of [this workflow](https://github.com/KaotoIO/vscode-kaoto/actions/workflows/main-kaoto.yaml?query=branch%3Amain), then download the artifact named `vsix-from-main-branch-of-kaoto`, then extract the vsix binary from `vsix-from-main-branch-of-kaoto.zip` downloaded.
 
 To install the vsix binary, see the [official documentation](https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix).
 
