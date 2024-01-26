@@ -27,7 +27,8 @@
     "run:webmode": "yarn vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --open-devtools ./resources",
     "test:it": "yarn build:test:it && extest setup-and-run --yarn --uninstall_extension --extensions_dir ./test-resources 'out/*.test.js' --open_resource './test Fixture with speci@l chars'",
     "test:it:with-prebuilt-vsix": "yarn build:test:it && extest get-vscode && extest get-chromedriver && extest install-vsix --vsix_file vscode-kaoto-$npm_package_version.vsix --extensions_dir ./test-resources && extest run-tests --uninstall_extension --extensions_dir ./test-resources 'out/*.test.js' --open_resource './test Fixture with speci@l chars'",
-    "test:it:clean": "rimraf ./test-resources && rimraf ./out && rimraf *.vsix"
+    "test:it:clean": "rimraf ./test-resources && rimraf ./out && rimraf *.vsix",
+    "postinstall": "node ./scripts/postinstall.js"
   },
   "dependencies": {
     "@kaoto-next/ui": "2.0.0-TP1",
@@ -137,6 +138,7 @@
     "@vscode/test-web": "^0.0.50",
     "@vscode/vsce": "^2.22.0",
     "async-wait-until": "^2.0.12",
+    "badge-maker": "^3.3.1",
     "buffer": "^6.0.3",
     "chai": "^4.3.10",
     "constants-browserify": "^1.0.0",
