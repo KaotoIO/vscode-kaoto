@@ -21,6 +21,7 @@ import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension/dist";
 import { getRedHatService, TelemetryService } from "@redhat-developer/vscode-redhat-telemetry";
 import * as vscode from "vscode";
+import { KAOTO_FILE_PATH_GLOB } from "./helpers";
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -38,7 +39,7 @@ export async function activate(context: vscode.ExtensionContext) {
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping({
         type: "kaoto",
-        filePathGlob: "**/**(.+(kaoto|camel|kamelet)).+(yml|yaml)",
+        filePathGlob: KAOTO_FILE_PATH_GLOB,
         resourcesPathPrefix: "dist/webview/editors/kaoto",
         envelopeContent: {
           type: EnvelopeContentType.PATH,

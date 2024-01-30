@@ -20,6 +20,7 @@ import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@ki
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension/dist";
 import * as vscode from "vscode";
+import { KAOTO_FILE_PATH_GLOB } from "./helpers";
 
 let backendProxy: VsCodeBackendProxy;
 
@@ -36,7 +37,7 @@ export async function activate(context: vscode.ExtensionContext) {
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping({
         type: "kaoto",
-        filePathGlob: "**/*.kaoto.+(yml|yaml)",
+        filePathGlob: KAOTO_FILE_PATH_GLOB,
         resourcesPathPrefix: "dist/webview/editors/kaoto",
         envelopeContent: {
           type: EnvelopeContentType.PATH,
