@@ -1,5 +1,6 @@
 # 0.12.0
 
+- Fix Kaoto editor in vscode.dev web environment
 
 # 0.11.0
 
