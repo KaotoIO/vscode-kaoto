@@ -4,6 +4,7 @@ def installBuildRequirements(){
 	def nodeHome = tool 'nodejs-lts'
 	env.PATH="${env.PATH}:${nodeHome}/bin"
 	sh "npm install --global yarn"
+	sh "npm install --global @cyclonedx/cdxgen"
 }
 
 node('rhel8'){
@@ -35,6 +36,10 @@ node('rhel8'){
 	def vsix = findFiles(glob: '**.vsix')
 	sh "sftp -C ${UPLOAD_LOCATION}/snapshots/vscode-kaoto/ <<< \$'put -p \"${vsix[0].path}\"'"
 	stash name:'vsix', includes:vsix[0].path
+
+	stage 'Generate SBOM'
+	sh "cdxgen -o manifest.json"
+	archive includes:"manifest.json"
 }
 
 node('rhel8'){
