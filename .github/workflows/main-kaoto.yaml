@@ -16,6 +16,7 @@ jobs:
         os: [ubuntu-latest]
 
     env:
+      CODE_VERSION: "1.85.2"
       TEST_RESOURCES: test-resources
 
     steps:
