@@ -17,6 +17,7 @@ jobs:
         os: [ubuntu-latest, macos-latest,  windows-latest]
 
     env:
+      CODE_VERSION: "1.85.2"
       TEST_RESOURCES: test-resources
 
     steps:
