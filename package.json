@@ -133,7 +133,7 @@
     "@types/chai": "^4.3.11",
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.6",
-    "@types/react": "18.2.53",
+    "@types/react": "18.2.55",
     "@vscode/test-web": "^0.0.51",
     "@vscode/vsce": "^2.23.0",
     "async-wait-until": "^2.0.12",
