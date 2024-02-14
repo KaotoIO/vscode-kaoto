@@ -41,6 +41,7 @@ describe('Kaoto basic development flow', function () {
   });
 
   it('Open "emptyPipe.kaoto.yaml" file and check Kaoto UI is loading', async function () {
+    console.log('start test open emptyPipe');
     const { kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(
       workspaceFolder,
       'emptyPipe.kaoto.yaml',
@@ -139,12 +140,13 @@ async function addActiveMQStep(driver: WebDriver) {
   await driver.wait(
     until.elementLocated(By.className('pf-topology__node__action-icon'))
   );
-  await (await driver.findElement(By.className('pf-topology__node__action-icon'))).click();
+  const threeDotsIconOfOneOfTheSteps = (await driver.findElements(By.className('pf-topology__node__action-icon')))[1];
+  await threeDotsIconOfOneOfTheSteps.click();
 
   await driver.wait(
     until.elementLocated(By.className('pf-v5-c-dropdown pf-m-expanded'))
   );
-  await (await driver.findElement(By.xpath("//\*[@data-testid='context-menu-item-insert']"))).click();
+  await (await driver.findElement(By.xpath("//\*[@data-testid='context-menu-item-replace']"))).click();
   
   await driver.wait(
     until.elementLocated(By.xpath("//div[@data-testid='tile-activemq']"))

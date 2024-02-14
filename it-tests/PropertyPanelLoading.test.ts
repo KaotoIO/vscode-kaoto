@@ -37,13 +37,16 @@ describe('Property panel loading test', function () {
     ), 5_000);
 
     const closeBtn = await driver.findElement(By.xpath("//button[@data-testid='close-side-bar']"));
-    if (process.platform === 'darwin') {
-      // from some reason this extra dynamic wait is needed on macOS
-      await driver.wait(async () => {
-        return await closeBtn.isDisplayed();
-      }, 5_000, 'Close button is not displayed!');
-    }
+    await driver.wait(async () => {
+        return await closeBtn.isDisplayed() && await closeBtn.isEnabled();
+    }, 5_000, 'Close button is not displayed!');
+
+    // It seems that the close button might not react if clicked too fast after being displayed
+    await driver.sleep(1_00);
+
     await closeBtn.click();
+
+    await driver.sleep(1_000);
 
     try {
       await driver.wait(
