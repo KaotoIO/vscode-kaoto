@@ -6585,6 +6585,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sass@npm:^1.71.0":
+  version: 1.71.0
+  resolution: "sass@npm:1.71.0"
+  dependencies:
+    chokidar: ">=3.0.0 <4.0.0"
+    immutable: ^4.0.0
+    source-map-js: ">=0.6.2 <2.0.0"
+  bin:
+    sass: sass.js
+  checksum: 5ba6b4b994c7ae94286919d8be8a3692038c27175b4ad3a3ac43f51a91188590d3ddd3a0ef1022135503b9d70d0732efdbedfd56f3ee1a4651549f5b13f8942f
+  languageName: node
+  linkType: hard
+
 "sax@npm:>=0.6.0":
   version: 1.2.4
   resolution: "sax@npm:1.2.4"
@@ -7707,7 +7720,7 @@ __metadata:
     react-dom: 18.2.0
     remove-files-webpack-plugin: ^1.5.0
     rimraf: ^5.0.5
-    sass: ^1.70.0
+    sass: ^1.71.0
     sass-loader: ^13.0.2
     source-map-loader: 4.0.1
     style-loader: 3.3.3
