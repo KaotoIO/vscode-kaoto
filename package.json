@@ -150,7 +150,7 @@
     "path-browserify": "^1.0.1",
     "remove-files-webpack-plugin": "^1.5.0",
     "rimraf": "^5.0.5",
-    "sass": "^1.71.0",
+    "sass": "^1.71.1",
     "sass-loader": "^13.0.2",
     "source-map-loader": "4.0.1",
     "style-loader": "3.3.3",
