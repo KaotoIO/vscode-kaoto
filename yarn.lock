@@ -94,54 +94,55 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto-next/ui@npm:2.0.0-TP1.2":
-  version: 2.0.0-TP1.2
-  resolution: "@kaoto-next/ui@npm:2.0.0-TP1.2"
+"@kaoto-next/ui@npm:2.0.0-TP2-RC2":
+  version: 2.0.0-TP2-RC2
+  resolution: "@kaoto-next/ui@npm:2.0.0-TP2-RC2"
   dependencies:
-    "@kaoto-next/uniforms-patternfly": ^0.6.1
+    "@kaoto-next/uniforms-patternfly": ^0.6.3
     "@kie-tools-core/editor": 0.32.0
     "@kie-tools-core/notifications": 0.32.0
-    "@patternfly/patternfly": ^5.0.0
-    "@patternfly/react-code-editor": ^5.0.0
-    "@patternfly/react-core": ^5.0.0
-    "@patternfly/react-icons": ^5.0.0
-    "@patternfly/react-table": ^5.0.0
-    "@patternfly/react-topology": ^5.0.0
+    "@patternfly/patternfly": 5.2.0
+    "@patternfly/react-code-editor": 5.1.0
+    "@patternfly/react-core": 5.2.0
+    "@patternfly/react-icons": 5.2.0
+    "@patternfly/react-table": 5.2.0
+    "@patternfly/react-topology": 5.2.1
     "@types/uuid": ^9.0.2
     ajv: ^8.12.0
     ajv-formats: ^2.1.1
     clsx: ^2.1.0
     html-to-image: ^1.11.11
+    lodash.clonedeep: ^4.5.0
     lodash.get: ^4.4.2
+    lodash.isempty: ^4.4.0
     lodash.set: ^4.3.2
-    monaco-editor: ^0.34.1
-    monaco-yaml: ^4.0.0
+    monaco-editor: ^0.45.0
+    monaco-yaml: ^5.1.1
     react: ^18.2.0
     react-dom: ^18.2.0
-    react-monaco-editor: ^0.51.0
+    react-monaco-editor: ^0.55.0
     react-router-dom: ^6.14.1
     simple-zustand-devtools: ^1.1.0
     uniforms: 4.0.0-alpha.5
     uniforms-bridge-json-schema: 4.0.0-alpha.5
+    usehooks-ts: ^2.15.1
     uuid: ^9.0.0
     yaml: ^2.3.2
     zustand: ^4.3.9
-  checksum: 3b299bc9fe0c8d42e1cf86d750512c240687fbf940b79309b4580a6bd2a07c0c9b3bb4ba24c1a3b6a5e27cf0312457027542fbfc497cc1da5cad8f803575bd23
+  checksum: 34e9923f2c9fa014170ed01dd02f3c921c3f0ba0d04555047f8f7562cb0c4c59971fcc79ffaceb80c5aa5e9e42e8ccdd496a556860903d654d77711b7ce23119
   languageName: node
   linkType: hard
 
-"@kaoto-next/uniforms-patternfly@npm:^0.6.1":
-  version: 0.6.1
-  resolution: "@kaoto-next/uniforms-patternfly@npm:0.6.1"
+"@kaoto-next/uniforms-patternfly@npm:^0.6.3":
+  version: 0.6.3
+  resolution: "@kaoto-next/uniforms-patternfly@npm:0.6.3"
   dependencies:
-    "@types/invariant": ^2.2.35
     invariant: ^2.2.4
     lodash: ^4.17.21
     react: ^18.2.0
     react-dom: ^18.2.0
-    sass: ^1.70.0
     uniforms: 4.0.0-alpha.5
-  checksum: 11c13a7947395a6b2533061408f4d2fb38cb6f317117a7b8afce708044dca5d38d618c9a1da520e1d493e1226412d0f17fb56447f28a66e6d488c0d36f1cb9d6
+  checksum: 7222b7745d320112b6267bdb981755d716b456f75ee31daf25c1daea8c1ebef7883808ad2ae062ee67f165b6cde4db73058bcf880e04862012191e1341510c91
   languageName: node
   linkType: hard
 
@@ -989,13 +990,6 @@ __metadata:
   version: 4.0.1
   resolution: "@types/http-cache-semantics@npm:4.0.1"
   checksum: 1048aacf627829f0d5f00184e16548205cd9f964bf0841c29b36bc504509230c40bc57c39778703a1c965a6f5b416ae2cbf4c1d4589c889d2838dd9dbfccf6e9
-  languageName: node
-  linkType: hard
-
-"@types/invariant@npm:^2.2.35":
-  version: 2.2.37
-  resolution: "@types/invariant@npm:2.2.37"
-  checksum: dd6ee07af8516d21c868f95fd96c601c50a231e69c2df69360cb491b5858c76cf9b5a646df166cb4197b5078ca824da3dd90d6142d01a3cefc1176c57278b129
   languageName: node
   linkType: hard
 
@@ -4658,10 +4652,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.clonedeep@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "lodash.clonedeep@npm:4.5.0"
+  checksum: 92c46f094b064e876a23c97f57f81fbffd5d760bf2d8a1c61d85db6d1e488c66b0384c943abee4f6af7debf5ad4e4282e74ff83177c9e63d8ff081a4837c3489
+  languageName: node
+  linkType: hard
+
+"lodash.debounce@npm:^4.0.8":
+  version: 4.0.8
+  resolution: "lodash.debounce@npm:4.0.8"
+  checksum: a3f527d22c548f43ae31c861ada88b2637eb48ac6aa3eb56e82d44917971b8aa96fbb37aa60efea674dc4ee8c42074f90f7b1f772e9db375435f6c83a19b3bc6
+  languageName: node
+  linkType: hard
+
 "lodash.get@npm:^4.4.2":
   version: 4.4.2
   resolution: "lodash.get@npm:4.4.2"
   checksum: e403047ddb03181c9d0e92df9556570e2b67e0f0a930fcbbbd779370972368f5568e914f913e93f3b08f6d492abc71e14d4e9b7a18916c31fa04bd2306efe545
+  languageName: node
+  linkType: hard
+
+"lodash.isempty@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "lodash.isempty@npm:4.4.0"
+  checksum: a8118f23f7ed72a1dbd176bf27f297d1e71aa1926288449cb8f7cef99ba1bc7527eab52fe7899ab080fa1dc150aba6e4a6367bf49fa4e0b78da1ecc095f8d8c5
   languageName: node
   linkType: hard
 
@@ -5149,10 +5164,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-editor@npm:^0.34.1":
-  version: 0.34.1
-  resolution: "monaco-editor@npm:0.34.1"
-  checksum: 4c6b35d7c566ec414b758cdd45dfb08d6fe46e2e8fdeed88b619a52c47592ce6df476d9490a58e5d450339c4a93f09d500adc9c017a348179277b98aa6009fa4
+"monaco-editor@npm:^0.45.0":
+  version: 0.45.0
+  resolution: "monaco-editor@npm:0.45.0"
+  checksum: 7c70aeea8b81bc8dbda4b962fa8236d41fd2a3d07bcc2843ea7f1756ad95d701da5ef71e67d787595567aeec247ceb6bf4e3451abdf4895fe7819a8b9ef76231
+  languageName: node
+  linkType: hard
+
+"monaco-languageserver-types@npm:^0.3.0":
+  version: 0.3.3
+  resolution: "monaco-languageserver-types@npm:0.3.3"
+  dependencies:
+    monaco-types: ^0.1.0
+    vscode-languageserver-protocol: ^3.0.0
+    vscode-uri: ^3.0.0
+  checksum: ce178e82c4adbe9b366d6d06bc62958496f035fcb597d03440704fb215ef5e8d051f384fc9a1b7db2986bd193969f9ab7c1363c5a9456d407a350ad01c3ee4d8
   languageName: node
   linkType: hard
 
@@ -5181,6 +5207,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"monaco-types@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "monaco-types@npm:0.1.0"
+  checksum: aebfb3896f0340468f5a8b987009ecaeb105f0f01d91092c6a5a0d08cc155f30840693c4333afe9aaf1f63e21f36fa33fd5630f1e8cdf22d251930ba2a242d5e
+  languageName: node
+  linkType: hard
+
 "monaco-worker-manager@npm:^2.0.0":
   version: 2.0.1
   resolution: "monaco-worker-manager@npm:2.0.1"
@@ -5190,13 +5223,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-yaml@npm:^4.0.0":
-  version: 4.0.4
-  resolution: "monaco-yaml@npm:4.0.4"
+"monaco-yaml@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "monaco-yaml@npm:5.1.1"
   dependencies:
     "@types/json-schema": ^7.0.0
     jsonc-parser: ^3.0.0
+    monaco-languageserver-types: ^0.3.0
     monaco-marker-data-provider: ^1.0.0
+    monaco-types: ^0.1.0
     monaco-worker-manager: ^2.0.0
     path-browserify: ^1.0.0
     prettier: ^2.0.0
@@ -5205,8 +5240,8 @@ __metadata:
     vscode-uri: ^3.0.0
     yaml: ^2.0.0
   peerDependencies:
-    monaco-editor: ">=0.30"
-  checksum: c9961a506d248a56bf327f62565a551c04320992f1894ccd2f9da2db138096b073c26db0fc1deddf020139ec819931023e5545fcd0d8b05f23b9400e6c0e34e7
+    monaco-editor: ">=0.36"
+  checksum: dde39675299e21951a1f94ba4417ed024122f530b43f1a8520b3cbb2fa0369fdc5964d6bf6918aafca3c08e716fef21e11bd92f9d6621e6274f746fcc64d8a17
   languageName: node
   linkType: hard
 
@@ -6212,16 +6247,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-monaco-editor@npm:^0.51.0":
-  version: 0.51.0
-  resolution: "react-monaco-editor@npm:0.51.0"
+"react-monaco-editor@npm:^0.55.0":
+  version: 0.55.0
+  resolution: "react-monaco-editor@npm:0.55.0"
   dependencies:
     prop-types: ^15.8.1
   peerDependencies:
-    "@types/react": ">=17 <= 18"
-    monaco-editor: ^0.34.1
-    react: ">=17 <= 18"
-  checksum: 93920bc51b16d047145284d69f6a973da6b307480425ac7ce69ce8248d83b5ffa1029a2f42f32754a84663c2ff1ee9b66226aac20c0d0cea6025744eed6568f6
+    "@types/react": ">=16 <= 18"
+    monaco-editor: ^0.44.0
+    react: ">=16 <= 18"
+  checksum: c7c7f5b0849e057701836029552fcea409a03086d69c6c4925f8eeb81442b50ae5f63f65d8174aefe9fd051027d221ef2d88540abc0c9a66f9b6a91f60b79d0d
   languageName: node
   linkType: hard
 
@@ -6536,19 +6571,6 @@ __metadata:
     sass-embedded:
       optional: true
   checksum: 7394a8d1b818a289b9caabd979543c907b83e28ae08bc80ccb836e0ccabc4ae574c077ab2fa520ba5fb8abb2ec3e7c9822a1cbd8c58a28ff30018be9d1dc6c27
-  languageName: node
-  linkType: hard
-
-"sass@npm:^1.70.0":
-  version: 1.70.0
-  resolution: "sass@npm:1.70.0"
-  dependencies:
-    chokidar: ">=3.0.0 <4.0.0"
-    immutable: ^4.0.0
-    source-map-js: ">=0.6.2 <2.0.0"
-  bin:
-    sass: sass.js
-  checksum: fd1b622cf9b7fa699a03ec634611997552ece45eb98ac365fef22f42bdcb8ed63b326b64173379c966830c8551ae801e44e4a00d2de16fdadda2dc8f35400bbb
   languageName: node
   linkType: hard
 
@@ -7564,6 +7586,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"usehooks-ts@npm:^2.15.1":
+  version: 2.15.1
+  resolution: "usehooks-ts@npm:2.15.1"
+  dependencies:
+    lodash.debounce: ^4.0.8
+  peerDependencies:
+    react: ^16.8.0  || ^17 || ^18
+  checksum: fe5f88780ec37cb9c00b5b456831e550e5e0d420031b88aab5e536cc42d927cfeaf39fa209d0829e45e1f8342446c149377ccbf11f0e922ef185b16986de7860
+  languageName: node
+  linkType: hard
+
 "user-home@npm:^2.0.0":
   version: 2.0.0
   resolution: "user-home@npm:2.0.0"
@@ -7650,11 +7683,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"vscode-jsonrpc@npm:8.2.0":
+  version: 8.2.0
+  resolution: "vscode-jsonrpc@npm:8.2.0"
+  checksum: f302a01e59272adc1ae6494581fa31c15499f9278df76366e3b97b2236c7c53ebfc71efbace9041cfd2caa7f91675b9e56f2407871a1b3c7f760a2e2ee61484a
+  languageName: node
+  linkType: hard
+
 "vscode-kaoto@workspace:.":
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto-next/ui": 2.0.0-TP1.2
+    "@kaoto-next/ui": 2.0.0-TP2-RC2
     "@kie-tools-core/backend": 0.32.0
     "@kie-tools-core/editor": 0.32.0
     "@kie-tools-core/i18n": 0.32.0
@@ -7698,6 +7738,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"vscode-languageserver-protocol@npm:^3.0.0":
+  version: 3.17.5
+  resolution: "vscode-languageserver-protocol@npm:3.17.5"
+  dependencies:
+    vscode-jsonrpc: 8.2.0
+    vscode-languageserver-types: 3.17.5
+  checksum: dfb42d276df5dfea728267885b99872ecff62f6c20448b8539fae71bb196b420f5351c5aca7c1047bf8fb1f89fa94a961dce2bc5bf7e726198f4be0bb86a1e71
+  languageName: node
+  linkType: hard
+
 "vscode-languageserver-textdocument@npm:^1.0.0":
   version: 1.0.11
   resolution: "vscode-languageserver-textdocument@npm:1.0.11"
@@ -7705,7 +7755,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vscode-languageserver-types@npm:^3.0.0":
+"vscode-languageserver-types@npm:3.17.5, vscode-languageserver-types@npm:^3.0.0":
   version: 3.17.5
   resolution: "vscode-languageserver-types@npm:3.17.5"
   checksum: 79b420e7576398d396579ca3a461c9ed70e78db4403cd28bbdf4d3ed2b66a2b4114031172e51fad49f0baa60a2180132d7cb2ea35aa3157d7af3c325528210ac
