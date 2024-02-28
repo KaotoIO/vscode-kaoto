@@ -476,12 +476,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/browser-chromium@npm:^1.41.1":
-  version: 1.41.1
-  resolution: "@playwright/browser-chromium@npm:1.41.1"
+"@playwright/browser-chromium@npm:^1.41.2":
+  version: 1.41.2
+  resolution: "@playwright/browser-chromium@npm:1.41.2"
   dependencies:
-    playwright-core: 1.41.1
-  checksum: 1c9f056b849ecc584addad72096cf498686b0f9d593406157eed1503982c894571b6bb95ee553ff1c0b11856f76545e6dc7885477955769dd5f8eb0a76e9b7b3
+    playwright-core: 1.41.2
+  checksum: f6c597efab24c000613f9d43100e134b8e1c304500855951da3306ae0da22107c4881df9c3f8cce4a913026ab7ffdf50a781ff96ebdcbbf51c7742da69b126f5
   languageName: node
   linkType: hard
 
@@ -1152,27 +1152,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/test-web@npm:^0.0.51":
-  version: 0.0.51
-  resolution: "@vscode/test-web@npm:0.0.51"
+"@vscode/test-web@npm:^0.0.52":
+  version: 0.0.52
+  resolution: "@vscode/test-web@npm:0.0.52"
   dependencies:
     "@koa/cors": ^5.0.0
     "@koa/router": ^12.0.1
-    "@playwright/browser-chromium": ^1.41.1
+    "@playwright/browser-chromium": ^1.41.2
     gunzip-maybe: ^1.4.2
-    http-proxy-agent: ^7.0.0
-    https-proxy-agent: ^7.0.2
+    http-proxy-agent: ^7.0.2
+    https-proxy-agent: ^7.0.4
     koa: ^2.15.0
     koa-morgan: ^1.0.1
     koa-mount: ^4.0.0
     koa-static: ^5.0.0
     minimist: ^1.2.8
-    playwright: ^1.41.1
-    tar-fs: ^3.0.4
+    playwright: ^1.41.2
+    tar-fs: ^3.0.5
     vscode-uri: ^3.0.8
   bin:
     vscode-test-web: out/index.js
-  checksum: ed49595c6826ac2b7ac246f6ca030cadd3b3707044e086a75dacda18f70f35fefdd201e431e3c6f82a0335617961c256f5470b0102f7ee43a164330eb5bb9630
+  checksum: 136566f4970536278db5fe2e981e16858ed3928d931dfd5232cf6a3763a9d5c3bcc98f1140fd9fad395350ea712a86e6f74d1842568bd7a56d7ee7f042084faa
   languageName: node
   linkType: hard
 
@@ -1730,6 +1730,41 @@ __metadata:
   version: 1.0.2
   resolution: "balanced-match@npm:1.0.2"
   checksum: 9706c088a283058a8a99e0bf91b0a2f75497f185980d9ffa8b304de1d9e58ebda7c72c07ebf01dadedaac5b2907b2c6f566f660d62bd336c3468e960403b9d65
+  languageName: node
+  linkType: hard
+
+"bare-events@npm:^2.0.0, bare-events@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "bare-events@npm:2.2.0"
+  checksum: b3001d61cbb7e6c91c7e47ed1d5701512f94c68955a88c1fe368ff313ba68f372fd701f422d1604fd6ac6e2237024d99373aa14e43a92696755a1f7ae46a8626
+  languageName: node
+  linkType: hard
+
+"bare-fs@npm:^2.1.1":
+  version: 2.1.5
+  resolution: "bare-fs@npm:2.1.5"
+  dependencies:
+    bare-events: ^2.0.0
+    bare-os: ^2.0.0
+    bare-path: ^2.0.0
+    streamx: ^2.13.0
+  checksum: 268bc03dd97c2e039f3396d79993640a10bbb5ad30bc7a3a2d406ceb538333b0f79eab33f1db288bcf55fde52c767fa1f25332ac606c27555cc62951c236d346
+  languageName: node
+  linkType: hard
+
+"bare-os@npm:^2.0.0, bare-os@npm:^2.1.0":
+  version: 2.2.0
+  resolution: "bare-os@npm:2.2.0"
+  checksum: ed78e2f3ea498e35c7565532ae3aa3b85a7e5e223ab6353de64864823cadff02a2a8b7722e9a6c1a0ff56cb9f21f23ada8e88a085cc0a5d38a7c1bcf65e8f7fd
+  languageName: node
+  linkType: hard
+
+"bare-path@npm:^2.0.0, bare-path@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "bare-path@npm:2.1.0"
+  dependencies:
+    bare-os: ^2.1.0
+  checksum: 03f260e72bd0ae0df4cd712322a2d3c8c16701ffaa55cf2d517ae62b7f78c64b7ec5bba81ec579367f966472481f5160db282e6663bd0fc8cfb09ebe272d8bba
   languageName: node
   linkType: hard
 
@@ -3989,13 +4024,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-proxy-agent@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "http-proxy-agent@npm:7.0.0"
+"http-proxy-agent@npm:^7.0.2":
+  version: 7.0.2
+  resolution: "http-proxy-agent@npm:7.0.2"
   dependencies:
     agent-base: ^7.1.0
     debug: ^4.3.4
-  checksum: 48d4fac997917e15f45094852b63b62a46d0c8a4f0b9c6c23ca26d27b8df8d178bed88389e604745e748bd9a01f5023e25093722777f0593c3f052009ff438b6
+  checksum: 670858c8f8f3146db5889e1fa117630910101db601fff7d5a8aa637da0abedf68c899f03d3451cac2f83bcc4c3d2dabf339b3aa00ff8080571cceb02c3ce02f3
   languageName: node
   linkType: hard
 
@@ -4019,13 +4054,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"https-proxy-agent@npm:^7.0.2":
-  version: 7.0.2
-  resolution: "https-proxy-agent@npm:7.0.2"
+"https-proxy-agent@npm:^7.0.4":
+  version: 7.0.4
+  resolution: "https-proxy-agent@npm:7.0.4"
   dependencies:
     agent-base: ^7.0.2
     debug: 4
-  checksum: 088969a0dd476ea7a0ed0a2cf1283013682b08f874c3bc6696c83fa061d2c157d29ef0ad3eb70a2046010bb7665573b2388d10fdcb3e410a66995e5248444292
+  checksum: daaab857a967a2519ddc724f91edbbd388d766ff141b9025b629f92b9408fc83cee8a27e11a907aede392938e9c398e240d643e178408a59e4073539cde8cfe9
   languageName: node
   linkType: hard
 
@@ -5915,27 +5950,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.41.1":
-  version: 1.41.1
-  resolution: "playwright-core@npm:1.41.1"
+"playwright-core@npm:1.41.2":
+  version: 1.41.2
+  resolution: "playwright-core@npm:1.41.2"
   bin:
     playwright-core: cli.js
-  checksum: c83446a560c6bd85f6f0cd586ff8c643b77e2005567386e12f85890936cc370673114b94cd883246018797cc1580e93b0296ade7d07275bb611b8962f5bb9693
+  checksum: b41ede0db3fd3e3f7e0b0efbdfb2dbc4db345e113cf9c4451af21d1d5b5d9ab5e969f5662852925e37b2198ae5daab92aa48108fe3d4eb81c849ba8752aaf8cc
   languageName: node
   linkType: hard
 
-"playwright@npm:^1.41.1":
-  version: 1.41.1
-  resolution: "playwright@npm:1.41.1"
+"playwright@npm:^1.41.2":
+  version: 1.41.2
+  resolution: "playwright@npm:1.41.2"
   dependencies:
     fsevents: 2.3.2
-    playwright-core: 1.41.1
+    playwright-core: 1.41.2
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 3da7fb929abdec6adbdd8829f840580f5f210713214a8d230b130127f2270403eb2113c6c1418012221149707250fff896794c7c22c260dd09a92bf800227f31
+  checksum: acf166003ec42cd795f5fca096c5135880d78e84ec2d0a1911b2cab984cf75dc06e50d3aa24b56cbcbc5369ca8c61831e76c5f8674531a272fbd0f6e624fa387
   languageName: node
   linkType: hard
 
@@ -6964,6 +6999,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"streamx@npm:^2.13.0":
+  version: 2.16.1
+  resolution: "streamx@npm:2.16.1"
+  dependencies:
+    bare-events: ^2.2.0
+    fast-fifo: ^1.1.0
+    queue-tick: ^1.0.1
+  dependenciesMeta:
+    bare-events:
+      optional: true
+  checksum: 6bbb4c38c0ab6ddbe0857d55e72f71288f308f2a9f4413b7b07391cdf9f94232ffc2bbe40a1212d2e09634ecdbd5052b444c73cc8d67ae1c97e2b7e553dad559
+  languageName: node
+  linkType: hard
+
 "streamx@npm:^2.15.0":
   version: 2.15.1
   resolution: "streamx@npm:2.15.1"
@@ -7162,14 +7211,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar-fs@npm:^3.0.4":
-  version: 3.0.4
-  resolution: "tar-fs@npm:3.0.4"
+"tar-fs@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "tar-fs@npm:3.0.5"
   dependencies:
-    mkdirp-classic: ^0.5.2
+    bare-fs: ^2.1.1
+    bare-path: ^2.1.0
     pump: ^3.0.0
     tar-stream: ^3.1.5
-  checksum: dcf4054f9e92ca0efe61c2b3f612914fb259a47900aa908a63106513a6d006c899b426ada53eb88d9dbbf089b5724c8e90b96a2c4ca6171845fa14203d734e30
+  dependenciesMeta:
+    bare-fs:
+      optional: true
+    bare-path:
+      optional: true
+  checksum: e31c7e3e525fec0afecdec1cac58071809e396187725f2eba442f08a4c5649c8cd6b7ce25982f9a91bb0f055628df47c08177dd2ea4f5dafd3c22f42f8da8f00
   languageName: node
   linkType: hard
 
@@ -7731,7 +7786,7 @@ __metadata:
     "@types/fs-extra": ^11.0.4
     "@types/mocha": ^10.0.6
     "@types/react": 18.2.57
-    "@vscode/test-web": ^0.0.51
+    "@vscode/test-web": ^0.0.52
     "@vscode/vsce": ^2.23.0
     async-wait-until: ^2.0.12
     buffer: ^6.0.3
