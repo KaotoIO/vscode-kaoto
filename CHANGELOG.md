@@ -1,5 +1,7 @@
 # 0.13.0
 
+- Upgrade from Kaoto 2 preview release 2.0.0-TP1.2 to 2.0.0-TP2-RC2
+
 # 0.12.0
 
 - Fix Kaoto editor in vscode.dev web environment
