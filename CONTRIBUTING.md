@@ -131,13 +131,49 @@ The command `Developer: Toggle Developer Tools` gives access to classic develope
 
 It is launching UI tests. Beware that it can take several minutes to start. Stay tuned for improvements to come later.
 
+## How to upgrade embedded Kaoto UI version
+
+* To have everything working properly, we need to double check that versions of package list below is up to date with [kaoto-next dependencies](https://github.com/KaotoIO/kaoto-next/blob/main/packages/ui/package.json#L44) versions of same packages
+* Inside `package.json`
+  * :exclamation: update `dependencies` section, update`"@kaoto-next/ui": "<version>"` to next version of publish Kaoto UI package
+  * :warning: update `resolutions` and `dependencies` section
+
+  ```json
+    // dependencies
+    // eg. for "@kaoto-next/ui": "2.0.0-TP2-RC2"
+    "@kaoto-next/ui": "2.0.0-TP2-RC2",
+    "@kie-tools-core/backend": "0.32.0",
+    "@kie-tools-core/editor": "0.32.0",
+    "@kie-tools-core/i18n": "0.32.0",
+    "@kie-tools-core/vscode-extension": "0.32.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  ```
+
+  ```json
+    // resolutions
+    // eg. for "@kaoto-next/ui": "2.0.0-TP2-RC2"
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "@patternfly/patternfly": "5.2.0",
+    "@patternfly/react-code-editor": "5.1.0",
+    "@patternfly/react-core": "5.2.0",
+    "@patternfly/react-icons": "5.2.0",
+    "@patternfly/react-table": "5.2.0",
+    "@patternfly/react-topology": "5.2.1"
+  ```
+
+* Open new PR and wait till checks are green
+* Wait for review from contributors
+
+
 ## How to provide a new release version on VS Code Marketplace
 
 * Check that the version in package.json has not been published yet
-    * If already published:
-        * Update version in `package.json`
-        * Push changes in a Pull Request
-        * Wait for Pull Request to be merged
+  * If already published:
+    * Update version in `package.json`
+    * Push changes in a Pull Request
+    * Wait for Pull Request to be merged
 * Check build is working fine on [GitHub Actions](https://github.com/KaotoIO/vscode-kaoto/actions) and [Jenkins CI](https://studio-jenkins-csb-codeready.apps.ocp-c1.prod.psi.redhat.com/job/Fuse/job/VSCode/job/vscode-kaoto-release/)
 * Check that someone listed as _submitter_ in Jenkinsfile is available
 * Create a tag
@@ -151,6 +187,6 @@ It is launching UI tests. Beware that it can take several minutes to start. Stay
 * Wait few minutes and check that it has been published on [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-kaoto) and [Open VSX Marketplace](https://open-vsx.org/extension/redhat/vscode-kaoto)
 * Keep build forever on Jenkins CI for later reference and edit build information to indicate the version
 * Prepare next iteration:
-    * Update version in `package.json`
-    * Push changes in a Pull Request
-    * Follow Pull Request until it is approved/merged
+  * Update version in `package.json`
+  * Push changes in a Pull Request
+  * Follow Pull Request until it is approved/merged
