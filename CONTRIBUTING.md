@@ -140,8 +140,8 @@ It is launching UI tests. Beware that it can take several minutes to start. Stay
 
   ```json
     // dependencies
-    // eg. for "@kaoto-next/ui": "2.0.0-TP2-RC2"
-    "@kaoto-next/ui": "2.0.0-TP2-RC2",
+    // eg. for "@kaoto-next/ui": "2.0.0-TP2"
+    "@kaoto-next/ui": "2.0.0-TP2",
     "@kie-tools-core/backend": "0.32.0",
     "@kie-tools-core/editor": "0.32.0",
     "@kie-tools-core/i18n": "0.32.0",
@@ -152,7 +152,7 @@ It is launching UI tests. Beware that it can take several minutes to start. Stay
 
   ```json
     // resolutions
-    // eg. for "@kaoto-next/ui": "2.0.0-TP2-RC2"
+    // eg. for "@kaoto-next/ui": "2.0.0-TP2"
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "@patternfly/patternfly": "5.2.0",
