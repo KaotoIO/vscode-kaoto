@@ -18,4 +18,4 @@
  * Utilizes constants, methods, ... used in both, desktop or web extension context
  */
 
-export const KAOTO_FILE_PATH_GLOB: string = '**/**(.+(kaoto|camel|kamelet)).+(yml|yaml)';
+export const KAOTO_FILE_PATH_GLOB: string = '**/*.{yml,yaml}';
