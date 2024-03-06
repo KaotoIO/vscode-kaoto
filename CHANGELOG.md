@@ -1,5 +1,7 @@
 # 0.14.0
 
+- Open Kaoto editor by default for `*.pipe.(yaml|yml)` and `*-pipe.(yaml|yml)`files
+
 # 0.13.0
 
 - Upgrade from Kaoto 2 preview release 2.0.0-TP1.2 to 2.0.0-TP2

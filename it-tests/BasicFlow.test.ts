@@ -20,12 +20,22 @@ describe('Kaoto basic development flow', function () {
       path.join(workspaceFolder, 'empty.camel.yaml'),
       path.join(workspaceFolder, 'empty_copy.camel.yaml')
     );
+    fs.copySync(
+      path.join(workspaceFolder, 'emptyPipe.kaoto.yaml'),
+      path.join(workspaceFolder, 'emptyPipe.pipe.yaml')
+    );
+    fs.copySync(
+      path.join(workspaceFolder, 'emptyPipe.kaoto.yaml'),
+      path.join(workspaceFolder, 'emptyPipe-pipe.yaml')
+    );
 
     driver = VSBrowser.instance.driver;
   });
 
   after(function () {
     fs.rmSync(path.join(workspaceFolder, 'empty_copy.camel.yaml'));
+    fs.rmSync(path.join(workspaceFolder, 'emptyPipe.pipe.yaml'));
+    fs.rmSync(path.join(workspaceFolder, 'emptyPipe-pipe.yaml'));
   });
 
   afterEach(async function () {
@@ -40,22 +50,25 @@ describe('Kaoto basic development flow', function () {
     await editorView.closeAllEditors();
   });
 
-  it('Open "emptyPipe.kaoto.yaml" file and check Kaoto UI is loading', async function () {
-    console.log('start test open emptyPipe');
-    const { kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(
-      workspaceFolder,
-      'emptyPipe.kaoto.yaml',
-      driver,
-      true
-    );
-    globalKaotoWebView = kaotoWebview;
-    await checkIntegrationNameInTopBarLoaded(driver, 'my-integration-name');
-    await checkTopologyLoaded(driver);
-    await kaotoWebview.switchBack();
-    assert.isFalse(
-      await kaotoEditor.isDirty(),
-      'The Kaoto editor should not be dirty after everything has loaded.'
-    );
+  const pipeFiles = ['emptyPipe.kaoto.yaml', 'emptyPipe.pipe.yaml', 'emptyPipe-pipe.yaml'];
+
+  pipeFiles.forEach(function (pipeFile) {
+    it(`Open "${pipeFile}" file and check Kaoto UI is loading`, async function () {
+      const { kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(
+        workspaceFolder,
+        pipeFile,
+        driver,
+        true
+      );
+      globalKaotoWebView = kaotoWebview;
+      await checkIntegrationNameInTopBarLoaded(driver, 'my-integration-name');
+      await checkTopologyLoaded(driver);
+      await kaotoWebview.switchBack();
+      assert.isFalse(
+        await kaotoEditor.isDirty(),
+        'The Kaoto editor should not be dirty after everything has loaded.'
+      );
+    });
   });
 
   it('Open "empty.camel.yaml" file, check Kaoto UI is loading, add a step and save', async function () {
@@ -147,7 +160,7 @@ async function addActiveMQStep(driver: WebDriver) {
     until.elementLocated(By.className('pf-v5-c-dropdown pf-m-expanded'))
   );
   await (await driver.findElement(By.xpath("//\*[@data-testid='context-menu-item-replace']"))).click();
-  
+
   await driver.wait(
     until.elementLocated(By.xpath("//div[@data-testid='tile-activemq']"))
   );
@@ -157,11 +170,11 @@ async function addActiveMQStep(driver: WebDriver) {
 async function checkStepWithTestIdPresent(driver: WebDriver, testId: string) {
   await driver.wait(
     until.elementLocated(By.xpath(`//\*[name()='g' and starts-with(@data-testid,'${testId}')]`)
-  ), 5_000);
+    ), 5_000);
 }
 
 async function checkIntegrationNameInTopBarLoaded(driver: WebDriver, name: string) {
   await driver.wait(
     until.elementLocated(By.xpath(`//span[@data-testid='flows-list-route-id' and text()='${name}']`)
-  ), 5_000, `Unable to locate integration name '${name} in top bar!'`);
+    ), 5_000, `Unable to locate integration name '${name} in top bar!'`);
 }
