@@ -1,6 +1,5 @@
 const { merge } = require('webpack-merge');
 const CopyPlugin = require('copy-webpack-plugin');
-const RemovePlugin = require('remove-files-webpack-plugin');
 const path = require('path');
 function posixPath(pathStr) {
   return pathStr.split(path.sep).join(path.posix.sep);
@@ -130,18 +129,7 @@ const commonConfig = (env) => {
             to: 'webview/editors/kaoto/camel-catalog',
           },
         ]
-      }),
-      new RemovePlugin({
-        before: {
-            // Workaround to https://github.com/patternfly/react-topology/issues/118
-            include: [
-              'node_modules/@patternfly/react-topology/dist/esm/css/index.ts',
-              // next lines are used when doing development with main branch of Kaoto next
-              './../kaoto-next/node_modules/@patternfly/react-topology/dist/esm/css/index.ts'
-            ],
-            allowRootAndOutside: true
-        }
-    })
+      })
     ],
     externals: {
       vscode: "commonjs vscode",
