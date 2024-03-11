@@ -1,3 +1,5 @@
+# 0.15.0
+
 # 0.14.0
 
 - Open Kaoto editor by default for `*.pipe.(yaml|yml)` and `*-pipe.(yaml|yml)`files
