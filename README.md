@@ -30,11 +30,11 @@
 
 ### Features
 
-- Edit Kaoto (`*.kaoto.yaml` and `*.kaoto.yml`) files.
 - Edit Camel files following pattern (`*.camel.yaml` and `*.camel.yml`).
 - Edit Kamelet files following pattern (`*.kamelet.yaml` and `*.kamelet.yml`).
 - Edit Pipe files following pattern (`*.pipe.yaml`, `*.pipe.yml`, `*-pipe.yaml` and `*-pipe.yml`)
 - Allow to edit `*.yaml` and `*.yml` when opening through contextual menu.
+- Edit Kaoto (`*.kaoto.yaml` and `*.kaoto.yml`) files. Note that these filename extensions are not supported by Camel JBang and are merely still here to stay backward-compatible with Kaoto v1.
 
 ### Limitations
 
