@@ -1041,14 +1041,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:18.2.69":
-  version: 18.2.69
-  resolution: "@types/react@npm:18.2.69"
+"@types/react@npm:18.2.70":
+  version: 18.2.70
+  resolution: "@types/react@npm:18.2.70"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: 7657978c4bbca41f566481b5507cdf571575e6631d0f8105ec2f6eea4029c315f9381182369bd5c700f3f2ea247dd2d12005381b937c9ad1771f86acd7201768
+  checksum: 4d1160ad2449ce5e96aa795f24f9e3902975cd59e6ce3c79eb674acb1262a54cdb0bc9c9b0aeb858da24e20148a09ec1822c8ed12f70c1c87b779ac2baf72ebd
   languageName: node
   linkType: hard
 
@@ -7462,7 +7462,7 @@ __metadata:
     "@types/chai": ^4.3.11
     "@types/fs-extra": ^11.0.4
     "@types/mocha": ^10.0.6
-    "@types/react": 18.2.69
+    "@types/react": 18.2.70
     "@vscode/test-web": ^0.0.52
     "@vscode/vsce": ^2.24.0
     async-wait-until: ^2.0.12
