@@ -540,10 +540,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sindresorhus/is@npm:^5.2.0":
-  version: 5.4.1
-  resolution: "@sindresorhus/is@npm:5.4.1"
-  checksum: 178386d27f077dd88885263da2e77f826a3d2c476293a142a994aa876ee7d9b0d1672e5f32a12790e92a034462e17a4d0c743e6b915e0f1bb4e3471b3b17967e
+"@sindresorhus/is@npm:^6.1.0":
+  version: 6.2.0
+  resolution: "@sindresorhus/is@npm:6.2.0"
+  checksum: 2f6cc068b0145cd9fc185e442b5ab08c6be45ada6dea663329a7d8ab9c744001e45d63d666c1915803c65dc5be367f94b6af7f2f00518b3bf580eeec2f0a4627
   languageName: node
   linkType: hard
 
@@ -970,10 +970,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/http-cache-semantics@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "@types/http-cache-semantics@npm:4.0.1"
-  checksum: 1048aacf627829f0d5f00184e16548205cd9f964bf0841c29b36bc504509230c40bc57c39778703a1c965a6f5b416ae2cbf4c1d4589c889d2838dd9dbfccf6e9
+"@types/http-cache-semantics@npm:^4.0.2":
+  version: 4.0.4
+  resolution: "@types/http-cache-semantics@npm:4.0.4"
+  checksum: 7f4dd832e618bc1e271be49717d7b4066d77c2d4eed5b81198eb987e532bb3e1c7e02f45d77918185bad936f884b700c10cebe06305f50400f382ab75055f9e8
   languageName: node
   linkType: hard
 
@@ -1059,43 +1059,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/selenium-webdriver@npm:^4.1.21":
-  version: 4.1.21
-  resolution: "@types/selenium-webdriver@npm:4.1.21"
-  dependencies:
-    "@types/ws": "*"
-  checksum: 22e912109c60d34fbe83d0338a1b0fea63fbeb1f5a3101f86373bb96b46642ded2bf60ba275ebb356e1672e789b59e354f6f3ccb892b80d3cf59fd7b33a8f190
-  languageName: node
-  linkType: hard
-
-"@types/tar-fs@npm:*":
-  version: 2.0.4
-  resolution: "@types/tar-fs@npm:2.0.4"
-  dependencies:
-    "@types/node": "*"
-    "@types/tar-stream": "*"
-  checksum: a5f8b3a494244c24ff6175aa512bf7e4429efd2b9577e2b96fdba8c5649aec8881eaf7e107082ab741eedf4da5928f7d3bf255ce05ea83e15268c18eac600f5e
-  languageName: node
-  linkType: hard
-
-"@types/tar-stream@npm:*":
-  version: 3.1.3
-  resolution: "@types/tar-stream@npm:3.1.3"
-  dependencies:
-    "@types/node": "*"
-  checksum: 187387748288b35924284afc26cf36b6b966377f5131398bf484c475f7191c50f5e5903c94a7391049b6cdfce174ae2e63f776dea9425d94ddc6bd31ebe386ee
-  languageName: node
-  linkType: hard
-
-"@types/targz@npm:^1.0.4":
-  version: 1.0.4
-  resolution: "@types/targz@npm:1.0.4"
-  dependencies:
-    "@types/tar-fs": "*"
-  checksum: 7c1043a8eea15238b39767f9ae9adddbfbdbc219c31ccc8c83de9fe3296376ec74116b0219e746bd65f65c45d2de141ee31b96f2bfe33b44ad8827ff95086ae0
-  languageName: node
-  linkType: hard
-
 "@types/uuid@npm:^9.0.2":
   version: 9.0.7
   resolution: "@types/uuid@npm:9.0.7"
@@ -1107,15 +1070,6 @@ __metadata:
   version: 1.67.0
   resolution: "@types/vscode@npm:1.67.0"
   checksum: 7a201a40c9d70065cc4cc18e0601b226842376d47389dd0767f4b5014bc3a6503e6208384fe1c06a0e5f17077a306ad4d5a2ae3e5d2a276b20166af8256c8097
-  languageName: node
-  linkType: hard
-
-"@types/ws@npm:*":
-  version: 8.5.5
-  resolution: "@types/ws@npm:8.5.5"
-  dependencies:
-    "@types/node": "*"
-  checksum: d00bf8070e6938e3ccf933010921c6ce78ac3606696ce37a393b27a9a603f7bd93ea64f3c5fa295a2f743575ba9c9a9fdb904af0f5fe2229bf2adf0630386e4a
   languageName: node
   linkType: hard
 
@@ -1929,18 +1883,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cacheable-request@npm:^10.2.8":
-  version: 10.2.10
-  resolution: "cacheable-request@npm:10.2.10"
+"cacheable-request@npm:^10.2.14":
+  version: 10.2.14
+  resolution: "cacheable-request@npm:10.2.14"
   dependencies:
-    "@types/http-cache-semantics": ^4.0.1
+    "@types/http-cache-semantics": ^4.0.2
     get-stream: ^6.0.1
     http-cache-semantics: ^4.1.1
-    keyv: ^4.5.2
+    keyv: ^4.5.3
     mimic-response: ^4.0.0
     normalize-url: ^8.0.0
     responselike: ^3.0.0
-  checksum: 6f56cf6dc88c000936c89e386fdfd65c9a7833f6a4f73314f546287352efca50ef8c7ccc80c64d5c51fe104f5a60356366e190846f56abf3f2e90c1bacec7eee
+  checksum: 56f2b8e1c497c91f8391f0b099d19907a7dde25e71087e622b23e45fc8061736c2a6964ef121b16f377c3c61079cf8dc17320ab54004209d1343e4d26aba7015
   languageName: node
   linkType: hard
 
@@ -3365,10 +3319,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"form-data-encoder@npm:^2.1.2":
-  version: 2.1.4
-  resolution: "form-data-encoder@npm:2.1.4"
-  checksum: e0b3e5950fb69b3f32c273944620f9861f1933df9d3e42066e038e26dfb343d0f4465de9f27e0ead1a09d9df20bc2eed06a63c2ca2f8f00949e7202bae9e29dd
+"form-data-encoder@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "form-data-encoder@npm:4.0.2"
+  checksum: 12769f21af2d750c20111f8a626560eaf613c2c62769d5924d9e5a44ba4ef52406f973844129151efd35533eb79ecf8e0b95b0839560e335204d2212efb9a9ef
   languageName: node
   linkType: hard
 
@@ -3643,22 +3597,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"got@npm:^13.0.0":
-  version: 13.0.0
-  resolution: "got@npm:13.0.0"
+"got@npm:^14.2.1":
+  version: 14.2.1
+  resolution: "got@npm:14.2.1"
   dependencies:
-    "@sindresorhus/is": ^5.2.0
+    "@sindresorhus/is": ^6.1.0
     "@szmarczak/http-timer": ^5.0.1
     cacheable-lookup: ^7.0.0
-    cacheable-request: ^10.2.8
+    cacheable-request: ^10.2.14
     decompress-response: ^6.0.0
-    form-data-encoder: ^2.1.2
-    get-stream: ^6.0.1
-    http2-wrapper: ^2.1.10
+    form-data-encoder: ^4.0.2
+    get-stream: ^8.0.1
+    http2-wrapper: ^2.2.1
     lowercase-keys: ^3.0.0
-    p-cancelable: ^3.0.0
+    p-cancelable: ^4.0.1
     responselike: ^3.0.0
-  checksum: bcae6601efd710bc6c5b454c5e44bcb16fcfe57a1065e2d61ff918c1d69c3cf124984ebf509ca64ed10f0da2d2b5531b77da05aa786e75849d084fb8fbea711b
+  checksum: 1740f3a740c1038f8115445276b2daa874a3c3d2ad61b7c741eefee35c828921a1de326f11a9327ad010f9596c450ec83c5a6350e343923aee8b5484dc42265c
   languageName: node
   linkType: hard
 
@@ -3867,13 +3821,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http2-wrapper@npm:^2.1.10":
-  version: 2.2.0
-  resolution: "http2-wrapper@npm:2.2.0"
+"http2-wrapper@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "http2-wrapper@npm:2.2.1"
   dependencies:
     quick-lru: ^5.1.1
     resolve-alpn: ^1.2.0
-  checksum: 6fd20e5cb6a58151715b3581e06a62a47df943187d2d1f69e538a50cccb7175dd334ecfde7900a37d18f3e13a1a199518a2c211f39860e81e9a16210c199cfaa
+  checksum: e95e55e22c6fd61182ce81fecb9b7da3af680d479febe8ad870d05f7ebbc9f076e455193766f4e7934e50913bf1d8da3ba121fb5cd2928892390b58cf9d5c509
   languageName: node
   linkType: hard
 
@@ -4392,12 +4346,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"keyv@npm:^4.5.2":
-  version: 4.5.2
-  resolution: "keyv@npm:4.5.2"
+"keyv@npm:^4.5.3":
+  version: 4.5.4
+  resolution: "keyv@npm:4.5.4"
   dependencies:
     json-buffer: 3.0.1
-  checksum: 13ad58303acd2261c0d4831b4658451603fd159e61daea2121fcb15feb623e75ee328cded0572da9ca76b7b3ceaf8e614f1806c6b3af5db73c9c35a345259651
+  checksum: 74a24395b1c34bd44ad5cb2b49140d087553e170625240b86755a6604cd65aa16efdbdeae5cdb17ba1284a0fbb25ad06263755dbc71b8d8b06f74232ce3cdd72
   languageName: node
   linkType: hard
 
@@ -5085,9 +5039,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-page-objects@npm:^3.13.1":
-  version: 3.13.1
-  resolution: "monaco-page-objects@npm:3.13.1"
+"monaco-page-objects@npm:^3.14.0":
+  version: 3.14.0
+  resolution: "monaco-page-objects@npm:3.14.0"
   dependencies:
     clipboardy: ^4.0.0
     clone-deep: ^4.0.1
@@ -5095,9 +5049,9 @@ __metadata:
     fs-extra: ^11.2.0
     ts-essentials: ^9.4.1
   peerDependencies:
-    selenium-webdriver: ^4.6.1
+    selenium-webdriver: ">=4.6.1"
     typescript: ">=4.6.2"
-  checksum: e5a358d88fe6a156ca3e93ee95ccbaab6f4a3bf58b61ace598c3666919b9c63cad173b32231c5f79313b91db174ca58f16e69c96eb6832ee003bda3905672412
+  checksum: db87a766c196eaa1e85b09d89bf97533c1a166b44b18683216c5b5c035f638dfbe26ba5509cf19334ffa544afe980595065fb23a1e4307ef21f9e5e3a1e1c6ca
   languageName: node
   linkType: hard
 
@@ -5457,10 +5411,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"p-cancelable@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "p-cancelable@npm:3.0.0"
-  checksum: 2b5ae34218f9c2cf7a7c18e5d9a726ef9b165ef07e6c959f6738371509e747334b5f78f3bcdeb03d8a12dcb978faf641fd87eb21486ed7d36fb823b8ddef3219
+"p-cancelable@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "p-cancelable@npm:4.0.1"
+  checksum: 7c01982aceb717915ffdc59fda8c2f1cb9b2563eced7fab527e0b574ddd6a23a764e3462f40ed5d6bf475d5bd5d497cc021e1926da060a4dc4d30d748261be13
   languageName: node
   linkType: hard
 
@@ -7404,41 +7358,39 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vscode-extension-tester-locators@npm:^3.11.0":
-  version: 3.11.0
-  resolution: "vscode-extension-tester-locators@npm:3.11.0"
+"vscode-extension-tester-locators@npm:^3.12.0":
+  version: 3.12.0
+  resolution: "vscode-extension-tester-locators@npm:3.12.0"
   peerDependencies:
-    monaco-page-objects: ^3.13.0
-    selenium-webdriver: ^4.6.1
-  checksum: 9486f96076450b58010dd230afaa2a6d25d27b64ba0ea9b5281e491a06dd4b27cbdb49773d7f891ea3ad7c37be3e15e64eec27633802afcd387b6a9b0dd4e819
+    monaco-page-objects: ">=3.0.0"
+    selenium-webdriver: ">=4.6.1"
+  checksum: e7a19fa488e40a664e228f148c6ee62b27f28f8f022046185d1a06cccf98f2cc89b97ce7c211e1b603b33e2e66d1d3cc21e37941981fa705c30149a101371950
   languageName: node
   linkType: hard
 
-"vscode-extension-tester@npm:^7.2.0":
-  version: 7.2.0
-  resolution: "vscode-extension-tester@npm:7.2.0"
+"vscode-extension-tester@npm:^7.3.0":
+  version: 7.3.0
+  resolution: "vscode-extension-tester@npm:7.3.0"
   dependencies:
-    "@types/selenium-webdriver": ^4.1.21
-    "@types/targz": ^1.0.4
     "@vscode/vsce": ^2.24.0
     commander: ^12.0.0
     compare-versions: ^6.1.0
     fs-extra: ^11.2.0
     glob: ^10.3.10
-    got: ^13.0.0
+    got: ^14.2.1
     hpagent: ^1.2.0
     js-yaml: ^4.1.0
-    monaco-page-objects: ^3.13.1
+    monaco-page-objects: ^3.14.0
     sanitize-filename: ^1.6.3
     selenium-webdriver: ^4.18.1
     targz: ^1.0.1
-    vscode-extension-tester-locators: ^3.11.0
+    vscode-extension-tester-locators: ^3.12.0
   peerDependencies:
     mocha: ">=5.2.0"
     typescript: ">=4.6.2"
   bin:
     extest: out/cli.js
-  checksum: 88fa53551550a1266e1c7d0595a93b15de37d3b06361a93611fb138a8c8f433de426aa5d74e55c4673733727d9eeeceaf87c0674e189f4df0f34b9758c440d7f
+  checksum: 6960be2f5d3f89b7c9ec7d44dd8702d14c1e5ce263de6fccd8e927e01197cef44a675921c6beb6b3ddc4062bf58086a388f3f8eec80ebde0fbef3146beaf16bf
   languageName: node
   linkType: hard
 
@@ -7487,7 +7439,7 @@ __metadata:
     ts-loader: 9.4.4
     tsconfig-paths-webpack-plugin: ^4.1.0
     typescript: ^5.4.3
-    vscode-extension-tester: ^7.2.0
+    vscode-extension-tester: ^7.3.0
     web-worker: ^1.3.0
     webpack: 5.88.2
     webpack-cli: 5.1.4
