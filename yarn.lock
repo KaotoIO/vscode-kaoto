@@ -484,12 +484,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/browser-chromium@npm:^1.41.2":
-  version: 1.41.2
-  resolution: "@playwright/browser-chromium@npm:1.41.2"
+"@playwright/browser-chromium@npm:^1.42.1":
+  version: 1.42.1
+  resolution: "@playwright/browser-chromium@npm:1.42.1"
   dependencies:
-    playwright-core: 1.41.2
-  checksum: f6c597efab24c000613f9d43100e134b8e1c304500855951da3306ae0da22107c4881df9c3f8cce4a913026ab7ffdf50a781ff96ebdcbbf51c7742da69b126f5
+    playwright-core: 1.42.1
+  checksum: 9ce62f8682e69b3aa03dbe1dcf44f2c710e48fd1e1dedcc7584dcbf39ccf0237d88c29f0f93a381419374c35dbb6dc7572d7338b48d688508aae5c0ef6b07c0f
   languageName: node
   linkType: hard
 
@@ -1091,27 +1091,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/test-web@npm:^0.0.52":
-  version: 0.0.52
-  resolution: "@vscode/test-web@npm:0.0.52"
+"@vscode/test-web@npm:^0.0.53":
+  version: 0.0.53
+  resolution: "@vscode/test-web@npm:0.0.53"
   dependencies:
     "@koa/cors": ^5.0.0
     "@koa/router": ^12.0.1
-    "@playwright/browser-chromium": ^1.41.2
+    "@playwright/browser-chromium": ^1.42.1
     gunzip-maybe: ^1.4.2
     http-proxy-agent: ^7.0.2
     https-proxy-agent: ^7.0.4
-    koa: ^2.15.0
+    koa: ^2.15.2
     koa-morgan: ^1.0.1
     koa-mount: ^4.0.0
     koa-static: ^5.0.0
     minimist: ^1.2.8
-    playwright: ^1.41.2
+    playwright: ^1.42.1
     tar-fs: ^3.0.5
     vscode-uri: ^3.0.8
   bin:
     vscode-test-web: out/index.js
-  checksum: 136566f4970536278db5fe2e981e16858ed3928d931dfd5232cf6a3763a9d5c3bcc98f1140fd9fad395350ea712a86e6f74d1842568bd7a56d7ee7f042084faa
+  checksum: 7908a2b14013f8db373f66009c6fa39a0851e563cbfb83b04838ff4d3a875648e7e3d2d10f6722d835089ee08f72d8f420c645633a8b6e2cd49939870bd6539b
   languageName: node
   linkType: hard
 
@@ -4437,9 +4437,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"koa@npm:^2.15.0":
-  version: 2.15.0
-  resolution: "koa@npm:2.15.0"
+"koa@npm:^2.15.2":
+  version: 2.15.2
+  resolution: "koa@npm:2.15.2"
   dependencies:
     accepts: ^1.3.5
     cache-content-type: ^1.0.0
@@ -4464,7 +4464,7 @@ __metadata:
     statuses: ^1.5.0
     type-is: ^1.6.16
     vary: ^1.1.2
-  checksum: a97741f89f328f25ae94d82d0ee608377d89e086c73f2d868023e6050dea682ef93e0a5c80097f3aaad28121853aea50a7fb3c0c12ecc45798da2fd1255f580b
+  checksum: a55739e84a54d5534c35436427ff7a7e0671ff5df219356339acbbba39fdc832f01420b53b689abac116180ac7186f48e1bf1806f85d029c87670404b2d296b8
   languageName: node
   linkType: hard
 
@@ -5684,27 +5684,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.41.2":
-  version: 1.41.2
-  resolution: "playwright-core@npm:1.41.2"
+"playwright-core@npm:1.42.1":
+  version: 1.42.1
+  resolution: "playwright-core@npm:1.42.1"
   bin:
     playwright-core: cli.js
-  checksum: b41ede0db3fd3e3f7e0b0efbdfb2dbc4db345e113cf9c4451af21d1d5b5d9ab5e969f5662852925e37b2198ae5daab92aa48108fe3d4eb81c849ba8752aaf8cc
+  checksum: e7081ff0f43b4b9053255109eb1d82164b7c6b55c7d022e25fca935d0f4fc547cb2e02a7b64f0c2a9462729be7bb45edb082f8b038306415944f1061d00d9c90
   languageName: node
   linkType: hard
 
-"playwright@npm:^1.41.2":
-  version: 1.41.2
-  resolution: "playwright@npm:1.41.2"
+"playwright@npm:^1.42.1":
+  version: 1.42.1
+  resolution: "playwright@npm:1.42.1"
   dependencies:
     fsevents: 2.3.2
-    playwright-core: 1.41.2
+    playwright-core: 1.42.1
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: acf166003ec42cd795f5fca096c5135880d78e84ec2d0a1911b2cab984cf75dc06e50d3aa24b56cbcbc5369ca8c61831e76c5f8674531a272fbd0f6e624fa387
+  checksum: 06c16bcd07d03993126ee6c168bde28c59d3cab7f7d4721eaf57bd5c51e9c929e10a286758de062b5fc02874413ceae2684d14cbb7865c0a51fc8df6d9001ad1
   languageName: node
   linkType: hard
 
@@ -7429,7 +7429,7 @@ __metadata:
     "@types/fs-extra": ^11.0.4
     "@types/mocha": ^10.0.6
     "@types/react": 18.2.70
-    "@vscode/test-web": ^0.0.52
+    "@vscode/test-web": ^0.0.53
     "@vscode/vsce": ^2.24.0
     async-wait-until: ^2.0.12
     buffer: ^6.0.3
