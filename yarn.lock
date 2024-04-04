@@ -94,27 +94,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto-next/ui@npm:2.0.0-TP2":
-  version: 2.0.0-TP2
-  resolution: "@kaoto-next/ui@npm:2.0.0-TP2"
+"@kaoto-next/ui@npm:2.0.0-TP3-RC1":
+  version: 2.0.0-TP3-RC1
+  resolution: "@kaoto-next/ui@npm:2.0.0-TP3-RC1"
   dependencies:
-    "@kaoto-next/uniforms-patternfly": ^0.6.3
+    "@kaoto-next/uniforms-patternfly": ^0.6.8
     "@kie-tools-core/editor": 0.32.0
     "@kie-tools-core/notifications": 0.32.0
-    "@patternfly/patternfly": 5.2.0
+    "@patternfly/patternfly": 5.2.1
     "@patternfly/react-code-editor": 5.1.0
-    "@patternfly/react-core": 5.2.0
-    "@patternfly/react-icons": 5.2.0
-    "@patternfly/react-table": 5.2.0
+    "@patternfly/react-core": 5.2.2
+    "@patternfly/react-icons": 5.2.1
+    "@patternfly/react-table": 5.2.2
     "@patternfly/react-topology": 5.2.1
     "@types/uuid": ^9.0.2
     ajv: ^8.12.0
+    ajv-draft-04: ^1.0.0
     ajv-formats: ^2.1.1
     clsx: ^2.1.0
     html-to-image: ^1.11.11
     lodash.clonedeep: ^4.5.0
     lodash.get: ^4.4.2
     lodash.isempty: ^4.4.0
+    lodash.memoize: ^4.1.2
     lodash.set: ^4.3.2
     monaco-editor: ^0.45.0
     monaco-yaml: ^5.1.1
@@ -129,20 +131,20 @@ __metadata:
     uuid: ^9.0.0
     yaml: ^2.3.2
     zustand: ^4.3.9
-  checksum: 374ed675c499aad68a18d85acee3da14a9590106fd9b245a3152e6d232b8f6ee0e3ae8508256e8b87a4a88279e7c9fdb41ed9b5311c74be77bba8950452a0c92
+  checksum: f60387ed2e1e531f7fbc282f443488fea30ab236bb1aef0b9b320777d6cfd8be52c4275c18577dfde063739182177bdaa72fb843f469fee8e773aafd6f3dfa36
   languageName: node
   linkType: hard
 
-"@kaoto-next/uniforms-patternfly@npm:^0.6.3":
-  version: 0.6.3
-  resolution: "@kaoto-next/uniforms-patternfly@npm:0.6.3"
+"@kaoto-next/uniforms-patternfly@npm:^0.6.8":
+  version: 0.6.9
+  resolution: "@kaoto-next/uniforms-patternfly@npm:0.6.9"
   dependencies:
     invariant: ^2.2.4
     lodash: ^4.17.21
     react: ^18.2.0
     react-dom: ^18.2.0
     uniforms: 4.0.0-alpha.5
-  checksum: 7222b7745d320112b6267bdb981755d716b456f75ee31daf25c1daea8c1ebef7883808ad2ae062ee67f165b6cde4db73058bcf880e04862012191e1341510c91
+  checksum: 436eddda64fd724f332a140ced03e937809eb370878d1065eab43cc1498aec56f623f1302fc2fc6790ce6a714d8f3d5af86b23db1513aa455be40f580a7ceaca
   languageName: node
   linkType: hard
 
@@ -1449,6 +1451,18 @@ __metadata:
     clean-stack: ^2.0.0
     indent-string: ^4.0.0
   checksum: 1101a33f21baa27a2fa8e04b698271e64616b886795fd43c31068c07533c7b3facfcaf4e9e0cab3624bd88f729a592f1c901a1a229c9e490eafce411a8644b79
+  languageName: node
+  linkType: hard
+
+"ajv-draft-04@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "ajv-draft-04@npm:1.0.0"
+  peerDependencies:
+    ajv: ^8.5.0
+  peerDependenciesMeta:
+    ajv:
+      optional: true
+  checksum: 3f11fa0e7f7359bef6608657f02ab78e9cc62b1fb7bdd860db0d00351b3863a1189c1a23b72466d2d82726cab4eb20725c76f5e7c134a89865e2bfd0e6828137
   languageName: node
   linkType: hard
 
@@ -4594,6 +4608,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.memoize@npm:^4.1.2":
+  version: 4.1.2
+  resolution: "lodash.memoize@npm:4.1.2"
+  checksum: 9ff3942feeccffa4f1fafa88d32f0d24fdc62fd15ded5a74a5f950ff5f0c6f61916157246744c620173dddf38d37095a92327d5fd3861e2063e736a5c207d089
+  languageName: node
+  linkType: hard
+
 "lodash.set@npm:^4.3.2":
   version: 4.3.2
   resolution: "lodash.set@npm:4.3.2"
@@ -7456,7 +7477,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto-next/ui": 2.0.0-TP2
+    "@kaoto-next/ui": 2.0.0-TP3-RC1
     "@kie-tools-core/backend": 0.32.0
     "@kie-tools-core/editor": 0.32.0
     "@kie-tools-core/i18n": 0.32.0
