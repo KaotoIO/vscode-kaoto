@@ -30,7 +30,7 @@
     "test:it:clean": "rimraf ./test-resources && rimraf ./out && rimraf *.vsix"
   },
   "dependencies": {
-    "@kaoto-next/ui": "2.0.0-TP2",
+    "@kaoto-next/ui": "2.0.0-TP3",
     "@kie-tools-core/backend": "0.32.0",
     "@kie-tools-core/editor": "0.32.0",
     "@kie-tools-core/i18n": "0.32.0",
@@ -172,11 +172,11 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "semver": "7.5.2",
-    "@patternfly/patternfly": "5.2.0",
+    "@patternfly/patternfly": "5.2.1",
     "@patternfly/react-code-editor": "5.1.0",
-    "@patternfly/react-core": "5.2.0",
-    "@patternfly/react-icons": "5.2.0",
-    "@patternfly/react-table": "5.2.0",
+    "@patternfly/react-core": "5.2.2",
+    "@patternfly/react-icons": "5.2.1",
+    "@patternfly/react-table": "5.2.2",
     "@patternfly/react-topology": "5.2.1"
   },
   "packageManager": "yarn@3.6.1"
