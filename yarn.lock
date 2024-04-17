@@ -1145,6 +1145,42 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vscode/vsce@npm:^2.25.0":
+  version: 2.25.0
+  resolution: "@vscode/vsce@npm:2.25.0"
+  dependencies:
+    azure-devops-node-api: ^12.5.0
+    chalk: ^2.4.2
+    cheerio: ^1.0.0-rc.9
+    cockatiel: ^3.1.2
+    commander: ^6.2.1
+    form-data: ^4.0.0
+    glob: ^7.0.6
+    hosted-git-info: ^4.0.2
+    jsonc-parser: ^3.2.0
+    keytar: ^7.7.0
+    leven: ^3.1.0
+    markdown-it: ^12.3.2
+    mime: ^1.3.4
+    minimatch: ^3.0.3
+    parse-semver: ^1.1.1
+    read: ^1.0.7
+    semver: ^7.5.2
+    tmp: ^0.2.1
+    typed-rest-client: ^1.8.4
+    url-join: ^4.0.1
+    xml2js: ^0.5.0
+    yauzl: ^2.3.1
+    yazl: ^2.2.2
+  dependenciesMeta:
+    keytar:
+      optional: true
+  bin:
+    vsce: vsce
+  checksum: 5d12f1af880e1320c295f2ad9d048f6fd2887167c8da7d29ce0c772cff1a5605a415f4ff3ea57040f66a39879aa00c95876f4986453ca728c8233e8dcf7ffcba
+  languageName: node
+  linkType: hard
+
 "@webassemblyjs/ast@npm:1.12.1, @webassemblyjs/ast@npm:^1.11.5":
   version: 1.12.1
   resolution: "@webassemblyjs/ast@npm:1.12.1"
@@ -1609,6 +1645,16 @@ __metadata:
     tunnel: 0.0.6
     typed-rest-client: ^1.8.4
   checksum: 52e84379b4ce71ad8a79470ba89e1d1217b28ee3670c7e484e1b1d9c210acf406ab09132c241cb481f78354df701dae7752ba3c4e3d28b2b6c0b0ff2d9eb7199
+  languageName: node
+  linkType: hard
+
+"azure-devops-node-api@npm:^12.5.0":
+  version: 12.5.0
+  resolution: "azure-devops-node-api@npm:12.5.0"
+  dependencies:
+    tunnel: 0.0.6
+    typed-rest-client: ^1.8.4
+  checksum: 7c2c3ae21eaf1bc3627ba4ea87bdac1085a3594eacf40eb6d7b11292f057988db38f718f4597733c6861d854c28bfe146bcf3964a13adddebe1085270bb63097
   languageName: node
   linkType: hard
 
@@ -2097,6 +2143,13 @@ __metadata:
   version: 4.6.0
   resolution: "co@npm:4.6.0"
   checksum: 5210d9223010eb95b29df06a91116f2cf7c8e0748a9013ed853b53f362ea0e822f1e5bb054fb3cefc645239a4cf966af1f6133a3b43f40d591f3b68ed6cf0510
+  languageName: node
+  linkType: hard
+
+"cockatiel@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "cockatiel@npm:3.1.2"
+  checksum: 5ba2d9ffd738d38c5f1af66f4c36f302485f4ebf25b96e47aa9c9ea3fecd47ed770bfc9da52ac58bef3dfb330efd7e9be557691b4e620a1479d79009bff2b74e
   languageName: node
   linkType: hard
 
@@ -7289,7 +7342,7 @@ __metadata:
     "@types/mocha": ^10.0.6
     "@types/react": 18.2.75
     "@vscode/test-web": ^0.0.53
-    "@vscode/vsce": ^2.24.0
+    "@vscode/vsce": ^2.25.0
     async-wait-until: ^2.0.12
     buffer: ^6.0.3
     chai: ^4.3.10
