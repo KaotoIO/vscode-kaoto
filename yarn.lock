@@ -1045,13 +1045,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:18.2.75":
-  version: 18.2.75
-  resolution: "@types/react@npm:18.2.75"
+"@types/react@npm:18.2.79":
+  version: 18.2.79
+  resolution: "@types/react@npm:18.2.79"
   dependencies:
     "@types/prop-types": "*"
     csstype: ^3.0.2
-  checksum: f77322720744beba6650462c0d75ccc0be27c176bd7b2aff32039ea30e498a78fe6dbce4a1c3fdbf592ccc01286059f332a294a3b6975dbb0d8d5999718ece38
+  checksum: 85aa96e0e88725c84d8fc5f04f10a4da6a1f507dde33557ac9cc211414756867721264bfefd9e02bae1288ce2905351d949b652b931e734ea24519ee5c625138
   languageName: node
   linkType: hard
 
@@ -7340,7 +7340,7 @@ __metadata:
     "@types/chai": ^4.3.11
     "@types/fs-extra": ^11.0.4
     "@types/mocha": ^10.0.6
-    "@types/react": 18.2.75
+    "@types/react": 18.2.79
     "@vscode/test-web": ^0.0.53
     "@vscode/vsce": ^2.25.0
     async-wait-until: ^2.0.12
