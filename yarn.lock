@@ -631,19 +631,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redhat-developer/locators@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "@redhat-developer/locators@npm:1.0.2"
+"@redhat-developer/locators@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@redhat-developer/locators@npm:1.1.0"
   peerDependencies:
     "@redhat-developer/page-objects": ">=1.0.0"
     selenium-webdriver: ">=4.6.1"
-  checksum: dbea79048c485d90491da5f6ce263a35523b4bfab2658fc0ede87c500de79110c231ceb8a7319598d0e8e3a132760e22fa9011f5f7626b27ac80f8e92a4fc8bd
+  checksum: 8a0daf69119f57eeceb88e9512eb2a368d62dffd8314cf1048813717819724311b3f9d9742a4c146b80839ef12f7708ad8bde5c43c5bd604f256dd7447a59261
   languageName: node
   linkType: hard
 
-"@redhat-developer/page-objects@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "@redhat-developer/page-objects@npm:1.0.2"
+"@redhat-developer/page-objects@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@redhat-developer/page-objects@npm:1.1.0"
   dependencies:
     clipboardy: ^4.0.0
     clone-deep: ^4.0.1
@@ -652,7 +652,7 @@ __metadata:
   peerDependencies:
     selenium-webdriver: ">=4.6.1"
     typescript: ">=4.6.2"
-  checksum: ffc683b5caa8f885dbc58d940325bede8458f659ae358f503bfe9cc2bf0b0013be12b1cfb27d5f07df771fda53004dda9f237388f39d2207b98d96ff352aa997
+  checksum: 8d12c7ec1dcfdab238e8badd90cf0e8e042d9322ded27adc3c8e028b24dd477bd39a383b02a46d03aecfdd3f62efdb708101a09b185b8387faecfc7d19524a6c
   languageName: node
   linkType: hard
 
@@ -703,10 +703,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sindresorhus/is@npm:^6.1.0":
-  version: 6.2.0
-  resolution: "@sindresorhus/is@npm:6.2.0"
-  checksum: 2f6cc068b0145cd9fc185e442b5ab08c6be45ada6dea663329a7d8ab9c744001e45d63d666c1915803c65dc5be367f94b6af7f2f00518b3bf580eeec2f0a4627
+"@sindresorhus/is@npm:^5.2.0":
+  version: 5.6.0
+  resolution: "@sindresorhus/is@npm:5.6.0"
+  checksum: 2e6e0c3acf188dcd9aea0f324ac1b6ad04c9fc672392a7b5a1218512fcde066965797eba8b9fe2108657a504388bd4a6664e6e6602555168e828a6df08b9f10e
   languageName: node
   linkType: hard
 
@@ -1248,40 +1248,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/vsce@npm:^2.24.0":
-  version: 2.24.0
-  resolution: "@vscode/vsce@npm:2.24.0"
-  dependencies:
-    azure-devops-node-api: ^11.0.1
-    chalk: ^2.4.2
-    cheerio: ^1.0.0-rc.9
-    commander: ^6.2.1
-    glob: ^7.0.6
-    hosted-git-info: ^4.0.2
-    jsonc-parser: ^3.2.0
-    keytar: ^7.7.0
-    leven: ^3.1.0
-    markdown-it: ^12.3.2
-    mime: ^1.3.4
-    minimatch: ^3.0.3
-    parse-semver: ^1.1.1
-    read: ^1.0.7
-    semver: ^7.5.2
-    tmp: ^0.2.1
-    typed-rest-client: ^1.8.4
-    url-join: ^4.0.1
-    xml2js: ^0.5.0
-    yauzl: ^2.3.1
-    yazl: ^2.2.2
-  dependenciesMeta:
-    keytar:
-      optional: true
-  bin:
-    vsce: vsce
-  checksum: 3b603681ea9bdb630be5f31a0d7cc1e5444d84c58418001ad0d89acc1d333a00d77535fa00924e21cf67686a0d960a16ee3851066a7c14cb6a66cffac31f40d5
-  languageName: node
-  linkType: hard
-
 "@vscode/vsce@npm:^2.26.0":
   version: 2.26.0
   resolution: "@vscode/vsce@npm:2.26.0"
@@ -1776,16 +1742,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"azure-devops-node-api@npm:^11.0.1":
-  version: 11.2.0
-  resolution: "azure-devops-node-api@npm:11.2.0"
-  dependencies:
-    tunnel: 0.0.6
-    typed-rest-client: ^1.8.4
-  checksum: 52e84379b4ce71ad8a79470ba89e1d1217b28ee3670c7e484e1b1d9c210acf406ab09132c241cb481f78354df701dae7752ba3c4e3d28b2b6c0b0ff2d9eb7199
-  languageName: node
-  linkType: hard
-
 "azure-devops-node-api@npm:^12.5.0":
   version: 12.5.0
   resolution: "azure-devops-node-api@npm:12.5.0"
@@ -2062,7 +2018,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cacheable-request@npm:^10.2.14":
+"cacheable-request@npm:^10.2.8":
   version: 10.2.14
   resolution: "cacheable-request@npm:10.2.14"
   dependencies:
@@ -3554,10 +3510,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"form-data-encoder@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "form-data-encoder@npm:4.0.2"
-  checksum: 12769f21af2d750c20111f8a626560eaf613c2c62769d5924d9e5a44ba4ef52406f973844129151efd35533eb79ecf8e0b95b0839560e335204d2212efb9a9ef
+"form-data-encoder@npm:^2.1.2":
+  version: 2.1.4
+  resolution: "form-data-encoder@npm:2.1.4"
+  checksum: e0b3e5950fb69b3f32c273944620f9861f1933df9d3e42066e038e26dfb343d0f4465de9f27e0ead1a09d9df20bc2eed06a63c2ca2f8f00949e7202bae9e29dd
   languageName: node
   linkType: hard
 
@@ -3830,22 +3786,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"got@npm:^14.2.1":
-  version: 14.2.1
-  resolution: "got@npm:14.2.1"
+"got@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "got@npm:13.0.0"
   dependencies:
-    "@sindresorhus/is": ^6.1.0
+    "@sindresorhus/is": ^5.2.0
     "@szmarczak/http-timer": ^5.0.1
     cacheable-lookup: ^7.0.0
-    cacheable-request: ^10.2.14
+    cacheable-request: ^10.2.8
     decompress-response: ^6.0.0
-    form-data-encoder: ^4.0.2
-    get-stream: ^8.0.1
-    http2-wrapper: ^2.2.1
+    form-data-encoder: ^2.1.2
+    get-stream: ^6.0.1
+    http2-wrapper: ^2.1.10
     lowercase-keys: ^3.0.0
-    p-cancelable: ^4.0.1
+    p-cancelable: ^3.0.0
     responselike: ^3.0.0
-  checksum: 1740f3a740c1038f8115445276b2daa874a3c3d2ad61b7c741eefee35c828921a1de326f11a9327ad010f9596c450ec83c5a6350e343923aee8b5484dc42265c
+  checksum: bcae6601efd710bc6c5b454c5e44bcb16fcfe57a1065e2d61ff918c1d69c3cf124984ebf509ca64ed10f0da2d2b5531b77da05aa786e75849d084fb8fbea711b
   languageName: node
   linkType: hard
 
@@ -4045,7 +4001,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http2-wrapper@npm:^2.2.1":
+"http2-wrapper@npm:^2.1.10":
   version: 2.2.1
   resolution: "http2-wrapper@npm:2.2.1"
   dependencies:
@@ -5704,10 +5660,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"p-cancelable@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "p-cancelable@npm:4.0.1"
-  checksum: 7c01982aceb717915ffdc59fda8c2f1cb9b2563eced7fab527e0b574ddd6a23a764e3462f40ed5d6bf475d5bd5d497cc021e1926da060a4dc4d30d748261be13
+"p-cancelable@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "p-cancelable@npm:3.0.0"
+  checksum: 2b5ae34218f9c2cf7a7c18e5d9a726ef9b165ef07e6c959f6738371509e747334b5f78f3bcdeb03d8a12dcb978faf641fd87eb21486ed7d36fb823b8ddef3219
   languageName: node
   linkType: hard
 
@@ -7608,19 +7564,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vscode-extension-tester@npm:^8.0.2":
-  version: 8.0.2
-  resolution: "vscode-extension-tester@npm:8.0.2"
+"vscode-extension-tester@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "vscode-extension-tester@npm:8.1.0"
   dependencies:
-    "@redhat-developer/locators": ^1.0.2
-    "@redhat-developer/page-objects": ^1.0.2
+    "@redhat-developer/locators": ^1.1.0
+    "@redhat-developer/page-objects": ^1.1.0
     "@types/selenium-webdriver": ^4.1.22
-    "@vscode/vsce": ^2.24.0
+    "@vscode/vsce": ^2.26.0
     commander: ^12.0.0
     compare-versions: ^6.1.0
     fs-extra: ^11.2.0
     glob: ^10.3.12
-    got: ^14.2.1
+    got: ^13.0.0
     hpagent: ^1.2.0
     js-yaml: ^4.1.0
     sanitize-filename: ^1.6.3
@@ -7631,7 +7587,7 @@ __metadata:
     typescript: ">=4.6.2"
   bin:
     extest: out/cli.js
-  checksum: ff9fe614669c69cd891fe376aa59e0c41dbe385b883f43092d78f0958cc07509369800f46df1bb3b49f9123332c85947bc73a8d249a26324c8826193696ee451
+  checksum: 05883ef4b4fcc51d02203e2fb9d78fbd882c82b2792d099e4246281c0849859b59517998cc06e1a5f92513a994597991102ea85f574657395d149887d674f43d
   languageName: node
   linkType: hard
 
@@ -7680,7 +7636,7 @@ __metadata:
     ts-loader: 9.4.4
     tsconfig-paths-webpack-plugin: ^4.1.0
     typescript: ^5.4.5
-    vscode-extension-tester: ^8.0.2
+    vscode-extension-tester: ^8.1.0
     web-worker: ^1.3.0
     webpack: 5.88.2
     webpack-cli: 5.1.4
