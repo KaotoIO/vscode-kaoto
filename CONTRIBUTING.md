@@ -100,14 +100,14 @@ You need to launch the script task `yarn run run:webmode`
 
 If you'd like to test latest Kaoto and not rely on a released version, follow these steps:
 
-* In `kaoto-next` local clone folder:
+* In `kaoto` local clone folder:
   * `yarn`
-  * `yarn workspace @kaoto-next/camel-catalog run build`
-  * `yarn workspace @kaoto-next/ui run build:lib`
+  * `yarn workspace @kaoto/camel-catalog run build`
+  * `yarn workspace @kaoto/kaoto run build:lib`
 * Open VS Code on `vscode-kaoto` local clone folder
 * `yarn`
-* `yarn link` _\<kaoto-next local clone folder uri>/packages/kaoto-_
-  * i.e. `yarn link ~/repositories/kaoto-next/packages/ui`
+* `yarn link` _\<kaoto local clone folder uri>/packages/kaoto-_
+  * i.e. `yarn link ~/repositories/kaoto/packages/ui`
 * `yarn build:dev`
 * In `Run and debug` perspective, call the `Run Extension` launch configuration
 * In the new VS Code opened (which has `[Extension Development host]` in window title),
@@ -116,8 +116,8 @@ If you'd like to test latest Kaoto and not rely on a released version, follow th
   * Open the file
 
 To return to the default Kaoto version, just write on `vscode-kaoto` local clone folder:
-* `yarn unlink` _\<kaoto-next local clone folder uri>/packages/ui_
-  * i.e. `yarn unlink ~/repositories/kaoto-next/packages/ui`
+* `yarn unlink` _\<kaoto local clone folder uri>/packages/ui_
+  * i.e. `yarn unlink ~/repositories/kaoto/packages/ui`
 
 More information about [linking](https://yarnpkg.com/cli/link) and [unlinking](https://yarnpkg.com/cli/unlink) local packages with [yarn](https://yarnpkg.com/)
 

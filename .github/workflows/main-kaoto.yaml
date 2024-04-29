@@ -5,7 +5,7 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-name: Build with main branch of kaoto-next
+name: Build with main branch of kaoto
 
 jobs:
   build:
@@ -27,8 +27,8 @@ jobs:
     - name: Checkout Kaoto
       uses: actions/checkout@v4
       with:
-        path: kaoto-next
-        repository: KaotoIO/kaoto-next
+        path: kaoto
+        repository: KaotoIO/kaoto
     - uses: actions/setup-node@v4
       with:
         node-version: '18.x'
@@ -37,13 +37,13 @@ jobs:
         distribution: 'temurin'
         java-version: '21'
     - name: Kaoto build
-      working-directory: kaoto-next
+      working-directory: kaoto
       run: |
         yarn
-        yarn workspace @kaoto-next/ui run build:lib
-    - name: yarn link kaoto-next
+        yarn workspace @kaoto/kaoto run build:lib
+    - name: yarn link kaoto
       working-directory: vscode-kaoto
-      run: yarn link ../kaoto-next/packages/ui
+      run: yarn link ../kaoto/packages/ui
     - name: yarn build:dev
       working-directory: vscode-kaoto
       run: yarn build:dev

@@ -1,4 +1,4 @@
-import { KaotoEditorFactory } from '@kaoto-next/ui';
+import { KaotoEditorFactory } from '@kaoto/kaoto';
 import { Editor, EditorFactory, KogitoEditorChannelApi } from '@kie-tools-core/editor/dist/api';
 import { NoOpKeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope";
 import * as EditorEnvelope from '@kie-tools-core/editor/dist/envelope';
