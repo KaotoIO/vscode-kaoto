@@ -224,9 +224,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto-next/ui@npm:2.0.0-TP3":
-  version: 2.0.0-TP3
-  resolution: "@kaoto-next/ui@npm:2.0.0-TP3"
+"@kaoto-next/uniforms-patternfly@npm:^0.6.8":
+  version: 0.6.10
+  resolution: "@kaoto-next/uniforms-patternfly@npm:0.6.10"
+  dependencies:
+    invariant: ^2.2.4
+    lodash: ^4.17.21
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    uniforms: 4.0.0-alpha.5
+  checksum: 3d8565d4ce5a9eaa4a6c6128bc7c8a93d6f473c73713279971054ec2fda816e5c8a0d3871717caef31c61c3ef71b6855a9030836ff6dae46459cb3fd8ed4ec43
+  languageName: node
+  linkType: hard
+
+"@kaoto/kaoto@npm:^2.0.0-TP3.1":
+  version: 2.0.0-TP3.1
+  resolution: "@kaoto/kaoto@npm:2.0.0-TP3.1"
   dependencies:
     "@kaoto-next/uniforms-patternfly": ^0.6.8
     "@kie-tools-core/editor": 0.32.0
@@ -261,20 +274,7 @@ __metadata:
     uuid: ^9.0.0
     yaml: ^2.3.2
     zustand: ^4.3.9
-  checksum: 9c1d75acaa2c2235e84a790cbf6d3a276b4b82105e44d5bc762ac1e68495d568f1aa4fc171522299b2e0b3c9dce09a6f40eedc7994bc018225165122196b2a60
-  languageName: node
-  linkType: hard
-
-"@kaoto-next/uniforms-patternfly@npm:^0.6.8":
-  version: 0.6.9
-  resolution: "@kaoto-next/uniforms-patternfly@npm:0.6.9"
-  dependencies:
-    invariant: ^2.2.4
-    lodash: ^4.17.21
-    react: ^18.2.0
-    react-dom: ^18.2.0
-    uniforms: 4.0.0-alpha.5
-  checksum: 436eddda64fd724f332a140ced03e937809eb370878d1065eab43cc1498aec56f623f1302fc2fc6790ce6a714d8f3d5af86b23db1513aa455be40f580a7ceaca
+  checksum: 249e78ae83909fd0037a29960d93d721e040134cf42b556c0046f8e41c1b02a5938e5d8819d82cdf4786bc3146b9818e3a752629d596266308f9b11d383d8249
   languageName: node
   linkType: hard
 
@@ -556,7 +556,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-styles@npm:^5.1.0, @patternfly/react-styles@npm:^5.1.1, @patternfly/react-styles@npm:^5.2.1":
+"@patternfly/react-styles@npm:^5.1.0, @patternfly/react-styles@npm:^5.1.1":
+  version: 5.3.0
+  resolution: "@patternfly/react-styles@npm:5.3.0"
+  checksum: c65198ba20d6dda4b41c14c0785c26dd3febfa6534d02c2d3f477a907d488e70b99cabad39b9bea9c423711881ebcccfef7293c696c5c25450f134e1db9361f7
+  languageName: node
+  linkType: hard
+
+"@patternfly/react-styles@npm:^5.2.1":
   version: 5.2.1
   resolution: "@patternfly/react-styles@npm:5.2.1"
   checksum: fbc36df191fd1d75a1a9c390bfbe4884adc7b6556a2b30de9e848169df5541c946cde71f4a54db01873a21bce4a09e64f54ee722eb5d9bd6d8b1a77fc62ba141
@@ -673,10 +680,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/router@npm:1.15.3":
-  version: 1.15.3
-  resolution: "@remix-run/router@npm:1.15.3"
-  checksum: 9e70bd334d99fdf9285f0885c10353d7e25f66369080f551d997e3ce204e1af3a12d6f12b091f94a2dc9a54c80598bbe3c5194b57cbae17b7b40ab815dcd49a0
+"@remix-run/router@npm:1.16.0":
+  version: 1.16.0
+  resolution: "@remix-run/router@npm:1.16.0"
+  checksum: c8afdf90b19a5a9dfb14425d57de029cadf4bbb51d668885b10df5ea2f82279d7552a9939274b519de0da40550f48e5a6c07e5d4049dbd3838fcaa29819bd641
   languageName: node
   linkType: hard
 
@@ -1173,12 +1180,12 @@ __metadata:
   linkType: hard
 
 "@types/react@npm:*":
-  version: 18.2.74
-  resolution: "@types/react@npm:18.2.74"
+  version: 18.3.1
+  resolution: "@types/react@npm:18.3.1"
   dependencies:
     "@types/prop-types": "*"
     csstype: ^3.0.2
-  checksum: 093c0e350552e61393e2ba30169aa620e2e64c1e2d0ff38efd2a7549ded689b6ab6bffb65fe0f7ef9e143174de54442d942bd70c014649f464c52465701208d8
+  checksum: 9224ef319a0c2b7f66e7e7f06012aa5eb638a6c76c9742843eab1a5d243f2bed5ff829ddbb41efd60d33a266420528adfcb84cb93f238b00e905f98c3a355768
   languageName: node
   linkType: hard
 
@@ -2234,9 +2241,9 @@ __metadata:
   linkType: hard
 
 "clsx@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "clsx@npm:2.1.0"
-  checksum: 43fefc29b6b49c9476fbce4f8b1cc75c27b67747738e598e6651dd40d63692135dc60b18fa1c5b78a2a9ba8ae6fd2055a068924b94e20b42039bd53b78b98e1d
+  version: 2.1.1
+  resolution: "clsx@npm:2.1.1"
+  checksum: acd3e1ab9d8a433ecb3cc2f6a05ab95fe50b4a3cfc5ba47abb6cbf3754585fcb87b84e90c822a1f256c4198e3b41c7f6c391577ffc8678ad587fc0976b24fd57
   languageName: node
   linkType: hard
 
@@ -5298,11 +5305,11 @@ __metadata:
   linkType: hard
 
 "monaco-marker-data-provider@npm:^1.0.0":
-  version: 1.1.1
-  resolution: "monaco-marker-data-provider@npm:1.1.1"
-  peerDependencies:
-    monaco-editor: ">=0.30.0"
-  checksum: d24c3dbb5c859958dd23f86798ad22d5529b06390ef3f2fe0392e54438767df19c239402a1f98c9a1a9b30dc5c4aad4597c4583292465e70c0ecc95581914397
+  version: 1.2.2
+  resolution: "monaco-marker-data-provider@npm:1.2.2"
+  dependencies:
+    monaco-types: ^0.1.0
+  checksum: f78f5d10a55c6574a40de88fd3ad4cf7987cc38a974e9f3cc3ab9f050541c436dab1a6725cc2fa56806e5fd5dd77b9f8dd590c237a6f4bd01b295f126764727d
   languageName: node
   linkType: hard
 
@@ -6264,26 +6271,26 @@ __metadata:
   linkType: hard
 
 "react-router-dom@npm:^6.14.1":
-  version: 6.22.3
-  resolution: "react-router-dom@npm:6.22.3"
+  version: 6.23.0
+  resolution: "react-router-dom@npm:6.23.0"
   dependencies:
-    "@remix-run/router": 1.15.3
-    react-router: 6.22.3
+    "@remix-run/router": 1.16.0
+    react-router: 6.23.0
   peerDependencies:
     react: ">=16.8"
     react-dom: ">=16.8"
-  checksum: 5ae3759a70e4123cd4b8efbb82199a69f5d8c4a7a434d186d2ec7b532b6ef3302df2a98e5c27db977d3f0d725c7a279010a16ae77a3bf6257f1fee96123d8b77
+  checksum: 071b4859fa97d501e4de68fdcf46bd7c88138e65149dadd9557559e4acc7ca31d091af24844c7f305625969cc20a1970450a7cde229642c4e654ca14346a982b
   languageName: node
   linkType: hard
 
-"react-router@npm:6.22.3":
-  version: 6.22.3
-  resolution: "react-router@npm:6.22.3"
+"react-router@npm:6.23.0":
+  version: 6.23.0
+  resolution: "react-router@npm:6.23.0"
   dependencies:
-    "@remix-run/router": 1.15.3
+    "@remix-run/router": 1.16.0
   peerDependencies:
     react: ">=16.8"
-  checksum: 1f7d9a5a849761ff69ef8f3d3131b4c1c25d18b76317ba5ad6f0d9421192c0b8b71ab0cc818c57aad7b81ada725559e513307d0ab43296a460262f0358602672
+  checksum: 224838bc099637c586eaaf62b9607f6b72577ad760bf2d7a51c316e56eb8697d875e88878ec8e12fe949ef9b866655c74d82f913c6acb501bc8868f25e2b0897
   languageName: node
   linkType: hard
 
@@ -7602,7 +7609,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto-next/ui": 2.0.0-TP3
+    "@kaoto/kaoto": ^2.0.0-TP3.1
     "@kie-tools-core/backend": 0.32.0
     "@kie-tools-core/editor": 0.32.0
     "@kie-tools-core/i18n": 0.32.0
@@ -7947,11 +7954,11 @@ __metadata:
   linkType: hard
 
 "yaml@npm:^2.0.0, yaml@npm:^2.3.2":
-  version: 2.4.1
-  resolution: "yaml@npm:2.4.1"
+  version: 2.4.2
+  resolution: "yaml@npm:2.4.2"
   bin:
     yaml: bin.mjs
-  checksum: 4c391d07a5d5e935e058babb71026c9cdc9a6fd889e35dd91b53cfb0a12691b67c6c5c740858e71345fef18cd9c13c554a6dda9196f59820d769d94041badb0b
+  checksum: 90dda4485de04367251face9abb5c36927c94e44078f4e958e6468a07e74e7e92f89be20fc49860b6268c51ee5a5fc79ef89197d3f874bf24ef8921cc4ba9013
   languageName: node
   linkType: hard
 
