@@ -224,7 +224,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto-next/uniforms-patternfly@npm:^0.6.8":
+"@kaoto-next/uniforms-patternfly@npm:^0.6.10":
   version: 0.6.10
   resolution: "@kaoto-next/uniforms-patternfly@npm:0.6.10"
   dependencies:
@@ -237,11 +237,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/kaoto@npm:^2.0.0-TP3.1":
-  version: 2.0.0-TP3.1
-  resolution: "@kaoto/kaoto@npm:2.0.0-TP3.1"
+"@kaoto/kaoto@npm:2.0.0-RC1":
+  version: 2.0.0-RC1
+  resolution: "@kaoto/kaoto@npm:2.0.0-RC1"
   dependencies:
-    "@kaoto-next/uniforms-patternfly": ^0.6.8
+    "@kaoto-next/uniforms-patternfly": ^0.6.10
     "@kie-tools-core/editor": 0.32.0
     "@kie-tools-core/notifications": 0.32.0
     "@patternfly/patternfly": 5.2.1
@@ -274,7 +274,7 @@ __metadata:
     uuid: ^9.0.0
     yaml: ^2.3.2
     zustand: ^4.3.9
-  checksum: 249e78ae83909fd0037a29960d93d721e040134cf42b556c0046f8e41c1b02a5938e5d8819d82cdf4786bc3146b9818e3a752629d596266308f9b11d383d8249
+  checksum: 9ec3f39608c32344c5fabae68b428c8ce91d873493a730fd4469e97cfa286a43e28673a671c3f0a62e6d7ce5679d9b685283ae3b75294de9080db2f46c854139
   languageName: node
   linkType: hard
 
@@ -7646,7 +7646,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto/kaoto": ^2.0.0-TP3.1
+    "@kaoto/kaoto": 2.0.0-RC1
     "@kie-tools-core/backend": 0.32.0
     "@kie-tools-core/editor": 0.32.0
     "@kie-tools-core/i18n": 0.32.0
