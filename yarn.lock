@@ -6622,14 +6622,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rimraf@npm:^5.0.5":
-  version: 5.0.5
-  resolution: "rimraf@npm:5.0.5"
+"rimraf@npm:^5.0.6":
+  version: 5.0.6
+  resolution: "rimraf@npm:5.0.6"
   dependencies:
     glob: ^10.3.7
   bin:
     rimraf: dist/esm/bin.mjs
-  checksum: d66eef829b2e23b16445f34e73d75c7b7cf4cbc8834b04720def1c8f298eb0753c3d76df77325fad79d0a2c60470525d95f89c2475283ad985fd7441c32732d1
+  checksum: f7c0ce3c2d0b2f374a9cfc77e755f47f6f7436f44a85437deb41d18fff04b681a0f2bde96cd5b9fbca4704a927aa152e09e3002ba776ecec58e9fd2eb59857dd
   languageName: node
   linkType: hard
 
@@ -7808,7 +7808,7 @@ __metadata:
     path-browserify: ^1.0.1
     react: 18.2.0
     react-dom: 18.2.0
-    rimraf: ^5.0.5
+    rimraf: ^5.0.6
     sass: ^1.77.0
     sass-loader: ^13.0.2
     source-map-loader: 4.0.1
