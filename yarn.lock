@@ -251,9 +251,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/kaoto@npm:2.0.0-RC2":
-  version: 2.0.0-RC2
-  resolution: "@kaoto/kaoto@npm:2.0.0-RC2"
+"@kaoto/kaoto@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@kaoto/kaoto@npm:2.0.0"
   dependencies:
     "@kaoto-next/uniforms-patternfly": ^0.6.10
     "@kie-tools-core/editor": 0.32.0
@@ -288,7 +288,7 @@ __metadata:
     uuid: ^9.0.0
     yaml: ^2.3.2
     zustand: ^4.3.9
-  checksum: 17e9f0d6832c67b9fe56f91a3522963879bb83a0af39d7ce960fb3e30ef49a1e09b321c2a6adb99882a5a9178f3561ac650c0478df2b468088dd0c44d7b88dd3
+  checksum: ddfeae836b570a096324c217ec7c56e8efe3c50f7b7e58e55e30e5adc00683cfe39d6d30a79ce1b45aac8b5b41d5d90fac65e2825d12ca1d82f65a5dae6672c2
   languageName: node
   linkType: hard
 
@@ -7782,7 +7782,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto/kaoto": 2.0.0-RC2
+    "@kaoto/kaoto": 2.0.0
     "@kie-tools-core/backend": 0.32.0
     "@kie-tools-core/editor": 0.32.0
     "@kie-tools-core/i18n": 0.32.0
