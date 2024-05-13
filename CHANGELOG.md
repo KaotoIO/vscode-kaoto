@@ -1,6 +1,6 @@
 # 0.16.0
 
-- Upgrade from Kaoto 2 preview release 2.0.0-TP3 to 2.0.0-RC2
+- Upgrade from Kaoto 2 preview release 2.0.0-TP3 to 2.0.0
 
 # 0.15.0
 
