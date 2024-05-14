@@ -1,4 +1,8 @@
+# 0.18.0
+
 # 0.17.0
+
+- Update animated image in readme
 
 # 0.16.0
 
