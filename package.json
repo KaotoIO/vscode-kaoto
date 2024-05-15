@@ -3,9 +3,9 @@
   "publisher": "redhat",
   "displayName": "Kaoto",
   "description": "Kaoto - No Code and low code Integration editor",
-  "version": "0.18.0",
+  "version": "1.0.0",
   "federatedModuleName": "kaoto",
-  "preview": true,
+  "preview": false,
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
