@@ -677,9 +677,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redhat-developer/vscode-redhat-telemetry@npm:^0.7.1":
-  version: 0.7.1
-  resolution: "@redhat-developer/vscode-redhat-telemetry@npm:0.7.1"
+"@redhat-developer/vscode-redhat-telemetry@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "@redhat-developer/vscode-redhat-telemetry@npm:0.8.0"
   dependencies:
     "@segment/analytics-node": 0.0.1-beta.17
     axios: ^1.6.1
@@ -690,7 +690,7 @@ __metadata:
     picomatch: ^2.3.1
     ua-parser-js: 1.0.33
     uuid: ^9.0.0
-  checksum: 85a4a8886c8d8e828c54ba2548bc2ab92c94ad9f9cf62418b83d3aaee8eeb7ff63f98e39b9c096c96ebf06705a35f098ae6ee9d7601838c3630f07cb5f44e9f1
+  checksum: cd0951f3eb900e867b5e5c3ea9335d36e7860454354ecf4f59c033267b68fbcf84ff708e707c71c4f78b61ea6175cb2382033b5b922225fe3b52e413a5e14046
   languageName: node
   linkType: hard
 
@@ -7787,7 +7787,7 @@ __metadata:
     "@kie-tools-core/editor": 0.32.0
     "@kie-tools-core/i18n": 0.32.0
     "@kie-tools-core/vscode-extension": 0.32.0
-    "@redhat-developer/vscode-redhat-telemetry": ^0.7.1
+    "@redhat-developer/vscode-redhat-telemetry": ^0.8.0
     "@types/chai": ^4.3.11
     "@types/fs-extra": ^11.0.4
     "@types/mocha": ^10.0.6
