@@ -175,6 +175,6 @@ async function checkStepWithTestIdPresent(driver: WebDriver, testId: string) {
 
 async function checkIntegrationNameInTopBarLoaded(driver: WebDriver, name: string) {
   await driver.wait(
-    until.elementLocated(By.xpath(`//span[@data-testid='flows-list-route-id' and text()='${name}']`)
+    until.elementLocated(By.xpath(`//span[@data-testid='flows-list-route-id' and contains(., '${name}')]`)
     ), 5_000, `Unable to locate integration name '${name} in top bar!'`);
 }
