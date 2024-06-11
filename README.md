@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="./images/logo-kaoto-dark.png" alt="Kaoto">
+  <img src="./images/logo-kaoto.png" alt="Kaoto">
 </h1>
 
 <p align="center">
@@ -17,7 +17,7 @@
 <p align="center">
   <a href="#features">Features</a> •
   <a href="#requirements">Requirements</a> •
-  <a href="https://kaoto.io/docs/">Documentation</a> •
+  <a href="https://kaoto.io/docs/installation">Documentation</a> •
   <a href="#issues">Issues</a>  •
   <a href="#data-and-telemetry">Telemetry</a>
 </p>
