@@ -1413,9 +1413,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/vsce@npm:^2.28.0":
-  version: 2.28.0
-  resolution: "@vscode/vsce@npm:2.28.0"
+"@vscode/vsce@npm:^2.29.0":
+  version: 2.29.0
+  resolution: "@vscode/vsce@npm:2.29.0"
   dependencies:
     "@azure/identity": ^4.1.0
     "@vscode/vsce-sign": ^2.0.0
@@ -1447,7 +1447,7 @@ __metadata:
       optional: true
   bin:
     vsce: vsce
-  checksum: 3f04ed94fbfd686d47ee645e3fbf06b6c91472b3bd29196c0b35758b6516e8dac9c0821fc11591a336ecb79efa8a9666409c3f08aa21b446b1be3fbc8b9b8a51
+  checksum: c42e072ea3fac266fdb8e9448155f8c7c35899b8484433422c3ba330b1cad208c52e8243b8561b8e2b983e0b80f3d260ad68777dfe6f2057f5eb107893c7bee8
   languageName: node
   linkType: hard
 
@@ -7976,7 +7976,7 @@ __metadata:
     "@types/mocha": ^10.0.6
     "@types/react": 18.2.79
     "@vscode/test-web": ^0.0.54
-    "@vscode/vsce": ^2.28.0
+    "@vscode/vsce": ^2.29.0
     async-wait-until: ^2.0.12
     buffer: ^6.0.3
     chai: ^4.3.10
