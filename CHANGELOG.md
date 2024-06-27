@@ -1,5 +1,7 @@
 # 1.2.0
 
+- Setting to provide custom set of Catalog used by the Kaoto editor
+
 # 1.1.0
 
 - Update Red Hat telemetry dependency to reduce number of event sent (startup information will be sent one time per day per user)

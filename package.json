@@ -104,6 +104,12 @@
             "telemetry"
           ],
           "scope": "window"
+        },
+        "kaoto.catalog.url": {
+          "type": "string",
+          "default": null,
+          "markdownDescription": "URL to a Kaoto catalog. For instance `https://raw.githubusercontent.com/KaotoIO/catalogs/main/catalogs/index.json`. Documentation to generate your own set of catalog is available [here](https://github.com/KaotoIO/kaoto/tree/main/packages/catalog-generator). It requires to reopen the kaoto editors to be effective.",
+          "scope": "window"
         }
       }
     },
