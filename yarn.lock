@@ -643,12 +643,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/browser-chromium@npm:^1.43.1":
-  version: 1.43.1
-  resolution: "@playwright/browser-chromium@npm:1.43.1"
+"@playwright/browser-chromium@npm:^1.45.0":
+  version: 1.45.0
+  resolution: "@playwright/browser-chromium@npm:1.45.0"
   dependencies:
-    playwright-core: 1.43.1
-  checksum: 85caccbbfaa4cb065a213127699525df4b4ec30288498de3d321579b3dc6f30c2f3c9dd569bb25aa7ae9ec453b70c918e1ba361aa8c89377ea7af36baf829747
+    playwright-core: 1.45.0
+  checksum: 4eeaa9729ca7b01b69991a10efed1ab5a23ce2d1f546635aa36f1a843b035f0788aa38400c11c93d89ffca65591bc696ef29a4ff78e940298cee290b28da6d1c
   languageName: node
   linkType: hard
 
@@ -1252,13 +1252,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/test-web@npm:^0.0.54":
-  version: 0.0.54
-  resolution: "@vscode/test-web@npm:0.0.54"
+"@vscode/test-web@npm:^0.0.55":
+  version: 0.0.55
+  resolution: "@vscode/test-web@npm:0.0.55"
   dependencies:
     "@koa/cors": ^5.0.0
     "@koa/router": ^12.0.1
-    "@playwright/browser-chromium": ^1.43.1
+    "@playwright/browser-chromium": ^1.45.0
     gunzip-maybe: ^1.4.2
     http-proxy-agent: ^7.0.2
     https-proxy-agent: ^7.0.4
@@ -1267,12 +1267,12 @@ __metadata:
     koa-mount: ^4.0.0
     koa-static: ^5.0.0
     minimist: ^1.2.8
-    playwright: ^1.43.1
-    tar-fs: ^3.0.5
+    playwright: ^1.45.0
+    tar-fs: ^3.0.6
     vscode-uri: ^3.0.8
   bin:
     vscode-test-web: out/index.js
-  checksum: a39d335d7b57f009cdc2c8ebbeaaccc17286b9fff49b212b065633e8b39af30b3bb23b0ec21c50a9aefe2b9c326dd4d8ab46b389b7a372deaaa055471bcbc550
+  checksum: 0879f29e2f519beabea413babdf913e88eb08735c2b002a548fd60e466ac4f4c3e6fde0108ead098805ab252794e99b819895689fde9e061d88a14e390158c4e
   languageName: node
   linkType: hard
 
@@ -6216,27 +6216,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.43.1":
-  version: 1.43.1
-  resolution: "playwright-core@npm:1.43.1"
+"playwright-core@npm:1.45.0":
+  version: 1.45.0
+  resolution: "playwright-core@npm:1.45.0"
   bin:
     playwright-core: cli.js
-  checksum: 7c96b3a4a4bce2ee22c3cd680c9b0bb9e4bf07ee4b51d1e9a7f47a6489c7b0b960d4b550e530b8f41d1ffeadd26c7c6bb626ae8689dfd90dce1cb8e35ae78ff7
+  checksum: e81a55eeefa997fcb559527127c9cefbbabe81f196de486224e6c2a3a66852dab883379ff28a05b8008fb0ad4992840ad53c2415cee27e2d1778836210d9248e
   languageName: node
   linkType: hard
 
-"playwright@npm:^1.43.1":
-  version: 1.43.1
-  resolution: "playwright@npm:1.43.1"
+"playwright@npm:^1.45.0":
+  version: 1.45.0
+  resolution: "playwright@npm:1.45.0"
   dependencies:
     fsevents: 2.3.2
-    playwright-core: 1.43.1
+    playwright-core: 1.45.0
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: de9db021f93018a18275bbb5af09ebf1804aa0534f47578b35b440064abc774509740205802824afc94a99fc84dd55ffe9e215718ad3ecc691b251ab3882b096
+  checksum: 2a5f827fdcc90f1ec0ea4d9e4f2021ae894df88d3c0577677a81f72a09d91fb15584346e63ec2f85bfc24f872976ff2a76cee6ca7d7f29a8cc3159ced4f25b50
   languageName: node
   linkType: hard
 
@@ -7415,9 +7415,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar-fs@npm:^3.0.5":
-  version: 3.0.5
-  resolution: "tar-fs@npm:3.0.5"
+"tar-fs@npm:^3.0.6":
+  version: 3.0.6
+  resolution: "tar-fs@npm:3.0.6"
   dependencies:
     bare-fs: ^2.1.1
     bare-path: ^2.1.0
@@ -7428,7 +7428,7 @@ __metadata:
       optional: true
     bare-path:
       optional: true
-  checksum: e31c7e3e525fec0afecdec1cac58071809e396187725f2eba442f08a4c5649c8cd6b7ce25982f9a91bb0f055628df47c08177dd2ea4f5dafd3c22f42f8da8f00
+  checksum: b4fa09c70f75caf05bf5cf87369cd2862f1ac5fb75c4ddf9d25d55999f7736a94b58ad679d384196cba837c5f5ff14086e060fafccef5474a16e2d3058ffa488
   languageName: node
   linkType: hard
 
@@ -7956,7 +7956,7 @@ __metadata:
     "@types/fs-extra": ^11.0.4
     "@types/mocha": ^10.0.7
     "@types/react": 18.2.79
-    "@vscode/test-web": ^0.0.54
+    "@vscode/test-web": ^0.0.55
     "@vscode/vsce": ^2.29.0
     async-wait-until: ^2.0.12
     buffer: ^6.0.3
