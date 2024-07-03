@@ -643,12 +643,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/browser-chromium@npm:^1.43.1":
-  version: 1.43.1
-  resolution: "@playwright/browser-chromium@npm:1.43.1"
+"@playwright/browser-chromium@npm:^1.45.0":
+  version: 1.45.1
+  resolution: "@playwright/browser-chromium@npm:1.45.1"
   dependencies:
-    playwright-core: 1.43.1
-  checksum: 85caccbbfaa4cb065a213127699525df4b4ec30288498de3d321579b3dc6f30c2f3c9dd569bb25aa7ae9ec453b70c918e1ba361aa8c89377ea7af36baf829747
+    playwright-core: 1.45.1
+  checksum: 633ffefa58690be5bbff593c3787329ef7039208b90200b2003dc4125bae85a9ab79938de5525093021de0c5a50ea7b817cb9f14f6cb74e51d9705f5983ee04c
   languageName: node
   linkType: hard
 
@@ -1252,13 +1252,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/test-web@npm:^0.0.54":
-  version: 0.0.54
-  resolution: "@vscode/test-web@npm:0.0.54"
+"@vscode/test-web@npm:^0.0.56":
+  version: 0.0.56
+  resolution: "@vscode/test-web@npm:0.0.56"
   dependencies:
     "@koa/cors": ^5.0.0
     "@koa/router": ^12.0.1
-    "@playwright/browser-chromium": ^1.43.1
+    "@playwright/browser-chromium": ^1.45.0
+    glob: ^10.4.2
     gunzip-maybe: ^1.4.2
     http-proxy-agent: ^7.0.2
     https-proxy-agent: ^7.0.4
@@ -1267,12 +1268,12 @@ __metadata:
     koa-mount: ^4.0.0
     koa-static: ^5.0.0
     minimist: ^1.2.8
-    playwright: ^1.43.1
-    tar-fs: ^3.0.5
+    playwright: ^1.45.0
+    tar-fs: ^3.0.6
     vscode-uri: ^3.0.8
   bin:
     vscode-test-web: out/index.js
-  checksum: a39d335d7b57f009cdc2c8ebbeaaccc17286b9fff49b212b065633e8b39af30b3bb23b0ec21c50a9aefe2b9c326dd4d8ab46b389b7a372deaaa055471bcbc550
+  checksum: c7ddfb09d94b60e8f6e9188b254750dfcc942d74068b0bccfac5d56c33cfa41d0531454ef9a408d787e2a2f19322dfb2fb6de50c03451e7c6219771b71b26912
   languageName: node
   linkType: hard
 
@@ -3953,6 +3954,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"glob@npm:^10.4.2":
+  version: 10.4.2
+  resolution: "glob@npm:10.4.2"
+  dependencies:
+    foreground-child: ^3.1.0
+    jackspeak: ^3.1.2
+    minimatch: ^9.0.4
+    minipass: ^7.1.2
+    package-json-from-dist: ^1.0.0
+    path-scurry: ^1.11.1
+  bin:
+    glob: dist/esm/bin.mjs
+  checksum: bd7c0e30701136e936f414e5f6f82c7f04503f01df77408f177aa584927412f0bde0338e6ec541618cd21eacc57dde33e7b3c6c0a779cc1c6e6a0e14f3d15d9b
+  languageName: node
+  linkType: hard
+
 "glob@npm:^7.0.6":
   version: 7.2.3
   resolution: "glob@npm:7.2.3"
@@ -6032,6 +6049,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"package-json-from-dist@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "package-json-from-dist@npm:1.0.0"
+  checksum: ac706ec856a5a03f5261e4e48fa974f24feb044d51f84f8332e2af0af04fbdbdd5bbbfb9cbbe354190409bc8307c83a9e38c6672c3c8855f709afb0006a009ea
+  languageName: node
+  linkType: hard
+
 "pako@npm:~0.2.0":
   version: 0.2.9
   resolution: "pako@npm:0.2.9"
@@ -6212,27 +6236,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.43.1":
-  version: 1.43.1
-  resolution: "playwright-core@npm:1.43.1"
+"playwright-core@npm:1.45.1":
+  version: 1.45.1
+  resolution: "playwright-core@npm:1.45.1"
   bin:
     playwright-core: cli.js
-  checksum: 7c96b3a4a4bce2ee22c3cd680c9b0bb9e4bf07ee4b51d1e9a7f47a6489c7b0b960d4b550e530b8f41d1ffeadd26c7c6bb626ae8689dfd90dce1cb8e35ae78ff7
+  checksum: 1279cbf33d70a16f0451b590723a4b56bf3a96a9196f1d7bd76444fdd8c976bb7671698199ab4e0acaeb800c7aac48a62036e30f27fd37a74925b53b80f2e85f
   languageName: node
   linkType: hard
 
-"playwright@npm:^1.43.1":
-  version: 1.43.1
-  resolution: "playwright@npm:1.43.1"
+"playwright@npm:^1.45.0":
+  version: 1.45.1
+  resolution: "playwright@npm:1.45.1"
   dependencies:
     fsevents: 2.3.2
-    playwright-core: 1.43.1
+    playwright-core: 1.45.1
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: de9db021f93018a18275bbb5af09ebf1804aa0534f47578b35b440064abc774509740205802824afc94a99fc84dd55ffe9e215718ad3ecc691b251ab3882b096
+  checksum: 34c589b3e7ef4d54782336167f8f3d1b456178b04b98eb8c944eaf21fd66cf5480e5f0c0ec8b846a69659b6fc31764283598aac5bb9307f7413f8fca81d40751
   languageName: node
   linkType: hard
 
@@ -7402,9 +7426,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar-fs@npm:^3.0.5":
-  version: 3.0.5
-  resolution: "tar-fs@npm:3.0.5"
+"tar-fs@npm:^3.0.6":
+  version: 3.0.6
+  resolution: "tar-fs@npm:3.0.6"
   dependencies:
     bare-fs: ^2.1.1
     bare-path: ^2.1.0
@@ -7415,7 +7439,7 @@ __metadata:
       optional: true
     bare-path:
       optional: true
-  checksum: e31c7e3e525fec0afecdec1cac58071809e396187725f2eba442f08a4c5649c8cd6b7ce25982f9a91bb0f055628df47c08177dd2ea4f5dafd3c22f42f8da8f00
+  checksum: b4fa09c70f75caf05bf5cf87369cd2862f1ac5fb75c4ddf9d25d55999f7736a94b58ad679d384196cba837c5f5ff14086e060fafccef5474a16e2d3058ffa488
   languageName: node
   linkType: hard
 
@@ -7943,7 +7967,7 @@ __metadata:
     "@types/fs-extra": ^11.0.4
     "@types/mocha": ^10.0.7
     "@types/react": 18.2.79
-    "@vscode/test-web": ^0.0.54
+    "@vscode/test-web": ^0.0.56
     "@vscode/vsce": ^2.29.0
     async-wait-until: ^2.0.12
     buffer: ^6.0.3
