@@ -1,5 +1,7 @@
 # 1.2.0
 
+- Update project homepage in the marketplace to [kaoto.io](https://kaoto.io)
+
 # 1.1.0
 
 - Update Red Hat telemetry dependency to reduce number of event sent (startup information will be sent one time per day per user)
