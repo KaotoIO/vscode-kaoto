@@ -1414,6 +1414,44 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vscode/vsce@npm:^2.30.0":
+  version: 2.30.0
+  resolution: "@vscode/vsce@npm:2.30.0"
+  dependencies:
+    "@azure/identity": ^4.1.0
+    "@vscode/vsce-sign": ^2.0.0
+    azure-devops-node-api: ^12.5.0
+    chalk: ^2.4.2
+    cheerio: ^1.0.0-rc.9
+    cockatiel: ^3.1.2
+    commander: ^6.2.1
+    form-data: ^4.0.0
+    glob: ^7.0.6
+    hosted-git-info: ^4.0.2
+    jsonc-parser: ^3.2.0
+    keytar: ^7.7.0
+    leven: ^3.1.0
+    markdown-it: ^12.3.2
+    mime: ^1.3.4
+    minimatch: ^3.0.3
+    parse-semver: ^1.1.1
+    read: ^1.0.7
+    semver: ^7.5.2
+    tmp: ^0.2.1
+    typed-rest-client: ^1.8.4
+    url-join: ^4.0.1
+    xml2js: ^0.5.0
+    yauzl: ^2.3.1
+    yazl: ^2.2.2
+  dependenciesMeta:
+    keytar:
+      optional: true
+  bin:
+    vsce: vsce
+  checksum: 796d82e188574a7147499ecf9181afa639f22bcefc4a3bac363da70ce9f4d6dba287247cee31a0f7a6dc0460c27bbe5c6f54f0f2200fc0455324d479a000f357
+  languageName: node
+  linkType: hard
+
 "@webassemblyjs/ast@npm:1.12.1, @webassemblyjs/ast@npm:^1.11.5":
   version: 1.12.1
   resolution: "@webassemblyjs/ast@npm:1.12.1"
@@ -8014,7 +8052,7 @@ __metadata:
     "@types/mocha": ^10.0.7
     "@types/react": 18.2.79
     "@vscode/test-web": ^0.0.56
-    "@vscode/vsce": ^2.29.0
+    "@vscode/vsce": ^2.30.0
     async-wait-until: ^2.0.12
     buffer: ^6.0.3
     chai: ^4.3.10
