@@ -39,6 +39,7 @@ describe('User Settings', function () {
             return await settings.findSetting('Url', 'Kaoto', 'Catalog') as TextSetting;
         })
         await textSetting.setValue(CATALOG_URL);
+        await VSBrowser.instance.takeScreenshot('set-catalog-url');
         await closeEditor('Settings', true);
 
         // close sidebar
