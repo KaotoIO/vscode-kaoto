@@ -133,15 +133,15 @@ It is launching UI tests. Beware that it can take several minutes to start. Stay
 
 ## How to upgrade embedded Kaoto UI version
 
-* To have everything working properly, we need to double check that versions of package list below is up to date with [kaoto-next dependencies](https://github.com/KaotoIO/kaoto-next/blob/main/packages/ui/package.json#L44) versions of same packages
+* To have everything working properly, we need to double check that versions of package list below is up to date with [kaoto dependencies](https://github.com/KaotoIO/kaoto/blob/main/packages/ui/package.json#L44) versions of same packages
 * Inside `package.json`
-  * :exclamation: update `dependencies` section, update`"@kaoto-next/ui": "<version>"` to next version of publish Kaoto UI package
+  * :exclamation: update `dependencies` section, update`"@kaoto/kaoto": "<version>"` to next version of publish Kaoto UI package
   * :warning: update `resolutions` and `dependencies` section
 
   ```json
     // dependencies
-    // eg. for "@kaoto-next/ui": "2.0.0-TP2"
-    "@kaoto-next/ui": "2.0.0-TP2",
+    // eg. for "@kaoto/kaoto": "2.0.0"
+    "@kaoto/kaoto": "2.0.0",
     "@kie-tools-core/backend": "0.32.0",
     "@kie-tools-core/editor": "0.32.0",
     "@kie-tools-core/i18n": "0.32.0",
@@ -152,7 +152,7 @@ It is launching UI tests. Beware that it can take several minutes to start. Stay
 
   ```json
     // resolutions
-    // eg. for "@kaoto-next/ui": "2.0.0-TP2"
+    // eg. for "@kaoto/kaoto": "2.0.0"
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "@patternfly/patternfly": "5.2.0",
