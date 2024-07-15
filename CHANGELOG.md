@@ -1,3 +1,5 @@
+# 1.3.0
+
 # 1.2.0
 
 - Update project homepage in the marketplace to [kaoto.io](https://kaoto.io)
