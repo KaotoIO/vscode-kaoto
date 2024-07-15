@@ -39,6 +39,7 @@ describe('User Settings', function () {
             return await settings.findSetting('Url', 'Kaoto', 'Catalog') as TextSetting;
         })
         await textSetting.setValue(CATALOG_URL);
+        await driver.sleep(1_000); // stabilize tests which are sometimes failing on macOS CI
         await closeEditor('Settings', true);
 
         // close sidebar
