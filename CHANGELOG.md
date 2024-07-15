@@ -2,6 +2,7 @@
 
 - Update project homepage in the marketplace to [kaoto.io](https://kaoto.io)
 - Setting to provide custom set of Catalog used by the Kaoto editor
+- Upgrade Kaoto 2.1.0
 
 # 1.1.0
 
