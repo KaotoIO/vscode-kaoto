@@ -1414,9 +1414,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/vsce@npm:^2.30.0":
-  version: 2.30.0
-  resolution: "@vscode/vsce@npm:2.30.0"
+"@vscode/vsce@npm:^2.31.1":
+  version: 2.31.1
+  resolution: "@vscode/vsce@npm:2.31.1"
   dependencies:
     "@azure/identity": ^4.1.0
     "@vscode/vsce-sign": ^2.0.0
@@ -1426,7 +1426,7 @@ __metadata:
     cockatiel: ^3.1.2
     commander: ^6.2.1
     form-data: ^4.0.0
-    glob: ^7.0.6
+    glob: ^11.0.0
     hosted-git-info: ^4.0.2
     jsonc-parser: ^3.2.0
     keytar: ^7.7.0
@@ -1437,7 +1437,7 @@ __metadata:
     parse-semver: ^1.1.1
     read: ^1.0.7
     semver: ^7.5.2
-    tmp: ^0.2.1
+    tmp: ^0.2.3
     typed-rest-client: ^1.8.4
     url-join: ^4.0.1
     xml2js: ^0.5.0
@@ -1448,7 +1448,7 @@ __metadata:
       optional: true
   bin:
     vsce: vsce
-  checksum: 796d82e188574a7147499ecf9181afa639f22bcefc4a3bac363da70ce9f4d6dba287247cee31a0f7a6dc0460c27bbe5c6f54f0f2200fc0455324d479a000f357
+  checksum: d9f618800775634acb6005affd5c6f7cc023e957565f5f2bd11d9d115bea2de91a02accfbe3ce9c5c4a03b51a5cd1eff6c4f50c64d8ebc0e75f0b30fad6b3e7f
   languageName: node
   linkType: hard
 
@@ -8052,7 +8052,7 @@ __metadata:
     "@types/mocha": ^10.0.7
     "@types/react": 18.2.79
     "@vscode/test-web": ^0.0.56
-    "@vscode/vsce": ^2.30.0
+    "@vscode/vsce": ^2.31.1
     async-wait-until: ^2.0.12
     buffer: ^6.0.3
     chai: ^4.3.10
