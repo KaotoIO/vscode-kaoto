@@ -151,6 +151,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bazel/runfiles@npm:^5.8.1":
+  version: 5.8.1
+  resolution: "@bazel/runfiles@npm:5.8.1"
+  checksum: b1067d3dec8b2d853f883fe34b663f07e44742d2688103db1da322a47013eb04f1acad0d79c7d6fc9f75fc2798b1de41ba1a03999ac6354fb1288fdd8407be4d
+  languageName: node
+  linkType: hard
+
 "@bcoe/v8-coverage@npm:^0.2.3":
   version: 0.2.3
   resolution: "@bcoe/v8-coverage@npm:0.2.3"
@@ -652,28 +659,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redhat-developer/locators@npm:^1.1.3":
-  version: 1.1.3
-  resolution: "@redhat-developer/locators@npm:1.1.3"
+"@redhat-developer/locators@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@redhat-developer/locators@npm:1.2.0"
   peerDependencies:
     "@redhat-developer/page-objects": ">=1.0.0"
     selenium-webdriver: ">=4.6.1"
-  checksum: 878a222968a2385911b96f7cf5da0670bb96b62d6f782d5968576d09e813cf62dd440362160cb1784853178ce8cf5d27cccb261e137076b9df6aa64213fb56f6
+  checksum: 541d986601ca539a5ad3b3a7f31af12136ae64d7f61b697e1c3ac36d29a9857bde3df4c7d138a5016e8a7d988f471c4be0406972e0aef6036c068fccdbb5dcf3
   languageName: node
   linkType: hard
 
-"@redhat-developer/page-objects@npm:^1.1.3":
-  version: 1.1.3
-  resolution: "@redhat-developer/page-objects@npm:1.1.3"
+"@redhat-developer/page-objects@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@redhat-developer/page-objects@npm:1.2.0"
   dependencies:
     clipboardy: ^4.0.0
     clone-deep: ^4.0.1
-    compare-versions: ^6.1.0
+    compare-versions: ^6.1.1
     fs-extra: ^11.2.0
   peerDependencies:
     selenium-webdriver: ">=4.6.1"
     typescript: ">=4.6.2"
-  checksum: a8c21e32e33470ca6ad9e5bcaf7ba3db2baed8bcfa42916445991632f99a2ce25a1f0b6b9e5adeca81151d9a3431f35b6042d256f7af2edecdd735823c242459
+  checksum: 0b33fde1bcb909abd91084d264d722c0db180e7dccd1c1942ab9c96ff7e90e3fdddacc7fd4547c70dbce9fc6b8e1026544144a3759d857ad108c86b13f82e073
   languageName: node
   linkType: hard
 
@@ -1220,12 +1227,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/selenium-webdriver@npm:^4.1.22":
-  version: 4.1.22
-  resolution: "@types/selenium-webdriver@npm:4.1.22"
+"@types/selenium-webdriver@npm:^4.1.24":
+  version: 4.1.24
+  resolution: "@types/selenium-webdriver@npm:4.1.24"
   dependencies:
+    "@types/node": "*"
     "@types/ws": "*"
-  checksum: 2da8f7e478ec7e10d315962b90e450ea014b52a1ecfde5f0f795afc74ff7c4bea620063f30936a3d40a00885b7b2082c3e2f90463d98cc545a29ddcc5c3c4289
+  checksum: c51aad83abd47a613d50e4c13f08a7cc609afc52e810b6da42c6e430c2e3cd0305a0084c46f73f23f8452b2485c8632417bbbf84b5df1a97337b85b431841e78
   languageName: node
   linkType: hard
 
@@ -1373,44 +1381,6 @@ __metadata:
     "@vscode/vsce-sign-win32-x64":
       optional: true
   checksum: 8ea8ee0c93465b5033633dc14c5bc2cb9b5b0278f16e9a61b61d52a4b77a9f129932b6ee567ceac25a509114e2fee789f4301e0061d4cb132c158d7143b39547
-  languageName: node
-  linkType: hard
-
-"@vscode/vsce@npm:^2.29.0":
-  version: 2.29.0
-  resolution: "@vscode/vsce@npm:2.29.0"
-  dependencies:
-    "@azure/identity": ^4.1.0
-    "@vscode/vsce-sign": ^2.0.0
-    azure-devops-node-api: ^12.5.0
-    chalk: ^2.4.2
-    cheerio: ^1.0.0-rc.9
-    cockatiel: ^3.1.2
-    commander: ^6.2.1
-    form-data: ^4.0.0
-    glob: ^7.0.6
-    hosted-git-info: ^4.0.2
-    jsonc-parser: ^3.2.0
-    keytar: ^7.7.0
-    leven: ^3.1.0
-    markdown-it: ^12.3.2
-    mime: ^1.3.4
-    minimatch: ^3.0.3
-    parse-semver: ^1.1.1
-    read: ^1.0.7
-    semver: ^7.5.2
-    tmp: ^0.2.1
-    typed-rest-client: ^1.8.4
-    url-join: ^4.0.1
-    xml2js: ^0.5.0
-    yauzl: ^2.3.1
-    yazl: ^2.2.2
-  dependenciesMeta:
-    keytar:
-      optional: true
-  bin:
-    vsce: vsce
-  checksum: c42e072ea3fac266fdb8e9448155f8c7c35899b8484433422c3ba330b1cad208c52e8243b8561b8e2b983e0b80f3d260ad68777dfe6f2057f5eb107893c7bee8
   languageName: node
   linkType: hard
 
@@ -2536,10 +2506,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"compare-versions@npm:^6.1.0":
-  version: 6.1.0
-  resolution: "compare-versions@npm:6.1.0"
-  checksum: d4e2a45706a023d8d0b6680338b66b79e20bd02d1947f0ac6531dab634cbed89fa373b3f03d503c5e489761194258d6e1bae67a07f88b1efc61648454f2d47e7
+"compare-versions@npm:^6.1.1":
+  version: 6.1.1
+  resolution: "compare-versions@npm:6.1.1"
+  checksum: 73fe6c4f52d22efe28f0a3be10df2afd704e10b3593360cd963e86b33a7a263c263b41a1361b69c30a0fe68bfa70fef90860c1cf2ef41502629d4402890fcd57
   languageName: node
   linkType: hard
 
@@ -4005,20 +3975,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^7.0.6":
-  version: 7.2.3
-  resolution: "glob@npm:7.2.3"
-  dependencies:
-    fs.realpath: ^1.0.0
-    inflight: ^1.0.4
-    inherits: 2
-    minimatch: ^3.1.1
-    once: ^1.3.0
-    path-is-absolute: ^1.0.0
-  checksum: 29452e97b38fa704dabb1d1045350fb2467cf0277e155aa9ff7077e90ad81d1ea9d53d3ee63bd37c05b09a065e90f16aec4a65f5b8de401d1dac40bc5605d133
-  languageName: node
-  linkType: hard
-
 "glob@npm:^8.1.0":
   version: 8.1.0
   resolution: "glob@npm:8.1.0"
@@ -5412,7 +5368,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^3.0.3, minimatch@npm:^3.0.5, minimatch@npm:^3.1.1":
+"minimatch@npm:^3.0.3, minimatch@npm:^3.0.5":
   version: 3.1.2
   resolution: "minimatch@npm:3.1.2"
   dependencies:
@@ -6190,7 +6146,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-is-absolute@npm:1.0.1, path-is-absolute@npm:^1.0.0":
+"path-is-absolute@npm:1.0.1":
   version: 1.0.1
   resolution: "path-is-absolute@npm:1.0.1"
   checksum: 060840f92cf8effa293bcc1bea81281bd7d363731d214cbe5c227df207c34cd727430f70c6037b5159c8a870b9157cba65e775446b0ab06fd5ecc7e54615a3b8
@@ -7021,14 +6977,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"selenium-webdriver@npm:^4.21.0":
-  version: 4.21.0
-  resolution: "selenium-webdriver@npm:4.21.0"
+"selenium-webdriver@npm:^4.23.0":
+  version: 4.23.0
+  resolution: "selenium-webdriver@npm:4.23.0"
   dependencies:
+    "@bazel/runfiles": ^5.8.1
     jszip: ^3.10.1
     tmp: ^0.2.3
-    ws: ">=8.16.0"
-  checksum: 9d6bd5337580d7f47cafc60df719c6fca5e8bba0ce1e1920da5ba06d8372533300e4b955cd50f1e35e8775d8e74c744a2c11e71f5920dec8362fbcb8910ad202
+    ws: ^8.17.1
+  checksum: 426f7648d5e1e9b45e6d52c017868d37e97daa628fdd1ad7177d63429e930d0a316458737cb60087c96f3f37e651a84c209bb393ef9d4862996332d5e284d2e3
   languageName: node
   linkType: hard
 
@@ -7637,7 +7594,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tmp@npm:^0.2.1, tmp@npm:^0.2.3":
+"tmp@npm:^0.2.3":
   version: 0.2.3
   resolution: "tmp@npm:0.2.3"
   checksum: 73b5c96b6e52da7e104d9d44afb5d106bb1e16d9fa7d00dbeb9e6522e61b571fbdb165c756c62164be9a3bbe192b9b268c236d370a2a0955c7689cd2ae377b95
@@ -8001,32 +7958,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vscode-extension-tester@npm:^8.3.1":
-  version: 8.3.1
-  resolution: "vscode-extension-tester@npm:8.3.1"
+"vscode-extension-tester@npm:^8.4.0":
+  version: 8.4.0
+  resolution: "vscode-extension-tester@npm:8.4.0"
   dependencies:
-    "@redhat-developer/locators": ^1.1.3
-    "@redhat-developer/page-objects": ^1.1.3
-    "@types/selenium-webdriver": ^4.1.22
-    "@vscode/vsce": ^2.29.0
+    "@redhat-developer/locators": ^1.2.0
+    "@redhat-developer/page-objects": ^1.2.0
+    "@types/selenium-webdriver": ^4.1.24
+    "@vscode/vsce": ^2.31.1
     c8: ^10.1.2
     commander: ^12.1.0
-    compare-versions: ^6.1.0
+    compare-versions: ^6.1.1
     find-up: 7.0.0
     fs-extra: ^11.2.0
-    glob: ^10.4.2
+    glob: ^11.0.0
     got: ^13.0.0
     hpagent: ^1.2.0
     js-yaml: ^4.1.0
     sanitize-filename: ^1.6.3
-    selenium-webdriver: ^4.21.0
+    selenium-webdriver: ^4.23.0
     targz: ^1.0.1
   peerDependencies:
     mocha: ">=5.2.0"
     typescript: ">=4.6.2"
   bin:
     extest: out/cli.js
-  checksum: 12be1dd38a614cb601da7e8075b2d7f0d45cec2aac7d2450be7909bdcf596d60c60c8d51a5261e76612cc1474add39620eba9362423c5d96b27320e7dab63927
+  checksum: beb1586bc0a5d65f5150ea74d4abdac9d17f0c8006c2c30c96e16bcd22d90ef63375378b43b8126bfdc1e2813fbd3568f809d1b27c68602f3a256e0d2d445abc
   languageName: node
   linkType: hard
 
@@ -8075,7 +8032,7 @@ __metadata:
     ts-loader: 9.4.4
     tsconfig-paths-webpack-plugin: ^4.1.0
     typescript: ^5.5.3
-    vscode-extension-tester: ^8.3.1
+    vscode-extension-tester: ^8.4.0
     web-worker: ^1.3.0
     webpack: 5.88.2
     webpack-cli: 5.1.4
@@ -8332,9 +8289,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:>=8.16.0":
-  version: 8.16.0
-  resolution: "ws@npm:8.16.0"
+"ws@npm:^8.17.1":
+  version: 8.18.0
+  resolution: "ws@npm:8.18.0"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ">=5.0.2"
@@ -8343,7 +8300,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: feb3eecd2bae82fa8a8beef800290ce437d8b8063bdc69712725f21aef77c49cb2ff45c6e5e7fce622248f9c7abaee506bae0a9064067ffd6935460c7357321b
+  checksum: 91d4d35bc99ff6df483bdf029b9ea4bfd7af1f16fc91231a96777a63d263e1eabf486e13a2353970efc534f9faa43bdbf9ee76525af22f4752cbc5ebda333975
   languageName: node
   linkType: hard
 
