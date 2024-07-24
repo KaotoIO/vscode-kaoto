@@ -245,32 +245,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto-next/uniforms-patternfly@npm:^0.6.10":
-  version: 0.6.10
-  resolution: "@kaoto-next/uniforms-patternfly@npm:0.6.10"
+"@kaoto-next/uniforms-patternfly@npm:^0.6.15":
+  version: 0.6.16
+  resolution: "@kaoto-next/uniforms-patternfly@npm:0.6.16"
   dependencies:
     invariant: ^2.2.4
     lodash: ^4.17.21
     react: ^18.2.0
     react-dom: ^18.2.0
     uniforms: 4.0.0-alpha.5
-  checksum: 3d8565d4ce5a9eaa4a6c6128bc7c8a93d6f473c73713279971054ec2fda816e5c8a0d3871717caef31c61c3ef71b6855a9030836ff6dae46459cb3fd8ed4ec43
+  checksum: 8a01f068ef797b01c34457921aecbd144e33049f998c62e70c7d9fc73bb875f1266f6420a0fd0bda4090333d634672f8a8c88542e5d122355c3bdfddc966bbf7
   languageName: node
   linkType: hard
 
-"@kaoto/kaoto@npm:2.1.0":
-  version: 2.1.0
-  resolution: "@kaoto/kaoto@npm:2.1.0"
+"@kaoto/kaoto@npm:2.2.0-RC3":
+  version: 2.2.0-RC3
+  resolution: "@kaoto/kaoto@npm:2.2.0-RC3"
   dependencies:
-    "@kaoto-next/uniforms-patternfly": ^0.6.10
+    "@kaoto-next/uniforms-patternfly": ^0.6.15
     "@kie-tools-core/editor": 0.32.0
     "@kie-tools-core/notifications": 0.32.0
-    "@patternfly/patternfly": 5.2.1
-    "@patternfly/react-code-editor": 5.1.0
-    "@patternfly/react-core": 5.2.2
-    "@patternfly/react-icons": 5.2.1
-    "@patternfly/react-table": 5.2.2
-    "@patternfly/react-topology": 5.2.1
+    "@patternfly/patternfly": 5.3.1
+    "@patternfly/react-code-editor": 5.3.4
+    "@patternfly/react-core": 5.3.4
+    "@patternfly/react-icons": 5.3.2
+    "@patternfly/react-table": 5.3.4
+    "@patternfly/react-topology": 5.4.0-prerelease.11
     "@types/uuid": ^10.0.0
     ajv: ^8.12.0
     ajv-draft-04: ^1.0.0
@@ -295,7 +295,7 @@ __metadata:
     uuid: ^10.0.0
     yaml: ^2.3.2
     zustand: ^4.3.9
-  checksum: 8782c216aae9922b679d1f46a9849f33620401edb1da3fb3bbc659f6deba16f63e0d35a33923296786df2749792dbfdcb38ec50b25e0bed604f28e6ea0ffbc64
+  checksum: de0ad2b00c4b1f8fdcc8cfed08201c583a76c704f69a9e038b3842ca0a91adbf71101c73e8db1e144b91d97d6083b7d78a8209d6fb28c7054860a25ad0655725
   languageName: node
   linkType: hard
 
@@ -7998,7 +7998,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto/kaoto": 2.1.0
+    "@kaoto/kaoto": 2.2.0-RC3
     "@kie-tools-core/backend": 0.32.0
     "@kie-tools-core/editor": 0.32.0
     "@kie-tools-core/i18n": 0.32.0

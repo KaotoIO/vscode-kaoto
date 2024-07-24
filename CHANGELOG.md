@@ -1,5 +1,7 @@
 # 1.3.0
 
+- Upgrade Kaoto 2.2.0-RC3
+
 # 1.2.0
 
 - Update project homepage in the marketplace to [kaoto.io](https://kaoto.io)

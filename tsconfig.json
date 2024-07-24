@@ -20,7 +20,7 @@
 	  "downlevelIteration": true,
 	  "skipLibCheck": true,
 	  "jsx": "react-jsx",
-	  "moduleResolution":"Node",
+	  "moduleResolution":"Bundler",
 	  "esModuleInterop": true
 	}
 }
