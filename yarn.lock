@@ -808,10 +808,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/chai@npm:^4.3.11":
-  version: 4.3.14
-  resolution: "@types/chai@npm:4.3.14"
-  checksum: 962c67d1295005886ced8f87c73614616f6d65ed1ec71818021c9206decbaab1234da878295ba52450883c78a8ee5e1359e5deeadee3b7d058538b0ae8c67b08
+"@types/chai@npm:^4.3.16":
+  version: 4.3.16
+  resolution: "@types/chai@npm:4.3.16"
+  checksum: bb5f52d1b70534ed8b4bf74bd248add003ffe1156303802ea367331607c06b494da885ffbc2b674a66b4f90c9ee88759790a5f243879f6759f124f22328f5e95
   languageName: node
   linkType: hard
 
@@ -2237,9 +2237,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chai@npm:^4.3.10":
-  version: 4.4.1
-  resolution: "chai@npm:4.4.1"
+"chai@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "chai@npm:4.5.0"
   dependencies:
     assertion-error: ^1.1.0
     check-error: ^1.0.3
@@ -2247,8 +2247,8 @@ __metadata:
     get-func-name: ^2.0.2
     loupe: ^2.3.6
     pathval: ^1.1.1
-    type-detect: ^4.0.8
-  checksum: 9ab84f36eb8e0b280c56c6c21ca4da5933132cd8a0c89c384f1497f77953640db0bc151edd47f81748240a9fab57b78f7d925edfeedc8e8fc98016d71f40c36e
+    type-detect: ^4.1.0
+  checksum: 70e5a8418a39e577e66a441cc0ce4f71fd551a650a71de30dd4e3e31e75ed1f5aa7119cf4baf4a2cb5e85c0c6befdb4d8a05811fad8738c1a6f3aa6a23803821
   languageName: node
   linkType: hard
 
@@ -7714,6 +7714,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"type-detect@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "type-detect@npm:4.1.0"
+  checksum: 3b32f873cd02bc7001b00a61502b7ddc4b49278aabe68d652f732e1b5d768c072de0bc734b427abf59d0520a5f19a2e07309ab921ef02018fa1cb4af155cdb37
+  languageName: node
+  linkType: hard
+
 "type-is@npm:^1.6.16":
   version: 1.6.18
   resolution: "type-is@npm:1.6.18"
@@ -8004,7 +8011,7 @@ __metadata:
     "@kie-tools-core/i18n": 0.32.0
     "@kie-tools-core/vscode-extension": 0.32.0
     "@redhat-developer/vscode-redhat-telemetry": ^0.8.0
-    "@types/chai": ^4.3.11
+    "@types/chai": ^4.3.16
     "@types/fs-extra": ^11.0.4
     "@types/mocha": ^10.0.7
     "@types/react": 18.2.79
@@ -8012,7 +8019,7 @@ __metadata:
     "@vscode/vsce": ^2.31.1
     async-wait-until: ^2.0.12
     buffer: ^6.0.3
-    chai: ^4.3.10
+    chai: ^4.5.0
     constants-browserify: ^1.0.0
     copy-webpack-plugin: ^12.0.2
     css-loader: 6.8.1
