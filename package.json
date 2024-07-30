@@ -110,6 +110,16 @@
           "default": null,
           "markdownDescription": "URL to a Kaoto catalog. For instance `https://raw.githubusercontent.com/KaotoIO/catalogs/main/catalogs/index.json`. Documentation to generate your own set of catalog is available [here](https://github.com/KaotoIO/kaoto/tree/main/packages/catalog-generator). It requires to reopen the kaoto editors to be effective.",
           "scope": "window"
+        },
+        "kaoto.nodeLabel": {
+          "type": "string",
+          "default": "description",
+          "markdownDescription": "Node label, which will be used for nodes in the canvas. Can be either `description` or `id`. If `description` is selected, it will be displayed only if it is available, otherwise `id` will be displayed by default.",
+          "enum": [
+            "description",
+            "id"
+          ],
+          "scope": "window"
         }
       }
     },
