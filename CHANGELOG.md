@@ -1,5 +1,6 @@
 # 1.3.0
 
+- Enable `nodeLabel` setting to configure the node label used in the Kaoto editor
 - Upgrade Kaoto 2.2.0-RC3
 
 # 1.2.0

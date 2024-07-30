@@ -9,9 +9,12 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
   }
 
   async getVSCodeKaotoSettings(): Promise<ISettingsModel> {
+    const catalogUrl = await vscode.workspace.getConfiguration('kaoto').get<Promise<string | null>>('catalog.url');
+    const nodeLabel = await vscode.workspace.getConfiguration('kaoto').get<Promise<NodeLabelType | null>>('nodeLabel');
+
     const settingsModel: ISettingsModel = {
-      catalogUrl: vscode.workspace.getConfiguration('kaoto').get<string | null>('catalog.url') ?? '',
-      nodeLabel: NodeLabelType.Description,
+      catalogUrl: catalogUrl ?? '',
+      nodeLabel: nodeLabel ?? NodeLabelType.Description,
     };
 
     return new SettingsModel(settingsModel);
