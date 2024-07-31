@@ -25,8 +25,8 @@
     "compile": "webpack",
     "watch": "webpack --env dev",
     "run:webmode": "yarn vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --open-devtools ./resources",
-    "test:it": "yarn build:test:it && extest setup-and-run --yarn --uninstall_extension --extensions_dir ./test-resources 'out/*.test.js' --open_resource './test Fixture with speci@l chars'",
-    "test:it:with-prebuilt-vsix": "yarn build:test:it && extest get-vscode && extest get-chromedriver && extest install-vsix --vsix_file vscode-kaoto-$npm_package_version.vsix --extensions_dir ./test-resources && extest run-tests --uninstall_extension --extensions_dir ./test-resources 'out/*.test.js' --open_resource './test Fixture with speci@l chars'",
+    "test:it": "yarn build:test:it && extest setup-and-run --yarn --uninstall_extension --extensions_dir ./test-resources 'out/**/*.test.js' --open_resource './test Fixture with speci@l chars'",
+    "test:it:with-prebuilt-vsix": "yarn build:test:it && extest get-vscode && extest get-chromedriver && extest install-vsix --vsix_file vscode-kaoto-$npm_package_version.vsix --extensions_dir ./test-resources && extest run-tests --uninstall_extension --extensions_dir ./test-resources 'out/**/*.test.js' --open_resource './test Fixture with speci@l chars'",
     "test:it:clean": "rimraf ./test-resources && rimraf ./out && rimraf *.vsix"
   },
   "dependencies": {
