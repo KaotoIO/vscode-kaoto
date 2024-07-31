@@ -1,12 +1,12 @@
 import { ActivityBar, after, By, TextSetting, until, VSBrowser, WebDriver, WebView, Workbench } from 'vscode-extension-tester';
-import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame, resetUserSettings } from './Util';
+import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame, resetUserSettings } from '../Util';
 import { join } from 'path';
 import { expect } from 'chai';
 
 describe('User Settings', function () {
     this.timeout(90_000);
 
-    const WORKSPACE_FOLDER = join(__dirname, '../test Fixture with speci@l chars');
+    const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars');
     const CATALOG_URL = 'https://raw.githubusercontent.com/KaotoIO/catalogs/main/catalogs/index.json';
     const CATALOG_SETTINGS_ID = 'kaoto.catalog.url';
 
