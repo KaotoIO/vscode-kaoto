@@ -659,19 +659,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redhat-developer/locators@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@redhat-developer/locators@npm:1.2.0"
+"@redhat-developer/locators@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "@redhat-developer/locators@npm:1.3.0"
   peerDependencies:
     "@redhat-developer/page-objects": ">=1.0.0"
     selenium-webdriver: ">=4.6.1"
-  checksum: 541d986601ca539a5ad3b3a7f31af12136ae64d7f61b697e1c3ac36d29a9857bde3df4c7d138a5016e8a7d988f471c4be0406972e0aef6036c068fccdbb5dcf3
+  checksum: f185caee18fbdbf2e1c9f4d1baacc1be228ddcb7673584dcdeb3c2d59d331219f6de6aec75c2d383b11b2e7b5a03f7935100b208627a7f2d3f71f233b3bb3f28
   languageName: node
   linkType: hard
 
-"@redhat-developer/page-objects@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@redhat-developer/page-objects@npm:1.2.0"
+"@redhat-developer/page-objects@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "@redhat-developer/page-objects@npm:1.3.0"
   dependencies:
     clipboardy: ^4.0.0
     clone-deep: ^4.0.1
@@ -680,7 +680,7 @@ __metadata:
   peerDependencies:
     selenium-webdriver: ">=4.6.1"
     typescript: ">=4.6.2"
-  checksum: 0b33fde1bcb909abd91084d264d722c0db180e7dccd1c1942ab9c96ff7e90e3fdddacc7fd4547c70dbce9fc6b8e1026544144a3759d857ad108c86b13f82e073
+  checksum: 03c771e8d7fae66f939e284f97cfa056afdc8583ce1695d7a98559fbd6e144bc8e06f76696d2e2d96e4ebe4cd948474e3cc39c8a1ba43cc4fea89d379c42eeee
   languageName: node
   linkType: hard
 
@@ -1995,7 +1995,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bluebird@npm:^3.4.7, bluebird@npm:^3.7.2":
+"bluebird@npm:^3.4.7, bluebird@npm:^3.7.2, bluebird@npm:~3.7.2":
   version: 3.7.2
   resolution: "bluebird@npm:3.7.2"
   checksum: 869417503c722e7dc54ca46715f70e15f4d9c602a423a02c825570862d12935be59ed9c7ba34a9b31f186c017c23cac6b54e35446f8353059c101da73eac22ef
@@ -3239,6 +3239,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"duplexer2@npm:~0.1.4":
+  version: 0.1.4
+  resolution: "duplexer2@npm:0.1.4"
+  dependencies:
+    readable-stream: ^2.0.2
+  checksum: 744961f03c7f54313f90555ac20284a3fb7bf22fdff6538f041a86c22499560eb6eac9d30ab5768054137cb40e6b18b40f621094e0261d7d8c35a37b7a5ad241
+  languageName: node
+  linkType: hard
+
 "duplexify@npm:^3.5.0, duplexify@npm:^3.6.0":
   version: 3.7.1
   resolution: "duplexify@npm:3.7.1"
@@ -4030,7 +4039,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6, graceful-fs@npm:^4.2.9":
+"graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.2, graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6, graceful-fs@npm:^4.2.9":
   version: 4.2.11
   resolution: "graceful-fs@npm:4.2.11"
   checksum: ac85f94da92d8eb6b7f5a8b20ce65e43d66761c55ce85ac96df6865308390da45a8d3f0296dd3a663de65d30ba497bd46c696cc1e248c72b13d6d567138a4fc7
@@ -5798,6 +5807,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-int64@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "node-int64@npm:0.4.0"
+  checksum: d0b30b1ee6d961851c60d5eaa745d30b5c95d94bc0e74b81e5292f7c42a49e3af87f1eb9e89f59456f80645d679202537de751b7d72e9e40ceea40c5e449057e
+  languageName: node
+  linkType: hard
+
 "node-releases@npm:^2.0.14":
   version: 2.0.14
   resolution: "node-releases@npm:2.0.14"
@@ -6675,7 +6691,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:^2.0.0, readable-stream@npm:^2.3.0, readable-stream@npm:^2.3.5, readable-stream@npm:~2.3.6":
+"readable-stream@npm:^2.0.0, readable-stream@npm:^2.0.2, readable-stream@npm:^2.3.0, readable-stream@npm:^2.3.5, readable-stream@npm:~2.3.6":
   version: 2.3.8
   resolution: "readable-stream@npm:2.3.8"
   dependencies:
@@ -7849,6 +7865,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"unzipper@npm:^0.12.2":
+  version: 0.12.3
+  resolution: "unzipper@npm:0.12.3"
+  dependencies:
+    bluebird: ~3.7.2
+    duplexer2: ~0.1.4
+    fs-extra: ^11.2.0
+    graceful-fs: ^4.2.2
+    node-int64: ^0.4.0
+  checksum: 2e3296d1fad307b02b3d0f3e9c4ac1bdd56047e66fe5108a9e580b417f4ac9b07c31e9ded3e006e01edaaba3e20b13c638bd3c893600f75c589b6e0f778d9ffd
+  languageName: node
+  linkType: hard
+
 "update-browserslist-db@npm:^1.0.13":
   version: 1.0.13
   resolution: "update-browserslist-db@npm:1.0.13"
@@ -7958,12 +7987,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vscode-extension-tester@npm:^8.4.0":
-  version: 8.4.0
-  resolution: "vscode-extension-tester@npm:8.4.0"
+"vscode-extension-tester@npm:^8.5.0":
+  version: 8.5.0
+  resolution: "vscode-extension-tester@npm:8.5.0"
   dependencies:
-    "@redhat-developer/locators": ^1.2.0
-    "@redhat-developer/page-objects": ^1.2.0
+    "@redhat-developer/locators": ^1.3.0
+    "@redhat-developer/page-objects": ^1.3.0
     "@types/selenium-webdriver": ^4.1.24
     "@vscode/vsce": ^2.31.1
     c8: ^10.1.2
@@ -7978,12 +8007,13 @@ __metadata:
     sanitize-filename: ^1.6.3
     selenium-webdriver: ^4.23.0
     targz: ^1.0.1
+    unzipper: ^0.12.2
   peerDependencies:
     mocha: ">=5.2.0"
     typescript: ">=4.6.2"
   bin:
     extest: out/cli.js
-  checksum: beb1586bc0a5d65f5150ea74d4abdac9d17f0c8006c2c30c96e16bcd22d90ef63375378b43b8126bfdc1e2813fbd3568f809d1b27c68602f3a256e0d2d445abc
+  checksum: fad890e703e48fcd4794e42d175d48790842ae03acb6b32a84f57e7fc84967051ee7841d4bf298cacf0e3cd7f61f52a75eaa24551f71b596d4bab83a95142243
   languageName: node
   linkType: hard
 
@@ -8032,7 +8062,7 @@ __metadata:
     ts-loader: 9.4.4
     tsconfig-paths-webpack-plugin: ^4.1.0
     typescript: ^5.5.4
-    vscode-extension-tester: ^8.4.0
+    vscode-extension-tester: ^8.5.0
     web-worker: ^1.3.0
     webpack: 5.88.2
     webpack-cli: 5.1.4
