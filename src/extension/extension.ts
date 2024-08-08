@@ -33,7 +33,7 @@ export async function activate(context: vscode.ExtensionContext) {
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
 
-  KogitoVsCode.startExtension({
+  const kieEditorStore = await KogitoVsCode.startExtension({
     extensionName: "redhat.vscode-kaoto",
     context: context,
     viewType: "webviewEditorsKaoto",
@@ -50,6 +50,13 @@ export async function activate(context: vscode.ExtensionContext) {
     ]),
     channelApiProducer: new VSCodeKaotoChannelApiProducer(),
     backendProxy: backendProxy,
+  });
+
+  vscode.commands.registerCommand('kaoto.open.textualeditor', async() => {
+    if (kieEditorStore.activeEditor !== undefined) {
+      const doc = await vscode.workspace.openTextDocument(kieEditorStore.activeEditor?.document.document.uri);
+      await vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside);
+    }
   });
 
   vscode.commands.registerCommand('kaoto.open', (uri: vscode.Uri) => {

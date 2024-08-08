@@ -77,6 +77,12 @@
       {
         "command": "kaoto.open",
         "title": "Open with Kaoto Graphical Editor for Camel"
+      },
+      {
+        "command": "kaoto.open.textualeditor",
+        "title": "Open Camel file with textual editor on the side",
+        "enablement": "activeCustomEditorId == webviewEditorsKaoto",
+        "category": "Camel"
       }
     ],
     "menus": {
