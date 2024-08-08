@@ -90,8 +90,10 @@
       {
         "command": "kaoto.open.textualeditor",
         "title": "Open Camel file with textual editor on the side",
+        "shortTitle": "Show source",
         "enablement": "activeCustomEditorId == webviewEditorsKaoto",
-        "category": "Camel"
+        "category": "Camel",
+        "icon": "$(go-to-file)"
       }
     ],
     "keybindings": {
@@ -105,6 +107,13 @@
         {
           "command": "kaoto.open",
           "when": "false"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "kaoto.open.textualeditor",
+          "when": "activeCustomEditorId == webviewEditorsKaoto",
+          "group": "navigation" 
         }
       ],
       "explorer/context": [
