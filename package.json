@@ -85,6 +85,12 @@
         "category": "Camel"
       }
     ],
+    "keybindings": {
+      "command": "kaoto.open.textualeditor",
+      "key": "ctrl+k v",
+      "mac": "cmd+k v",
+      "when": "activeCustomEditorId == webviewEditorsKaoto"
+    },
     "menus": {
       "commandPalette": [
         {
