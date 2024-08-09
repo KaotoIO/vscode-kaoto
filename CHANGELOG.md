@@ -1,7 +1,7 @@
 # 1.3.0
 
 - Enable `nodeLabel` setting to configure the node label used in the Kaoto editor
-- Upgrade Kaoto 2.2.0-RC3
+- Upgrade Kaoto 2.2.0-RC4
 - Provide command `Open Camel file with textual editor on the side` when Kaoto editor is active
 - Provide shortcut `Ctrl+k v` to open textual editor to the side when kaoto editor is active
 
