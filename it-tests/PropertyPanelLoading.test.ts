@@ -29,7 +29,7 @@ describe('Property panel loading test', function () {
       driver,
       true
     )).kaotoWebview;
-    const stepWhenXpath = By.xpath(`//\*[name()='g' and starts-with(@data-testid,'custom-node__when')]`)
+    const stepWhenXpath = By.xpath(`//*[name()='g' and starts-with(@data-testid,'custom-node__when')]|//*[name()='foreignObject' and @data-nodelabel='when']/div/div`)
     await driver.wait(until.elementLocated(stepWhenXpath), 5_000);
     await (await driver.findElement(stepWhenXpath)).click();
     await driver.wait(
