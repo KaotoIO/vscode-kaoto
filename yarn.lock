@@ -6651,16 +6651,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-monaco-editor@npm:^0.56.0":
-  version: 0.56.0
-  resolution: "react-monaco-editor@npm:0.56.0"
+"react-monaco-editor@npm:^0.56.1":
+  version: 0.56.1
+  resolution: "react-monaco-editor@npm:0.56.1"
   dependencies:
     prop-types: ^15.8.1
   peerDependencies:
     "@types/react": ">=16 <= 18"
     monaco-editor: ^0.50.0
     react: ">=16 <= 18"
-  checksum: 30f68d2219b44b3eb6a765529e8c9ef377c539da13c0363674706cc64449be0e38c88b21c80a1b059f7f86e2df6d648041d5a19f4dfb7a4323bd21fb3c78b329
+  checksum: 150e0dc40c157ae56ddcad1fd00125d8ec8bfc4d8209dae803012d8b0356394545132b057dede38e789f83015620fede718e1db2a3208fa510626c5e5e731289
   languageName: node
   linkType: hard
 
@@ -8104,7 +8104,7 @@ __metadata:
     path-browserify: ^1.0.1
     react: 18.2.0
     react-dom: 18.2.0
-    react-monaco-editor: ^0.56.0
+    react-monaco-editor: ^0.56.1
     rimraf: ^6.0.1
     sass: ^1.77.8
     sass-loader: ^13.0.2
