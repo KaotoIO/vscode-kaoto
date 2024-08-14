@@ -46,8 +46,8 @@ export async function checkEmptyCanvasLoaded(driver: WebDriver) {
   await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='visualization-empty-state']")));
 }
 
-export async function checkTopologyLoaded(driver: WebDriver) {
-  await driver.wait(until.elementLocated(By.xpath("//div[@data-test-id='topology']")));
+export async function checkTopologyLoaded(driver: WebDriver, timeout: number = 10_000) {
+  await driver.wait(until.elementLocated(By.xpath("//div[@data-test-id='topology']")), timeout);
 }
 
 // Enforce same default storage setup as ExTester - see https://github.com/redhat-developer/vscode-extension-tester/wiki/Test-Setup#useful-env-variables
