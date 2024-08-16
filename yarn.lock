@@ -1450,9 +1450,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/vsce@npm:^2.32.0":
-  version: 2.32.0
-  resolution: "@vscode/vsce@npm:2.32.0"
+"@vscode/vsce@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@vscode/vsce@npm:3.0.0"
   dependencies:
     "@azure/identity": ^4.1.0
     "@vscode/vsce-sign": ^2.0.0
@@ -1462,7 +1462,7 @@ __metadata:
     cockatiel: ^3.1.2
     commander: ^6.2.1
     form-data: ^4.0.0
-    glob: ^7.0.6
+    glob: ^11.0.0
     hosted-git-info: ^4.0.2
     jsonc-parser: ^3.2.0
     keytar: ^7.7.0
@@ -1473,7 +1473,7 @@ __metadata:
     parse-semver: ^1.1.1
     read: ^1.0.7
     semver: ^7.5.2
-    tmp: ^0.2.1
+    tmp: ^0.2.3
     typed-rest-client: ^1.8.4
     url-join: ^4.0.1
     xml2js: ^0.5.0
@@ -1484,7 +1484,7 @@ __metadata:
       optional: true
   bin:
     vsce: vsce
-  checksum: 57fa7d72d7d3f11ce848dfefe0bb05425614acf9c52144301f0eb79435f117ce90cf35cdec5bc74ec95ffd2a562a4a6ba9b7d4fc54061047aac5ef01ca5354d2
+  checksum: 70a53801f084dcbbe1c69f55ca4ad5f6f693500f18357fc10a0c3bd4e8d7a91dd003b5531816a5fe67c5311751e8c7569108bff75935da2376a44aa6df26b2e4
   languageName: node
   linkType: hard
 
@@ -4040,20 +4040,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^7.0.6":
-  version: 7.2.3
-  resolution: "glob@npm:7.2.3"
-  dependencies:
-    fs.realpath: ^1.0.0
-    inflight: ^1.0.4
-    inherits: 2
-    minimatch: ^3.1.1
-    once: ^1.3.0
-    path-is-absolute: ^1.0.0
-  checksum: 29452e97b38fa704dabb1d1045350fb2467cf0277e155aa9ff7077e90ad81d1ea9d53d3ee63bd37c05b09a065e90f16aec4a65f5b8de401d1dac40bc5605d133
-  languageName: node
-  linkType: hard
-
 "glob@npm:^8.1.0":
   version: 8.1.0
   resolution: "glob@npm:8.1.0"
@@ -5445,7 +5431,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^3.0.3, minimatch@npm:^3.0.5, minimatch@npm:^3.1.1":
+"minimatch@npm:^3.0.3, minimatch@npm:^3.0.5":
   version: 3.1.2
   resolution: "minimatch@npm:3.1.2"
   dependencies:
@@ -6229,7 +6215,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-is-absolute@npm:1.0.1, path-is-absolute@npm:^1.0.0":
+"path-is-absolute@npm:1.0.1":
   version: 1.0.1
   resolution: "path-is-absolute@npm:1.0.1"
   checksum: 060840f92cf8effa293bcc1bea81281bd7d363731d214cbe5c227df207c34cd727430f70c6037b5159c8a870b9157cba65e775446b0ab06fd5ecc7e54615a3b8
@@ -7684,7 +7670,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tmp@npm:^0.2.1, tmp@npm:^0.2.3":
+"tmp@npm:^0.2.3":
   version: 0.2.3
   resolution: "tmp@npm:0.2.3"
   checksum: 73b5c96b6e52da7e104d9d44afb5d106bb1e16d9fa7d00dbeb9e6522e61b571fbdb165c756c62164be9a3bbe192b9b268c236d370a2a0955c7689cd2ae377b95
@@ -8139,7 +8125,7 @@ __metadata:
     "@types/mocha": ^10.0.7
     "@types/react": 18.2.79
     "@vscode/test-web": ^0.0.56
-    "@vscode/vsce": ^2.32.0
+    "@vscode/vsce": ^3.0.0
     async-wait-until: ^2.0.12
     buffer: ^6.0.3
     chai: ^4.3.10
