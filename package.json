@@ -185,7 +185,7 @@
     "@types/mocha": "^10.0.7",
     "@types/react": "18.2.79",
     "@vscode/test-web": "^0.0.56",
-    "@vscode/vsce": "^2.31.1",
+    "@vscode/vsce": "^2.32.0",
     "async-wait-until": "^2.0.12",
     "buffer": "^6.0.3",
     "chai": "^4.3.10",
