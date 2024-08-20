@@ -5,6 +5,7 @@
 - Provide command and quick action `Open Camel file with textual editor on the side` when Kaoto editor is active
 - Provide shortcut `Ctrl+k v` to open textual editor to the side when kaoto editor is active
 - Fix rendering in vscode.dev
+- Fix commands in vscode.dev
 
 # 1.2.0
 
