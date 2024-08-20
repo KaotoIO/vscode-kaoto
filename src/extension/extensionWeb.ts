@@ -21,6 +21,7 @@ import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension/dist";
 import * as vscode from "vscode";
 import { KAOTO_FILE_PATH_GLOB } from "./helpers";
+import { VSCodeKaotoChannelApiProducer } from "./../webview/VSCodeKaotoChannelApiProducer";
 
 let backendProxy: VsCodeBackendProxy;
 
@@ -45,6 +46,7 @@ export async function activate(context: vscode.ExtensionContext) {
         },
       }),
     ]),
+    channelApiProducer: new VSCodeKaotoChannelApiProducer(),
     backendProxy: backendProxy,
   });
 
