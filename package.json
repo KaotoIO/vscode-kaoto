@@ -113,7 +113,7 @@
         {
           "command": "kaoto.open.textualeditor",
           "when": "activeCustomEditorId == webviewEditorsKaoto",
-          "group": "navigation" 
+          "group": "navigation"
         }
       ],
       "explorer/context": [
@@ -225,5 +225,5 @@
     "@patternfly/react-table": "5.3.4",
     "@patternfly/react-topology": "5.4.0-prerelease.13"
   },
-  "packageManager": "yarn@3.6.1"
+  "packageManager": "yarn@4.4.1"
 }
