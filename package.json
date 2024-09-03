@@ -199,7 +199,7 @@
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "rimraf": "^6.0.1",
-    "sass": "^1.77.8",
+    "sass": "^1.78.0",
     "sass-loader": "^13.0.2",
     "source-map-loader": "4.0.1",
     "style-loader": "3.3.3",
