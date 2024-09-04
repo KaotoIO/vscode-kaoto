@@ -1286,9 +1286,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/test-web@npm:^0.0.57":
-  version: 0.0.57
-  resolution: "@vscode/test-web@npm:0.0.57"
+"@vscode/test-web@npm:^0.0.58":
+  version: 0.0.58
+  resolution: "@vscode/test-web@npm:0.0.58"
   dependencies:
     "@koa/cors": ^5.0.0
     "@koa/router": ^13.0.0
@@ -1306,8 +1306,8 @@ __metadata:
     tar-fs: ^3.0.6
     vscode-uri: ^3.0.8
   bin:
-    vscode-test-web: out/index.js
-  checksum: 14b6a82c9e3a258f321636f06000eb75afae0de4e47df163dcc4187b5d4cb3d9e9de00993268236f8f234171688c9c0befa1524dcee34680d025fb1b575c8979
+    vscode-test-web: out/server/index.js
+  checksum: 22ad1cf15a0d1f011658808d9129db142f1ffb296c1066e284a23697049895524923b04262976e97b5bfa86ded9ee660020332650ce112d24be5f831090de859
   languageName: node
   linkType: hard
 
@@ -8078,7 +8078,7 @@ __metadata:
     "@types/fs-extra": ^11.0.4
     "@types/mocha": ^10.0.7
     "@types/react": 18.2.79
-    "@vscode/test-web": ^0.0.57
+    "@vscode/test-web": ^0.0.58
     "@vscode/vsce": ^3.0.0
     async-wait-until: ^2.0.12
     buffer: ^6.0.3
