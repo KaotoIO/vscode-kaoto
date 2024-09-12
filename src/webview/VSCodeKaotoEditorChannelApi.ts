@@ -19,4 +19,14 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 
     return new SettingsModel(settingsModel);
   }
+
+  async getFilePreferences<T>(key: string): Promise<T> {
+    vscode.window.showInformationMessage('Method not implemented.');
+    return {} as T;
+  }
+
+  async setFilePreferences(key: string): Promise<void> {
+    vscode.window.showInformationMessage('Method not implemented.');
+  }
+
 }
