@@ -46,21 +46,86 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
     return new SettingsModel(settingsModel);
   }
 
+  /**
+   * Provide metadata stored in the nearest .kaoto file found
+   * If none found, undefined is returned
+   */
   async getMetadata<T>(key: string): Promise<T | undefined> {
-    vscode.window.showErrorMessage(`getMetadata Not implemented. It was called with ${key}`);
+    const kaotoMetadatafile: vscode.Uri | undefined = await this.findKaotoMetadataFile(this.currentEditedDocument.uri);
+    if (kaotoMetadatafile !== undefined) {
+      try {
+        const kaotoMetadataFileContent = new TextDecoder().decode(await vscode.workspace.fs.readFile(kaotoMetadatafile));
+        return JSON.parse(kaotoMetadataFileContent)[key]; // in case the key i snot present, should we look to other potential .kaoto files that could contain the information?
+      } catch (ex){
+        // TODO: log somewhere that we cannot retrieve the metadata
+        // Should we look to other potential .kaoto files and ignore one which is invalid?
+        return undefined; // or should we throw a specific exception?
+      }
+    }
     return undefined;
   }
 
+  /**
+   * Store metadata in the nearest .kaoto file found.
+   * If none found, create the file at workspace root if available, otherwise to the side of the Camel route
+   */
   async setMetadata<T>(key: string, value: T | undefined): Promise<void> {
-    vscode.window.showErrorMessage(`setMetadata Not implemented. It was called with ${key} and ${value}`);
+    let kaotoMetadatafile: vscode.Uri | undefined = await this.findKaotoMetadataFile(this.currentEditedDocument.uri);
+    let kaotoMetadataFileContent;
+    if (kaotoMetadatafile === undefined) {
+      kaotoMetadataFileContent = "{}";
+      const workspaceFolder = vscode.workspace.getWorkspaceFolder(this.currentEditedDocument.uri);
+      if (workspaceFolder !== undefined) {
+        kaotoMetadatafile = vscode.Uri.file(path.join(workspaceFolder?.uri.fsPath, '.kaoto'));
+      } else {
+        const parentFolder = path.basename(path.dirname(this.currentEditedDocument.uri.fsPath));
+        kaotoMetadatafile = vscode.Uri.file(path.join(parentFolder, '.kaoto'));
+      }
+    } else {
+      kaotoMetadataFileContent = new TextDecoder().decode(await vscode.workspace.fs.readFile(kaotoMetadatafile));
+    }
+    const jsonContent = JSON.parse(kaotoMetadataFileContent);
+    if (value !== undefined && value !== null) {
+      jsonContent[key] = value;
+    } else {
+      delete jsonContent[key];
+    }
+    await vscode.workspace.fs.writeFile(kaotoMetadatafile, new TextEncoder().encode(JSON.stringify(jsonContent, null, '\t')));
+  }
+
+  private async findKaotoMetadataFile(fileUri: vscode.Uri): Promise<vscode.Uri | undefined> {
+    const parentFolder = path.dirname(fileUri.fsPath);
+    if (parentFolder === fileUri.fsPath || parentFolder === "" || parentFolder === undefined) {
+      return undefined;
+    }
+    try {
+      const kaotoMetadataFileCandidate = vscode.Uri.file(path.join(parentFolder, '.kaoto'));
+      await vscode.workspace.fs.stat(kaotoMetadataFileCandidate);
+      return kaotoMetadataFileCandidate;
+    } catch {
+      return this.findKaotoMetadataFile(vscode.Uri.file(parentFolder));
+    }
   }
 
   async getResourceContent(relativePath: string): Promise<string | undefined> {
-    vscode.window.showErrorMessage(`getResourceContent Not implemented. It was called with ${relativePath}`);
-    return undefined;
+    try {
+      const targetFile = path.resolve(path.dirname(this.currentEditedDocument.uri.fsPath), relativePath);
+      return new TextDecoder().decode(await vscode.workspace.fs.readFile(vscode.Uri.file(targetFile)));
+    } catch (ex) {
+      vscode.window.showErrorMessage(`Cannot retrieve content of ${relativePath} relatively to ${this.currentEditedDocument.uri.fsPath}`);
+      // TODO log the exception somewhere
+      return undefined;
+    }
   }
 
   async saveResourceContent(relativePath: string, content: string): Promise<void> {
-    vscode.window.showErrorMessage(`saveResourceContent Not implemented. It was called with ${relativePath} and ${content}`);
+    try {
+      const targetFile = path.resolve(path.dirname(this.currentEditedDocument.uri.fsPath), relativePath);
+      await vscode.workspace.fs.writeFile(vscode.Uri.file(targetFile), new TextEncoder().encode(content));
+    } catch (ex) {
+      vscode.window.showErrorMessage(`Cannot write content of ${relativePath} relatively to ${this.currentEditedDocument.uri.fsPath}`);
+      // TODO log the exception somewhere
+      return undefined;
+    }
   }
 }
