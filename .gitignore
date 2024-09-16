@@ -15,6 +15,7 @@ dist
 # testing
 /coverage
 .vscode-test-web
+.vscode-test
 /uitest-resources
 /test-extensions
 /test-resources

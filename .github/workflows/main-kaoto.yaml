@@ -53,6 +53,9 @@ jobs:
     - name: vsix package
       working-directory: vscode-kaoto
       run: yarn vsce package --no-dependencies --yarn
+    - name: Run Unit tests
+      working-directory: vscode-kaoto
+      run: xvfb-run -a yarn test:unit
     - name: Run UI Tests
       working-directory: vscode-kaoto
       run: xvfb-run -a yarn run test:it:with-prebuilt-vsix
