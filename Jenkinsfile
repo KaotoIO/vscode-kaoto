@@ -21,7 +21,12 @@ node('rhel8'){
 	sh "yarn build:dev"
 	sh "yarn build:prod"
 
-	stage('Test') {
+	stage('Unit Tests') {
+		wrap([$class: 'Xvnc']) {
+			sh "yarn test:unit"
+		}
+	}
+	stage('UI Tests') {
 		wrap([$class: 'Xvnc']) {
 			sh "yarn test:it"
 		}

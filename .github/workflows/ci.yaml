@@ -34,6 +34,12 @@ jobs:
       run: yarn build:prod
     - name: vsix package
       run: yarn vsce package --no-dependencies --yarn
+    - name: Run Unit tests on Linux
+      run: xvfb-run -a yarn test:unit
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+    - name: Run Unit tests on Other OSes than Linux
+      run: yarn test:unit
+      if: ${{ matrix.os != 'ubuntu-latest' }}
     - name: Run UI Tests on Linux
       run: xvfb-run -a yarn run test:it:with-prebuilt-vsix
       if: ${{ matrix.os == 'ubuntu-latest' }}
