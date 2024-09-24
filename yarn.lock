@@ -5781,6 +5781,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"monaco-editor@npm:^0.52.0":
+  version: 0.52.0
+  resolution: "monaco-editor@npm:0.52.0"
+  checksum: 10/ec9a543b07e70bb3339c7e20f4f84aad045776057820daced36537efd8e50b8d9cd448988e68a4870bdc3db9c15ae3ae05201c8ed8e4ca8e87f74ee2fefb8cad
+  languageName: node
+  linkType: hard
+
 "monaco-languageserver-types@npm:^0.4.0":
   version: 0.4.0
   resolution: "monaco-languageserver-types@npm:0.4.0"
@@ -8344,7 +8351,7 @@ __metadata:
     fs-extra: "npm:^11.2.0"
     mocha: "npm:^10.7.3"
     mocha-jenkins-reporter: "npm:^0.4.8"
-    monaco-editor: "npm:^0.50.0"
+    monaco-editor: "npm:^0.52.0"
     monaco-yaml: "npm:^5.1.1"
     node-fetch: "npm:2"
     npm-link-shared: "npm:^0.5.6"
