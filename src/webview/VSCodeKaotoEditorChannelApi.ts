@@ -128,4 +128,27 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
       return undefined;
     }
   }
+
+  async askUserForFileSelection(include: string, exclude?: string, options?: Record<string, unknown>): Promise<string[] | string | undefined> {
+    try {
+      const workspaceFolder = vscode.workspace.getWorkspaceFolder(this.currentEditedDocument.uri);
+      if (!workspaceFolder) {
+        vscode.window.showErrorMessage(`No associated workspace folder was found. Setup the workspace and place the file under the same workspace folder with ${this.currentEditedDocument.uri.fsPath}`);
+        return;
+      }
+      const includePattern = new vscode.RelativePattern(workspaceFolder, include);
+      const files = await vscode.workspace.findFiles(includePattern, exclude);
+      if (files.length === 0) {
+        vscode.window.showErrorMessage(`No candidate file was found in the workspace folder. Place the file under the same workspace folder with  ${this.currentEditedDocument.uri.fsPath}`);
+        return;
+      }
+      return await vscode.window.showQuickPick(files.map((f) => {
+        return path.relative(path.dirname(this.currentEditedDocument.uri.fsPath), f.path);
+      }), options as vscode.QuickPickOptions);
+    } catch (ex) {
+      vscode.window.showErrorMessage(`Cannot get a user selection: ${ex.message}`);
+      // TODO log the exception somewhere
+      return undefined;
+    }
+  }
 }
