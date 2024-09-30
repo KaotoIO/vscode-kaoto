@@ -467,14 +467,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@koa/router@npm:^13.0.0":
-  version: 13.0.0
-  resolution: "@koa/router@npm:13.0.0"
+"@koa/router@npm:^13.1.0":
+  version: 13.1.0
+  resolution: "@koa/router@npm:13.1.0"
   dependencies:
     http-errors: "npm:^2.0.0"
     koa-compose: "npm:^4.1.0"
-    path-to-regexp: "npm:^6.2.2"
-  checksum: 10/a6dd8abd85ee2bc1168b0cb512cea6edcfebf3c1652e54df02acfba3310f27bf0ecb41819dd534d8ccf30deccd86dbac2a4cf4f0c3243b1b7e9ee8314a51de78
+    path-to-regexp: "npm:^6.3.0"
+  checksum: 10/b5de0745b266dd8cda5873ace9594ca4b020ef6fe0e94e1de81f11a7498d0fcc106c8d972513ad52493b196b5e111ed1d07b318cf4ca4156b85a99ea5d3a3f98
   languageName: node
   linkType: hard
 
@@ -689,12 +689,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/browser-chromium@npm:^1.47.0":
-  version: 1.47.0
-  resolution: "@playwright/browser-chromium@npm:1.47.0"
+"@playwright/browser-chromium@npm:^1.47.2":
+  version: 1.47.2
+  resolution: "@playwright/browser-chromium@npm:1.47.2"
   dependencies:
-    playwright-core: "npm:1.47.0"
-  checksum: 10/3ea130b3f21fe39218cfa2246072de7c41147d6eacd47d35ad0af5c822b7a42cc335406acd61dc50f0f43628f5537d58bbeaec5a8777eeda83b5c4d39736328d
+    playwright-core: "npm:1.47.2"
+  checksum: 10/64e1afb0cf86ccf2b9c9c00a1648da9c3d5a027fc52410d9ead52960554507493a7719932c645cf8d7a4cc5183c25e54948496a0899aeae265841f77b27dff41
   languageName: node
   linkType: hard
 
@@ -1337,13 +1337,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/test-web@npm:^0.0.60":
-  version: 0.0.60
-  resolution: "@vscode/test-web@npm:0.0.60"
+"@vscode/test-web@npm:^0.0.61":
+  version: 0.0.61
+  resolution: "@vscode/test-web@npm:0.0.61"
   dependencies:
     "@koa/cors": "npm:^5.0.0"
-    "@koa/router": "npm:^13.0.0"
-    "@playwright/browser-chromium": "npm:^1.47.0"
+    "@koa/router": "npm:^13.1.0"
+    "@playwright/browser-chromium": "npm:^1.47.2"
     glob: "npm:^11.0.0"
     gunzip-maybe: "npm:^1.4.2"
     http-proxy-agent: "npm:^7.0.2"
@@ -1353,12 +1353,12 @@ __metadata:
     koa-mount: "npm:^4.0.0"
     koa-static: "npm:^5.0.0"
     minimist: "npm:^1.2.8"
-    playwright: "npm:^1.47.0"
+    playwright: "npm:^1.47.2"
     tar-fs: "npm:^3.0.6"
     vscode-uri: "npm:^3.0.8"
   bin:
     vscode-test-web: out/server/index.js
-  checksum: 10/f69711acf91651135ae87278f44f99e4a25d4e830098fb68386114ad9dc290350f3dee8350bf2ff2da7dc5486199896931a3b401b457ed412d22355193bee612
+  checksum: 10/35eaf937b5187a56e84496632524a62dae6ed5bd985b9c2c1e222eb01c1f07c80b4ca28748b01ccb2f5c56315f983f0489ec49381881d391302bf18a9b76481c
   languageName: node
   linkType: hard
 
@@ -6411,10 +6411,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-to-regexp@npm:^6.2.2":
-  version: 6.2.2
-  resolution: "path-to-regexp@npm:6.2.2"
-  checksum: 10/f7d11c1a9e02576ce0294f4efdc523c11b73894947afdf7b23a0d0f7c6465d7a7772166e770ddf1495a8017cc0ee99e3e8a15ed7302b6b948b89a6dd4eea895e
+"path-to-regexp@npm:^6.3.0":
+  version: 6.3.0
+  resolution: "path-to-regexp@npm:6.3.0"
+  checksum: 10/6822f686f01556d99538b350722ef761541ec0ce95ca40ce4c29e20a5b492fe8361961f57993c71b2418de12e604478dcf7c430de34b2c31a688363a7a944d9c
   languageName: node
   linkType: hard
 
@@ -6480,27 +6480,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.47.0":
-  version: 1.47.0
-  resolution: "playwright-core@npm:1.47.0"
+"playwright-core@npm:1.47.2":
+  version: 1.47.2
+  resolution: "playwright-core@npm:1.47.2"
   bin:
     playwright-core: cli.js
-  checksum: 10/181ddf5c29275fc0cfdda223c22cbfc7a74433e1e3aded96c9fb994f7fe98232c035e789986a62201d0c384b2966f1165f212f4f88eec6885ad56c04526c922c
+  checksum: 10/2a2b28b2f1d01bc447f4f1cb4b5248ed053fde38429484c909efa17226e692a79cd5e6d4c337e9040eaaf311b6cb4a36027d6d14f1f44c482c5fb3feb081f913
   languageName: node
   linkType: hard
 
-"playwright@npm:^1.47.0":
-  version: 1.47.0
-  resolution: "playwright@npm:1.47.0"
+"playwright@npm:^1.47.2":
+  version: 1.47.2
+  resolution: "playwright@npm:1.47.2"
   dependencies:
     fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.47.0"
+    playwright-core: "npm:1.47.2"
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 10/6051889d33c879847e471633453adeb741ca0542f236b3fabbb64e7ec3f17f1655f879099140e0b01a978d94caa8205b3c9437622e9953d56f5447e4ae85885d
+  checksum: 10/73494a187be3e75222b65ebcce8d790eada340bd61ca0d07410060a52232ddbc2357c4882d7b42434054dc1f4802fdb039a47530b4b5500dcfd1bf0edd63c191
   languageName: node
   linkType: hard
 
@@ -8333,7 +8333,7 @@ __metadata:
     "@types/react": "npm:18.3.1"
     "@vscode/test-cli": "npm:^0.0.10"
     "@vscode/test-electron": "npm:^2.4.1"
-    "@vscode/test-web": "npm:^0.0.60"
+    "@vscode/test-web": "npm:^0.0.61"
     "@vscode/vsce": "npm:^3.1.0"
     async-wait-until: "npm:^2.0.12"
     buffer: "npm:^6.0.3"
