@@ -7156,16 +7156,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass@npm:^1.79.1":
-  version: 1.79.1
-  resolution: "sass@npm:1.79.1"
+"sass@npm:^1.79.4":
+  version: 1.79.4
+  resolution: "sass@npm:1.79.4"
   dependencies:
     chokidar: "npm:^4.0.0"
     immutable: "npm:^4.0.0"
     source-map-js: "npm:>=0.6.2 <2.0.0"
   bin:
     sass: sass.js
-  checksum: 10/e02d28401f371370e2444341ede4398916ab0fb368fe8cbbf5970a531a3ea57023f3fb743db63a17bca661c600b09d958417599d5d320767d06c410445750065
+  checksum: 10/82e2ee5c2e46c96818454c7d97bcfb5b36c1c27de3b1e705adad7a49a8b32226c5254cc4c8804f45db2b6aa018848973177274c2b1137d4caf7abb5cb7bbf8b9
   languageName: node
   linkType: hard
 
@@ -8354,7 +8354,7 @@ __metadata:
     react-dom: "npm:18.3.1"
     react-monaco-editor: "npm:^0.56.1"
     rimraf: "npm:^6.0.1"
-    sass: "npm:^1.79.1"
+    sass: "npm:^1.79.4"
     sass-loader: "npm:^13.0.2"
     source-map-loader: "npm:4.0.1"
     style-loader: "npm:3.3.3"
