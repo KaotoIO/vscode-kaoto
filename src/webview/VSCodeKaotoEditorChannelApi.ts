@@ -129,6 +129,18 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
     }
   }
 
+  async deleteResource(relativePath: string): Promise<boolean> {
+    try {
+      const targetFile = path.resolve(path.dirname(this.currentEditedDocument.uri.fsPath), relativePath);
+      await vscode.workspace.fs.delete(vscode.Uri.file(targetFile));
+      return true;
+    } catch (ex) {
+      vscode.window.showErrorMessage(`Cannot delete ${relativePath} relatively to ${this.currentEditedDocument.uri.fsPath}`);
+      // TODO log the exception somewhere
+      return false;
+    }
+  }
+
   async askUserForFileSelection(include: string, exclude?: string, options?: Record<string, unknown>): Promise<string[] | string | undefined> {
     try {
       const workspaceFolder = vscode.workspace.getWorkspaceFolder(this.currentEditedDocument.uri);
