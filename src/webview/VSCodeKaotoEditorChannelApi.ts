@@ -11,6 +11,7 @@ import { JavaCodeCompletionApi } from '@kie-tools-core/vscode-java-code-completi
 import * as vscode from 'vscode';
 import { VsCodeKieEditorCustomDocument } from '@kie-tools-core/vscode-extension/dist/VsCodeKieEditorCustomDocument';
 import * as path from 'path';
+import { logInKaotoOutputChannel } from './../KaotoOutputChannelManager';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 
@@ -57,7 +58,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
         const kaotoMetadataFileContent = new TextDecoder().decode(await vscode.workspace.fs.readFile(kaotoMetadatafile));
         return JSON.parse(kaotoMetadataFileContent)[key]; // in case the key i snot present, should we look to other potential .kaoto files that could contain the information?
       } catch (ex){
-        // TODO: log somewhere that we cannot retrieve the metadata
+        logInKaotoOutputChannel(`Error when trying to get Metadata for key: ${key}`, ex);
         // Should we look to other potential .kaoto files and ignore one which is invalid?
         return undefined; // or should we throw a specific exception?
       }
@@ -112,8 +113,9 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
       const targetFile = path.resolve(path.dirname(this.currentEditedDocument.uri.fsPath), relativePath);
       return new TextDecoder().decode(await vscode.workspace.fs.readFile(vscode.Uri.file(targetFile)));
     } catch (ex) {
-      vscode.window.showErrorMessage(`Cannot retrieve content of ${relativePath} relatively to ${this.currentEditedDocument.uri.fsPath}`);
-      // TODO log the exception somewhere
+      const errorMessage= `Cannot retrieve content of ${relativePath} relatively to ${this.currentEditedDocument.uri.fsPath}`;
+      vscode.window.showErrorMessage(errorMessage);
+      logInKaotoOutputChannel(errorMessage, ex);
       return undefined;
     }
   }
@@ -123,8 +125,9 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
       const targetFile = path.resolve(path.dirname(this.currentEditedDocument.uri.fsPath), relativePath);
       await vscode.workspace.fs.writeFile(vscode.Uri.file(targetFile), new TextEncoder().encode(content));
     } catch (ex) {
-      vscode.window.showErrorMessage(`Cannot write content of ${relativePath} relatively to ${this.currentEditedDocument.uri.fsPath}`);
-      // TODO log the exception somewhere
+      const errorMessage = `Cannot write content of ${relativePath} relatively to ${this.currentEditedDocument.uri.fsPath}`;
+      vscode.window.showErrorMessage(errorMessage);
+      logInKaotoOutputChannel(errorMessage, ex);
       return undefined;
     }
   }
@@ -135,8 +138,9 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
       await vscode.workspace.fs.delete(vscode.Uri.file(targetFile));
       return true;
     } catch (ex) {
-      vscode.window.showErrorMessage(`Cannot delete ${relativePath} relatively to ${this.currentEditedDocument.uri.fsPath}`);
-      // TODO log the exception somewhere
+      const errorMessage = `Cannot delete ${relativePath} relatively to ${this.currentEditedDocument.uri.fsPath}`;
+      vscode.window.showErrorMessage(errorMessage);
+      logInKaotoOutputChannel(errorMessage, ex);
       return false;
     }
   }
@@ -158,8 +162,9 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
         return path.relative(path.dirname(this.currentEditedDocument.uri.fsPath), f.path);
       }), options as vscode.QuickPickOptions);
     } catch (ex) {
-      vscode.window.showErrorMessage(`Cannot get a user selection: ${ex.message}`);
-      // TODO log the exception somewhere
+      const errorMessage = `Cannot get a user selection: ${ex.message}`;
+      vscode.window.showErrorMessage(errorMessage);
+      logInKaotoOutputChannel(errorMessage, ex);
       return undefined;
     }
   }
