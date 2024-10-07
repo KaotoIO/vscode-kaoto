@@ -1220,10 +1220,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mocha@npm:^10.0.2, @types/mocha@npm:^10.0.8":
+"@types/mocha@npm:^10.0.2":
   version: 10.0.8
   resolution: "@types/mocha@npm:10.0.8"
   checksum: 10/c9ba73a6c444085193a84da4bfb8d2af64cb1baf6f678ed5a40b782171092dc0e4aebeaf4eba00fc48f22d328b3e3075a566ca15f8da1e0765cc3cf7657621d2
+  languageName: node
+  linkType: hard
+
+"@types/mocha@npm:^10.0.9":
+  version: 10.0.9
+  resolution: "@types/mocha@npm:10.0.9"
+  checksum: 10/aa34e61e6373c5a9e8f904302fc736c04d6757f079d8500689c589b610e8b8e28bdefc2da398569e6328c6b1e6dc5a59fb485211b2bacb465c2aad04d822c28c
   languageName: node
   linkType: hard
 
@@ -8329,7 +8336,7 @@ __metadata:
     "@redhat-developer/vscode-redhat-telemetry": "npm:^0.9.0"
     "@types/chai": "npm:^4.3.11"
     "@types/fs-extra": "npm:^11.0.4"
-    "@types/mocha": "npm:^10.0.8"
+    "@types/mocha": "npm:^10.0.9"
     "@types/react": "npm:18.3.1"
     "@vscode/test-cli": "npm:^0.0.10"
     "@vscode/test-electron": "npm:^2.4.1"
