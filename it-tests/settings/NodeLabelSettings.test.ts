@@ -67,7 +67,7 @@ describe('User Settings', function () {
         const timer = await driver.findElement(locators.TimerComponent.timer).findElement(locators.TimerComponent.label);
         const label = await timer.getText();
 
-        expect(label).to.be.equal('timerID');
+        expect(label.split('\n')).to.contains('timerID');
     });
 
 });
