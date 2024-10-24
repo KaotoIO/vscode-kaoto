@@ -12,6 +12,7 @@ import * as vscode from 'vscode';
 import { VsCodeKieEditorCustomDocument } from '@kie-tools-core/vscode-extension/dist/VsCodeKieEditorCustomDocument';
 import * as path from 'path';
 import { logInKaotoOutputChannel } from './../KaotoOutputChannelManager';
+import { findClasspathRoot } from '../extension/ClasspathRootFinder';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 
@@ -52,7 +53,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
    * If none found, undefined is returned
    */
   async getMetadata<T>(key: string): Promise<T | undefined> {
-    const kaotoMetadatafile: vscode.Uri | undefined = await this.findKaotoMetadataFile(this.currentEditedDocument.uri);
+    const kaotoMetadatafile: vscode.Uri | undefined = await this.findExistingKaotoMetadataFile(this.currentEditedDocument.uri);
     if (kaotoMetadatafile !== undefined) {
       try {
         const kaotoMetadataFileContent = new TextDecoder().decode(await vscode.workspace.fs.readFile(kaotoMetadatafile));
@@ -71,17 +72,11 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
    * If none found, create the file at workspace root if available, otherwise to the side of the Camel route
    */
   async setMetadata<T>(key: string, value: T | undefined): Promise<void> {
-    let kaotoMetadatafile: vscode.Uri | undefined = await this.findKaotoMetadataFile(this.currentEditedDocument.uri);
+    let kaotoMetadatafile: vscode.Uri | undefined = await this.findExistingKaotoMetadataFile(this.currentEditedDocument.uri);
     let kaotoMetadataFileContent;
     if (kaotoMetadatafile === undefined) {
       kaotoMetadataFileContent = "{}";
-      const workspaceFolder = vscode.workspace.getWorkspaceFolder(this.currentEditedDocument.uri);
-      if (workspaceFolder !== undefined) {
-        kaotoMetadatafile = vscode.Uri.file(path.join(workspaceFolder?.uri.fsPath, '.kaoto'));
-      } else {
-        const parentFolder = path.basename(path.dirname(this.currentEditedDocument.uri.fsPath));
-        kaotoMetadatafile = vscode.Uri.file(path.join(parentFolder, '.kaoto'));
-      }
+      kaotoMetadatafile = await this.findKaotoMetadataToCreate();
     } else {
       kaotoMetadataFileContent = new TextDecoder().decode(await vscode.workspace.fs.readFile(kaotoMetadatafile));
     }
@@ -94,26 +89,13 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
     await vscode.workspace.fs.writeFile(kaotoMetadatafile, new TextEncoder().encode(JSON.stringify(jsonContent, null, '\t')));
   }
 
-  private async findKaotoMetadataFile(fileUri: vscode.Uri): Promise<vscode.Uri | undefined> {
-    const parentFolder = path.dirname(fileUri.fsPath);
-    if (parentFolder === fileUri.fsPath || parentFolder === "" || parentFolder === undefined) {
-      return undefined;
-    }
-    try {
-      const kaotoMetadataFileCandidate = vscode.Uri.file(path.join(parentFolder, '.kaoto'));
-      await vscode.workspace.fs.stat(kaotoMetadataFileCandidate);
-      return kaotoMetadataFileCandidate;
-    } catch {
-      return this.findKaotoMetadataFile(vscode.Uri.file(parentFolder));
-    }
-  }
-
   async getResourceContent(relativePath: string): Promise<string | undefined> {
+    const classpathRoot: string = findClasspathRoot(this.currentEditedDocument.uri);
     try {
-      const targetFile = path.resolve(path.dirname(this.currentEditedDocument.uri.fsPath), relativePath);
+      const targetFile = path.resolve(classpathRoot, relativePath);
       return new TextDecoder().decode(await vscode.workspace.fs.readFile(vscode.Uri.file(targetFile)));
     } catch (ex) {
-      const errorMessage= `Cannot retrieve content of ${relativePath} relatively to ${this.currentEditedDocument.uri.fsPath}`;
+      const errorMessage= `Cannot retrieve content of ${relativePath} relatively to ${classpathRoot}`;
       vscode.window.showErrorMessage(errorMessage);
       logInKaotoOutputChannel(errorMessage, ex);
       return undefined;
@@ -121,11 +103,12 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
   }
 
   async saveResourceContent(relativePath: string, content: string): Promise<void> {
+    const classpathRoot: string = findClasspathRoot(this.currentEditedDocument.uri);
     try {
-      const targetFile = path.resolve(path.dirname(this.currentEditedDocument.uri.fsPath), relativePath);
+      const targetFile = path.resolve(classpathRoot, relativePath);
       await vscode.workspace.fs.writeFile(vscode.Uri.file(targetFile), new TextEncoder().encode(content));
     } catch (ex) {
-      const errorMessage = `Cannot write content of ${relativePath} relatively to ${this.currentEditedDocument.uri.fsPath}`;
+      const errorMessage = `Cannot write content of ${relativePath} relatively to ${classpathRoot}`;
       vscode.window.showErrorMessage(errorMessage);
       logInKaotoOutputChannel(errorMessage, ex);
       return undefined;
@@ -133,12 +116,13 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
   }
 
   async deleteResource(relativePath: string): Promise<boolean> {
+    const classpathRoot: string = findClasspathRoot(this.currentEditedDocument.uri);
     try {
-      const targetFile = path.resolve(path.dirname(this.currentEditedDocument.uri.fsPath), relativePath);
+      const targetFile = path.resolve(classpathRoot, relativePath);
       await vscode.workspace.fs.delete(vscode.Uri.file(targetFile));
       return true;
     } catch (ex) {
-      const errorMessage = `Cannot delete ${relativePath} relatively to ${this.currentEditedDocument.uri.fsPath}`;
+      const errorMessage = `Cannot delete ${relativePath} relatively to ${classpathRoot}`;
       vscode.window.showErrorMessage(errorMessage);
       logInKaotoOutputChannel(errorMessage, ex);
       return false;
@@ -158,14 +142,42 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
         vscode.window.showErrorMessage(`No candidate file was found in the workspace folder. Place the file under the same workspace folder with  ${this.currentEditedDocument.uri.fsPath}`);
         return;
       }
+      let kaotoMetadataFile = await this.findExistingKaotoMetadataFile(this.currentEditedDocument.uri);
+      if (kaotoMetadataFile === undefined) {
+        kaotoMetadataFile = await this.findKaotoMetadataToCreate();
+      }
       return await vscode.window.showQuickPick(files.map((f) => {
-        return path.relative(path.dirname(this.currentEditedDocument.uri.fsPath), f.path);
+        return path.relative(path.dirname(kaotoMetadataFile.fsPath), f.path);
       }), options as vscode.QuickPickOptions);
     } catch (ex) {
       const errorMessage = `Cannot get a user selection: ${ex.message}`;
       vscode.window.showErrorMessage(errorMessage);
       logInKaotoOutputChannel(errorMessage, ex);
       return undefined;
+    }
+  }
+
+  private async findExistingKaotoMetadataFile(fileUri: vscode.Uri): Promise<vscode.Uri | undefined> {
+    const parentFolder = path.dirname(fileUri.fsPath);
+    if (parentFolder === fileUri.fsPath || parentFolder === "" || parentFolder === undefined) {
+      return undefined;
+    }
+    try {
+      const kaotoMetadataFileCandidate = vscode.Uri.file(path.join(parentFolder, '.kaoto'));
+      await vscode.workspace.fs.stat(kaotoMetadataFileCandidate);
+      return kaotoMetadataFileCandidate;
+    } catch {
+      return this.findExistingKaotoMetadataFile(vscode.Uri.file(parentFolder));
+    }
+  }
+
+  private async findKaotoMetadataToCreate(): Promise<vscode.Uri>{
+    const workspaceFolder = vscode.workspace.getWorkspaceFolder(this.currentEditedDocument.uri);
+    if (workspaceFolder !== undefined) {
+      return vscode.Uri.file(path.join(workspaceFolder?.uri.fsPath, '.kaoto'));
+    } else {
+      const parentFolder = path.basename(path.dirname(this.currentEditedDocument.uri.fsPath));
+      return vscode.Uri.file(path.join(parentFolder, '.kaoto'));
     }
   }
 }
