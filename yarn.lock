@@ -860,10 +860,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/chai@npm:^4.3.11":
-  version: 4.3.14
-  resolution: "@types/chai@npm:4.3.14"
-  checksum: 10/300be72bb22657c1e449b27a5f0ab24405edf3be5c42ea0095f8e1c6daabc29c3028eee2421cc443c01a098da47ba32baecc363be7324433132281b9d9a8216f
+"@types/chai@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@types/chai@npm:5.0.0"
+  checksum: 10/a6c03aa6b6d59ad40ddb48d07807690efb874628c15b9d89c17d97045a9305a487933398c1e5b5f94087b1a6a9a67a7c828eb9b635104526fd25bb5f9d4c4175
   languageName: node
   linkType: hard
 
@@ -1938,10 +1938,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"assertion-error@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "assertion-error@npm:1.1.0"
-  checksum: 10/fd9429d3a3d4fd61782eb3962ae76b6d08aa7383123fca0596020013b3ebd6647891a85b05ce821c47d1471ed1271f00b0545cf6a4326cf2fc91efcc3b0fbecf
+"assertion-error@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "assertion-error@npm:2.0.1"
+  checksum: 10/a0789dd882211b87116e81e2648ccb7f60340b34f19877dd020b39ebb4714e475eb943e14ba3e22201c221ef6645b7bfe10297e76b6ac95b48a9898c1211ce66
   languageName: node
   linkType: hard
 
@@ -2368,18 +2368,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chai@npm:^4.3.10":
-  version: 4.4.1
-  resolution: "chai@npm:4.4.1"
+"chai@npm:^5.1.2":
+  version: 5.1.2
+  resolution: "chai@npm:5.1.2"
   dependencies:
-    assertion-error: "npm:^1.1.0"
-    check-error: "npm:^1.0.3"
-    deep-eql: "npm:^4.1.3"
-    get-func-name: "npm:^2.0.2"
-    loupe: "npm:^2.3.6"
-    pathval: "npm:^1.1.1"
-    type-detect: "npm:^4.0.8"
-  checksum: 10/c6d7aba913a67529c68dbec3673f94eb9c586c5474cc5142bd0b587c9c9ec9e5fbaa937e038ecaa6475aea31433752d5fabdd033b9248bde6ae53befcde774ae
+    assertion-error: "npm:^2.0.1"
+    check-error: "npm:^2.1.1"
+    deep-eql: "npm:^5.0.1"
+    loupe: "npm:^3.1.0"
+    pathval: "npm:^2.0.0"
+  checksum: 10/e8c2bbc83cb5a2f87130d93056d4cfbbe04106e12aa798b504816dbe3fa538a9f68541b472e56cbf0f54558b501d7e31867d74b8218abcd5a8cc8ba536fba46c
   languageName: node
   linkType: hard
 
@@ -2411,12 +2409,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"check-error@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "check-error@npm:1.0.3"
-  dependencies:
-    get-func-name: "npm:^2.0.2"
-  checksum: 10/e2131025cf059b21080f4813e55b3c480419256914601750b0fee3bd9b2b8315b531e551ef12560419b8b6d92a3636511322752b1ce905703239e7cc451b6399
+"check-error@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "check-error@npm:2.1.1"
+  checksum: 10/d785ed17b1d4a4796b6e75c765a9a290098cf52ff9728ce0756e8ffd4293d2e419dd30c67200aee34202463b474306913f2fcfaf1890641026d9fc6966fea27a
   languageName: node
   linkType: hard
 
@@ -3241,12 +3237,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deep-eql@npm:^4.1.3":
-  version: 4.1.3
-  resolution: "deep-eql@npm:4.1.3"
-  dependencies:
-    type-detect: "npm:^4.0.0"
-  checksum: 10/12ce93ae63de187e77b076d3d51bfc28b11f98910a22c18714cce112791195e86a94f97788180994614b14562a86c9763f67c69f785e4586f806b5df39bf9301
+"deep-eql@npm:^5.0.1":
+  version: 5.0.2
+  resolution: "deep-eql@npm:5.0.2"
+  checksum: 10/a529b81e2ef8821621d20a36959a0328873a3e49d393ad11f8efe8559f31239494c2eb889b80342808674c475802ba95b9d6c4c27641b9a029405104c1b59fcf
   languageName: node
   linkType: hard
 
@@ -3988,13 +3982,6 @@ __metadata:
   version: 2.0.5
   resolution: "get-caller-file@npm:2.0.5"
   checksum: 10/b9769a836d2a98c3ee734a88ba712e62703f1df31b94b784762c433c27a386dd6029ff55c2a920c392e33657d80191edbf18c61487e198844844516f843496b9
-  languageName: node
-  linkType: hard
-
-"get-func-name@npm:^2.0.1, get-func-name@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "get-func-name@npm:2.0.2"
-  checksum: 10/3f62f4c23647de9d46e6f76d2b3eafe58933a9b3830c60669e4180d6c601ce1b4aa310ba8366143f55e52b139f992087a9f0647274e8745621fa2af7e0acf13b
   languageName: node
   linkType: hard
 
@@ -5365,12 +5352,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loupe@npm:^2.3.6":
-  version: 2.3.7
-  resolution: "loupe@npm:2.3.7"
-  dependencies:
-    get-func-name: "npm:^2.0.1"
-  checksum: 10/635c8f0914c2ce7ecfe4e239fbaf0ce1d2c00e4246fafcc4ed000bfdb1b8f89d05db1a220054175cca631ebf3894872a26fffba0124477fcb562f78762848fb1
+"loupe@npm:^3.1.0":
+  version: 3.1.2
+  resolution: "loupe@npm:3.1.2"
+  checksum: 10/8f5734e53fb64cd914aa7d986e01b6d4c2e3c6c56dcbd5428d71c2703f0ab46b5ab9f9eeaaf2b485e8a1c43f865bdd16ec08ae1a661c8f55acdbd9f4d59c607a
   languageName: node
   linkType: hard
 
@@ -6470,10 +6455,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pathval@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "pathval@npm:1.1.1"
-  checksum: 10/b50a4751068aa3a5428f5a0b480deecedc6f537666a3630a0c2ae2d5e7c0f4bf0ee77b48404441ec1220bef0c91625e6030b3d3cf5a32ab0d9764018d1d9dbb6
+"pathval@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "pathval@npm:2.0.0"
+  checksum: 10/b91575bf9cdf01757afd7b5e521eb8a0b874a49bc972d08e0047cfea0cd3c019f5614521d4bc83d2855e3fcc331db6817dfd533dd8f3d90b16bc76fad2450fc1
   languageName: node
   linkType: hard
 
@@ -8042,7 +8027,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-detect@npm:4.0.8, type-detect@npm:^4.0.0, type-detect@npm:^4.0.8":
+"type-detect@npm:4.0.8, type-detect@npm:^4.0.8":
   version: 4.0.8
   resolution: "type-detect@npm:4.0.8"
   checksum: 10/5179e3b8ebc51fce1b13efb75fdea4595484433f9683bbc2dca6d99789dba4e602ab7922d2656f2ce8383987467f7770131d4a7f06a26287db0615d2f4c4ce7d
@@ -8372,7 +8357,7 @@ __metadata:
     "@patternfly/react-table": "npm:5.4.0"
     "@patternfly/react-topology": "npm:5.4.0"
     "@redhat-developer/vscode-redhat-telemetry": "npm:^0.9.0"
-    "@types/chai": "npm:^4.3.11"
+    "@types/chai": "npm:^5.0.0"
     "@types/fs-extra": "npm:^11.0.4"
     "@types/mocha": "npm:^10.0.9"
     "@types/react": "npm:18.3.1"
@@ -8382,7 +8367,7 @@ __metadata:
     "@vscode/vsce": "npm:^3.2.1"
     async-wait-until: "npm:^2.0.12"
     buffer: "npm:^6.0.3"
-    chai: "npm:^4.3.10"
+    chai: "npm:^5.1.2"
     constants-browserify: "npm:^1.0.0"
     copy-webpack-plugin: "npm:^12.0.2"
     css-loader: "npm:6.8.1"
