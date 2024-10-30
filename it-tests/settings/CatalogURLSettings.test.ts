@@ -82,7 +82,7 @@ describe('User Settings', function () {
         await new Workbench().executeCommand('View: Close Editor');
     });
 
-    const runtimeSelectors = ['Main', 'Quarkus', 'SpringBoot'];
+    const runtimeSelectors = ['Main', 'Quarkus', 'Spring Boot'];
 
     runtimeSelectors.forEach(function (runtime) {
 
@@ -120,10 +120,6 @@ describe('User Settings', function () {
         // select Main > Camel Main *redhat*
         const parentItem = await dropdown.findElement(locators.RuntimeSelector.selector('Main'));
         await parentItem.click();
-
-        // get items and click on last which is currently always the 'redhat' one
-        const items = await parentItem.findElement(locators.RuntimeSelectorItems.list).findElements(locators.RuntimeSelectorItems.listItem);
-        await items.at(-1)?.click();
 
         // it needs some time to start loading a new catalog
         await driver.sleep(1_000);
