@@ -15,3 +15,6 @@ test-resource
 test Fixture with speci@l chars
 uitest-resources
 .yarn/**
+.idea
+.camel-jbang
+.camel-jbang-run
