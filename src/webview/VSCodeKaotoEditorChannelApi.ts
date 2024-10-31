@@ -95,10 +95,21 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
       const targetFile = path.resolve(classpathRoot, relativePath);
       return new TextDecoder().decode(await vscode.workspace.fs.readFile(vscode.Uri.file(targetFile)));
     } catch (ex) {
-      const errorMessage= `Cannot retrieve content of ${relativePath} relatively to ${classpathRoot}`;
-      vscode.window.showErrorMessage(errorMessage);
+      // TODO: this is an ugly workaround that could lead to path clashes. 2 different APIs must be provided to retrieve content, one relative to classpath and the other relative to .kaoto metadata file
+      const errorMessage = `Cannot retrieve content of ${relativePath} relatively to the classpath root ${classpathRoot}. Will attempt to use the relative path to .kaoto metadata file.`;
       logInKaotoOutputChannel(errorMessage, ex);
-      return undefined;
+      let kaotoMetadataFile = await this.findExistingKaotoMetadataFile(this.currentEditedDocument.uri);
+      try {
+        if (kaotoMetadataFile !== undefined) {
+          const targetFile = path.resolve(path.dirname(kaotoMetadataFile.fsPath), relativePath);
+          return new TextDecoder().decode(await vscode.workspace.fs.readFile(vscode.Uri.file(targetFile)));
+        }
+      } catch (ex2) {
+        const errorMessage = `Cannot retrieve content of ${relativePath} relatively to the classpath root ${classpathRoot} neither the .kaoto metadata file ${kaotoMetadataFile}`;
+        vscode.window.showErrorMessage(errorMessage);
+        logInKaotoOutputChannel(errorMessage, ex);
+        return undefined;
+      }
     }
   }
 
