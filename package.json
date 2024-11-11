@@ -96,6 +96,30 @@
         "enablement": "activeCustomEditorId == webviewEditorsKaoto",
         "category": "Camel",
         "icon": "$(go-to-file)"
+      },
+      {
+        "command": "camel.new.file",
+        "title": "Camel File",
+        "category": "Camel",
+        "enablement": "false"
+      },
+      {
+        "command": "camel.jbang.routes.yaml",
+        "title": "Create a Camel Route using YAML DSL",
+        "category": "Camel",
+        "enablement": "workspaceFolderCount != 0"
+      },
+      {
+        "command": "camel.jbang.routes.kamelet.yaml",
+        "title": "Create a Kamelet using YAML DSL",
+        "category": "Camel",
+        "enablement": "workspaceFolderCount != 0"
+      },
+      {
+        "command": "camel.jbang.routes.pipe.yaml",
+        "title": "Create a Custom Resource Pipe using YAML DSL",
+        "category": "Camel",
+        "enablement": "workspaceFolderCount != 0"
       }
     ],
     "keybindings": {
@@ -105,6 +129,30 @@
       "when": "activeCustomEditorId == webviewEditorsKaoto"
     },
     "menus": {
+      "camel.new.file": [
+        {
+          "command": "camel.jbang.routes.yaml",
+          "group": "navigation",
+          "when": "workspaceFolderCount != 0"
+        },
+        {
+          "command": "camel.jbang.routes.kamelet.yaml",
+          "group": "1_camel@1",
+          "when": "workspaceFolderCount != 0"
+        },
+        {
+          "command": "camel.jbang.routes.pipe.yaml",
+          "group": "1_camel@2",
+          "when": "workspaceFolderCount != 0"
+        }
+      ],
+      "file/newFile": [
+        {
+          "command": "camel.new.file",
+          "group": "Camel",
+          "when": "workspaceFolderCount != 0"
+        }
+      ],
       "commandPalette": [
         {
           "command": "kaoto.open",
@@ -123,9 +171,20 @@
           "command": "kaoto.open",
           "when": "resourceExtname == .yaml || resourceExtname == .yml",
           "group": "1_belowOpenWith"
+        },
+        {
+          "submenu": "camel.new.file",
+          "group": "navigation",
+          "when": "explorerResourceIsFolder"
         }
       ]
     },
+    "submenus": [
+      {
+        "id": "camel.new.file",
+        "label": "New Camel File..."
+      }
+    ],
     "configuration": {
       "properties": {
         "redhat.telemetry.enabled": {
