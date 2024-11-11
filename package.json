@@ -48,7 +48,8 @@
     "monaco-yaml": "5.2.3",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-monaco-editor": "0.56.2"
+    "react-monaco-editor": "0.56.2",
+    "valid-filename": "^4.0.0"
   },
   "icon": "icon.png",
   "main": "./dist/extension/extension.js",
@@ -85,13 +86,13 @@
   },
   "contributes": {
     "icons": {
-			"camel-run": {
-				"description": "Run Camel Application",
-				"default": {
-					"fontPath": "./icons/camel-run.woff",
-					"fontCharacter": "\\E900"
-				}
-			}
+      "camel-run": {
+        "description": "Run Camel Application",
+        "default": {
+          "fontPath": "./icons/camel-run.woff",
+          "fontCharacter": "\\E900"
+        }
+      }
     },
     "commands": [
       {
@@ -112,6 +113,13 @@
         "category": "Camel",
         "enablement": "false",
         "icon": "$(new-file)"
+      },
+      {
+        "command": "camel.new.project",
+        "title": "Camel Project",
+        "category": "Camel",
+        "enablement": "false",
+        "icon": "$(new-folder)"
       },
       {
         "command": "camel.jbang.routes.yaml",
@@ -135,37 +143,49 @@
         "enablement": "workspaceFolderCount != 0"
       },
       {
-				"command": "camel.jbang.run",
-				"category": "Camel",
-				"title": "Camel Run",
-        "shortTitle": "Camel Run",
-				"icon": "$(camel-run)",
-				"enablement": "resourceFilename =~ /\\.(yaml)$/"
-			},
-      {
-				"command": "camel.jbang.run.all.root",
-				"category": "Camel",
-				"title": "Camel Run All from workspace root",
-        "shortTitle": "Camel Run workspace",
-				"icon": "$(camel-run)",
-				"enablement": "resourceFilename =~ /\\.(yaml)$/"
-			},
-      {
-				"command": "camel.jbang.run.all.folder",
-				"category": "Camel",
-				"title": "Camel Run All from folder",
-        "shortTitle": "Camel Run folder",
-				"icon": "$(camel-run)",
-				"enablement": "resourceFilename =~ /\\.(yaml)$/"
-			},
-			{
-				"command": "camel.jbang.kubernetes.run",
+        "command": "camel.jbang.project.quarkus.new",
+        "title": "Create a Camel Quarkus project",
         "category": "Camel",
-				"title": "Deploy Camel to Kubernetes Cluster",
-        "shortTitle": "Camel Deploy",
-				"icon": "$(rocket)",
+        "enablement": "workspaceFolderCount != 0"
+      },
+      {
+        "command": "camel.jbang.project.springboot.new",
+        "title": "Create a Camel on SpringBoot project",
+        "category": "Camel",
+        "enablement": "workspaceFolderCount != 0"
+      },
+      {
+        "command": "camel.jbang.run",
+        "category": "Camel",
+        "title": "Camel Run",
+        "shortTitle": "Camel Run",
+        "icon": "$(camel-run)",
         "enablement": "resourceFilename =~ /\\.(yaml)$/"
-			},
+      },
+      {
+        "command": "camel.jbang.run.all.root",
+        "category": "Camel",
+        "title": "Camel Run All from workspace root",
+        "shortTitle": "Camel Run workspace",
+        "icon": "$(camel-run)",
+        "enablement": "resourceFilename =~ /\\.(yaml)$/"
+      },
+      {
+        "command": "camel.jbang.run.all.folder",
+        "category": "Camel",
+        "title": "Camel Run All from folder",
+        "shortTitle": "Camel Run folder",
+        "icon": "$(camel-run)",
+        "enablement": "resourceFilename =~ /\\.(yaml)$/"
+      },
+      {
+        "command": "camel.jbang.kubernetes.run",
+        "category": "Camel",
+        "title": "Deploy Camel to Kubernetes Cluster",
+        "shortTitle": "Camel Deploy",
+        "icon": "$(rocket)",
+        "enablement": "resourceFilename =~ /\\.(yaml)$/"
+      },
       {
         "command": "camel.integrations.refresh",
         "title": "Refresh",
@@ -224,29 +244,29 @@
           "when": "activeCustomEditorId == webviewEditorsKaoto",
           "group": "navigation"
         },
-				{
-					"command": "camel.jbang.kubernetes.run",
-					"when": "resourceFilename =~ /\\.(yaml)$/",
-					"group": "navigation"
-				}
+        {
+          "command": "camel.jbang.kubernetes.run",
+          "when": "resourceFilename =~ /\\.(yaml)$/",
+          "group": "navigation"
+        }
       ],
       "editor/title/run": [
-				{
-					"command": "camel.jbang.run",
-					"when": "resourceFilename =~ /\\.(yaml)$/",
-					"group": "3_camelrun@1"
-				},
-				{
-					"command": "camel.jbang.run.all.root",
-					"when": "resourceFilename =~ /\\.(yaml)$/",
-					"group": "3_camelrun@2"
-				},
-				{
-					"command": "camel.jbang.run.all.folder",
-					"when": "resourceFilename =~ /\\.(yaml)$/",
-					"group": "3_camelrun@3"
-				}
-			],
+        {
+          "command": "camel.jbang.run",
+          "when": "resourceFilename =~ /\\.(yaml)$/",
+          "group": "3_camelrun@1"
+        },
+        {
+          "command": "camel.jbang.run.all.root",
+          "when": "resourceFilename =~ /\\.(yaml)$/",
+          "group": "3_camelrun@2"
+        },
+        {
+          "command": "camel.jbang.run.all.folder",
+          "when": "resourceFilename =~ /\\.(yaml)$/",
+          "group": "3_camelrun@3"
+        }
+      ],
       "explorer/context": [
         {
           "command": "kaoto.open",
@@ -273,15 +293,20 @@
           "when": "view == camel.integrations"
         },
         {
-					"command": "camel.integrations.refresh",
-					"group": "navigation",
-					"when": "view == camel.integrations"
-				},
+          "command": "camel.new.project",
+          "group": "navigation",
+          "when": "view == camel.integrations"
+        },
         {
-					"command": "camel.deployments.refresh",
-					"group": "navigation",
-					"when": "view == camel.deployments"
-				}
+          "command": "camel.integrations.refresh",
+          "group": "navigation",
+          "when": "view == camel.integrations"
+        },
+        {
+          "command": "camel.deployments.refresh",
+          "group": "navigation",
+          "when": "view == camel.deployments"
+        }
       ]
     },
     "submenus": [
@@ -306,7 +331,6 @@
           "id": "camel.integrations",
           "name": "Integrations",
           "contextualTitle": "Apache Camel"
-
         },
         {
           "id": "camel.deployments",
@@ -375,40 +399,40 @@
           "markdownDescription": "Apache Camel JBang version used for internal VS Code Camel JBang commands execution. Camel JBang requirements can differ between versions, it is recommended to use `default` version to ensure all extension features work properly.\n\nCamel JBang version can differ from `#kaoto.camelVersion#`. As default Camel JBang version is used `#kaoto.camelVersion#`."
         },
         "kaoto.camelJBang.RedHatMavenRepository": {
-					"type": "string",
-					"markdownDescription": "Define Red Hat Maven Repository, which is used automatically in case the `#kaoto.camelVersion#` uses Red Hat productized Camel version (e.g. `3.20.1.redhat-00026`).",
-					"default": "https://maven.repository.redhat.com/ga/"
-				},
-				"kaoto.camelJBang.redHatMavenRepository.global": {
-					"type": "boolean",
-					"markdownDescription": "The `#repos` placeholder will be added by default to use also repositories defined in global Camel JBang configuration file.\n\n**Note**: The placeholder is available for versions `3.20.7/3.21` onwards.",
-					"default": true
-				},
-				"kaoto.camelJBang.ExtraLaunchParameter": {
-					"type": "array",
-					"uniqueItems": true,
-					"items": {
-						"type": "string"
-					},
-					"additionalProperties": false,
-					"markdownDescription": "User defined parameter to be applied at every launch. In case of spaces, the values needs to be enclosed with quotes. Default value is `[\"--local-kamelet-dir=.\"]`\n\n**Note**: Excluding `--dev`, `--logging-level`, `--dep`, `--camel-version` and `--repos` which are already being used\n\nFor possible values see:\n\n camel run --help\n\nor\n\njbang camel@apache/camel run --help",
-					"default": [
-						"--local-kamelet-dir=.",
-						"*.xsl"
-					]
-				},
-				"kaoto.camelJBang.KubernetesRunParameters": {
-					"type": "array",
-					"uniqueItems": true,
-					"items": {
-						"type": "string"
-					},
-					"additionalProperties": false,
-					"markdownDescription": "User defined parameters to be applied at every deploy (See [Camel JBang Kubernetes](https://camel.apache.org/manual/camel-jbang-kubernetes.html)). In case of spaces, the values needs to be enclosed with quotes. Default value is `[\"--cluster-type=openshift\"]`\n\n**Note**: Excluding `--camel-version` which is already being set in `#kaoto.camelVersion#`.\n\nFor more possible values see: `camel kubernetes run --help` or `jbang camel@apache/camel kubernetes run --help`",
-					"default": [
-						"--cluster-type=openshift"
-					]
-				}
+          "type": "string",
+          "markdownDescription": "Define Red Hat Maven Repository, which is used automatically in case the `#kaoto.camelVersion#` uses Red Hat productized Camel version (e.g. `3.20.1.redhat-00026`).",
+          "default": "https://maven.repository.redhat.com/ga/"
+        },
+        "kaoto.camelJBang.redHatMavenRepository.global": {
+          "type": "boolean",
+          "markdownDescription": "The `#repos` placeholder will be added by default to use also repositories defined in global Camel JBang configuration file.\n\n**Note**: The placeholder is available for versions `3.20.7/3.21` onwards.",
+          "default": true
+        },
+        "kaoto.camelJBang.ExtraLaunchParameter": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "additionalProperties": false,
+          "markdownDescription": "User defined parameter to be applied at every launch. In case of spaces, the values needs to be enclosed with quotes. Default value is `[\"--local-kamelet-dir=.\"]`\n\n**Note**: Excluding `--dev`, `--logging-level`, `--dep`, `--camel-version` and `--repos` which are already being used\n\nFor possible values see:\n\n camel run --help\n\nor\n\njbang camel@apache/camel run --help",
+          "default": [
+            "--local-kamelet-dir=.",
+            "*.xsl"
+          ]
+        },
+        "kaoto.camelJBang.KubernetesRunParameters": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "additionalProperties": false,
+          "markdownDescription": "User defined parameters to be applied at every deploy (See [Camel JBang Kubernetes](https://camel.apache.org/manual/camel-jbang-kubernetes.html)). In case of spaces, the values needs to be enclosed with quotes. Default value is `[\"--cluster-type=openshift\"]`\n\n**Note**: Excluding `--camel-version` which is already being set in `#kaoto.camelVersion#`.\n\nFor more possible values see: `camel kubernetes run --help` or `jbang camel@apache/camel kubernetes run --help`",
+          "default": [
+            "--cluster-type=openshift"
+          ]
+        }
       }
     },
     "customEditors": [

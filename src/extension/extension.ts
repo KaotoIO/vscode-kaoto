@@ -19,16 +19,27 @@ import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
 import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension/dist";
-import { getRedHatService, TelemetryService } from "@redhat-developer/vscode-redhat-telemetry";
+import { getRedHatService, TelemetryEvent, TelemetryService } from "@redhat-developer/vscode-redhat-telemetry";
 import * as vscode from "vscode";
 import { KAOTO_FILE_PATH_GLOB } from "../helpers/helpers";
 import { VSCodeKaotoChannelApiProducer } from './../webview/VSCodeKaotoChannelApiProducer';
+import { NewCamelRouteCommand } from '../../src/commands/NewCamelRouteCommand';
+import { NewCamelKameletCommand } from '../../src/commands/NewCamelKameletCommand';
+import { NewCamelPipeCommand } from '../../src/commands/NewCamelPipeCommand';
+import { NewCamelFileCommand } from '../../src/commands/NewCamelFileCommand';
+import { NewCamelQuarkusProjectCommand } from "../../src/commands/NewCamelQuarkusProjectCommand";
+import { NewCamelSpringBootProjectCommand } from "../../src/commands/NewCamelSpringBootProjectCommand";
+import { NewCamelProjectCommand } from "../../src/commands/NewCamelProjectCommand";
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
 
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Kaoto extension is alive.");
+
+  const redhatService = await getRedHatService(context);
+  telemetryService = await redhatService.getTelemetryService();
+  telemetryService.sendStartupEvent();
 
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
@@ -52,6 +63,7 @@ export async function activate(context: vscode.ExtensionContext) {
     backendProxy: backendProxy,
   });
 
+  // register command for open camel source code in side to side editor
   vscode.commands.registerCommand('kaoto.open.source', async() => {
     if (kieEditorStore.activeEditor !== undefined) {
       const doc = await vscode.workspace.openTextDocument(kieEditorStore.activeEditor?.document.document.uri);
@@ -59,13 +71,53 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   });
 
+  // register command for open file with kaoto editor in webview
   vscode.commands.registerCommand('kaoto.open', (uri: vscode.Uri) => {
     vscode.commands.executeCommand('vscode.openWith', uri, 'webviewEditorsKaoto');
   });
 
-  const redhatService = await getRedHatService(context);
-  telemetryService = await redhatService.getTelemetryService();
-  telemetryService.sendStartupEvent();
+  // Register commands for new Camel Route files - YAML DSL, Java DSL
+  context.subscriptions.push(vscode.commands.registerCommand(NewCamelFileCommand.ID_COMMAND_CAMEL_NEW_FILE, async (uri: vscode.Uri) => {
+    await new NewCamelFileCommand().create(uri);
+    await sendCommandTrackingEvent(NewCamelFileCommand.ID_COMMAND_CAMEL_NEW_FILE);
+  }));
+	context.subscriptions.push(vscode.commands.registerCommand(NewCamelRouteCommand.ID_COMMAND_CAMEL_ROUTE_JBANG_YAML, async (uri: vscode.Uri) => {
+		await new NewCamelRouteCommand('YAML').create(uri);
+		await sendCommandTrackingEvent(NewCamelRouteCommand.ID_COMMAND_CAMEL_ROUTE_JBANG_YAML);
+	}));
+	context.subscriptions.push(vscode.commands.registerCommand(NewCamelKameletCommand.ID_COMMAND_CAMEL_ROUTE_KAMELET_YAML, async (uri: vscode.Uri) => {
+		await new NewCamelKameletCommand('YAML').create(uri);
+		await sendCommandTrackingEvent(NewCamelKameletCommand.ID_COMMAND_CAMEL_ROUTE_KAMELET_YAML);
+	}));
+	context.subscriptions.push(vscode.commands.registerCommand(NewCamelPipeCommand.ID_COMMAND_CAMEL_ROUTE_PIPE_YAML, async (uri: vscode.Uri) => {
+		await new NewCamelPipeCommand('YAML').create(uri);
+		await sendCommandTrackingEvent(NewCamelPipeCommand.ID_COMMAND_CAMEL_ROUTE_PIPE_YAML);
+	}));
+
+  // register commands for a new Camel projects --> spring-boot / quarkus
+  context.subscriptions.push(vscode.commands.registerCommand(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT, async (uri: vscode.Uri) => {
+    await new NewCamelProjectCommand().create();
+    await sendCommandTrackingEvent(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT);
+  }));
+	context.subscriptions.push(vscode.commands.registerCommand(NewCamelQuarkusProjectCommand.ID_COMMAND_CAMEL_QUARKUS_PROJECT, async () => {
+		await new NewCamelQuarkusProjectCommand().create();
+		await sendCommandTrackingEvent(NewCamelQuarkusProjectCommand.ID_COMMAND_CAMEL_QUARKUS_PROJECT);
+	}));
+	context.subscriptions.push(vscode.commands.registerCommand(NewCamelSpringBootProjectCommand.ID_COMMAND_CAMEL_SPRINGBOOT_PROJECT, async () => {
+		await new NewCamelSpringBootProjectCommand().create();
+		await sendCommandTrackingEvent(NewCamelSpringBootProjectCommand.ID_COMMAND_CAMEL_SPRINGBOOT_PROJECT);
+	}));
+}
+
+async function sendCommandTrackingEvent(commandId: string) {
+	const telemetryEvent: TelemetryEvent = {
+		type: 'track',
+		name: 'command',
+		properties: {
+			identifier: commandId
+		}
+	};
+	await telemetryService.send(telemetryEvent);
 }
 
 export function deactivate() {
