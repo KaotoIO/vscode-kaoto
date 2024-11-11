@@ -177,6 +177,13 @@
           "group": "navigation",
           "when": "explorerResourceIsFolder"
         }
+      ],
+      "webview/context": [
+        {
+          "command": "kaoto.open.textualeditor",
+          "when": "activeCustomEditorId == webviewEditorsKaoto",
+          "group": "navigation"
+        }
       ]
     },
     "submenus": [
