@@ -87,11 +87,11 @@
     "commands": [
       {
         "command": "kaoto.open",
-        "title": "Open with Kaoto Graphical Editor for Camel"
+        "title": "Open with Kaoto"
       },
       {
         "command": "kaoto.open.textualeditor",
-        "title": "Open Camel file with textual editor on the side",
+        "title": "Show Camel source on the side",
         "shortTitle": "Show source",
         "enablement": "activeCustomEditorId == webviewEditorsKaoto",
         "category": "Camel",
@@ -175,7 +175,7 @@
     "customEditors": [
       {
         "viewType": "webviewEditorsKaoto",
-        "displayName": "Kaoto Editor",
+        "displayName": "Kaoto",
         "selector": [
           {
             "filenamePattern": "*{.kaoto,.camel,.kamelet,.pipe,-pipe}.{yaml,yml}"

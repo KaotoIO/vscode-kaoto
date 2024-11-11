@@ -28,7 +28,7 @@ let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
 
 export async function activate(context: vscode.ExtensionContext) {
-  console.info("Kaoto Editor extension is alive.");
+  console.info("Kaoto extension is alive.");
 
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
