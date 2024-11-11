@@ -50,7 +50,7 @@ export async function activate(context: vscode.ExtensionContext) {
     backendProxy: backendProxy,
   });
 
-  vscode.commands.registerCommand('kaoto.open.textualeditor', async() => {
+  vscode.commands.registerCommand('kaoto.open.source', async() => {
     if (kieEditorStore.activeEditor !== undefined) {
       const doc = await vscode.workspace.openTextDocument(kieEditorStore.activeEditor?.document.document.uri);
       await vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside);

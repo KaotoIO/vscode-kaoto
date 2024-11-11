@@ -84,14 +84,23 @@
     }
   },
   "contributes": {
+    "icons": {
+			"camel-run": {
+				"description": "Run Camel Application",
+				"default": {
+					"fontPath": "./icons/camel-run.woff",
+					"fontCharacter": "\\E900"
+				}
+			}
+    },
     "commands": [
       {
         "command": "kaoto.open",
         "title": "Open with Kaoto"
       },
       {
-        "command": "kaoto.open.textualeditor",
-        "title": "Show Camel source on the side",
+        "command": "kaoto.open.source",
+        "title": "Show Camel Source",
         "shortTitle": "Show source",
         "enablement": "activeCustomEditorId == webviewEditorsKaoto",
         "category": "Camel",
@@ -101,29 +110,79 @@
         "command": "camel.new.file",
         "title": "Camel File",
         "category": "Camel",
-        "enablement": "false"
+        "enablement": "false",
+        "icon": "$(new-file)"
       },
       {
         "command": "camel.jbang.routes.yaml",
+        "shortTitle": "Create a Route",
         "title": "Create a Camel Route using YAML DSL",
         "category": "Camel",
         "enablement": "workspaceFolderCount != 0"
       },
       {
         "command": "camel.jbang.routes.kamelet.yaml",
+        "shortTitle": "Create a Kamelet",
         "title": "Create a Kamelet using YAML DSL",
         "category": "Camel",
         "enablement": "workspaceFolderCount != 0"
       },
       {
         "command": "camel.jbang.routes.pipe.yaml",
+        "shortTitle": "Create a Pipe",
         "title": "Create a Custom Resource Pipe using YAML DSL",
         "category": "Camel",
         "enablement": "workspaceFolderCount != 0"
+      },
+      {
+				"command": "camel.jbang.run",
+				"category": "Camel",
+				"title": "Camel Run",
+        "shortTitle": "Camel Run",
+				"icon": "$(camel-run)",
+				"enablement": "resourceFilename =~ /\\.(yaml)$/"
+			},
+      {
+				"command": "camel.jbang.run.all.root",
+				"category": "Camel",
+				"title": "Camel Run All from workspace root",
+        "shortTitle": "Camel Run workspace",
+				"icon": "$(camel-run)",
+				"enablement": "resourceFilename =~ /\\.(yaml)$/"
+			},
+      {
+				"command": "camel.jbang.run.all.folder",
+				"category": "Camel",
+				"title": "Camel Run All from folder",
+        "shortTitle": "Camel Run folder",
+				"icon": "$(camel-run)",
+				"enablement": "resourceFilename =~ /\\.(yaml)$/"
+			},
+			{
+				"command": "camel.jbang.kubernetes.run",
+        "category": "Camel",
+				"title": "Deploy Camel to Kubernetes Cluster",
+        "shortTitle": "Camel Deploy",
+				"icon": "$(rocket)",
+        "enablement": "resourceFilename =~ /\\.(yaml)$/"
+			},
+      {
+        "command": "camel.integrations.refresh",
+        "title": "Refresh",
+        "category": "Camel",
+        "enablement": "false",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "camel.deployments.refresh",
+        "title": "Refresh",
+        "category": "Camel",
+        "enablement": "false",
+        "icon": "$(refresh)"
       }
     ],
     "keybindings": {
-      "command": "kaoto.open.textualeditor",
+      "command": "kaoto.open.source",
       "key": "ctrl+k v",
       "mac": "cmd+k v",
       "when": "activeCustomEditorId == webviewEditorsKaoto"
@@ -161,11 +220,33 @@
       ],
       "editor/title": [
         {
-          "command": "kaoto.open.textualeditor",
+          "command": "kaoto.open.source",
           "when": "activeCustomEditorId == webviewEditorsKaoto",
           "group": "navigation"
-        }
+        },
+				{
+					"command": "camel.jbang.kubernetes.run",
+					"when": "resourceFilename =~ /\\.(yaml)$/",
+					"group": "navigation"
+				}
       ],
+      "editor/title/run": [
+				{
+					"command": "camel.jbang.run",
+					"when": "resourceFilename =~ /\\.(yaml)$/",
+					"group": "3_camelrun@1"
+				},
+				{
+					"command": "camel.jbang.run.all.root",
+					"when": "resourceFilename =~ /\\.(yaml)$/",
+					"group": "3_camelrun@2"
+				},
+				{
+					"command": "camel.jbang.run.all.folder",
+					"when": "resourceFilename =~ /\\.(yaml)$/",
+					"group": "3_camelrun@3"
+				}
+			],
       "explorer/context": [
         {
           "command": "kaoto.open",
@@ -180,16 +261,64 @@
       ],
       "webview/context": [
         {
-          "command": "kaoto.open.textualeditor",
+          "command": "kaoto.open.source",
           "when": "activeCustomEditorId == webviewEditorsKaoto",
           "group": "navigation"
         }
+      ],
+      "view/title": [
+        {
+          "submenu": "camel.new.file",
+          "group": "navigation",
+          "when": "view == camel.integrations"
+        },
+        {
+					"command": "camel.integrations.refresh",
+					"group": "navigation",
+					"when": "view == camel.integrations"
+				},
+        {
+					"command": "camel.deployments.refresh",
+					"group": "navigation",
+					"when": "view == camel.deployments"
+				}
       ]
     },
     "submenus": [
       {
         "id": "camel.new.file",
-        "label": "New Camel File..."
+        "label": "New Camel File...",
+        "icon": "$(new-file)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "camel-integrations-view",
+          "title": "Apache Camel",
+          "icon": "icons/dark-camel.png"
+        }
+      ]
+    },
+    "views": {
+      "camel-integrations-view": [
+        {
+          "id": "camel.integrations",
+          "name": "Integrations",
+          "contextualTitle": "Apache Camel"
+
+        },
+        {
+          "id": "camel.deployments",
+          "name": "Deployments",
+          "contextualTitle": "Apache Camel"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "camel.integrations",
+        "contents": "In order to start with Apache Camel, you can create a standalone Camel File or bootstrap a new Camel Project.\n[Camel File...](command:camel.new.file)\n[Camel Project...](command:camel.new.project)\nTo learn more about Apache Camel [read docs](https://camel.apache.org/docs/)."
       }
     ],
     "configuration": {
