@@ -235,7 +235,51 @@
           "tags": [
             "experimental"
           ]
-        }
+        },
+        "kaoto.camelVersion": {
+          "type": "string",
+          "markdownDescription": "Camel version used for internal VS Code Camel JBang CLI commands execution.\n\nCustom Camel version definition is supported from minimal Camel JBang CLI version `3.20.3`.",
+          "default": "4.8.1"
+        },
+        "kaoto.camelJBang.Version": {
+          "type": "string",
+          "markdownDescription": "Apache Camel JBang version used for internal VS Code Camel JBang commands execution. Camel JBang requirements can differ between versions, it is recommended to use `default` version to ensure all extension features work properly.\n\nCamel JBang version can differ from `#kaoto.camelVersion#`. As default Camel JBang version is used `#kaoto.camelVersion#`."
+        },
+        "kaoto.camelJBang.RedHatMavenRepository": {
+					"type": "string",
+					"markdownDescription": "Define Red Hat Maven Repository, which is used automatically in case the `#kaoto.camelVersion#` uses Red Hat productized Camel version (e.g. `3.20.1.redhat-00026`).",
+					"default": "https://maven.repository.redhat.com/ga/"
+				},
+				"kaoto.camelJBang.redHatMavenRepository.global": {
+					"type": "boolean",
+					"markdownDescription": "The `#repos` placeholder will be added by default to use also repositories defined in global Camel JBang configuration file.\n\n**Note**: The placeholder is available for versions `3.20.7/3.21` onwards.",
+					"default": true
+				},
+				"kaoto.camelJBang.ExtraLaunchParameter": {
+					"type": "array",
+					"uniqueItems": true,
+					"items": {
+						"type": "string"
+					},
+					"additionalProperties": false,
+					"markdownDescription": "User defined parameter to be applied at every launch. In case of spaces, the values needs to be enclosed with quotes. Default value is `[\"--local-kamelet-dir=.\"]`\n\n**Note**: Excluding `--dev`, `--logging-level`, `--dep`, `--camel-version` and `--repos` which are already being used\n\nFor possible values see:\n\n camel run --help\n\nor\n\njbang camel@apache/camel run --help",
+					"default": [
+						"--local-kamelet-dir=.",
+						"*.xsl"
+					]
+				},
+				"kaoto.camelJBang.KubernetesRunParameters": {
+					"type": "array",
+					"uniqueItems": true,
+					"items": {
+						"type": "string"
+					},
+					"additionalProperties": false,
+					"markdownDescription": "User defined parameters to be applied at every deploy (See [Camel JBang Kubernetes](https://camel.apache.org/manual/camel-jbang-kubernetes.html)). In case of spaces, the values needs to be enclosed with quotes. Default value is `[\"--cluster-type=openshift\"]`\n\n**Note**: Excluding `--camel-version` which is already being set in `#kaoto.camelVersion#`.\n\nFor more possible values see: `camel kubernetes run --help` or `jbang camel@apache/camel kubernetes run --help`",
+					"default": [
+						"--cluster-type=openshift"
+					]
+				}
       }
     },
     "customEditors": [
