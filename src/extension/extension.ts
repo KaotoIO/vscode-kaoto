@@ -21,7 +21,7 @@ import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension/dist";
 import { getRedHatService, TelemetryService } from "@redhat-developer/vscode-redhat-telemetry";
 import * as vscode from "vscode";
-import { KAOTO_FILE_PATH_GLOB } from "./helpers";
+import { KAOTO_FILE_PATH_GLOB } from "../helpers/helpers";
 import { VSCodeKaotoChannelApiProducer } from './../webview/VSCodeKaotoChannelApiProducer';
 
 let backendProxy: VsCodeBackendProxy;

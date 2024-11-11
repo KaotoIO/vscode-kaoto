@@ -20,7 +20,7 @@ import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@ki
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension/dist";
 import * as vscode from "vscode";
-import { KAOTO_FILE_PATH_GLOB } from "./helpers";
+import { KAOTO_FILE_PATH_GLOB } from "../helpers/helpers";
 import { VSCodeKaotoChannelApiProducer } from "./../webview/VSCodeKaotoChannelApiProducer";
 
 let backendProxy: VsCodeBackendProxy;

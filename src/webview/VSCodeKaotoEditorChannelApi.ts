@@ -11,8 +11,8 @@ import { JavaCodeCompletionApi } from '@kie-tools-core/vscode-java-code-completi
 import { ResourceContentService, WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { findClasspathRoot } from '../extension/ClasspathRootFinder';
 import { logInKaotoOutputChannel } from './../KaotoOutputChannelManager';
+import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 
