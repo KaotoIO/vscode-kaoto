@@ -165,7 +165,7 @@
       {
         "command": "camel.jbang.run.all.root",
         "category": "Camel",
-        "title": "Camel Run All from workspace root",
+        "title": "Camel Run all from Workspace Root",
         "shortTitle": "Camel Run workspace",
         "icon": "$(camel-run)",
         "enablement": "resourceFilename =~ /\\.(yaml)$/"
@@ -173,7 +173,7 @@
       {
         "command": "camel.jbang.run.all.folder",
         "category": "Camel",
-        "title": "Camel Run All from folder",
+        "title": "Camel Run all from Folder",
         "shortTitle": "Camel Run folder",
         "icon": "$(camel-run)",
         "enablement": "resourceFilename =~ /\\.(yaml)$/"
@@ -391,12 +391,12 @@
         },
         "kaoto.camelVersion": {
           "type": "string",
-          "markdownDescription": "Camel version used for internal VS Code Camel JBang CLI commands execution.\n\nCustom Camel version definition is supported from minimal Camel JBang CLI version `3.20.3`.",
-          "default": "4.8.1"
+          "markdownDescription": "Camel version used for internal VS Code Camel JBang CLI commands execution.\n\nCustom Camel version definition is supported from minimal Camel JBang CLI version `3.20.3`.\n\nCamel Version can differ from `#kaoto.camelJBang.Version#`. As default Camel Version is used `#kaoto.camelJBang.Version#`."
         },
         "kaoto.camelJBang.Version": {
           "type": "string",
-          "markdownDescription": "Apache Camel JBang version used for internal VS Code Camel JBang commands execution. Camel JBang requirements can differ between versions, it is recommended to use `default` version to ensure all extension features work properly.\n\nCamel JBang version can differ from `#kaoto.camelVersion#`. As default Camel JBang version is used `#kaoto.camelVersion#`."
+          "markdownDescription": "Apache Camel JBang version used for internal VS Code Camel JBang commands execution. Camel JBang requirements can differ between versions, it is recommended to use `default` version to ensure all extension features work properly.",
+          "default": "4.8.1"
         },
         "kaoto.camelJBang.RedHatMavenRepository": {
           "type": "string",

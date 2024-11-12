@@ -36,7 +36,7 @@ export class NewCamelFileCommand {
 
 	protected async showQuickPickForCamelFileType(): Promise<QuickPickItem> {
 		const items: QuickPickItem[] = [
-			{ label: 'Route', description: 'Camel Route using YAML DSL' },
+			{ label: 'Camel Route', description: 'Camel Route using YAML DSL' },
 			{ label: 'Kamelet', description: 'Kamelet using YAML DSL' },
 			{ label: 'Pipe', description: 'Custom Resource Pipe using YAML DSL' }
 		];
@@ -48,7 +48,7 @@ export class NewCamelFileCommand {
 
 	protected getCamelRouteCommandFromSelection(selection: string): string | undefined {
 		switch (selection) {
-			case 'Route':
+			case 'Camel Route':
 				return NewCamelRouteCommand.ID_COMMAND_CAMEL_ROUTE_JBANG_YAML;
 			case 'Kamelet':
 				return NewCamelKameletCommand.ID_COMMAND_CAMEL_ROUTE_KAMELET_YAML;

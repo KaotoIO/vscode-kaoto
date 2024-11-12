@@ -42,9 +42,19 @@ export abstract class CamelJBangTask extends Task {
 		this.label = label;
 	}
 
+	/**
+	 * Execute and wait till the end of the task
+	 */
 	public async execute(): Promise<void> {
 		await tasks.executeTask(this);
 		return await this.waitForEnd();
+	}
+
+	/**
+	 * Execute without waiting for end of the task
+	 */
+	public async executeOnly(): Promise<void> {
+		await tasks.executeTask(this);
 	}
 
 	private async waitForEnd(): Promise<void> {

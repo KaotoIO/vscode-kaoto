@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,44 +26,44 @@ import { VSCodeKaotoChannelApiProducer } from "./../webview/VSCodeKaotoChannelAp
 let backendProxy: VsCodeBackendProxy;
 
 export async function activate(context: vscode.ExtensionContext) {
-  console.info("Kaoto extension is alive.");
+	console.info("Kaoto extension is alive.");
 
-  const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
-  backendProxy = new VsCodeBackendProxy(context, backendI18n);
+	const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
+	backendProxy = new VsCodeBackendProxy(context, backendI18n);
 
-  const kieEditorStore = await KogitoVsCode.startExtension({
-    extensionName: "redhat.vscode-kaoto",
-    context: context,
-    viewType: "webviewEditorsKaoto",
-    editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
-      new EnvelopeMapping({
-        type: "kaoto",
-        filePathGlob: KAOTO_FILE_PATH_GLOB,
-        resourcesPathPrefix: "dist/webview/editors/kaoto",
-        envelopeContent: {
-          type: EnvelopeContentType.PATH,
-          path: "dist/webview/KaotoEditorEnvelopeApp.js"
-        },
-      }),
-    ]),
-    channelApiProducer: new VSCodeKaotoChannelApiProducer(),
-    backendProxy: backendProxy,
-  });
+	const kieEditorStore = await KogitoVsCode.startExtension({
+		extensionName: "redhat.vscode-kaoto",
+		context: context,
+		viewType: "webviewEditorsKaoto",
+		editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
+			new EnvelopeMapping({
+				type: "kaoto",
+				filePathGlob: KAOTO_FILE_PATH_GLOB,
+				resourcesPathPrefix: "dist/webview/editors/kaoto",
+				envelopeContent: {
+					type: EnvelopeContentType.PATH,
+					path: "dist/webview/KaotoEditorEnvelopeApp.js"
+				},
+			}),
+		]),
+		channelApiProducer: new VSCodeKaotoChannelApiProducer(),
+		backendProxy: backendProxy,
+	});
 
-  vscode.commands.registerCommand('kaoto.open.source', async() => {
-    if (kieEditorStore.activeEditor !== undefined) {
-      const doc = await vscode.workspace.openTextDocument(kieEditorStore.activeEditor?.document.document.uri);
-      await vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside);
-    }
-  });
+	vscode.commands.registerCommand('kaoto.open.source', async() => {
+		if (kieEditorStore.activeEditor !== undefined) {
+			const doc = await vscode.workspace.openTextDocument(kieEditorStore.activeEditor?.document.document.uri);
+			await vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside);
+		}
+	});
 
-  vscode.commands.registerCommand('kaoto.open', (uri: vscode.Uri) => {
-    vscode.commands.executeCommand('vscode.openWith', uri, 'webviewEditorsKaoto');
-  });
+	vscode.commands.registerCommand('kaoto.open', (uri: vscode.Uri) => {
+		vscode.commands.executeCommand('vscode.openWith', uri, 'webviewEditorsKaoto');
+	});
 
-  console.info("Extension is successfully setup.");
+	console.info("Extension is successfully setup.");
 }
 
 export function deactivate() {
-  backendProxy?.stopServices();
+	backendProxy?.stopServices();
 }

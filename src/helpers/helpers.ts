@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2024 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,8 +14,23 @@
  * limitations under the License.
  */
 
-/**
- * Utilizes constants, methods, ... used in both, desktop or web extension context
- */
+import { ProgressLocation, window } from 'vscode';
+import { execSync } from 'child_process';
 
 export const KAOTO_FILE_PATH_GLOB: string = '**/*.{yml,yaml}';
+
+export async function isCamelPluginInstalled(plugin: string): Promise<boolean> {
+	let output = '';
+	// it takes always few seconds to compute after click on deploy button
+	//  - can be confusing for user without any UI feedback, it looks like nothing is happening after click on a button..
+	await window.withProgress({
+		location: ProgressLocation.Window,
+		cancellable: false,
+		title: 'Checking Camel JBang Kubernetes plugin...'
+	}, async (progress) => {
+		progress.report({ increment: 0 });
+		output = execSync('jbang camel@apache/camel plugin get', { stdio: 'pipe' }).toString();
+		progress.report({ increment: 100 });
+	});
+	return output.includes(plugin);
+}

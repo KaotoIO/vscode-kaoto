@@ -16,66 +16,70 @@
  */
 'use strict';
 
-import { ShellExecution, workspace } from "vscode";
+import { ShellExecution, ShellExecutionOptions, workspace } from "vscode";
 
 /**
  * Camel JBang class which allows shell execution of different JBang CLI commands
  */
 export class CamelJBang {
 
-	private camelVersion: string;
+	private camelJBangVersion: string;
 
 	constructor() {
-		// TODO handle 'redhat' camel version which cannot be used as Camel JBang CLI version
-		const camelJbangVersion = workspace.getConfiguration().get('kaoto.camelJbang.Version') as string;
-		if(camelJbangVersion) {
-			this.camelVersion = camelJbangVersion;
-		} else {
-			this.camelVersion = workspace.getConfiguration().get('kaoto.camelVersion') as string;
-		}
+		this.camelJBangVersion = workspace.getConfiguration().get('kaoto.camelJBang.Version') as string;
 	}
 
 	public init(file: string): ShellExecution {
-		return new ShellExecution('jbang', [`'-Dcamel.jbang.version=${this.camelVersion}'`, 'camel@apache/camel', 'init', `'${file}'`]);
+		return new ShellExecution('jbang', [`'-Dcamel.jbang.version=${this.camelJBangVersion}'`, 'camel@apache/camel', 'init', `'${file}'`]);
 	}
 
-	public run(file: string): ShellExecution {
+	public run(filePattern: string, cwd?: string): ShellExecution {
+		const shellExecOptions: ShellExecutionOptions = {
+			cwd: cwd
+		};
 		return new ShellExecution('jbang', 
-			[`'-Dcamel.jbang.version=${this.camelVersion}'`,
+			[`'-Dcamel.jbang.version=${this.camelJBangVersion}'`,
 				'camel@apache/camel',
 				'run',
-				`'${file}'`,
+				filePattern,
 				'--dev',
-				'--logging-info=info',
+				'--logging-level=info',
 				this.getCamelVersion(),
 				this.getRedHatMavenRepository(),
 				...this.getExtraLaunchParameter()
-			].filter(function (arg) { return arg; })); // remove ALL empty values ("", null, undefined and 0)
+			].filter(function (arg) { return arg; }), // remove ALL empty values ("", null, undefined and 0)
+			shellExecOptions
+		);
 	}
 
-	public deploy(file: string): ShellExecution {
+	public deploy(filePattern: string, cwd?: string): ShellExecution {
+		const shellExecOptions: ShellExecutionOptions = {
+			cwd: cwd
+		};
 		return new ShellExecution('jbang', 
-			[`'-Dcamel.jbang.version=${this.camelVersion}'`,
+			[`'-Dcamel.jbang.version=${this.camelJBangVersion}'`,
 				'camel@apache/camel',
 				'kubernetes',
 				'run',
-				`'${file}'`,
+				filePattern,
 				this.getCamelVersion(),
 				...this.getKubernetesExtraParameters()
-			].filter(function (arg) { return arg; })); // remove ALL empty values ("", null, undefined and 0)
+			].filter(function (arg) { return arg; }), // remove ALL empty values ("", null, undefined and 0)
+			shellExecOptions
+		);
 	}
 
 	public bind(file: string, source: string, sink: string): ShellExecution {
-		return new ShellExecution('jbang', [`'-Dcamel.jbang.version=${this.camelVersion}'`, 'camel@apache/camel', 'bind', '--source', source, '--sink', sink, `'${file}'`]);
+		return new ShellExecution('jbang', [`'-Dcamel.jbang.version=${this.camelJBangVersion}'`, 'camel@apache/camel', 'bind', '--source', source, '--sink', sink, `'${file}'`]);
 	}
 
 	public createProject(gav: string, runtime: string): ShellExecution {
-		return new ShellExecution('jbang', [`'-Dcamel.jbang.version=${this.camelVersion}'`, 'camel@apache/camel', 'export', `--runtime=${runtime}`, `--gav=${gav}`]);
+		return new ShellExecution('jbang', [`'-Dcamel.jbang.version=${this.camelJBangVersion}'`, 'camel@apache/camel', 'export', `--runtime=${runtime}`, `--gav=${gav}`]);
 	}
 
 	public add(plugin: string): ShellExecution {
 		return new ShellExecution('jbang',
-			[`'-Dcamel.jbang.version=${this.camelVersion}'`,
+			[`'-Dcamel.jbang.version=${this.camelJBangVersion}'`,
 				'camel@apache/camel',
 				'plugin',
 				'add',
@@ -83,8 +87,9 @@ export class CamelJBang {
 	}
 
 	private getCamelVersion(): string {
-		if (this.camelVersion) {
-			return `--camel-version=${this.camelVersion}`;
+		const camelVersion = workspace.getConfiguration().get('kaoto.camelVersion');
+		if (camelVersion) {
+			return `--camel-version=${camelVersion as string}`;
 		} else {
 			return '';
 		}
