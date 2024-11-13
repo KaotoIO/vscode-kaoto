@@ -44,6 +44,7 @@
     "@patternfly/react-table": "6.1.0",
     "@patternfly/react-topology": "6.1.0",
     "@redhat-developer/vscode-redhat-telemetry": "^0.9.1",
+    "glob": "^11.0.0",
     "monaco-editor": "^0.50.0",
     "monaco-yaml": "5.2.3",
     "react": "18.3.1",
@@ -104,20 +105,20 @@
         "title": "Show Camel Source",
         "shortTitle": "Show source",
         "enablement": "activeCustomEditorId == webviewEditorsKaoto",
-        "category": "Camel",
+        "category": "Kaoto",
         "icon": "$(go-to-file)"
       },
       {
         "command": "camel.new.file",
         "title": "Camel File",
-        "category": "Camel",
+        "category": "Kaoto",
         "enablement": "false",
         "icon": "$(new-file)"
       },
       {
         "command": "camel.new.project",
         "title": "Camel Project",
-        "category": "Camel",
+        "category": "Kaoto",
         "enablement": "false",
         "icon": "$(new-folder)"
       },
@@ -125,38 +126,38 @@
         "command": "camel.jbang.routes.yaml",
         "shortTitle": "Create a Route",
         "title": "Create a Camel Route using YAML DSL",
-        "category": "Camel",
+        "category": "Kaoto",
         "enablement": "workspaceFolderCount != 0"
       },
       {
         "command": "camel.jbang.routes.kamelet.yaml",
         "shortTitle": "Create a Kamelet",
         "title": "Create a Kamelet using YAML DSL",
-        "category": "Camel",
+        "category": "Kaoto",
         "enablement": "workspaceFolderCount != 0"
       },
       {
         "command": "camel.jbang.routes.pipe.yaml",
         "shortTitle": "Create a Pipe",
         "title": "Create a Custom Resource Pipe using YAML DSL",
-        "category": "Camel",
+        "category": "Kaoto",
         "enablement": "workspaceFolderCount != 0"
       },
       {
         "command": "camel.jbang.project.quarkus.new",
         "title": "Create a Camel Quarkus project",
-        "category": "Camel",
+        "category": "Kaoto",
         "enablement": "workspaceFolderCount != 0"
       },
       {
         "command": "camel.jbang.project.springboot.new",
         "title": "Create a Camel on SpringBoot project",
-        "category": "Camel",
+        "category": "Kaoto",
         "enablement": "workspaceFolderCount != 0"
       },
       {
         "command": "camel.jbang.run",
-        "category": "Camel",
+        "category": "Kaoto",
         "title": "Camel Run",
         "shortTitle": "Camel Run",
         "icon": "$(camel-run)",
@@ -164,7 +165,7 @@
       },
       {
         "command": "camel.jbang.run.all.root",
-        "category": "Camel",
+        "category": "Kaoto",
         "title": "Camel Run all from Workspace Root",
         "shortTitle": "Camel Run workspace",
         "icon": "$(camel-run)",
@@ -172,7 +173,7 @@
       },
       {
         "command": "camel.jbang.run.all.folder",
-        "category": "Camel",
+        "category": "Kaoto",
         "title": "Camel Run all from Folder",
         "shortTitle": "Camel Run folder",
         "icon": "$(camel-run)",
@@ -180,7 +181,7 @@
       },
       {
         "command": "camel.jbang.kubernetes.run",
-        "category": "Camel",
+        "category": "Kaoto",
         "title": "Deploy Camel to Kubernetes Cluster",
         "shortTitle": "Camel Deploy",
         "icon": "$(rocket)",
@@ -189,15 +190,31 @@
       {
         "command": "camel.integrations.refresh",
         "title": "Refresh",
-        "category": "Camel",
-        "enablement": "false",
+        "category": "Kaoto",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "camel.integrations.editEntry",
+        "title": "Edit Integration",
+        "category": "Kaoto",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "camel.integrations.deleteEntry",
+        "title": "Delete Integration",
+        "category": "Kaoto",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "camel.integrations.jbang.run",
+        "title": "Camel Run",
+        "category": "Kaoto",
+        "icon": "$(camel-run)"
       },
       {
         "command": "camel.deployments.refresh",
         "title": "Refresh",
-        "category": "Camel",
-        "enablement": "false",
+        "category": "Kaoto",
         "icon": "$(refresh)"
       }
     ],
@@ -307,6 +324,23 @@
           "group": "navigation",
           "when": "view == camel.deployments"
         }
+      ],
+      "view/item/context": [
+        {
+          "command": "camel.integrations.editEntry",
+          "when": "view == camel.integrations",
+          "group": "navigation"
+        },
+        {
+          "command": "camel.integrations.jbang.run",
+          "when": "view == camel.integrations",
+          "group": "inline"
+        },
+        {
+          "command": "camel.integrations.deleteEntry",
+          "when": "view == camel.integrations",
+          "group": "navigation"
+        }
       ]
     },
     "submenus": [
@@ -320,8 +354,8 @@
       "activitybar": [
         {
           "id": "camel-integrations-view",
-          "title": "Apache Camel",
-          "icon": "icons/dark-camel.png"
+          "title": "Kaoto",
+          "icon": "icons/kaoto-icon.png"
         }
       ]
     },
@@ -330,12 +364,35 @@
         {
           "id": "camel.integrations",
           "name": "Integrations",
-          "contextualTitle": "Apache Camel"
+          "contextualTitle": "Kaoto"
+        },
+        {
+          "id": "camel.datamappings",
+          "name": "Data Mappings",
+          "contextualTitle": "Kaoto",
+          "visibility": "collapsed"
+        },
+        {
+          "id": "camel.connections",
+          "name": "Connections",
+          "contextualTitle": "Kaoto",
+          "visibility": "collapsed"
+        },
+        {
+          "id": "camel.openapi",
+          "name": "Open API",
+          "contextualTitle": "Kaoto",
+          "visibility": "collapsed"
         },
         {
           "id": "camel.deployments",
           "name": "Deployments",
-          "contextualTitle": "Apache Camel"
+          "contextualTitle": "Kaoto"
+        },
+        {
+          "id": "camel.help",
+          "name": "Help & Feedback",
+          "contextualTitle": "Kaoto"
         }
       ]
     },
