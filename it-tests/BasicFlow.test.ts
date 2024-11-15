@@ -151,10 +151,11 @@ async function createNewRoute(driver: WebDriver) {
 
 async function addActiveMQStep(driver: WebDriver) {
   await driver.wait(
-    until.elementLocated(By.xpath('//*[@data-type="node"]//*[@class="pf-topology__node__action-icon"]'))
+    until.elementLocated(By.css('g[data-testid^="custom-node__timer"]'))
   );
-  const threeDotsIconOfOneOfTheSteps = (await driver.findElements(By.xpath('//*[@data-type="node"]//*[@class="pf-topology__node__action-icon"]')))[1];
-  await threeDotsIconOfOneOfTheSteps.click();
+
+  const canvasNode = await driver.findElement(By.css('g[data-testid^="custom-node__timer"]'));
+  await driver.actions().contextClick(canvasNode).perform();
 
   await driver.wait(
     until.elementLocated(By.className('pf-v5-c-dropdown pf-m-expanded'))

@@ -14,8 +14,8 @@ describe('User Settings', function () {
 
     const locators = {
         TimerComponent: {
-            timer: By.xpath(`//\*[name()='g' and starts-with(@data-id,'timer')]`),
-            label: By.xpath(`//\*[name()='g' and starts-with(@class,'pf-topology__node__label')]`)
+            timer: `g[data-id^='timer'][data-kind='node']`,
+            label: `.custom-node__label`,
         }
     }
 
@@ -64,7 +64,7 @@ describe('User Settings', function () {
     it(`Check 'id' Node Label is used instead of default 'description'`, async function () {
         this.timeout(60_000);
 
-        const timer = await driver.findElement(locators.TimerComponent.timer).findElement(locators.TimerComponent.label);
+        const timer = await driver.findElement(By.css(`${locators.TimerComponent.timer} ${locators.TimerComponent.label}`));
         const label = await timer.getText();
 
         expect(label.split('\n')).to.contains('timerID');

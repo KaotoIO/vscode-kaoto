@@ -1,18 +1,18 @@
 import { KaotoEditorChannelApi } from '@kaoto/kaoto';
 import { ISettingsModel, NodeLabelType, SettingsModel } from '@kaoto/kaoto/models';
 import { BackendProxy } from '@kie-tools-core/backend/dist/api';
-import { NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
-import { ResourceContentService, WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
 import { I18n } from '@kie-tools-core/i18n/dist/core';
+import { NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
 import { DefaultVsCodeKieEditorChannelApiImpl } from '@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl';
 import { VsCodeI18n } from '@kie-tools-core/vscode-extension/dist/i18n';
 import { VsCodeKieEditorController } from '@kie-tools-core/vscode-extension/dist/VsCodeKieEditorController';
-import { JavaCodeCompletionApi } from '@kie-tools-core/vscode-java-code-completion/dist/api';
-import * as vscode from 'vscode';
 import { VsCodeKieEditorCustomDocument } from '@kie-tools-core/vscode-extension/dist/VsCodeKieEditorCustomDocument';
+import { JavaCodeCompletionApi } from '@kie-tools-core/vscode-java-code-completion/dist/api';
+import { ResourceContentService, WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
 import * as path from 'path';
-import { logInKaotoOutputChannel } from './../KaotoOutputChannelManager';
+import * as vscode from 'vscode';
 import { findClasspathRoot } from '../extension/ClasspathRootFinder';
+import { logInKaotoOutputChannel } from './../KaotoOutputChannelManager';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 
@@ -40,7 +40,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
     const catalogUrl = await vscode.workspace.getConfiguration('kaoto').get<Promise<string | null>>('catalog.url');
     const nodeLabel = await vscode.workspace.getConfiguration('kaoto').get<Promise<NodeLabelType | null>>('nodeLabel');
 
-    const settingsModel: ISettingsModel = {
+    const settingsModel: Partial<ISettingsModel> = {
       catalogUrl: catalogUrl ?? '',
       nodeLabel: nodeLabel ?? NodeLabelType.Description,
     };
