@@ -43,7 +43,7 @@
     "@patternfly/react-icons": "5.4.0",
     "@patternfly/react-table": "5.4.0",
     "@patternfly/react-topology": "5.4.0",
-    "@redhat-developer/vscode-redhat-telemetry": "^0.9.0",
+    "@redhat-developer/vscode-redhat-telemetry": "^0.9.1",
     "monaco-editor": "^0.50.0",
     "monaco-yaml": "^5.1.1",
     "react": "18.3.1",
