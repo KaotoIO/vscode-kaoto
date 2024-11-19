@@ -4,6 +4,7 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 10
     ignore:
       # Ignore dependencies that must be aligned to Kaoto UI version
       - dependency-name: "@kaoto/*"
@@ -11,9 +12,11 @@ updates:
       - dependency-name: "@patternfly/*"
       - dependency-name: "react"
       - dependency-name: "react-dom"
+      - dependency-name: "@types/react"
       - dependency-name: "*-browserify"
       - dependency-name: "*-loader"
       - dependency-name: "webpack*"
+      - dependency-name: "monaco-editor"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
