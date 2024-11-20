@@ -7,7 +7,7 @@ def installBuildRequirements(){
 	sh "npm install --global @cyclonedx/cdxgen"
 }
 
-node('rhel8'){
+node('rhel9'){
 
 	stage 'Checkout vscode-kaoto code'
 	deleteDir()
@@ -46,7 +46,7 @@ node('rhel8'){
 	archive includes:"manifest.json"
 }
 
-node('rhel8'){
+node('rhel9'){
 	if(publishToMarketPlace.equals('true')){
 		timeout(time:5, unit:'DAYS') {
 			input message:'Approve deployment?', submitter: 'apupier, djelinek, mdinizde, ricmarti, toigaras'
