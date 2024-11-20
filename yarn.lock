@@ -261,27 +261,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto-next/uniforms-patternfly@npm:^0.7.1":
-  version: 0.7.1
-  resolution: "@kaoto-next/uniforms-patternfly@npm:0.7.1"
+"@kaoto-next/uniforms-patternfly@npm:^0.7.14":
+  version: 0.7.14
+  resolution: "@kaoto-next/uniforms-patternfly@npm:0.7.14"
   dependencies:
     invariant: "npm:^2.2.4"
     lodash.clonedeep: "npm:^4.5.0"
-    uniforms: "npm:4.0.0-alpha.5"
   peerDependencies:
     "@patternfly/react-core": ^5.0.0
     "@patternfly/react-icons": ^5.0.0
     react: ^18.2.0
     react-dom: ^18.2.0
-  checksum: 10/7b3fb24da2b383dcbd7c5fcff96570f213a1e380018d297b655a9ad4853cecfe9db6d6e16c333b6b0a6b4d76dd59deb1c76108a6e7264eaba1a4a9c3610d9550
+    uniforms: 4.0.0-alpha.5
+  checksum: 10/5e6f978ee40646e1b0f7d27ec66a54f980465b552ec7c302f437cf87a4884d466f72375bf936cf7c543beb7629d32622692207abb948e4b45b9465bd5b51f838
   languageName: node
   linkType: hard
 
-"@kaoto/kaoto@npm:2.2.0":
-  version: 2.2.0
-  resolution: "@kaoto/kaoto@npm:2.2.0"
+"@kaoto/kaoto@npm:2.3.0-RC1":
+  version: 2.3.0-RC1
+  resolution: "@kaoto/kaoto@npm:2.3.0-RC1"
   dependencies:
-    "@kaoto-next/uniforms-patternfly": "npm:^0.7.1"
+    "@kaoto-next/uniforms-patternfly": "npm:^0.7.14"
     "@kie-tools-core/editor": "npm:0.32.0"
     "@kie-tools-core/notifications": "npm:0.32.0"
     "@types/uuid": "npm:^10.0.0"
@@ -314,7 +314,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     react-monaco-editor: ^0.56.0
-  checksum: 10/7221b01294be48303ebcd8d08da298346b795ebb31ff4e57e46bc6ebe663b7a89bac29c57d7606dfc9985ec8fdefaae83036033aa0f205b9b842f98ae52a1759
+  checksum: 10/e83dd54dea06653f1b5067bea1594774331050622714497338e6403b700fbe96e2b9fa79f8b68273f6b93db330ca0ddd181f0c001f2a80fb1ae4f504bbc5935d
   languageName: node
   linkType: hard
 
@@ -5872,7 +5872,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-yaml@npm:^5.1.1":
+"monaco-yaml@npm:5.2.2":
   version: 5.2.2
   resolution: "monaco-yaml@npm:5.2.2"
   dependencies:
@@ -6889,16 +6889,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-monaco-editor@npm:^0.56.1":
-  version: 0.56.1
-  resolution: "react-monaco-editor@npm:0.56.1"
+"react-monaco-editor@npm:0.56.2":
+  version: 0.56.2
+  resolution: "react-monaco-editor@npm:0.56.2"
   dependencies:
     prop-types: "npm:^15.8.1"
   peerDependencies:
     "@types/react": ">=16 <= 18"
-    monaco-editor: ^0.50.0
+    monaco-editor: ^0.52.0
     react: ">=16 <= 18"
-  checksum: 10/b2f8ae126c13198200bc5d4e7130e1732a91bbb96e79d634d3820317b919e7b3c4c0c0e8dee72fb4f889b3eeada009b94e5f830103d3b743088ed9e43c9ccf17
+  checksum: 10/9e891803f766ab81349e1579ffc8cd7cba27eb34ac5113aaf34798f0998629da68415f67e2a0e76057ae632fe019c355eeab89baa607e612239315381777fff4
   languageName: node
   linkType: hard
 
@@ -8379,17 +8379,17 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto/kaoto": "npm:2.2.0"
+    "@kaoto/kaoto": "npm:2.3.0-RC1"
     "@kie-tools-core/backend": "npm:0.32.0"
     "@kie-tools-core/editor": "npm:0.32.0"
     "@kie-tools-core/i18n": "npm:0.32.0"
     "@kie-tools-core/vscode-extension": "npm:0.32.0"
-    "@patternfly/patternfly": "npm:5.4.0"
-    "@patternfly/react-code-editor": "npm:5.4.0"
-    "@patternfly/react-core": "npm:5.4.0"
-    "@patternfly/react-icons": "npm:5.4.0"
-    "@patternfly/react-table": "npm:5.4.0"
-    "@patternfly/react-topology": "npm:5.4.0"
+    "@patternfly/patternfly": "npm:5.4.2"
+    "@patternfly/react-code-editor": "npm:5.4.11"
+    "@patternfly/react-core": "npm:5.4.8"
+    "@patternfly/react-icons": "npm:5.4.2"
+    "@patternfly/react-table": "npm:5.4.9"
+    "@patternfly/react-topology": "npm:5.4.1"
     "@redhat-developer/vscode-redhat-telemetry": "npm:^0.9.1"
     "@types/chai": "npm:^4.3.11"
     "@types/fs-extra": "npm:^11.0.4"
@@ -8409,14 +8409,14 @@ __metadata:
     mocha: "npm:^10.8.2"
     mocha-jenkins-reporter: "npm:^0.4.8"
     monaco-editor: "npm:^0.50.0"
-    monaco-yaml: "npm:^5.1.1"
+    monaco-yaml: "npm:5.2.2"
     node-fetch: "npm:2"
     npm-link-shared: "npm:^0.5.6"
     os-browserify: "npm:^0.3.0"
     path-browserify: "npm:^1.0.1"
     react: "npm:18.3.1"
     react-dom: "npm:18.3.1"
-    react-monaco-editor: "npm:^0.56.1"
+    react-monaco-editor: "npm:0.56.2"
     rimraf: "npm:^6.0.1"
     sass: "npm:^1.79.1"
     sass-loader: "npm:^13.0.2"
