@@ -135,6 +135,7 @@ It is launching UI tests. Beware that it can take several minutes to start. Stay
 
 * To have everything working properly, we need to double check that versions of package list below is up to date with [kaoto dependencies](https://github.com/KaotoIO/kaoto/blob/main/packages/ui/package.json#L44) versions of same packages
 * Inside `package.json`
+  * Check to have the version of the VS Code extension similar to the version of Kaoto
   * :exclamation: update `dependencies` section, update`"@kaoto/kaoto": "<version>"` to next version of publish Kaoto UI package
   * :warning: update `resolutions` and `dependencies` section
 
@@ -174,6 +175,7 @@ It is launching UI tests. Beware that it can take several minutes to start. Stay
     * Update version in `package.json`
     * Push changes in a Pull Request
     * Wait for Pull Request to be merged
+* Check that the version of VS Code extension aligns as much as possible with version of embedded Kaoto
 * Check build is working fine on [GitHub Actions](https://github.com/KaotoIO/vscode-kaoto/actions) and [Jenkins CI](https://master-jenkins-csb-fusetools-qe.apps.ocp-c1.prod.psi.redhat.com/view/VS%20Code%20-%20release/job/vscode/job/eng/job/vscode-kaoto-release/)
 * Check that someone listed as _submitter_ in Jenkinsfile is available
 * Create a tag
