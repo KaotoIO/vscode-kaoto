@@ -12,7 +12,7 @@
   <a href="https://github.com/KaotoIO/vscode-kaoto/actions/workflows/ci.yaml"><img src="https://img.shields.io/github/actions/workflow/status/KaotoIO/vscode-kaoto/ci.yaml?style=for-the-badge&label=released%20kaoto%20ui" alt="Build with Released version of Kaoto UI"></a>
 </p><br/>
 
-<h2 align="center">Kaoto - The Open Source Visual Editor for Apache Camel</h2>
+<h2 align="center">Kaoto - The Integration Designer for <a href="https://camel.apache.org">Apache Camel</a></h2>
 
 <p align="center">
   <a href="#features">Features</a> •
