@@ -102,11 +102,11 @@
       },
       {
         "command": "kaoto.open.source",
-        "title": "Show Camel Source",
-        "shortTitle": "Show source",
+        "title": "Open Source Code",
+        "shortTitle": "Show Source",
         "enablement": "activeCustomEditorId == webviewEditorsKaoto",
         "category": "Kaoto",
-        "icon": "$(go-to-file)"
+        "icon": "$(code)"
       },
       {
         "command": "camel.new.file",
