@@ -33,6 +33,7 @@ export class NewCamelRouteCommand extends AbstractNewCamelRouteCommand {
 
 			await new CamelInitJBangTask(this.workspaceFolder, path.relative(this.workspaceFolder.uri.fsPath, filePath)).execute();
 			await commands.executeCommand('vscode.open', Uri.file(filePath));
+			await commands.executeCommand('camel.integrations.refresh');
 		}
 	}
 }
