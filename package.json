@@ -396,6 +396,12 @@
           "contextualTitle": "Kaoto"
         },
         {
+          "id": "camel.tests",
+          "name": "Tests",
+          "contextualTitle": "Kaoto",
+          "visibility": "collapsed"
+        },
+        {
           "id": "camel.help",
           "name": "Help & Feedback",
           "contextualTitle": "Kaoto"
