@@ -373,6 +373,16 @@
           "contextualTitle": "Kaoto"
         },
         {
+          "id": "camel.deployments",
+          "name": "Deployments",
+          "contextualTitle": "Kaoto"
+        },
+        {
+          "id": "camel.help",
+          "name": "Help & Feedback",
+          "contextualTitle": "Kaoto"
+        },
+        {
           "id": "camel.datamappings",
           "name": "Data Mappings",
           "contextualTitle": "Kaoto",
@@ -391,20 +401,10 @@
           "visibility": "collapsed"
         },
         {
-          "id": "camel.deployments",
-          "name": "Deployments",
-          "contextualTitle": "Kaoto"
-        },
-        {
           "id": "camel.tests",
           "name": "Tests",
           "contextualTitle": "Kaoto",
           "visibility": "collapsed"
-        },
-        {
-          "id": "camel.help",
-          "name": "Help & Feedback",
-          "contextualTitle": "Kaoto"
         }
       ]
     },
