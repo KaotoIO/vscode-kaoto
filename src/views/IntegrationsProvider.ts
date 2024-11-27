@@ -1,21 +1,21 @@
-import * as vscode from 'vscode';
-import * as path from 'path';
+import { Event, EventEmitter, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri, window } from 'vscode';
+import { basename } from 'path';
 import { globSync } from 'glob';
 
-export class IntegrationsProvider implements vscode.TreeDataProvider<Integration> {
+export class IntegrationsProvider implements TreeDataProvider<Integration> {
 
-	private _onDidChangeTreeData: vscode.EventEmitter<Integration | undefined | null | void> = new vscode.EventEmitter<Integration | undefined | null | void>();
-	readonly onDidChangeTreeData: vscode.Event<Integration | undefined | null | void> = this._onDidChangeTreeData.event;
+	private _onDidChangeTreeData: EventEmitter<Integration | undefined | null | void> = new EventEmitter<Integration | undefined | null | void>();
+	readonly onDidChangeTreeData: Event<Integration | undefined | null | void> = this._onDidChangeTreeData.event;
 
 	constructor(private workspaceRoot: string) { }
 
-	getTreeItem(integrationEntry: Integration): vscode.TreeItem {
+	getTreeItem(integrationEntry: Integration): TreeItem {
 		return integrationEntry;
 	}
 
 	getChildren(integrationEntry?: Integration): Thenable<Integration[]> {
 		if (!this.workspaceRoot) {
-			vscode.window.showInformationMessage('No integrations in empty workspace');
+			window.showInformationMessage('No integrations in empty workspace');
 			return Promise.resolve([]);
 		}
 		return Promise.resolve(this.getIntegrationsAvailableInWorkspace(this.workspaceRoot));
@@ -25,8 +25,8 @@ export class IntegrationsProvider implements vscode.TreeDataProvider<Integration
 		const integrationFiles = globSync(`${workspaceRoot}/**/*.camel.yaml`);
 		let integrations: Integration[] = [];
 		for (const filepath of integrationFiles) {
-			const filename = path.basename(filepath);
-			integrations.push(new Integration(this.getIntegrationName(filename), filename, filepath, vscode.TreeItemCollapsibleState.None));
+			const filename = basename(filepath);
+			integrations.push(new Integration(this.getIntegrationName(filename), filename, filepath, TreeItemCollapsibleState.None));
 		}
 		return integrations;
 	}
@@ -40,21 +40,21 @@ export class IntegrationsProvider implements vscode.TreeDataProvider<Integration
 	}
 }
 
-export class Integration extends vscode.TreeItem {
+export class Integration extends TreeItem {
 	constructor(
 		public readonly name: string,
 		private filename: string,
 		public readonly filepath: string,
-		public readonly collapsibleState: vscode.TreeItemCollapsibleState
+		public readonly collapsibleState: TreeItemCollapsibleState
 	) {
 		super(name, collapsibleState);
 		this.tooltip = this.filename;
 		this.description = this.filename;
 	}
 
-	iconPath = vscode.ThemeIcon.File;
+	iconPath = ThemeIcon.File;
 
-	command = { command: 'kaoto.open', title: "Open with Kaoto", arguments: [vscode.Uri.parse(this.filepath)] };
+	command = { command: 'kaoto.open', title: "Open with Kaoto", arguments: [Uri.parse(this.filepath)] };
 
 	contextValue = 'integration';
 }
