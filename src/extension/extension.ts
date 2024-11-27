@@ -35,6 +35,7 @@ import { CamelRunJBangTask } from "../../src/tasks/CamelRunJBangTask";
 import { CamelKubernetesRunJBangTask } from "../../src/tasks/CamelKubernetesRunJBangTask";
 import { CamelAddPluginJBangTask } from "../../src/tasks/CamelAddPluginJBangTask";
 import { IntegrationsProvider, IntegrationFile } from "../views/IntegrationsProvider";
+import { HelpFeedbackProvider } from "../../src/views/HelpFeedbackProvider";
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -160,9 +161,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		: undefined;
 	if (rootPath) {
 		const integrationsProvider = new IntegrationsProvider(rootPath);
-		// vscode.window.createTreeView('camel.integrations', {
-		// 	integrationsDataProvider: integrationsProvider
-		// });
 		vscode.window.registerTreeDataProvider('camel.integrations', integrationsProvider);
 		vscode.commands.registerCommand('camel.integrations.refresh', () => integrationsProvider.refresh());
 	}
@@ -181,8 +179,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		await sendCommandTrackingEvent('camel.integrations.jbang.run');
 	}));
 
-	// register deployments view provider
-	// TODO
+	// register help & feedback view provider
+	vscode.window.registerTreeDataProvider('camel.help', new HelpFeedbackProvider());
 }
 
 async function sendCommandTrackingEvent(commandId: string) {
