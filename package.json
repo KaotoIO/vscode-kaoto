@@ -118,7 +118,7 @@
       },
       {
         "command": "camel.new.project",
-        "title": "Camel Project",
+        "title": "New Camel Project...",
         "category": "Kaoto",
         "enablement": "false",
         "icon": "$(new-folder)"
@@ -307,22 +307,22 @@
       "view/title": [
         {
           "command": "camel.jbang.run.all.root",
-          "group": "navigation",
+          "group": "navigation@0",
           "when": "view == camel.integrations"
         },
         {
           "submenu": "camel.new.file",
-          "group": "navigation",
+          "group": "navigation@1",
           "when": "view == camel.integrations"
         },
         {
           "command": "camel.new.project",
-          "group": "navigation",
+          "group": "navigation@2",
           "when": "view == camel.integrations"
         },
         {
           "command": "camel.integrations.refresh",
-          "group": "navigation",
+          "group": "navigation@3",
           "when": "view == camel.integrations"
         },
         {
