@@ -36,6 +36,7 @@ import { CamelKubernetesRunJBangTask } from "../../src/tasks/CamelKubernetesRunJ
 import { CamelAddPluginJBangTask } from "../../src/tasks/CamelAddPluginJBangTask";
 import { IntegrationsProvider, IntegrationFile } from "../views/IntegrationsProvider";
 import { HelpFeedbackProvider } from "../../src/views/HelpFeedbackProvider";
+import { DeploymentsProvider } from "../../src/views/DeploymentsProvider";
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -181,6 +182,11 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// register help & feedback view provider
 	vscode.window.registerTreeDataProvider('camel.help', new HelpFeedbackProvider());
+
+	// register deployments view provider
+	const deploymentsProvider = new DeploymentsProvider();
+	vscode.window.registerTreeDataProvider('camel.deployments', deploymentsProvider);
+	vscode.commands.registerCommand('camel.deployments.refresh', () => deploymentsProvider.refresh());
 }
 
 async function sendCommandTrackingEvent(commandId: string) {
