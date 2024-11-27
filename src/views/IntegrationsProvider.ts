@@ -1,38 +1,63 @@
-import { Event, EventEmitter, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri, window } from 'vscode';
-import { basename } from 'path';
 import { globSync } from 'glob';
+import { readFileSync } from 'node:fs';
+import { Event, EventEmitter, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri, window } from 'vscode';
+import { basename, join } from 'path';
+import { parse,  } from 'yaml';
 
-export class IntegrationsProvider implements TreeDataProvider<Integration> {
+export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 
-	private _onDidChangeTreeData: EventEmitter<Integration | undefined | null | void> = new EventEmitter<Integration | undefined | null | void>();
-	readonly onDidChangeTreeData: Event<Integration | undefined | null | void> = this._onDidChangeTreeData.event;
+	private _onDidChangeTreeData: EventEmitter<TreeItem | undefined | null | void> = new EventEmitter<TreeItem | undefined | null | void>();
+	readonly onDidChangeTreeData: Event<TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
+
+	private readonly CAMEL_FILE_PATTERN: string = '.camel.yaml';
 
 	constructor(private workspaceRoot: string) { }
 
-	getTreeItem(integrationEntry: Integration): TreeItem {
-		return integrationEntry;
+	getTreeItem(integration: IntegrationFile): TreeItem {
+		return integration;
 	}
 
-	getChildren(integrationEntry?: Integration): Thenable<Integration[]> {
+	getChildren(integration?: IntegrationFile): Thenable<TreeItem[]> {
 		if (!this.workspaceRoot) {
-			window.showInformationMessage('No integrations in empty workspace');
 			return Promise.resolve([]);
 		}
-		return Promise.resolve(this.getIntegrationsAvailableInWorkspace(this.workspaceRoot));
+
+		if(integration) {
+			return Promise.resolve(this.getRoutesInsideIntegrationFile(integration));
+		} else {
+			return Promise.resolve(this.getIntegrationsAvailableInWorkspace(this.workspaceRoot));
+		}
 	}
 
-	private getIntegrationsAvailableInWorkspace(workspaceRoot: string): Integration[] {
-		const integrationFiles = globSync(`${workspaceRoot}/**/*.camel.yaml`);
-		let integrations: Integration[] = [];
+	private getIntegrationsAvailableInWorkspace(workspaceRoot: string): IntegrationFile[] {
+		const integrationFiles = globSync(`${workspaceRoot}/**/*${this.CAMEL_FILE_PATTERN}`);
+		let integrations: IntegrationFile[] = [];
 		for (const filepath of integrationFiles) {
 			const filename = basename(filepath);
-			integrations.push(new Integration(this.getIntegrationName(filename), filename, filepath, TreeItemCollapsibleState.None));
+			integrations.push(new IntegrationFile(this.getIntegrationName(filename), filename, filepath, TreeItemCollapsibleState.Expanded));
 		}
 		return integrations;
 	}
 
 	private getIntegrationName(filename: string): string {
-		return filename.split(/.camel.yaml/gm)[0];
+		return filename.split(new RegExp(String.raw`${this.CAMEL_FILE_PATTERN}`, 'gm'))[0];
+	}
+
+	private getRoutesInsideIntegrationFile(integration: IntegrationFile): Route[] {
+		const camelYAMLfile = readFileSync(integration.filepath, 'utf8');
+		const parsedYaml = parse(camelYAMLfile);
+		if(!parsedYaml) {
+			return [];
+		}
+
+		let routesArray: Route[] = [];
+		for (const topLevelElement of parsedYaml) {
+			const route = topLevelElement.route;
+			if(route) {
+				routesArray.push(new Route(route.id, route.description));
+			}
+		}
+		return routesArray;
 	}
 
 	refresh(): void {
@@ -40,7 +65,7 @@ export class IntegrationsProvider implements TreeDataProvider<Integration> {
 	}
 }
 
-export class Integration extends TreeItem {
+export class IntegrationFile extends TreeItem {
 	constructor(
 		public readonly name: string,
 		private filename: string,
@@ -48,7 +73,7 @@ export class Integration extends TreeItem {
 		public readonly collapsibleState: TreeItemCollapsibleState
 	) {
 		super(name, collapsibleState);
-		this.tooltip = this.filename;
+		this.tooltip = this.filepath;
 		this.description = this.filename;
 	}
 
@@ -56,5 +81,19 @@ export class Integration extends TreeItem {
 
 	command = { command: 'kaoto.open', title: "Open with Kaoto", arguments: [Uri.parse(this.filepath)] };
 
-	contextValue = 'integration';
+	contextValue = 'integrationFile';
+}
+
+export class Route extends TreeItem {
+	constructor(
+		public readonly name: string,
+		public readonly description: string
+	) {
+		super(name, TreeItemCollapsibleState.None);
+		this.description = this.description;
+	}
+
+	iconPath = join(__filename, '..', '..', '..', 'icons', 'route-dark.png');
+
+	contextValue = 'route';
 }

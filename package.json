@@ -50,7 +50,8 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-monaco-editor": "0.56.2",
-    "valid-filename": "^4.0.0"
+    "valid-filename": "^4.0.0",
+    "yaml": "^2.6.1"
   },
   "icon": "icon.png",
   "main": "./dist/extension/extension.js",
@@ -168,7 +169,7 @@
         "category": "Kaoto",
         "title": "Camel Run all from Workspace Root",
         "shortTitle": "Camel Run workspace",
-        "icon": "$(camel-run)",
+        "icon": "$(run-all)",
         "enablement": "resourceFilename =~ /\\.(yaml)$/"
       },
       {
@@ -305,6 +306,11 @@
       ],
       "view/title": [
         {
+          "command": "camel.jbang.run.all.root",
+          "group": "navigation",
+          "when": "view == camel.integrations"
+        },
+        {
           "submenu": "camel.new.file",
           "group": "navigation",
           "when": "view == camel.integrations"
@@ -333,7 +339,7 @@
         },
         {
           "command": "camel.integrations.jbang.run",
-          "when": "view == camel.integrations",
+          "when": "view == camel.integrations && viewItem == integrationFile",
           "group": "inline"
         },
         {

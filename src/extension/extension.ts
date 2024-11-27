@@ -34,7 +34,7 @@ import { NewCamelProjectCommand } from "../../src/commands/NewCamelProjectComman
 import { CamelRunJBangTask } from "../../src/tasks/CamelRunJBangTask";
 import { CamelKubernetesRunJBangTask } from "../../src/tasks/CamelKubernetesRunJBangTask";
 import { CamelAddPluginJBangTask } from "../../src/tasks/CamelAddPluginJBangTask";
-import { IntegrationsProvider, Integration } from "../views/IntegrationsProvider";
+import { IntegrationsProvider, IntegrationFile } from "../views/IntegrationsProvider";
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -166,13 +166,13 @@ export async function activate(context: vscode.ExtensionContext) {
 		vscode.window.registerTreeDataProvider('camel.integrations', integrationsProvider);
 		vscode.commands.registerCommand('camel.integrations.refresh', () => integrationsProvider.refresh());
 	}
-	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.editEntry', async (integrationEntry: Integration) => {
+	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.editEntry', async (integrationEntry: IntegrationFile) => {
 		await vscode.commands.executeCommand('kaoto.open', vscode.Uri.parse(integrationEntry.filepath));
 	}));
-	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.deleteEntry', async (integrationEntry: Integration) => {
+	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.deleteEntry', async (integrationEntry: IntegrationFile) => {
 		await vscode.window.showWarningMessage(`TODO: Removing '${integrationEntry.name}' integration`);
 	}));
-	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.jbang.run', async function (integrationEntry: Integration) {
+	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.jbang.run', async function (integrationEntry: IntegrationFile) {
 		if (!vscode.workspace.workspaceFolders) {
 			await vscode.window.showWarningMessage(WORKSPACE_WARNING_MESSAGE);
 			return;
