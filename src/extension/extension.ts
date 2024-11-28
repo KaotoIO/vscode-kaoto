@@ -165,7 +165,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		if (!(await isCamelPluginInstalled('kubernetes'))) {
 			await new CamelAddPluginJBangTask('kubernetes').execute();
 		}
-		await new CamelKubernetesRunJBangTask('${relativeFile}').execute();
+		await new CamelKubernetesRunJBangTask('${fileBasename}', '${fileDirname}').execute();
 		await sendCommandTrackingEvent(CAMEL_JBANG_KUBERNETES_RUN_COMMAND_ID);
 	}));
 
@@ -175,7 +175,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			await vscode.window.showWarningMessage(WORKSPACE_WARNING_MESSAGE);
 			return;
 		}
-		await new CamelRunJBangTask('${relativeFile}').executeOnly();
+		await new CamelRunJBangTask('${fileBasename}', '${fileDirname}').executeOnly();
 		await new Promise((time) => setTimeout(time, 5_000)); // TODO
 		await vscode.commands.executeCommand('camel.deployments.refresh');
 		await sendCommandTrackingEvent(CAMEL_JBANG_RUN_COMMAND_ID);
