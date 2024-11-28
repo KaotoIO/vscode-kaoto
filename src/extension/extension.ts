@@ -38,6 +38,7 @@ import { IntegrationsProvider, IntegrationFile } from "../views/IntegrationsProv
 import { HelpFeedbackProvider } from "../../src/views/HelpFeedbackProvider";
 import { DeploymentsProvider } from "../../src/views/DeploymentsProvider";
 import { OpenApiProvider } from "../../src/views/OpenApiProvider";
+import { rmSync } from 'node:fs';
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -91,7 +92,10 @@ export async function activate(context: vscode.ExtensionContext) {
 		await vscode.commands.executeCommand('kaoto.open', vscode.Uri.parse(integrationEntry.filepath));
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.deleteEntry', async (integrationEntry: IntegrationFile) => {
-		await vscode.window.showWarningMessage(`TODO: Removing '${integrationEntry.name}' integration`);
+		// TODO add modal dialog to confirm we are really deleting it
+		rmSync(integrationEntry.filepath);
+		await vscode.commands.executeCommand('camel.integrations.refresh');
+		await vscode.window.showInformationMessage(`File '${integrationEntry.description}' was removed.`);
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.jbang.run', async function (integrationEntry: IntegrationFile) {
 		if (!vscode.workspace.workspaceFolders) {
