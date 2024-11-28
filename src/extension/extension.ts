@@ -89,7 +89,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand('camel.integrations.refresh', () => integrationsProvider.refresh());
 	}
 	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.editEntry', async (integrationEntry: IntegrationFile) => {
-		await vscode.commands.executeCommand('kaoto.open', vscode.Uri.parse(integrationEntry.filepath));
+		await vscode.window.showTextDocument(vscode.Uri.parse(integrationEntry.filepath));
+		// await vscode.commands.executeCommand('kaoto.open', vscode.Uri.parse(integrationEntry.filepath));
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.deleteEntry', async (integrationEntry: IntegrationFile) => {
 		// TODO add modal dialog to confirm we are really deleting it
