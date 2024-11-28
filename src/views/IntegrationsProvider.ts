@@ -1,8 +1,8 @@
 import { globSync } from 'glob';
 import { readFileSync } from 'node:fs';
-import { Event, EventEmitter, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri, window } from 'vscode';
+import { Event, EventEmitter, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
 import { basename, join } from 'path';
-import { parse,  } from 'yaml';
+import { parse } from 'yaml';
 
 export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 
