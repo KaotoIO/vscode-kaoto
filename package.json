@@ -110,6 +110,14 @@
         "icon": "$(code)"
       },
       {
+        "command": "kaoto.close.source",
+        "title": "Close Source Code",
+        "shortTitle": "Close Source",
+        "enablement": "resourceFilename =~ /\\.(yaml)$/",
+        "category": "Kaoto",
+        "icon": "$(code)"
+      },
+      {
         "command": "camel.new.file",
         "title": "Camel File",
         "category": "Kaoto",
@@ -260,29 +268,34 @@
         {
           "command": "kaoto.open.source",
           "when": "activeCustomEditorId == webviewEditorsKaoto",
-          "group": "navigation"
+          "group": "navigation@3"
+        },
+        {
+          "command": "kaoto.close.source",
+          "when": "resourceFilename =~ /\\.(yaml)$/ && activeCustomEditorId !== webviewEditorsKaoto",
+          "group": "navigation@3"
         },
         {
           "command": "camel.jbang.kubernetes.run",
           "when": "resourceFilename =~ /\\.(yaml)$/",
-          "group": "navigation"
+          "group": "navigation@2"
         }
       ],
       "editor/title/run": [
         {
           "command": "camel.jbang.run",
           "when": "resourceFilename =~ /\\.(yaml)$/",
-          "group": "3_camelrun@1"
+          "group": "1_camelrun@1"
         },
         {
           "command": "camel.jbang.run.all.root",
           "when": "resourceFilename =~ /\\.(yaml)$/",
-          "group": "3_camelrun@2"
+          "group": "1_camelrun@2"
         },
         {
           "command": "camel.jbang.run.all.folder",
           "when": "resourceFilename =~ /\\.(yaml)$/",
-          "group": "3_camelrun@3"
+          "group": "1_camelrun@3"
         }
       ],
       "explorer/context": [

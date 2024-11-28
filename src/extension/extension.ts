@@ -118,6 +118,11 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 	}));
 
+	// register command for close camel source code in side to side editor
+	context.subscriptions.push(vscode.commands.registerCommand('kaoto.close.source', async () => {
+		await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
+	}));
+
 	// register command for open file with kaoto editor in webview
 	context.subscriptions.push(vscode.commands.registerCommand('kaoto.open', async (uri: vscode.Uri) => {
 		await vscode.commands.executeCommand('vscode.openWith', uri, 'webviewEditorsKaoto');
