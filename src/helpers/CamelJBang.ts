@@ -16,7 +16,8 @@
  */
 'use strict';
 
-import { ShellExecution, ShellExecutionOptions, workspace } from "vscode";
+import { globSync } from "glob";
+import { ShellExecution, ShellExecutionOptions, workspace, WorkspaceFolder } from "vscode";
 
 /**
  * Camel JBang class which allows shell execution of different JBang CLI commands
@@ -117,9 +118,22 @@ export class CamelJBang {
 	private getExtraLaunchParameter(): string[] {
 		const extraLaunchParameter = workspace.getConfiguration().get('kaoto.camelJBang.ExtraLaunchParameter') as string[];
 		if (extraLaunchParameter) {
-			return extraLaunchParameter;
+			return this.handleMissingXslFiles(extraLaunchParameter);;
 		} else {
 			return [];
+		}
+	}
+
+	/**
+	 * Mainly in ZSH shell there is problem when camel jbang is executed with non existing files added using '*.xsl' file pattern
+	 * it is caused by ZSH null glob option disabled by default for ZSH shell
+	 */
+	private handleMissingXslFiles(extraLaunchParameters: string[]): string[] {
+		const xsls = globSync(`${(workspace.workspaceFolders as WorkspaceFolder[])[0].uri.path}/**/*.xsl`).length > 0;
+		if (xsls) {
+			return extraLaunchParameters; // don't modify default extra launch parameters specified via settings which should by default contain *.xsl
+		} else {
+			return extraLaunchParameters.filter(parameter => parameter !== '*.xsl');
 		}
 	}
 
