@@ -224,7 +224,10 @@
         "command": "camel.integrations.kubernetes.run",
         "title": "Deploy",
         "category": "Kaoto",
-        "icon": "$(rocket)"
+        "icon": {
+          "dark": "./icons/kubernetes/kube-dark.png",
+          "light": "./icons/kubernetes/kube-light.png"
+        }
       },
       {
         "command": "camel.deployments.refresh",
