@@ -37,6 +37,7 @@ import { CamelAddPluginJBangTask } from "../../src/tasks/CamelAddPluginJBangTask
 import { IntegrationsProvider, IntegrationFile } from "../views/IntegrationsProvider";
 import { HelpFeedbackProvider } from "../../src/views/HelpFeedbackProvider";
 import { DeploymentsProvider } from "../../src/views/DeploymentsProvider";
+import { OpenApiProvider } from "../../src/views/OpenApiProvider";
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -76,10 +77,11 @@ export async function activate(context: vscode.ExtensionContext) {
 		backendProxy: backendProxy,
 	});
 
-	// register integrations view provider
 	const rootPath = vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0
 		? vscode.workspace.workspaceFolders[0].uri.fsPath
 		: undefined;
+
+	// register integrations view provider
 	if (rootPath) {
 		const integrationsProvider = new IntegrationsProvider(rootPath);
 		vscode.window.registerTreeDataProvider('camel.integrations', integrationsProvider);
@@ -111,13 +113,20 @@ export async function activate(context: vscode.ExtensionContext) {
 		await sendCommandTrackingEvent('camel.integrations.kubernetes.run');
 	}));
 
-	// register help & feedback view provider
-	vscode.window.registerTreeDataProvider('camel.help', new HelpFeedbackProvider());
-
 	// register deployments view provider
 	const deploymentsProvider = new DeploymentsProvider();
 	vscode.window.registerTreeDataProvider('camel.deployments', deploymentsProvider);
 	vscode.commands.registerCommand('camel.deployments.refresh', () => deploymentsProvider.refresh());
+
+	// register openapi view provider
+	if (rootPath) {
+		const openApiProvider = new OpenApiProvider(rootPath);
+		vscode.window.registerTreeDataProvider('camel.openapi', openApiProvider);
+		vscode.commands.registerCommand('camel.openapi.refresh', () => openApiProvider.refresh());
+	}
+
+	// register help & feedback view provider
+	vscode.window.registerTreeDataProvider('camel.help', new HelpFeedbackProvider());
 
 	// register command for open camel source code in side to side editor
 	context.subscriptions.push(vscode.commands.registerCommand('kaoto.open.source', async () => {

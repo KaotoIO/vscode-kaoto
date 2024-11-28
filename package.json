@@ -231,6 +231,12 @@
         "title": "Refresh",
         "category": "Kaoto",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "camel.openapi.refresh",
+        "title": "Refresh",
+        "category": "Kaoto",
+        "icon": "$(refresh)"
       }
     ],
     "keybindings": {
@@ -321,6 +327,11 @@
           "command": "camel.deployments.refresh",
           "group": "navigation",
           "when": "view == camel.deployments"
+        },
+        {
+          "command": "camel.openapi.refresh",
+          "group": "navigation",
+          "when": "view == camel.openapi"
         }
       ],
       "view/item/context": [
@@ -375,6 +386,11 @@
           "contextualTitle": "Kaoto"
         },
         {
+          "id": "camel.openapi",
+          "name": "Open API",
+          "contextualTitle": "Kaoto"
+        },
+        {
           "id": "camel.help",
           "name": "Help & Feedback",
           "contextualTitle": "Kaoto"
@@ -388,12 +404,6 @@
         {
           "id": "camel.connections",
           "name": "Connections",
-          "contextualTitle": "Kaoto",
-          "visibility": "collapsed"
-        },
-        {
-          "id": "camel.openapi",
-          "name": "Open API",
           "contextualTitle": "Kaoto",
           "visibility": "collapsed"
         },
