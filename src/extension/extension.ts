@@ -101,6 +101,15 @@ export async function activate(context: vscode.ExtensionContext) {
 		await vscode.commands.executeCommand('camel.deployments.refresh');
 		await sendCommandTrackingEvent('camel.integrations.jbang.run');
 	}));
+	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.kubernetes.run', async function (integrationEntry: IntegrationFile) {
+		if (!(await isCamelPluginInstalled('kubernetes'))) {
+			await new CamelAddPluginJBangTask('kubernetes').execute();
+		}
+		await new CamelKubernetesRunJBangTask(integrationEntry.filepath).executeOnly();
+		await new Promise((time) => setTimeout(time, 5_000)); // TODO
+		await vscode.commands.executeCommand('camel.deployments.refresh');
+		await sendCommandTrackingEvent('camel.integrations.kubernetes.run');
+	}));
 
 	// register help & feedback view provider
 	vscode.window.registerTreeDataProvider('camel.help', new HelpFeedbackProvider());

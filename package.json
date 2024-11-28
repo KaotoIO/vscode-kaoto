@@ -216,9 +216,15 @@
       },
       {
         "command": "camel.integrations.jbang.run",
-        "title": "Camel Run",
+        "title": "Run",
         "category": "Kaoto",
         "icon": "$(camel-run)"
+      },
+      {
+        "command": "camel.integrations.kubernetes.run",
+        "title": "Deploy",
+        "category": "Kaoto",
+        "icon": "$(rocket)"
       },
       {
         "command": "camel.deployments.refresh",
@@ -274,28 +280,6 @@
           "command": "kaoto.close.source",
           "when": "resourceFilename =~ /\\.(yaml)$/ && activeCustomEditorId !== webviewEditorsKaoto",
           "group": "navigation@3"
-        },
-        {
-          "command": "camel.jbang.kubernetes.run",
-          "when": "resourceFilename =~ /\\.(yaml)$/",
-          "group": "navigation@2"
-        }
-      ],
-      "editor/title/run": [
-        {
-          "command": "camel.jbang.run",
-          "when": "resourceFilename =~ /\\.(yaml)$/",
-          "group": "1_camelrun@1"
-        },
-        {
-          "command": "camel.jbang.run.all.root",
-          "when": "resourceFilename =~ /\\.(yaml)$/",
-          "group": "1_camelrun@2"
-        },
-        {
-          "command": "camel.jbang.run.all.folder",
-          "when": "resourceFilename =~ /\\.(yaml)$/",
-          "group": "1_camelrun@3"
         }
       ],
       "explorer/context": [
@@ -346,14 +330,19 @@
       ],
       "view/item/context": [
         {
+          "command": "camel.integrations.jbang.run",
+          "when": "view == camel.integrations && viewItem == integrationFile",
+          "group": "inline@1"
+        },
+        {
+          "command": "camel.integrations.kubernetes.run",
+          "when": "view == camel.integrations && viewItem == integrationFile",
+          "group": "inline@2"
+        },
+        {
           "command": "camel.integrations.editEntry",
           "when": "view == camel.integrations",
           "group": "navigation"
-        },
-        {
-          "command": "camel.integrations.jbang.run",
-          "when": "view == camel.integrations && viewItem == integrationFile",
-          "group": "inline"
         },
         {
           "command": "camel.integrations.deleteEntry",
