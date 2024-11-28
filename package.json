@@ -313,11 +313,6 @@
           "when": "view == camel.integrations"
         },
         {
-          "command": "camel.new.project",
-          "group": "navigation@2",
-          "when": "view == camel.integrations"
-        },
-        {
           "command": "camel.integrations.refresh",
           "group": "navigation@3",
           "when": "view == camel.integrations"
