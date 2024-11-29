@@ -38,7 +38,7 @@ import { IntegrationsProvider, IntegrationFile } from "../views/IntegrationsProv
 import { HelpFeedbackProvider } from "../../src/views/HelpFeedbackProvider";
 import { DeploymentsProvider } from "../../src/views/DeploymentsProvider";
 import { OpenApiProvider } from "../../src/views/OpenApiProvider";
-import { rmSync } from 'node:fs';
+import { confirmFileDeleteDialog } from '../../src/helpers/modals';
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -98,10 +98,12 @@ export async function activate(context: vscode.ExtensionContext) {
 		// await vscode.commands.executeCommand('kaoto.open', vscode.Uri.parse(integrationEntry.filepath));
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.deleteEntry', async (integrationEntry: IntegrationFile) => {
-		// TODO add modal dialog to confirm we are really deleting it
-		rmSync(integrationEntry.filepath);
-		await vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
-		await vscode.window.showInformationMessage(`File '${integrationEntry.description}' was removed.`);
+		const confirmation = await confirmFileDeleteDialog(integrationEntry.description as string); // integrationEntry.description ==> at the moment points to File name
+		if (confirmation) {
+			await vscode.workspace.fs.delete(vscode.Uri.file(integrationEntry.filepath), { useTrash: true });
+			await vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
+			await vscode.window.showInformationMessage(`File '${integrationEntry.description}' was moved to Trash.`);
+		}
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.jbang.run', async function (integrationEntry: IntegrationFile) {
 		if (!vscode.workspace.workspaceFolders) {
