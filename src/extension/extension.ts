@@ -49,6 +49,10 @@ export const CAMEL_JBANG_RUN_COMMAND_ID = 'camel.jbang.run';
 export const CAMEL_JBANG_RUN_ALL_ROOT_COMMAND_ID = 'camel.jbang.run.all.root';
 export const CAMEL_JBANG_RUN_ALL_FOLDER_COMMAND_ID = 'camel.jbang.run.all.folder';
 
+export const KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID = 'camel.integrations.refresh';
+export const KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID = 'camel.deployments.refresh';
+export const KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID = 'camel.openapi.refresh';
+
 export async function activate(context: vscode.ExtensionContext) {
 	console.info("Kaoto extension is alive.");
 
@@ -74,8 +78,9 @@ export async function activate(context: vscode.ExtensionContext) {
 				}
 			}),
 		]),
-		channelApiProducer: new VSCodeKaotoChannelApiProducer(),
 		backendProxy: backendProxy,
+		channelApiProducer: new VSCodeKaotoChannelApiProducer(),
+		editorDocumentType: "text" // TODO verify it will not break anything - this is needed for listeners to be able to update Kaoto view sections immediately
 	});
 
 	const rootPath = vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0
@@ -86,7 +91,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	if (rootPath) {
 		const integrationsProvider = new IntegrationsProvider(rootPath);
 		vscode.window.registerTreeDataProvider('camel.integrations', integrationsProvider);
-		vscode.commands.registerCommand('camel.integrations.refresh', () => integrationsProvider.refresh());
+		vscode.commands.registerCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID, () => integrationsProvider.refresh());
 	}
 	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.editEntry', async (integrationEntry: IntegrationFile) => {
 		await vscode.window.showTextDocument(vscode.Uri.parse(integrationEntry.filepath));
@@ -95,7 +100,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.deleteEntry', async (integrationEntry: IntegrationFile) => {
 		// TODO add modal dialog to confirm we are really deleting it
 		rmSync(integrationEntry.filepath);
-		await vscode.commands.executeCommand('camel.integrations.refresh');
+		await vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
 		await vscode.window.showInformationMessage(`File '${integrationEntry.description}' was removed.`);
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.jbang.run', async function (integrationEntry: IntegrationFile) {
@@ -105,7 +110,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 		await new CamelRunJBangTask(integrationEntry.filepath).executeOnly();
 		await new Promise((time) => setTimeout(time, 5_000)); // TODO
-		await vscode.commands.executeCommand('camel.deployments.refresh');
+		await vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
 		await sendCommandTrackingEvent('camel.integrations.jbang.run');
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.kubernetes.run', async function (integrationEntry: IntegrationFile) {
@@ -114,20 +119,20 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 		await new CamelKubernetesRunJBangTask(integrationEntry.filepath).executeOnly();
 		await new Promise((time) => setTimeout(time, 5_000)); // TODO
-		await vscode.commands.executeCommand('camel.deployments.refresh');
+		await vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
 		await sendCommandTrackingEvent('camel.integrations.kubernetes.run');
 	}));
 
 	// register deployments view provider
 	const deploymentsProvider = new DeploymentsProvider();
 	vscode.window.registerTreeDataProvider('camel.deployments', deploymentsProvider);
-	vscode.commands.registerCommand('camel.deployments.refresh', () => deploymentsProvider.refresh());
+	vscode.commands.registerCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID, () => deploymentsProvider.refresh());
 
 	// register openapi view provider
 	if (rootPath) {
 		const openApiProvider = new OpenApiProvider(rootPath);
 		vscode.window.registerTreeDataProvider('camel.openapi', openApiProvider);
-		vscode.commands.registerCommand('camel.openapi.refresh', () => openApiProvider.refresh());
+		vscode.commands.registerCommand(KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID, () => openApiProvider.refresh());
 	}
 
 	// register help & feedback view provider
@@ -140,6 +145,52 @@ export async function activate(context: vscode.ExtensionContext) {
 			await vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside);
 		}
 	}));
+
+	/**
+	 * register listeners for Integrations section
+	 * TODO at the moment 'await' for vscode.commands.executeCommand method was skipped, not sure, just wanted to not block thread
+	 */
+	vscode.workspace.onDidSaveTextDocument(() => {
+		// TODO made actions for only Kaoto related files
+		vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
+		vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
+		vscode.commands.executeCommand(KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID);
+	});
+
+	/**
+	 * register listeners for Explorer made changes
+	 * TODO at the moment 'await' for vscode.commands.executeCommand method was skipped, not sure, just wanted to not block thread
+	 */
+	vscode.workspace.onDidCreateFiles(() => {
+		// handling creating new files directly using Explorer
+		// TODO made actions for only Kaoto related files
+		vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
+		vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
+		vscode.commands.executeCommand(KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID);
+	});
+	vscode.workspace.onDidDeleteFiles(() => {
+		// handling deleting files directly using Explorer
+		// TODO made actions for only Kaoto related files
+		vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
+		vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
+		vscode.commands.executeCommand(KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID);
+	});
+	vscode.workspace.onDidRenameFiles(() => {
+		// handling deleting files directly using Explorer
+		// TODO made actions for only Kaoto related files
+		vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
+		vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
+		vscode.commands.executeCommand(KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID);
+	});
+
+	/**
+	 * register listeners for Terminal state changes
+	 */
+	vscode.window.onDidChangeTerminalState(async () => {
+		// TODO made actions for only Kaoto related files
+		await new Promise((time) => setTimeout(time, 500)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
+		await vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
+	});
 
 	// register command for close camel source code in side to side editor
 	context.subscriptions.push(vscode.commands.registerCommand('kaoto.close.source', async () => {
@@ -200,7 +251,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 		await new CamelRunJBangTask('${fileBasename}', '${fileDirname}').executeOnly();
 		await new Promise((time) => setTimeout(time, 5_000)); // TODO
-		await vscode.commands.executeCommand('camel.deployments.refresh');
+		await vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
 		await sendCommandTrackingEvent(CAMEL_JBANG_RUN_COMMAND_ID);
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand(CAMEL_JBANG_RUN_ALL_ROOT_COMMAND_ID, async function () {
@@ -210,7 +261,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 		await new CamelRunJBangTask('*').executeOnly();
 		await new Promise((time) => setTimeout(time, 5_000)); // TODO
-		await vscode.commands.executeCommand('camel.deployments.refresh');
+		await vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
 		await sendCommandTrackingEvent(CAMEL_JBANG_RUN_ALL_ROOT_COMMAND_ID);
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand(CAMEL_JBANG_RUN_ALL_FOLDER_COMMAND_ID, async function () {
@@ -220,7 +271,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 		await new CamelRunJBangTask('*', '${fileDirname}').executeOnly();
 		await new Promise((time) => setTimeout(time, 5_000)); // TODO
-		await vscode.commands.executeCommand('camel.deployments.refresh');
+		await vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
 		await sendCommandTrackingEvent(CAMEL_JBANG_RUN_ALL_FOLDER_COMMAND_ID);
 	}));
 }
