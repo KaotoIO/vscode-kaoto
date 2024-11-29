@@ -93,7 +93,10 @@ export class Route extends TreeItem {
 		this.description = this.description;
 	}
 
-	iconPath = join(__filename, '..', '..', '..', 'icons', 'route-dark.png');
+	iconPath = {
+		light: join(__filename, '..', '..', '..', 'icons', 'route-light.png'),
+		dark: join(__filename, '..', '..', '..', 'icons', 'route-dark.png'),
+	}
 
 	contextValue = 'route';
 }
