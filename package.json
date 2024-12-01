@@ -218,15 +218,18 @@
         "command": "camel.integrations.jbang.run",
         "title": "Run",
         "category": "Kaoto",
-        "icon": "$(camel-run)"
+        "icon": {
+          "dark": "./icons/kaoto-run/kaoto-run-dark.png",
+          "light": "./icons/kaoto-run/kaoto-run-light.png"
+        }
       },
       {
         "command": "camel.integrations.kubernetes.run",
         "title": "Deploy",
         "category": "Kaoto",
         "icon": {
-          "dark": "./icons/kubernetes/kube-dark.png",
-          "light": "./icons/kubernetes/kube-light.png"
+          "dark": "./icons/kubernetes/kube-dark-new.png",
+          "light": "./icons/kubernetes/kube-light-new.png"
         }
       },
       {
