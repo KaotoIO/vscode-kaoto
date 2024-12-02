@@ -1,7 +1,7 @@
 import { globSync } from 'glob';
 import { readFileSync } from 'node:fs';
 import { Event, EventEmitter, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
-import { basename, extname } from 'path';
+import { basename, extname, join } from 'path';
 import YAML from 'yaml';
 
 export class OpenApiProvider implements TreeDataProvider<TreeItem> {
@@ -72,7 +72,10 @@ export class OpenApiFile extends TreeItem {
         this.description = this.filename;
     }
 
-    iconPath = ThemeIcon.File;
+    iconPath = {
+		light: join(__filename, '..', '..', '..', 'icons', 'openapi', 'openapi-light.svg'),
+		dark: join(__filename, '..', '..', '..', 'icons', 'openapi', 'openapi-dark.svg'),
+	}
 
     command = { command: 'vscode.open', title: "Open", arguments: [Uri.parse(this.filepath)] };
 
