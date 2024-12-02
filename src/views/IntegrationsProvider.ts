@@ -77,7 +77,7 @@ export class IntegrationFile extends TreeItem {
 		this.description = this.filename;
 	}
 
-	iconPath = ThemeIcon.File;
+	iconPath = join(__filename, '..', '..', '..', 'icons', 'yaml.svg')
 
 	command = { command: 'kaoto.open', title: "Open with Kaoto", arguments: [Uri.parse(this.filepath)] };
 
