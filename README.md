@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://marketplace.visualstudio.com/items?itemName=redhat.vscode-kaoto"><img src="https://img.shields.io/visual-studio-marketplace/v/redhat.vscode-kaoto?style=for-the-badge" alt="Marketplace Version"/></a>
-  <a href="https://github.com/KaotoIO/kaoto/releases"><img alt="Kaoto UI version" src="https://img.shields.io/badge/Kaoto_UI-2.3.0--RC1-orange?style=for-the-badge"></a>
+  <a href="https://github.com/KaotoIO/kaoto/releases"><img alt="Kaoto UI version" src="https://img.shields.io/badge/Kaoto_UI-2.3.0--RC2-orange?style=for-the-badge"></a>
   <img src="https://img.shields.io/badge/VS%20Code-1.74.0+-blue?style=for-the-badge" alt="Visual Studio Code Support"/>
   <a href="https://github.com/KaotoIO/vscode-kaoto/blob/main/LICENSE"><img src="https://img.shields.io/github/license/KaotoIO/vscode-kaoto?color=blue&style=for-the-badge" alt="License"/></a>
   <a href="https://camel.zulipchat.com/#narrow/stream/258729-camel-tooling"><img src="https://img.shields.io/badge/zulip-join_chat-brightgreen?color=yellow&style=for-the-badge" alt="Zulip"/></a></br>
@@ -45,7 +45,7 @@
 
 ### Embedded
 
-- [Kaoto 2 release](https://github.com/KaotoIO/kaoto) in version [2.3.0-RC1](https://github.com/KaotoIO/kaoto/releases/tag/2.3.0-RC1).
+- [Kaoto 2 release](https://github.com/KaotoIO/kaoto) in version [2.3.0-RC2](https://github.com/KaotoIO/kaoto/releases/tag/2.3.0-RC2).
 
 ### Issues
 
