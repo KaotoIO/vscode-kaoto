@@ -277,9 +277,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/kaoto@npm:2.3.0-RC1":
-  version: 2.3.0-RC1
-  resolution: "@kaoto/kaoto@npm:2.3.0-RC1"
+"@kaoto/kaoto@npm:2.3.0-RC2":
+  version: 2.3.0-RC2
+  resolution: "@kaoto/kaoto@npm:2.3.0-RC2"
   dependencies:
     "@kaoto-next/uniforms-patternfly": "npm:^0.7.14"
     "@kie-tools-core/editor": "npm:0.32.0"
@@ -289,11 +289,7 @@ __metadata:
     ajv-formats: "npm:^3.0.0"
     clsx: "npm:^2.1.0"
     html-to-image: "npm:^1.11.11"
-    lodash.clonedeep: "npm:^4.5.0"
-    lodash.get: "npm:^4.4.2"
-    lodash.isempty: "npm:^4.4.0"
-    lodash.memoize: "npm:^4.1.2"
-    lodash.set: "npm:^4.3.2"
+    lodash: "npm:^4.17.21"
     monaco-editor: "npm:^0.50.0"
     react-router-dom: "npm:^6.14.1"
     simple-zustand-devtools: "npm:^1.1.0"
@@ -314,7 +310,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     react-monaco-editor: ^0.56.0
-  checksum: 10/e83dd54dea06653f1b5067bea1594774331050622714497338e6403b700fbe96e2b9fa79f8b68273f6b93db330ca0ddd181f0c001f2a80fb1ae4f504bbc5935d
+  checksum: 10/5b39b6a1e72f77551cad0755ff966b1c1756b6cefe6be4dc395fb232f9508635c390a81a7206d9a5b3ed2413f245f819ad0a93e191172d4381da03d05f69053c
   languageName: node
   linkType: hard
 
@@ -5421,13 +5417,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.isempty@npm:^4.4.0":
-  version: 4.4.0
-  resolution: "lodash.isempty@npm:4.4.0"
-  checksum: 10/b69de4e08038f3d802fa2f510fd97f6b1785a359a648382ba30fb59e17ce0bcdad9bef2cdb9f9501abb9064c74c6edbb8db86a6d827e0d380a50a6738e051ec3
-  languageName: node
-  linkType: hard
-
 "lodash.isinteger@npm:^4.0.4":
   version: 4.0.4
   resolution: "lodash.isinteger@npm:4.0.4"
@@ -5456,24 +5445,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.memoize@npm:^4.1.2":
-  version: 4.1.2
-  resolution: "lodash.memoize@npm:4.1.2"
-  checksum: 10/192b2168f310c86f303580b53acf81ab029761b9bd9caa9506a019ffea5f3363ea98d7e39e7e11e6b9917066c9d36a09a11f6fe16f812326390d8f3a54a1a6da
-  languageName: node
-  linkType: hard
-
 "lodash.once@npm:^4.0.0":
   version: 4.1.1
   resolution: "lodash.once@npm:4.1.1"
   checksum: 10/202f2c8c3d45e401b148a96de228e50ea6951ee5a9315ca5e15733d5a07a6b1a02d9da1e7fdf6950679e17e8ca8f7190ec33cae47beb249b0c50019d753f38f3
-  languageName: node
-  linkType: hard
-
-"lodash.set@npm:^4.3.2":
-  version: 4.3.2
-  resolution: "lodash.set@npm:4.3.2"
-  checksum: 10/f0968109bca5625c8ce1f1beab758634484443604d3950477e46d8d2631562e5ceae4465b9ce8a393fd47f5a411329f9bacf956c7c95530af1290db1a20343ba
   languageName: node
   linkType: hard
 
@@ -8581,7 +8556,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto/kaoto": "npm:2.3.0-RC1"
+    "@kaoto/kaoto": "npm:2.3.0-RC2"
     "@kie-tools-core/backend": "npm:0.32.0"
     "@kie-tools-core/editor": "npm:0.32.0"
     "@kie-tools-core/i18n": "npm:0.32.0"
