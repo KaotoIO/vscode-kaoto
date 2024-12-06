@@ -94,8 +94,8 @@ export class Route extends TreeItem {
 	}
 
 	iconPath = {
-		light: join(__filename, '..', '..', '..', 'icons', 'route-light.png'),
-		dark: join(__filename, '..', '..', '..', 'icons', 'route-dark.png'),
+		light: join(__filename, '..', '..', '..', 'icons', 'route-red.svg'),
+		dark: join(__filename, '..', '..', '..', 'icons', 'route-white.svg'),
 	}
 
 	contextValue = 'route';
