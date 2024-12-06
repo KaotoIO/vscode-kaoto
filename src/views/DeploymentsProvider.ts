@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 import { Event, EventEmitter, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
-import { basename, isAbsolute, join } from 'path';
+import { join } from 'path';
+import { getBasenameIfAbsolute } from '../../src/helpers/helpers';
 
 export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
     private _onDidChangeTreeData: EventEmitter<TreeItem | undefined | null | void> = new EventEmitter<TreeItem | undefined | null | void>();
@@ -236,7 +237,7 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
                             jsonRoute.statistics
                         );
 
-                        const fileNameKey = this.getBasenameIfAbsolute(route.associatedFile)
+                        const fileNameKey = getBasenameIfAbsolute(route.associatedFile)
                         deployments.has(fileNameKey)
                             ? deployments.get(fileNameKey)?.push(route)
                             : deployments.set(fileNameKey, [route]);
@@ -260,14 +261,6 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
         }
 
         return deployments;
-    }
-
-    // Check if the input is an absolute path
-    private getBasenameIfAbsolute(input: string): string {
-        if (isAbsolute(input)) {
-            return basename(input); // If it's absolute, return only the basename
-        }
-        return input;
     }
 
     private getDisplayName(fileName: string): string {

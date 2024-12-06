@@ -18,12 +18,14 @@
 import { TaskScope } from "vscode";
 import { CamelJBangTask } from "./CamelJBangTask";
 import { CamelJBang } from "../helpers/CamelJBang";
+import { getBasenameIfAbsolute } from "../helpers/helpers";
 
 export class CamelRunJBangTask extends CamelJBangTask {
 
 	constructor(patternForCamelFiles: string, cwd?: string, port?: number) {
+		const label = getBasenameIfAbsolute(patternForCamelFiles);
 		super(TaskScope.Workspace,
-			'Run Camel Application with JBang',
+			`Kaoto: Running Integration - ${label}`,
 			new CamelJBang().run(patternForCamelFiles, cwd, port));
         this.isBackground = true;
 

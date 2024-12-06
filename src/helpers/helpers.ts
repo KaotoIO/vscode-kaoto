@@ -15,6 +15,7 @@
  */
 import { ProgressLocation, window } from 'vscode';
 import { execSync } from 'child_process';
+import { basename, isAbsolute } from 'path';
 
 export const KAOTO_FILE_PATH_GLOB: string = '**/*.{yml,yaml}';
 
@@ -32,4 +33,12 @@ export async function isCamelPluginInstalled(plugin: string): Promise<boolean> {
 		progress.report({ increment: 100 });
 	});
 	return output.includes(plugin);
+}
+
+// Check if the input is an absolute path
+export function getBasenameIfAbsolute(input: string): string {
+	if (isAbsolute(input)) {
+		return basename(input); // If it's absolute, return only the basename
+	}
+	return input;
 }
