@@ -18,39 +18,65 @@ import { ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri } 
 
 export class HelpFeedbackProvider implements TreeDataProvider<HelpFeedbackItem> {
 
-	getTreeItem(item: HelpFeedbackItem): HelpFeedbackItem {
-		return item;
-	}
+    private items: HelpFeedbackItem[];
 
-	getChildren(item?: HelpFeedbackItem): Thenable<HelpFeedbackItem[]> {
-        return Promise.resolve(this.getHelpFeedbackItems());
-	}
+    private static readonly HELP_ITEMS = [
+        { label: 'Enterprise Integration Explorer', icon: 'integration.svg', url: 'https://camel.solutionpatterns.io/#/patterns' },
+        { label: 'Tutorials', icon: new ThemeIcon('library'), url: 'https://kaoto.io/workshop/' },
+        { label: 'Documentation', icon: new ThemeIcon('book'), url: 'https://kaoto.io/docs/' },
+        { label: 'Examples', icon: new ThemeIcon('github'), url: 'https://github.com/KaotoIO/kaoto-examples' },
+        { label: 'Feedback', icon: new ThemeIcon('comment'), url: 'https://github.com/KaotoIO/kaoto/issues/new/choose' },
+        { label: 'Apache Camel', icon: 'camel-logo.svg', url: 'https://camel.apache.org/camel-core/getting-started/index.html' },
+        { label: 'Hawtio', icon: new ThemeIcon('flame'), url: 'https://hawt.io/docs/get-started.html' }
+    ];
+
+    constructor() {
+        // since these items are static, it can be stored in a private property instead of re-creating them each time getChildren() is called.
+        this.items = this.getHelpFeedbackItems();
+    }
+
+    getTreeItem(item: HelpFeedbackItem): HelpFeedbackItem {
+        return item;
+    }
+
+    getChildren(item?: HelpFeedbackItem): Thenable<HelpFeedbackItem[]> {
+        if (item) {
+            // No children for these items since they're all leaves
+            return Promise.resolve([]);
+        }
+        return Promise.resolve(this.items);
+    }
 
     private getHelpFeedbackItems(): HelpFeedbackItem[] {
-        return [
-            new HelpFeedbackItem('Enterprise Integration Explorer',  join(__filename, '..', '..', '..', 'icons', 'help', 'integration.svg'), 'https://camel.solutionpatterns.io/#/patterns'),
-            new HelpFeedbackItem('Tutorials',  new ThemeIcon('library'), 'https://kaoto.io/workshop/'),
-            new HelpFeedbackItem('Documentation', new ThemeIcon('book'), 'https://kaoto.io/docs/'),
-            new HelpFeedbackItem('Examples', new ThemeIcon('github'), 'https://github.com/KaotoIO/kaoto-examples'),
-            new HelpFeedbackItem('Feedback', new ThemeIcon('comment'), 'https://github.com/KaotoIO/kaoto/issues/new/choose'),
-            new HelpFeedbackItem('Apache Camel', join(__filename, '..', '..', '..', 'icons', 'help', 'camel-logo.svg'), 'https://camel.apache.org/camel-core/getting-started/index.html'),
-            new HelpFeedbackItem('Hawtio', new ThemeIcon('flame'), 'https://hawt.io/docs/get-started.html')
-        ];
+        return HelpFeedbackProvider.HELP_ITEMS.map(item =>
+            new HelpFeedbackItem(
+                item.label,
+                typeof item.icon === 'string' ? this.getIconPath(item.icon) : item.icon,
+                item.url
+            )
+        );
+    }
+
+    private getIconPath(name: string): string {
+        return join(__filename, '..', '..', '..', 'icons', 'help', name);
     }
 }
 
 export class HelpFeedbackItem extends TreeItem {
-	constructor(
-		public readonly name: string,
-		public readonly icon: string | Uri | { light: string | Uri; dark: string | Uri } | ThemeIcon,
+    constructor(
+        public readonly name: string,
+        public readonly icon: string | Uri | { light: string | Uri; dark: string | Uri } | ThemeIcon,
         public readonly url: string
-	) {
-		super(name, TreeItemCollapsibleState.None);
-	}
+    ) {
+        super(name, TreeItemCollapsibleState.None);
 
-    command = { command: 'vscode.open', title: `Open ${this.name}`, arguments: [Uri.parse(this.url)] };
-
-	iconPath = this.icon;
-
-    contextValue = 'help';
+        this.iconPath = this.icon;
+        this.contextValue = 'help';
+        this.command = {
+            command: 'vscode.open',
+            title: `Open ${this.name}`,
+            arguments: [Uri.parse(this.url)]
+        };
+        this.tooltip = `Open ${this.name} in your browser`;
+    }
 }
