@@ -57,7 +57,7 @@
   "main": "./dist/extension/extension.js",
   "browser": "./dist/extension/extensionWeb.js",
   "engines": {
-    "vscode": "^1.74.0"
+    "vscode": "^1.95.0"
   },
   "categories": [
     "Other"
@@ -239,6 +239,36 @@
         "icon": "$(refresh)"
       },
       {
+        "command": "camel.deployments.resume",
+        "title": "Resume",
+        "category": "Kaoto",
+        "icon": "$(debug-continue)"
+      },
+      {
+        "command": "camel.deployments.suspend",
+        "title": "Suspend",
+        "category": "Kaoto",
+        "icon": "$(debug-pause)"
+      },
+      {
+        "command": "camel.deployments.stop",
+        "title": "Stop",
+        "category": "Kaoto",
+        "icon": "$(debug-stop)"
+      },
+      {
+        "command": "camel.deployments.integration.stop",
+        "title": "Stop",
+        "category": "Kaoto",
+        "icon": "$(circle-slash)"
+      },
+      {
+        "command": "camel.deployments.integration.logs",
+        "title": "Follow Logs",
+        "category": "Kaoto",
+        "icon": "$(terminal)"
+      },
+      {
         "command": "camel.openapi.refresh",
         "title": "Refresh",
         "category": "Kaoto",
@@ -353,13 +383,38 @@
         },
         {
           "command": "camel.integrations.editEntry",
-          "when": "view == camel.integrations",
+          "when": "view == camel.integrations && viewItem == integrationFile",
           "group": "navigation"
         },
         {
           "command": "camel.integrations.deleteEntry",
-          "when": "view == camel.integrations",
+          "when": "view == camel.integrations && viewItem == integrationFile",
           "group": "navigation"
+        },
+        {
+          "command": "camel.deployments.resume",
+          "group": "inline@1",
+          "when": "view == camel.deployments && viewItem =~ /^.*resumeEnabled.*$/"
+        },
+        {
+          "command": "camel.deployments.suspend",
+          "group": "inline@2",
+          "when": "view == camel.deployments && viewItem =~ /^.*suspendEnabled.*$/"
+        },
+        {
+          "command": "camel.deployments.stop",
+          "group": "inline@3",
+          "when": "view == camel.deployments && viewItem =~ /^.*stopEnabled.*$/"
+        },
+        {
+          "command": "camel.deployments.integration.stop",
+          "group": "inline@1",
+          "when": "view == camel.deployments && viewItem == parent-localhost"
+        },
+        {
+          "command": "camel.deployments.integration.logs",
+          "group": "inline@2",
+          "when": "view == camel.deployments && viewItem == parent-localhost"
         }
       ]
     },
@@ -548,6 +603,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.10",
     "@types/react": "18.3.1",
+    "@types/vscode": "^1.95.0",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "@vscode/test-web": "^0.0.65",

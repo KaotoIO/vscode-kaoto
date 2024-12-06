@@ -22,10 +22,14 @@ import { CamelJBang } from "../helpers/CamelJBang";
 
 export class CamelRunJBangTask extends CamelJBangTask {
 
-	constructor(patternForCamelFiles: string, cwd?: string) {
+	constructor(patternForCamelFiles: string, cwd?: string, port?: number) {
 		super(TaskScope.Workspace,
 			'Run Camel Application with JBang',
-			new CamelJBang().run(patternForCamelFiles, cwd));
+			new CamelJBang().run(patternForCamelFiles, cwd, port));
         this.isBackground = true;
+
+		// TODO generate port number in giver range :8080 - :XXXX ??
+
+		// TODO spawn http agent for giver port
 	}
 }

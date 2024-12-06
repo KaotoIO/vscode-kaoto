@@ -34,7 +34,7 @@ export class CamelJBang {
 		return new ShellExecution('jbang', [`'-Dcamel.jbang.version=${this.camelJBangVersion}'`, 'camel@apache/camel', 'init', `'${file}'`]);
 	}
 
-	public run(filePattern: string, cwd?: string): ShellExecution {
+	public run(filePattern: string, cwd?: string, port?: number): ShellExecution {
 		const shellExecOptions: ShellExecutionOptions = {
 			cwd: cwd
 		};
@@ -45,6 +45,8 @@ export class CamelJBang {
 				filePattern,
 				'--dev',
 				'--logging-level=info',
+				'--console',
+				`--port=${port ? port : 8080}`,
 				this.getCamelVersion(),
 				this.getRedHatMavenRepository(),
 				...this.getExtraLaunchParameter()

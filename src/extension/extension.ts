@@ -36,9 +36,9 @@ import { CamelKubernetesRunJBangTask } from "../../src/tasks/CamelKubernetesRunJ
 import { CamelAddPluginJBangTask } from "../../src/tasks/CamelAddPluginJBangTask";
 import { IntegrationsProvider, IntegrationFile } from "../views/IntegrationsProvider";
 import { HelpFeedbackProvider } from "../../src/views/HelpFeedbackProvider";
-import { DeploymentsProvider } from "../../src/views/DeploymentsProvider";
 import { OpenApiProvider } from "../../src/views/OpenApiProvider";
 import { confirmFileDeleteDialog } from '../../src/helpers/modals';
+import { DeploymentsProvider, Route } from "../views/DeploymentsProvider";
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -125,19 +125,77 @@ export async function activate(context: vscode.ExtensionContext) {
 		await sendCommandTrackingEvent('camel.integrations.kubernetes.run');
 	}));
 
-	// register deployments view provider
-	const deploymentsProvider = new DeploymentsProvider();
-	vscode.window.registerTreeDataProvider('camel.deployments', deploymentsProvider);
-	vscode.commands.registerCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID, () => deploymentsProvider.refresh());
+	// Define localhost ports (you can adjust these as per your requirements)
+	const localhostPortRange: [number, number] = [8080, 8090];
 
-	// register openapi view provider
+	// Function to fetch Kubernetes data (mock or real implementation)
+	const fetchKubernetesData = async (): Promise<Map<string, Route[]>> => {
+		// TODO
+		// Replace this with your actual implementation for Kubernetes data fetching
+		const mockData = new Map<string, Route[]>();
+		return mockData;
+	};
+
+	/*
+	 * register deployments view provider
+	 */
+	const deploymentsProvider = new DeploymentsProvider(fetchKubernetesData, localhostPortRange);
+	// register deployments refresh command
+	vscode.commands.registerCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID, () => deploymentsProvider.refresh());
+	// Dispose the provider on deactivation
+	context.subscriptions.push({
+		dispose: () => deploymentsProvider.dispose()
+	});
+
+	// Register the Tree Data Provider
+	const treeView = vscode.window.createTreeView('camel.deployments', {
+		treeDataProvider: deploymentsProvider,
+		showCollapseAll: true
+	});
+	context.subscriptions.push(treeView);
+
+	// Automatically refresh when the Tree View becomes visible
+	treeView.onDidChangeVisibility((event) => {
+		if (event.visible) {
+			deploymentsProvider.refresh();
+		}
+	});
+
+	// Listen to changes in text documents
+	let debounceTimer: NodeJS.Timeout | undefined; // Debounce timer
+	const textDocumentChangeListener = vscode.workspace.onDidChangeTextDocument((event) => {
+		const document = event.document;
+
+		// Check if the edited document is relevant
+		if (document.fileName.endsWith('.camel.yaml')) {
+			console.log(`Document edited: ${document.fileName}`);
+
+			// Clear any existing timer
+			if (debounceTimer) {
+				clearTimeout(debounceTimer);
+			}
+
+			// Set a new debounce timer (e.g., 1s)
+			debounceTimer = setTimeout(() => {
+				console.log('Triggering refresh after 1s delay...');
+				deploymentsProvider.refresh(); // Trigger manual refresh
+			}, 1_000); // Adjust delay as needed
+		}
+	});
+	context.subscriptions.push(textDocumentChangeListener);
+
+	/*
+	 * register openapi view provider
+	 */
 	if (rootPath) {
 		const openApiProvider = new OpenApiProvider(rootPath);
 		vscode.window.registerTreeDataProvider('camel.openapi', openApiProvider);
 		vscode.commands.registerCommand(KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID, () => openApiProvider.refresh());
 	}
 
-	// register help & feedback view provider
+	/*
+	 * register help & feedback view provider
+	 */
 	vscode.window.registerTreeDataProvider('camel.help', new HelpFeedbackProvider());
 
 	// register command for open camel source code in side to side editor
@@ -152,47 +210,46 @@ export async function activate(context: vscode.ExtensionContext) {
 	 * register listeners for Integrations section
 	 * TODO at the moment 'await' for vscode.commands.executeCommand method was skipped, not sure, just wanted to not block thread
 	 */
-	vscode.workspace.onDidSaveTextDocument(() => {
+	context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(() => {
 		// TODO made actions for only Kaoto related files
 		vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
-		vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
 		vscode.commands.executeCommand(KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID);
-	});
+	}));
 
 	/**
 	 * register listeners for Explorer made changes
 	 * TODO at the moment 'await' for vscode.commands.executeCommand method was skipped, not sure, just wanted to not block thread
 	 */
-	vscode.workspace.onDidCreateFiles(() => {
+	context.subscriptions.push(vscode.workspace.onDidCreateFiles(() => {
 		// handling creating new files directly using Explorer
 		// TODO made actions for only Kaoto related files
 		vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
-		vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
+		deploymentsProvider.refresh();
 		vscode.commands.executeCommand(KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID);
-	});
-	vscode.workspace.onDidDeleteFiles(() => {
+	}));
+	context.subscriptions.push(vscode.workspace.onDidDeleteFiles(() => {
 		// handling deleting files directly using Explorer
 		// TODO made actions for only Kaoto related files
 		vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
-		vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
+		deploymentsProvider.refresh();
 		vscode.commands.executeCommand(KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID);
-	});
-	vscode.workspace.onDidRenameFiles(() => {
+	}));
+	context.subscriptions.push(vscode.workspace.onDidRenameFiles(() => {
 		// handling deleting files directly using Explorer
 		// TODO made actions for only Kaoto related files
 		vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
-		vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
+		deploymentsProvider.refresh();
 		vscode.commands.executeCommand(KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID);
-	});
+	}));
 
 	/**
 	 * register listeners for Terminal state changes
 	 */
-	vscode.window.onDidChangeTerminalState(async () => {
+	context.subscriptions.push(vscode.window.onDidChangeTerminalState(async () => {
 		// TODO made actions for only Kaoto related files
 		await new Promise((time) => setTimeout(time, 500)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
-		await vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
-	});
+		deploymentsProvider.refresh();
+	}));
 
 	// register command for close camel source code in side to side editor
 	context.subscriptions.push(vscode.commands.registerCommand('kaoto.close.source', async () => {

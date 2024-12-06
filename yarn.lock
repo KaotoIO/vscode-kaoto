@@ -1659,6 +1659,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/vscode@npm:^1.95.0":
+  version: 1.95.0
+  resolution: "@types/vscode@npm:1.95.0"
+  checksum: 10/2ec60421c66816355a565dcf4a5fdcc05f751754c192b0b8b84f3006ebbc64c72421de1a90fa3dbc74cac5dd0dc30eeaea4a8064a8a50d6e3df908390781522d
+  languageName: node
+  linkType: hard
+
 "@types/ws@npm:*":
   version: 8.5.10
   resolution: "@types/ws@npm:8.5.10"
@@ -9107,6 +9114,7 @@ __metadata:
     "@types/fs-extra": "npm:^11.0.4"
     "@types/mocha": "npm:^10.0.10"
     "@types/react": "npm:18.3.1"
+    "@types/vscode": "npm:^1.95.0"
     "@vscode/test-cli": "npm:^0.0.10"
     "@vscode/test-electron": "npm:^2.4.1"
     "@vscode/test-web": "npm:^0.0.65"
