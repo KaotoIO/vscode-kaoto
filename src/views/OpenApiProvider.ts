@@ -1,6 +1,6 @@
 import { globSync } from 'glob';
 import { readFileSync } from 'node:fs';
-import { Event, EventEmitter, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
+import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
 import { basename, extname, join } from 'path';
 import YAML from 'yaml';
 
