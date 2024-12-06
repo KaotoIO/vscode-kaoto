@@ -25,19 +25,19 @@ export class CamelJBang {
 
 	private camelJBangVersion: string;
 
-	constructor() {
+	constructor(private readonly jbang: string = 'jbang') {
 		this.camelJBangVersion = workspace.getConfiguration().get('kaoto.camelJBang.Version') as string;
 	}
 
 	public init(file: string): ShellExecution {
-		return new ShellExecution('jbang', [`'-Dcamel.jbang.version=${this.camelJBangVersion}'`, 'camel@apache/camel', 'init', `'${file}'`]);
+		return new ShellExecution(this.jbang, [`'-Dcamel.jbang.version=${this.camelJBangVersion}'`, 'camel@apache/camel', 'init', `'${file}'`]);
 	}
 
 	public run(filePattern: string, cwd?: string, port?: number): ShellExecution {
 		const shellExecOptions: ShellExecutionOptions = {
 			cwd: cwd
 		};
-		return new ShellExecution('jbang', 
+		return new ShellExecution(this.jbang,
 			[`'-Dcamel.jbang.version=${this.camelJBangVersion}'`,
 				'camel@apache/camel',
 				'run',
@@ -58,7 +58,7 @@ export class CamelJBang {
 		const shellExecOptions: ShellExecutionOptions = {
 			cwd: cwd
 		};
-		return new ShellExecution('jbang', 
+		return new ShellExecution(this.jbang,
 			[`'-Dcamel.jbang.version=${this.camelJBangVersion}'`,
 				'camel@apache/camel',
 				'kubernetes',
@@ -72,15 +72,15 @@ export class CamelJBang {
 	}
 
 	public bind(file: string, source: string, sink: string): ShellExecution {
-		return new ShellExecution('jbang', [`'-Dcamel.jbang.version=${this.camelJBangVersion}'`, 'camel@apache/camel', 'bind', '--source', source, '--sink', sink, `'${file}'`]);
+		return new ShellExecution(this.jbang, [`'-Dcamel.jbang.version=${this.camelJBangVersion}'`, 'camel@apache/camel', 'bind', '--source', source, '--sink', sink, `'${file}'`]);
 	}
 
 	public createProject(gav: string, runtime: string): ShellExecution {
-		return new ShellExecution('jbang', [`'-Dcamel.jbang.version=${this.camelJBangVersion}'`, 'camel@apache/camel', 'export', `--runtime=${runtime}`, `--gav=${gav}`]);
+		return new ShellExecution(this.jbang, [`'-Dcamel.jbang.version=${this.camelJBangVersion}'`, 'camel@apache/camel', 'export', `--runtime=${runtime}`, `--gav=${gav}`]);
 	}
 
 	public add(plugin: string): ShellExecution {
-		return new ShellExecution('jbang',
+		return new ShellExecution(this.jbang,
 			[`'-Dcamel.jbang.version=${this.camelJBangVersion}'`,
 				'camel@apache/camel',
 				'plugin',
