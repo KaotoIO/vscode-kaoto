@@ -41,6 +41,9 @@ jobs:
       run: |
         yarn
         yarn workspace @kaoto/kaoto run build:lib
+    - name: yarn link private kaoto package
+      working-directory: vscode-kaoto
+      run: yarn link ../kaoto/packages/xml-schema-ts --private
     - name: yarn link kaoto
       working-directory: vscode-kaoto
       run: yarn link ../kaoto/packages/ui

@@ -103,9 +103,12 @@ If you'd like to test latest Kaoto and not rely on a released version, follow th
 * In `kaoto` local clone folder:
   * `yarn`
   * `yarn workspace @kaoto/camel-catalog run build`
+  * `yarn workspace @kaoto/xml-schema-ts run build`
   * `yarn workspace @kaoto/kaoto run build:lib`
 * Open VS Code on `vscode-kaoto` local clone folder
 * `yarn`
+* `yarn link` _\<kaoto local clone folder uri>/packages/xml-schema-ts --private
+  * i.e. `yarn link ~/repositories/kaoto/packages/xml-schema-ts --private`
 * `yarn link` _\<kaoto local clone folder uri>/packages/kaoto-_
   * i.e. `yarn link ~/repositories/kaoto/packages/ui`
 * `yarn build:dev`
@@ -118,6 +121,8 @@ If you'd like to test latest Kaoto and not rely on a released version, follow th
 To return to the default Kaoto version, just write on `vscode-kaoto` local clone folder:
 * `yarn unlink` _\<kaoto local clone folder uri>/packages/ui_
   * i.e. `yarn unlink ~/repositories/kaoto/packages/ui`
+* `yarn unlink` _\<kaoto local clone folder uri>/packages/xml-schema-ts_
+  * i.e. `yarn unlink ~/repositories/kaoto/packages/xml-schema-ts`
 
 More information about [linking](https://yarnpkg.com/cli/link) and [unlinking](https://yarnpkg.com/cli/unlink) local packages with [yarn](https://yarnpkg.com/)
 
