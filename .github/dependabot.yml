@@ -15,7 +15,6 @@ updates:
       - dependency-name: "@types/react"
       - dependency-name: "*-browserify"
       - dependency-name: "*-loader"
-      - dependency-name: "webpack*"
       - dependency-name: "monaco-editor"
   - package-ecosystem: "github-actions"
     directory: "/"
