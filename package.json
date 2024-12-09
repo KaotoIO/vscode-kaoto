@@ -216,7 +216,7 @@
     "webpack": "5.88.2",
     "webpack-cli": "5.1.4",
     "webpack-merge": "5.9.0",
-    "webpack-permissions-plugin": "^1.0.9"
+    "webpack-permissions-plugin": "^1.0.10"
   },
   "resolutions": {
     "react": "18.3.1",
