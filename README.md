@@ -26,9 +26,9 @@
 <a href="https://www.kaoto.io">Kaoto</a> is an integration editor to create and deploy workflows in a visual, low-code way, with developer-friendly features like a code editor and deployments to the cloud. Kaoto augments user productivity via <a href="https://camel.apache.org">Apache Camel</a>. It accelerates new users and helps experienced developers.
 </p><br/>
 
-<p align="center"><img src="images/designer.png" alt="Shows the Kaoto graphical integration designer displaying an integration with multiple steps" width="100%"/></p>
+<p align="center"><img src="./images/kaoto-2.3.0.png" alt="Shows Kaoto - The Integration Designer for Apache Camel" width="100%"/></p>
 
-<p align="center"><img src="images/catalog.png" alt="Shows the Kaoto internal catalog with all AI related components" width="100%"/></p>
+<p align="center"><img src="./images/kaoto-2.3.0_catalog.png" alt="Shows the Kaoto internal catalog components" width="100%"/></p>
 
 ### Features
 
