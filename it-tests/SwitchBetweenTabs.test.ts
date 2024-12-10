@@ -17,6 +17,7 @@ describe('Switching between editor tabs', function () {
 			tabText: 'pf-v5-c-tabs__item-text',
 			designTabLabel: 'Design canvas',
 			beansTabLabel: 'Beans editor',
+			dataMapperTabLabel: 'DataMapper',
 		},
 		DesignCanvas: {
 			canvas: 'topology'
@@ -24,6 +25,9 @@ describe('Switching between editor tabs', function () {
 		BeansEditor: {
 			listView: 'metadata-editor-modal-list-view',
 			detailsView: 'metadata-editor-modal-details-view'
+		},
+		DataMapper: {
+			howTo: 'pf-v5-l-bullseye datamapper-howto'
 		}
 	}
 
@@ -46,7 +50,7 @@ describe('Switching between editor tabs', function () {
 			driver,
 			true
 		)).kaotoWebview;
-		expect(await getTabsCount()).to.equal(2);
+		expect(await getTabsCount()).to.equal(3);
 		expect(await getActiveTabName()).to.equal('Design');
 	});
 
@@ -54,6 +58,12 @@ describe('Switching between editor tabs', function () {
 		await switchToTab(locators.EditorTabs.beansTabLabel);
 		await waitForBeansEditorIsLoaded();
 		expect(await getActiveTabName()).to.equal('Beans');
+	});
+
+	it('Switch to "DataMapper" tab and check it is active', async function () {
+		await switchToTab(locators.EditorTabs.dataMapperTabLabel);
+		await waitForDataMapperIsLoaded();
+		expect(await getActiveTabName()).to.equal('DataMapper');
 	});
 
 	it('Switch back to "Design" tab and check it is active', async function () {
@@ -96,6 +106,12 @@ describe('Switching between editor tabs', function () {
 		);
 		await driver.wait(until.elementLocated(By.className(locators.BeansEditor.detailsView)),
 			5_000, 'Beans "details" view was not loaded properly!'
+		);
+	}
+
+	async function waitForDataMapperIsLoaded() {
+		await driver.wait(until.elementLocated(By.className(locators.DataMapper.howTo)),
+			5_000, 'DataMapper "howTo" content was not loaded properly!'
 		);
 	}
 });
