@@ -1,3 +1,5 @@
+# 2.4.0
+
 # 2.3.0
 
 - Introduced a `Kaoto` output channel. It is initially used to log message of exceptions.
