@@ -1,7 +1,7 @@
 # 2.3.0
 
 - Introduced a `Kaoto` output channel. It is initially used to log message of exceptions.
-- Upgrade to Kaoto 2.3.0-RC2
+- Upgrade to Kaoto 2.3.0-RC4
 - Start attempt to have VS Code Kaoto version number aligned with version of Kaoto that is embedded
 
 # 1.3.0
