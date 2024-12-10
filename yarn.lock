@@ -2302,10 +2302,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"async-wait-until@npm:^2.0.12":
-  version: 2.0.12
-  resolution: "async-wait-until@npm:2.0.12"
-  checksum: 10/b17bc82c1da2995107969353e81479aeaab8f223c31e201ac5d2c0f0fdc225e18345fcdfe7a4d9864fe97283c60681ca06acd7657f25f29d20fc7b7d3e0089ff
+"async-wait-until@npm:^2.0.18":
+  version: 2.0.18
+  resolution: "async-wait-until@npm:2.0.18"
+  checksum: 10/f71f0da29ed4c869758fa36cb260616d37ce127c5eefd43a2ba65f32c9d262ea05c7d4bfcd70ef8f34d18cd6ac71b3c7f526c77b0a71d2b3a30a240c48e95ea3
   languageName: node
   linkType: hard
 
@@ -8895,7 +8895,7 @@ __metadata:
     "@vscode/test-electron": "npm:^2.4.1"
     "@vscode/test-web": "npm:^0.0.65"
     "@vscode/vsce": "npm:^3.2.1"
-    async-wait-until: "npm:^2.0.12"
+    async-wait-until: "npm:^2.0.18"
     buffer: "npm:^6.0.3"
     chai: "npm:^4.3.10"
     constants-browserify: "npm:^1.0.0"
