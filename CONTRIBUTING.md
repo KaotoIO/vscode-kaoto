@@ -1,8 +1,6 @@
-Everyone is welcome to contribute to Kaoto.
+# How to Contribute
 
-We have a Kanban board with good first issues in https://github.com/orgs/KaotoIO/projects/4
-
-There are many ways to contribute to Kaoto:
+Everyone is welcome to contribute to Kaoto. We have a [Kanban Board](https://github.com/orgs/KaotoIO/projects/14) with good first issues.
 
 ## Issues
 
@@ -37,12 +35,12 @@ Comments that don't follow this standard may be ignored.
 
 There are a few things to consider when sending a pull request merge:
 
- * Small commits. We prefer small commits because they are easier to review
- * All commits must pass tests: Each commit should have consistency on its own and don't break any functionality
- * All jobs/checks must be green: This includes test coverage, code smells, security issues,...
- * Be descriptive on the PR text about what the changes are. Better to have duplicated explanation than no explanation at all. Provide examples.
- * Add screenshots and videos of what your PR is doing. Especially if you are adding a new feature.
- * High test coverage: Your code must be covered by unit and e2e tests. If for some reason your PR can't or shouldn't, be very clear why. The tests must be included in the same PR.
+* Small commits. We prefer small commits because they are easier to review
+* All commits must pass tests: Each commit should have consistency on its own and don't break any functionality
+* All jobs/checks must be green: This includes test coverage, code smells, security issues,...
+* Be descriptive on the PR text about what the changes are. Better to have duplicated explanation than no explanation at all. Provide examples.
+* Add screenshots and videos of what your PR is doing. Especially if you are adding a new feature.
+* High test coverage: Your code must be covered by unit and e2e tests. If for some reason your PR can't or shouldn't, be very clear why. The tests must be included in the same PR.
 
 ### How your commits messages should look like
 
@@ -54,7 +52,7 @@ This convention dovetails with SemVer, by describing the features, fixes, and br
 
 The commit message should be structured as follows:
 
-```
+```plain
 <type>[optional scope]: <description>
 
 [optional body]
@@ -92,7 +90,7 @@ Inside VS Code, launch the `Run and Debug configuration` called `Run Extension`.
 
 #### Web
 
-This is available for future plan. This is not supported.
+This is available for future plan. **This is not supported**.
 
 You need to launch the script task `yarn run run:webmode`
 
@@ -106,7 +104,7 @@ If you'd like to test latest Kaoto and not rely on a released version, follow th
   * `yarn workspace @kaoto/kaoto run build:lib`
 * Open VS Code on `vscode-kaoto` local clone folder
 * `yarn`
-* `yarn link` _\<kaoto local clone folder uri>/packages/kaoto-_
+* `yarn link` _\<kaoto local clone folder uri>/packages/kaoto_
   * i.e. `yarn link ~/repositories/kaoto/packages/ui`
 * `yarn build:dev`
 * In `Run and debug` perspective, call the `Run Extension` launch configuration
@@ -116,6 +114,7 @@ If you'd like to test latest Kaoto and not rely on a released version, follow th
   * Open the file
 
 To return to the default Kaoto version, just write on `vscode-kaoto` local clone folder:
+
 * `yarn unlink` _\<kaoto local clone folder uri>/packages/ui_
   * i.e. `yarn unlink ~/repositories/kaoto/packages/ui`
 
@@ -167,7 +166,6 @@ It is launching UI tests. Beware that it can take several minutes to start. Stay
 * Open new PR and wait till checks are green
 * Wait for review from contributors
 
-
 ## How to provide a new release version on VS Code Marketplace
 
 * Check that the version in package.json has not been published yet
@@ -182,7 +180,7 @@ It is launching UI tests. Beware that it can take several minutes to start. Stay
 * Push the tag to vscode-kaoto repository
 * Start build on [Jenkins CI](https://master-jenkins-csb-fusetools-qe.apps.ocp-c1.prod.psi.redhat.com/view/VS%20Code%20-%20release/job/vscode/job/eng/job/vscode-kaoto-release/) with _publishToMarketPlace_ and _publishToOVSX_ parameters checked
 * When the build hits the _Publish to Marketplace_ step, it will wait for an approval
-* It is possible to check that the produced vsix is valid by using the one pushed in [Jboss download area](https://download.jboss.org/jbosstools/vscode/snapshots/vscode-kaoto/)
+* It is possible to check that the produced vsix is valid by using the one pushed in [JBoss download area](https://download.jboss.org/jbosstools/vscode/snapshots/vscode-kaoto/)
 * For someone in _submitter_ list:
   * Ensure you are logged in
   * Go to the console log of the build and click `Proceed`
