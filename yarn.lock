@@ -8926,7 +8926,7 @@ __metadata:
     webpack: "npm:5.88.2"
     webpack-cli: "npm:5.1.4"
     webpack-merge: "npm:5.9.0"
-    webpack-permissions-plugin: "npm:^1.0.9"
+    webpack-permissions-plugin: "npm:^1.0.10"
   languageName: unknown
   linkType: soft
 
@@ -9050,12 +9050,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-permissions-plugin@npm:^1.0.9":
-  version: 1.0.9
-  resolution: "webpack-permissions-plugin@npm:1.0.9"
+"webpack-permissions-plugin@npm:^1.0.10":
+  version: 1.0.10
+  resolution: "webpack-permissions-plugin@npm:1.0.10"
   dependencies:
     filehound: "npm:^1.17.6"
-  checksum: 10/c59e773d1dbb4d28759fd5164c26462d650c0b95128d5c02daa7fbfa6a52437dff9445337798c94c7e733563c93a9e5651e41e63f0da7eb2c0e0331773b904d8
+  checksum: 10/53f8ebf778ca9aa0ed27546905ad58afea9b00dd90a81434c82cab9d8596d5f69481788badad3b5cdd7291650ab51bbc4806aead170d51d4169da31ad72b13d8
   languageName: node
   linkType: hard
 
