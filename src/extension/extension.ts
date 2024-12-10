@@ -38,6 +38,7 @@ import { HelpFeedbackProvider } from "../../src/views/HelpFeedbackProvider";
 import { OpenApiProvider } from "../../src/views/OpenApiProvider";
 import { confirmFileDeleteDialog } from '../../src/helpers/modals';
 import { DeploymentsProvider, Route } from "../views/DeploymentsProvider";
+import * as pjson from '../../package.json';
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -81,6 +82,27 @@ export async function activate(context: vscode.ExtensionContext) {
 		channelApiProducer: new VSCodeKaotoChannelApiProducer(),
 		editorDocumentType: "text" // TODO verify it will not break anything - this is needed for listeners to be able to update Kaoto view sections immediately
 	});
+
+	// create a new status bar item that we can now manage
+	const kaotoStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+	kaotoStatusBarItem.name = 'Kaoto UI';
+	kaotoStatusBarItem.tooltip = 'Embedded Kaoto UI version';
+	kaotoStatusBarItem.text = `$(verified) Kaoto ${pjson.dependencies["@kaoto/kaoto"]}`;
+	context.subscriptions.push(kaotoStatusBarItem);
+
+	const textDocumentOpenListener = vscode.workspace.onDidOpenTextDocument((event) => {
+		if (event.fileName.endsWith('.camel.yaml')) {
+			kaotoStatusBarItem.show();
+		}
+	});
+	context.subscriptions.push(textDocumentOpenListener);
+
+	const textDocumentCloseListener = vscode.workspace.onDidCloseTextDocument((event) => {
+		if (event.fileName.endsWith('.camel.yaml')) {
+			kaotoStatusBarItem.hide();
+		}
+	});
+	context.subscriptions.push(textDocumentCloseListener);
 
 	const rootPath = vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0
 		? vscode.workspace.workspaceFolders[0].uri.fsPath
