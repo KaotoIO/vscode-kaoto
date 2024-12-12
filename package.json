@@ -273,6 +273,12 @@
         "title": "Refresh",
         "category": "Kaoto",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "camel.datamappings.refresh",
+        "title": "Refresh",
+        "category": "Kaoto",
+        "icon": "$(refresh)"
       }
     ],
     "keybindings": {
@@ -368,6 +374,11 @@
           "command": "camel.openapi.refresh",
           "group": "navigation",
           "when": "view == camel.openapi"
+        },
+        {
+          "command": "camel.datamappings.refresh",
+          "group": "navigation",
+          "when": "view == camel.datamappings"
         }
       ],
       "view/item/context": [
@@ -452,15 +463,14 @@
           "contextualTitle": "Kaoto"
         },
         {
-          "id": "camel.help",
-          "name": "Help & Feedback",
+          "id": "camel.datamappings",
+          "name": "Data Mappings",
           "contextualTitle": "Kaoto"
         },
         {
-          "id": "camel.datamappings",
-          "name": "Data Mappings",
-          "contextualTitle": "Kaoto",
-          "visibility": "collapsed"
+          "id": "camel.help",
+          "name": "Help & Feedback",
+          "contextualTitle": "Kaoto"
         },
         {
           "id": "camel.connections",

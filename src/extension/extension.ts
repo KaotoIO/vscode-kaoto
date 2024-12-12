@@ -39,6 +39,7 @@ import { OpenApiProvider } from "../../src/views/OpenApiProvider";
 import { confirmFileDeleteDialog } from '../../src/helpers/modals';
 import { DeploymentsProvider, Route } from "../views/DeploymentsProvider";
 import * as pjson from '../../package.json';
+import { DataMappingsProvider } from "../../src/views/DataMappingsProvider";
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -52,6 +53,7 @@ export const CAMEL_JBANG_RUN_ALL_FOLDER_COMMAND_ID = 'camel.jbang.run.all.folder
 export const KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID = 'camel.integrations.refresh';
 export const KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID = 'camel.deployments.refresh';
 export const KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID = 'camel.openapi.refresh';
+export const KAOTO_DATAMAPPINGS_VIEW_REFRESH_COMMAND_ID = 'camel.datamappings.refresh';
 
 export async function activate(context: vscode.ExtensionContext) {
 	console.info("Kaoto extension is alive.");
@@ -226,6 +228,14 @@ export async function activate(context: vscode.ExtensionContext) {
 			await vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside);
 		}
 	}));
+
+	/*
+	* register data mappings provider
+	*/
+	const dataMappingsProvider = new DataMappingsProvider();
+	vscode.window.registerTreeDataProvider('camel.datamappings', dataMappingsProvider);
+	context.subscriptions.push(dataMappingsProvider);
+	context.subscriptions.push(vscode.commands.registerCommand(KAOTO_DATAMAPPINGS_VIEW_REFRESH_COMMAND_ID, () => dataMappingsProvider.refresh()));
 
 	/**
 	 * register listeners for Integrations section
