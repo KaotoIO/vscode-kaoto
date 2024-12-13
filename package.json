@@ -384,22 +384,22 @@
       "view/item/context": [
         {
           "command": "camel.integrations.jbang.run",
-          "when": "view == camel.integrations && viewItem == integrationFile",
+          "when": "view == camel.integrations && viewItem == integration",
           "group": "inline@1"
         },
         {
           "command": "camel.integrations.kubernetes.run",
-          "when": "view == camel.integrations && viewItem == integrationFile",
+          "when": "view == camel.integrations && viewItem == integration",
           "group": "inline@2"
         },
         {
           "command": "camel.integrations.editEntry",
-          "when": "view == camel.integrations && viewItem == integrationFile",
+          "when": "view == camel.integrations && viewItem == integration",
           "group": "navigation"
         },
         {
           "command": "camel.integrations.deleteEntry",
-          "when": "view == camel.integrations && viewItem == integrationFile",
+          "when": "view == camel.integrations && viewItem == integration",
           "group": "navigation"
         },
         {

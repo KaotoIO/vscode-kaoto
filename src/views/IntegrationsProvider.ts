@@ -13,74 +13,95 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { globSync } from 'glob';
-import { readFileSync } from 'node:fs';
-import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
-import { basename, join } from 'path';
+import { promises as fsPromises } from 'fs';
+import { Event, EventEmitter, FileSystemWatcher, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
+import { basename, join, normalize } from 'path';
 import { parse } from 'yaml';
 
 export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
-
 	private _onDidChangeTreeData: EventEmitter<TreeItem | undefined | null | void> = new EventEmitter<TreeItem | undefined | null | void>();
 	readonly onDidChangeTreeData: Event<TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
-	private readonly CAMEL_FILE_PATTERN: string = '.camel.yaml';
+	private static readonly FILE_PATTERN = '**/*.camel.yaml';
+	private static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**}';
+	private fileWatcher: FileSystemWatcher;
 
-	constructor(private workspaceRoot: string) { }
-
-	getTreeItem(integration: IntegrationFile): TreeItem {
-		return integration;
+	constructor() {
+		this.fileWatcher = workspace.createFileSystemWatcher(IntegrationsProvider.FILE_PATTERN);
+		this.fileWatcher.onDidChange(() => this.refresh());
+		this.fileWatcher.onDidCreate(() => this.refresh());
+		this.fileWatcher.onDidDelete(() => this.refresh());
 	}
 
-	getChildren(integration?: IntegrationFile): Thenable<TreeItem[]> {
-		if (!this.workspaceRoot) {
-			return Promise.resolve([]);
-		}
-
-		if(integration) {
-			return Promise.resolve(this.getRoutesInsideIntegrationFile(integration));
-		} else {
-			return Promise.resolve(this.getIntegrationsAvailableInWorkspace(this.workspaceRoot));
-		}
-	}
-
-	private getIntegrationsAvailableInWorkspace(workspaceRoot: string): IntegrationFile[] {
-		const integrationFiles = globSync(`${workspaceRoot}/**/*${this.CAMEL_FILE_PATTERN}`);
-		let integrations: IntegrationFile[] = [];
-		for (const filepath of integrationFiles) {
-			const filename = basename(filepath);
-			integrations.push(new IntegrationFile(this.getIntegrationName(filename), filename, filepath, TreeItemCollapsibleState.Expanded));
-		}
-		return integrations;
-	}
-
-	private getIntegrationName(filename: string): string {
-		return filename.split(new RegExp(String.raw`${this.CAMEL_FILE_PATTERN}`, 'gm'))[0];
-	}
-
-	private getRoutesInsideIntegrationFile(integration: IntegrationFile): Route[] {
-		const camelYAMLfile = readFileSync(integration.filepath, 'utf8');
-		const parsedYaml = parse(camelYAMLfile);
-		if(!parsedYaml) {
-			return [];
-		}
-
-		let routesArray: Route[] = [];
-		for (const topLevelElement of parsedYaml) {
-			const route = topLevelElement.route;
-			if(route) {
-				routesArray.push(new Route(route.id, route.description));
-			}
-		}
-		return routesArray;
+	dispose(): void {
+		this.fileWatcher.dispose();
 	}
 
 	refresh(): void {
 		this._onDidChangeTreeData.fire();
 	}
+
+	getTreeItem(integration: Integration): TreeItem {
+		return integration;
+	}
+
+	async getChildren(integration?: Integration): Promise<TreeItem[]> {
+		if (integration) {
+			return await this.getRoutesInsideIntegrationFile(integration.filepath);
+		}
+
+		const integrations = await this.getIntegrationsAvailableInWorkspace();
+		if (integrations.length === 0) {
+			return [new TreeItem('No integrations found')];
+		}
+
+		return integrations;
+	}
+
+	private async getIntegrationsAvailableInWorkspace(): Promise<Integration[]> {
+		const integrationFiles = await workspace.findFiles(IntegrationsProvider.FILE_PATTERN, IntegrationsProvider.EXCLUDE_PATTERN);
+
+		const integrations: Integration[] = [];
+
+		for (const file of integrationFiles) {
+			const filename = basename(file.fsPath);
+			const filepath = normalize(file.fsPath);
+
+			// Check if the file has routes
+			const routes = await this.getRoutesInsideIntegrationFile(filepath);
+			const collapsibleState = routes.length > 0 ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.None;
+
+			// Add the IntegrationFile with the correct collapsibleState
+			integrations.push(new Integration(
+				basename(filename, '.camel.yaml'), // Integration name without extension
+				filename,
+				filepath,
+				collapsibleState
+			));
+		}
+
+		return integrations;
+	}
+
+	private async getRoutesInsideIntegrationFile(filePath: string): Promise<Route[]> {
+		try {
+			const camelYAMLfile = await fsPromises.readFile(filePath, 'utf8');
+			const parsedYaml = parse(camelYAMLfile);
+			if (!parsedYaml) {
+				return [];
+			}
+
+			return (parsedYaml as any[])
+				.filter(item => item.route)
+				.map(item => new Route(item.route.id, item.route.description));
+		} catch (error) {
+			console.error(`Error parsing file: ${filePath}`, error);
+			return [];
+		}
+	}
 }
 
-export class IntegrationFile extends TreeItem {
+export class Integration extends TreeItem {
 	constructor(
 		public readonly name: string,
 		private filename: string,
@@ -92,26 +113,23 @@ export class IntegrationFile extends TreeItem {
 		this.description = this.filename;
 	}
 
-	iconPath = join(__filename, '..', '..', '..', 'icons', 'yaml.svg')
+	iconPath = join(__filename, '..', '..', '..', 'icons', 'yaml.svg');
 
-	command = { command: 'kaoto.open', title: "Open with Kaoto", arguments: [Uri.parse(this.filepath)] };
+	command = { command: 'kaoto.open', title: 'Open with Kaoto', arguments: [Uri.parse(this.filepath)] };
 
-	contextValue = 'integrationFile';
+	contextValue = 'integration';
 }
 
 export class Route extends TreeItem {
-	constructor(
-		public readonly name: string,
-		public readonly description: string
-	) {
+	constructor(public readonly name: string, public readonly description: string) {
 		super(name, TreeItemCollapsibleState.None);
-		this.description = this.description;
+		this.description = description;
 	}
 
 	iconPath = {
 		light: join(__filename, '..', '..', '..', 'icons', 'route-red.svg'),
-		dark: join(__filename, '..', '..', '..', 'icons', 'route-white.svg'),
-	}
+		dark: join(__filename, '..', '..', '..', 'icons', 'route-white.svg')
+	};
 
 	contextValue = 'route';
 }

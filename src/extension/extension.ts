@@ -32,7 +32,7 @@ import { NewCamelProjectCommand } from "../../src/commands/NewCamelProjectComman
 import { CamelRunJBangTask } from "../../src/tasks/CamelRunJBangTask";
 import { CamelKubernetesRunJBangTask } from "../../src/tasks/CamelKubernetesRunJBangTask";
 import { CamelAddPluginJBangTask } from "../../src/tasks/CamelAddPluginJBangTask";
-import { IntegrationsProvider, IntegrationFile } from "../views/IntegrationsProvider";
+import { IntegrationsProvider, Integration } from "../views/IntegrationsProvider";
 import { HelpFeedbackProvider } from "../../src/views/HelpFeedbackProvider";
 import { OpenApiProvider } from "../../src/views/OpenApiProvider";
 import { confirmFileDeleteDialog } from '../../src/helpers/modals';
@@ -105,29 +105,30 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(textDocumentCloseListener);
 
-	const rootPath = vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0
-		? vscode.workspace.workspaceFolders[0].uri.fsPath
-		: undefined;
+	/*
+	* register integrations view provider
+	*/
+	const integrationsProvider = new IntegrationsProvider();
+	const integrationsTreeView = vscode.window.createTreeView('camel.integrations', {
+		treeDataProvider: integrationsProvider,
+		showCollapseAll: true
+	});
+	context.subscriptions.push(integrationsTreeView);
+	context.subscriptions.push(vscode.commands.registerCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID, () => integrationsProvider.refresh()));
 
-	// register integrations view provider
-	if (rootPath) {
-		const integrationsProvider = new IntegrationsProvider(rootPath);
-		vscode.window.registerTreeDataProvider('camel.integrations', integrationsProvider);
-		vscode.commands.registerCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID, () => integrationsProvider.refresh());
-	}
-	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.editEntry', async (integrationEntry: IntegrationFile) => {
+	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.editEntry', async (integrationEntry: Integration) => {
 		await vscode.window.showTextDocument(vscode.Uri.parse(integrationEntry.filepath));
 		// await vscode.commands.executeCommand('kaoto.open', vscode.Uri.parse(integrationEntry.filepath));
 	}));
-	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.deleteEntry', async (integrationEntry: IntegrationFile) => {
+	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.deleteEntry', async (integrationEntry: Integration) => {
 		const confirmation = await confirmFileDeleteDialog(integrationEntry.description as string); // integrationEntry.description ==> at the moment points to File name
 		if (confirmation) {
 			await vscode.workspace.fs.delete(vscode.Uri.file(integrationEntry.filepath), { useTrash: true });
-			await vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
+			integrationsProvider.refresh();
 			await vscode.window.showInformationMessage(`File '${integrationEntry.description}' was moved to Trash.`);
 		}
 	}));
-	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.jbang.run', async function (integrationEntry: IntegrationFile) {
+	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.jbang.run', async function (integrationEntry: Integration) {
 		if (!vscode.workspace.workspaceFolders) {
 			await vscode.window.showWarningMessage(WORKSPACE_WARNING_MESSAGE);
 			return;
@@ -137,7 +138,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		await vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
 		await sendCommandTrackingEvent('camel.integrations.jbang.run');
 	}));
-	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.kubernetes.run', async function (integrationEntry: IntegrationFile) {
+	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.kubernetes.run', async function (integrationEntry: Integration) {
 		if (!(await isCamelPluginInstalled('kubernetes'))) {
 			await new CamelAddPluginJBangTask('kubernetes').execute();
 		}
@@ -235,39 +236,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(dataMappingsProvider);
 	context.subscriptions.push(vscode.commands.registerCommand(KAOTO_DATAMAPPINGS_VIEW_REFRESH_COMMAND_ID, () => dataMappingsProvider.refresh()));
 
-	/**
-	 * register listeners for Integrations section
-	 * TODO at the moment 'await' for vscode.commands.executeCommand method was skipped, not sure, just wanted to not block thread
-	 */
-	context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(() => {
-		// TODO made actions for only Kaoto related files
-		vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
-	}));
-
-	/**
-	 * register listeners for Explorer made changes
-	 * TODO at the moment 'await' for vscode.commands.executeCommand method was skipped, not sure, just wanted to not block thread
-	 */
-	context.subscriptions.push(vscode.workspace.onDidCreateFiles(() => {
-		// handling creating new files directly using Explorer
-		// TODO made actions for only Kaoto related files
-		vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
-		deploymentsProvider.refresh();
-	}));
-	context.subscriptions.push(vscode.workspace.onDidDeleteFiles(() => {
-		// handling deleting files directly using Explorer
-		// TODO made actions for only Kaoto related files
-		vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
-		deploymentsProvider.refresh();
-	}));
-	context.subscriptions.push(vscode.workspace.onDidRenameFiles(() => {
-		// handling deleting files directly using Explorer
-		// TODO made actions for only Kaoto related files
-		vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
-		deploymentsProvider.refresh();
-	}));
-
-	/**
+	/*
 	 * register listeners for Terminal state changes
 	 */
 	context.subscriptions.push(vscode.window.onDidChangeTerminalState(async () => {
