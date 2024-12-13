@@ -29,7 +29,6 @@ import { NewCamelFileCommand } from '../../src/commands/NewCamelFileCommand';
 import { NewCamelQuarkusProjectCommand } from "../../src/commands/NewCamelQuarkusProjectCommand";
 import { NewCamelSpringBootProjectCommand } from "../../src/commands/NewCamelSpringBootProjectCommand";
 import { NewCamelProjectCommand } from "../../src/commands/NewCamelProjectCommand";
-
 import { CamelRunJBangTask } from "../../src/tasks/CamelRunJBangTask";
 import { CamelKubernetesRunJBangTask } from "../../src/tasks/CamelKubernetesRunJBangTask";
 import { CamelAddPluginJBangTask } from "../../src/tasks/CamelAddPluginJBangTask";
@@ -210,11 +209,10 @@ export async function activate(context: vscode.ExtensionContext) {
 	/*
 	 * register openapi view provider
 	 */
-	if (rootPath) {
-		const openApiProvider = new OpenApiProvider(rootPath);
-		vscode.window.registerTreeDataProvider('camel.openapi', openApiProvider);
-		vscode.commands.registerCommand(KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID, () => openApiProvider.refresh());
-	}
+	const openApiProvider = new OpenApiProvider();
+	vscode.window.registerTreeDataProvider('camel.openapi', openApiProvider);
+	context.subscriptions.push(openApiProvider);
+	context.subscriptions.push(vscode.commands.registerCommand(KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID, () => openApiProvider.refresh()));
 
 	/*
 	 * register help & feedback view provider
@@ -244,7 +242,6 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(() => {
 		// TODO made actions for only Kaoto related files
 		vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
-		vscode.commands.executeCommand(KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID);
 	}));
 
 	/**
@@ -256,21 +253,18 @@ export async function activate(context: vscode.ExtensionContext) {
 		// TODO made actions for only Kaoto related files
 		vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
 		deploymentsProvider.refresh();
-		vscode.commands.executeCommand(KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID);
 	}));
 	context.subscriptions.push(vscode.workspace.onDidDeleteFiles(() => {
 		// handling deleting files directly using Explorer
 		// TODO made actions for only Kaoto related files
 		vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
 		deploymentsProvider.refresh();
-		vscode.commands.executeCommand(KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID);
 	}));
 	context.subscriptions.push(vscode.workspace.onDidRenameFiles(() => {
 		// handling deleting files directly using Explorer
 		// TODO made actions for only Kaoto related files
 		vscode.commands.executeCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID);
 		deploymentsProvider.refresh();
-		vscode.commands.executeCommand(KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID);
 	}));
 
 	/**

@@ -13,84 +13,98 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { globSync } from 'glob';
-import { readFileSync } from 'node:fs';
-import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
-import { basename, extname, join } from 'path';
+import { promises as fsPromises } from 'fs';
+import { Event, EventEmitter, FileSystemWatcher, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
+import { basename, extname, join, normalize } from 'path';
 import YAML from 'yaml';
 
 export class OpenApiProvider implements TreeDataProvider<TreeItem> {
-
-    private _onDidChangeTreeData: EventEmitter<TreeItem | undefined | null | void> = new EventEmitter<TreeItem | undefined | null | void>();
+    private _onDidChangeTreeData: EventEmitter<TreeItem | undefined | null | void> = new EventEmitter();
     readonly onDidChangeTreeData: Event<TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
-    private readonly YAML_FILE_PATTERN: string = '.yaml';
-    private readonly JSON_FILE_PATTERN: string = '.json';
+    private static readonly FILE_PATTERN = '**/*.{yaml,json}';
+    private static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**,**/*.camel.yaml}';
+    private fileWatcher: FileSystemWatcher;
 
-    constructor(private workspaceRoot: string) { }
+    constructor() {
+        this.fileWatcher = workspace.createFileSystemWatcher(OpenApiProvider.FILE_PATTERN);
+        this.fileWatcher.onDidChange(uri => this.handleFileChange(uri));
+        this.fileWatcher.onDidCreate(uri => this.handleFileChange(uri));
+        this.fileWatcher.onDidDelete(uri => this.handleFileChange(uri));
+    }
+
+    dispose(): void {
+        this.fileWatcher.dispose();
+    }
+
+    refresh(): void {
+        this._onDidChangeTreeData.fire();
+    }
+
+    async getChildren(file?: OpenApiFile): Promise<TreeItem[]> {
+        if (file) {
+            return []; // No children for individual files
+        }
+        const files = await this.getOpenApiFilesAvailableInWorkspace();
+        if (files.length === 0) {
+            return [new TreeItem('No OpenAPI files found')];
+        }
+        return files;
+    }
 
     getTreeItem(file: OpenApiFile): TreeItem {
         return file;
     }
 
-    getChildren(file?: OpenApiFile): Thenable<TreeItem[]> {
-        if (!this.workspaceRoot) {
-            return Promise.resolve([]);
-        }
-        return Promise.resolve(this.getOpenApiFilesAvailableInWorkspace(this.workspaceRoot));
+    private async getOpenApiFilesAvailableInWorkspace(): Promise<OpenApiFile[]> {
+        const files = await workspace.findFiles(OpenApiProvider.FILE_PATTERN, OpenApiProvider.EXCLUDE_PATTERN);
+        const openapiFiles = await Promise.all(files.map(file => this.createOnlyRealOpenApi(normalize(file.fsPath))));
+        return openapiFiles.filter((file): file is OpenApiFile => file !== undefined);
     }
 
-    private getOpenApiFilesAvailableInWorkspace(workspaceRoot: string): OpenApiFile[] {
-        const files = globSync([`${workspaceRoot}/**/*${this.YAML_FILE_PATTERN}`, `${workspaceRoot}/**/*${this.JSON_FILE_PATTERN}`], { ignore: `${workspaceRoot}/**/*.camel.yaml` });
-        let openapiFiles: OpenApiFile[] = [];
-        for (const filepath of files) {
-            const openApiFile = this.createOnlyRealOpenApi(filepath);
-            openApiFile !== undefined ? openapiFiles.push(openApiFile) : 0;
-        }
-        return openapiFiles;
-    }
-
-    private createOnlyRealOpenApi(filepath: string): OpenApiFile | undefined {
-        const filename = basename(filepath);
-        const ext = extname(filepath);
-
-        const fileToParse = readFileSync(filepath, 'utf8');
-        let parsedFile: any = {};
-        if (ext === this.YAML_FILE_PATTERN) {
-            parsedFile = YAML.parse(fileToParse);
-        } else if (ext === this.JSON_FILE_PATTERN) {
-            parsedFile = JSON.parse(fileToParse);
-        }
-        if (parsedFile && parsedFile.openapi) {
-            return new OpenApiFile(this.getOpenApiFilename(filename), filename, filepath);
+    private async createOnlyRealOpenApi(filepath: string): Promise<OpenApiFile | undefined> {
+        try {
+            const fileToParse = await fsPromises.readFile(filepath, 'utf8');
+            const ext = extname(filepath);
+            const parsedFile = ext === '.yaml' ? YAML.parse(fileToParse) : JSON.parse(fileToParse);
+            if (parsedFile?.openapi) {
+                const filename = this.getDisplayName(basename(filepath));
+                const openApiVersion = parsedFile.openapi;
+                return new OpenApiFile(filename, filepath, openApiVersion);
+            }
+        } catch (error) {
+            console.error(`Error parsing file: ${filepath}`, error);
         }
         return undefined;
     }
 
-    private getOpenApiFilename(filename: string): string {
-        return filename.split(new RegExp(String.raw`${this.YAML_FILE_PATTERN}|${this.JSON_FILE_PATTERN}`, 'gm'))[0];
+    private handleFileChange(uri: Uri): void {
+        if (!uri.fsPath.endsWith('.camel.yaml')) {
+            this.refresh();
+        }
     }
 
-    refresh(): void {
-        this._onDidChangeTreeData.fire();
+    private getDisplayName(fileName: string): string {
+        const match = fileName.match(/^(.+)\.(yaml|json)$/);
+        return match ? match[1] : fileName;
     }
 }
 
 export class OpenApiFile extends TreeItem {
     constructor(
         public readonly name: string,
-        private filename: string,
-        public readonly filepath: string
+        public readonly filepath: string,
+        public readonly version: string
     ) {
         super(name, TreeItemCollapsibleState.None);
-        this.tooltip = this.filepath;
-        this.description = this.filename;
+        this.tooltip = `Open API - version ${this.version}\n${this.filepath}`;
+        this.description = basename(filepath);
     }
 
     iconPath = {
-		light: join(__filename, '..', '..', '..', 'icons', 'openapi', 'openapi-light.svg'),
-		dark: join(__filename, '..', '..', '..', 'icons', 'openapi', 'openapi-dark.svg'),
-	}
+        light: join(__filename, '..', '..', '..', 'icons', 'openapi', 'openapi-light.svg'),
+        dark: join(__filename, '..', '..', '..', 'icons', 'openapi', 'openapi-dark.svg'),
+    }
 
     command = { command: 'vscode.open', title: "Open", arguments: [Uri.parse(this.filepath)] };
 
