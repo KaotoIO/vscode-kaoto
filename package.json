@@ -488,12 +488,6 @@
           "id": "camel.help",
           "name": "Help & Feedback",
           "contextualTitle": "Kaoto"
-        },
-        {
-          "id": "camel.connections",
-          "name": "Connections",
-          "contextualTitle": "Kaoto",
-          "visibility": "collapsed"
         }
       ]
     },
