@@ -21,7 +21,7 @@ import path from "path";
 
 export class NewCamelPipeCommand extends AbstractNewCamelRouteCommand {
 
-	public static readonly ID_COMMAND_CAMEL_ROUTE_PIPE_YAML = 'camel.jbang.routes.pipe.yaml';
+	public static readonly ID_COMMAND_CAMEL_ROUTE_PIPE_YAML = 'kaoto.camel.jbang.routes.pipe.yaml';
 
 	public async create(targetFolder: Uri): Promise<void> {
 		const name = await this.showInputBoxForFileName(targetFolder ? targetFolder.fsPath : undefined);

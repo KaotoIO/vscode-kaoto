@@ -20,7 +20,7 @@ import * as path from 'path';
 
 export class NewCamelRouteCommand extends AbstractNewCamelRouteCommand {
 
-	public static readonly ID_COMMAND_CAMEL_ROUTE_JBANG_YAML = 'camel.jbang.routes.yaml';
+	public static readonly ID_COMMAND_CAMEL_ROUTE_JBANG_YAML = 'kaoto.camel.jbang.routes.yaml';
 
 	public async create(targetFolder : Uri): Promise<void> {
 		const input = await this.showInputBoxForFileName(targetFolder ? targetFolder.fsPath : undefined);
@@ -31,7 +31,7 @@ export class NewCamelRouteCommand extends AbstractNewCamelRouteCommand {
 
 			await new CamelInitJBangTask(this.workspaceFolder, path.relative(this.workspaceFolder.uri.fsPath, filePath)).execute();
 			await commands.executeCommand('vscode.open', Uri.file(filePath));
-			await commands.executeCommand('camel.integrations.refresh');
+			await commands.executeCommand('kaoto.integrations.refresh');
 		}
 	}
 }

@@ -20,7 +20,7 @@ import { NewCamelPipeCommand } from "./NewCamelPipeCommand";
 
 export class NewCamelFileCommand {
 
-	public static readonly ID_COMMAND_CAMEL_NEW_FILE = 'camel.new.file';
+	public static readonly ID_COMMAND_CAMEL_NEW_FILE = 'kaoto.new.file';
 
 	public async create(uri: Uri): Promise<void> {
 		const selection = await this.showQuickPickForCamelFileType();
@@ -28,7 +28,7 @@ export class NewCamelFileCommand {
 			const cmd = this.getCamelRouteCommandFromSelection(selection.label);
 			if(cmd){
 				await commands.executeCommand(cmd, uri);
-				await commands.executeCommand('camel.integrations.refresh');
+				await commands.executeCommand('kaoto.integrations.refresh');
 			}
 		}
 	}

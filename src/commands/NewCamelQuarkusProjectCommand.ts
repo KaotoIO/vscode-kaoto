@@ -17,7 +17,7 @@ import { AbstractNewCamelProjectCommand } from "./AbstractNewCamelProjectCommand
 
 export class NewCamelQuarkusProjectCommand extends AbstractNewCamelProjectCommand {
 
-	public static readonly ID_COMMAND_CAMEL_QUARKUS_PROJECT = 'camel.jbang.project.quarkus.new';
+	public static readonly ID_COMMAND_CAMEL_QUARKUS_PROJECT = 'kaoto.camel.jbang.project.quarkus.new';
 
 	getRuntime(): string {
 		return 'quarkus';

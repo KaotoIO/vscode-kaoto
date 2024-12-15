@@ -19,7 +19,7 @@ import { NewCamelSpringBootProjectCommand } from "./NewCamelSpringBootProjectCom
 
 export class NewCamelProjectCommand {
 
-	public static readonly ID_COMMAND_CAMEL_NEW_PROJECT = 'camel.new.project';
+	public static readonly ID_COMMAND_CAMEL_NEW_PROJECT = 'kaoto.new.project';
 
 	public async create(): Promise<void> {
 		const selection = await this.showQuickPickForCamelRuntime();

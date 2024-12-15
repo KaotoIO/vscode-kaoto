@@ -45,16 +45,16 @@ let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
 
 export const WORKSPACE_WARNING_MESSAGE = `The action requires an opened folder/workspace to complete successfully.`;
-export const CAMEL_JBANG_KUBERNETES_RUN_COMMAND_ID = 'camel.jbang.kubernetes.run';
-export const CAMEL_JBANG_RUN_COMMAND_ID = 'camel.jbang.run';
-export const CAMEL_JBANG_RUN_ALL_ROOT_COMMAND_ID = 'camel.jbang.run.all.root';
-export const CAMEL_JBANG_RUN_ALL_FOLDER_COMMAND_ID = 'camel.jbang.run.all.folder';
+export const CAMEL_JBANG_KUBERNETES_RUN_COMMAND_ID = 'kaoto.camel.jbang.kubernetes.run';
+export const CAMEL_JBANG_RUN_COMMAND_ID = 'kaoto.camel.jbang.run';
+export const CAMEL_JBANG_RUN_ALL_ROOT_COMMAND_ID = 'kaoto.camel.jbang.run.all.root';
+export const CAMEL_JBANG_RUN_ALL_FOLDER_COMMAND_ID = 'kaoto.camel.jbang.run.all.folder';
 
-export const KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID = 'camel.integrations.refresh';
-export const KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID = 'camel.deployments.refresh';
-export const KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID = 'camel.openapi.refresh';
-export const KAOTO_DATAMAPPINGS_VIEW_REFRESH_COMMAND_ID = 'camel.datamappings.refresh';
-export const KAOTO_TESTS_VIEW_REFRESH_COMMAND_ID = 'camel.tests.refresh';
+export const KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID = 'kaoto.integrations.refresh';
+export const KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID = 'kaoto.deployments.refresh';
+export const KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID = 'kaoto.openapi.refresh';
+export const KAOTO_DATAMAPPINGS_VIEW_REFRESH_COMMAND_ID = 'kaoto.datamappings.refresh';
+export const KAOTO_TESTS_VIEW_REFRESH_COMMAND_ID = 'kaoto.tests.refresh';
 
 export async function activate(context: vscode.ExtensionContext) {
 	console.info("Kaoto extension is alive.");
@@ -94,14 +94,14 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(kaotoStatusBarItem);
 
 	const textDocumentOpenListener = vscode.workspace.onDidOpenTextDocument((event) => {
-		if (event.fileName.endsWith('.camel.yaml')) {
+		if (event.fileName.endsWith('.kaoto.yaml')) {
 			kaotoStatusBarItem.show();
 		}
 	});
 	context.subscriptions.push(textDocumentOpenListener);
 
 	const textDocumentCloseListener = vscode.workspace.onDidCloseTextDocument((event) => {
-		if (event.fileName.endsWith('.camel.yaml')) {
+		if (event.fileName.endsWith('.kaoto.yaml')) {
 			kaotoStatusBarItem.hide();
 		}
 	});
@@ -111,18 +111,18 @@ export async function activate(context: vscode.ExtensionContext) {
 	* register integrations view provider
 	*/
 	const integrationsProvider = new IntegrationsProvider();
-	const integrationsTreeView = vscode.window.createTreeView('camel.integrations', {
+	const integrationsTreeView = vscode.window.createTreeView('kaoto.integrations', {
 		treeDataProvider: integrationsProvider,
 		showCollapseAll: true
 	});
 	context.subscriptions.push(integrationsTreeView);
 	context.subscriptions.push(vscode.commands.registerCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID, () => integrationsProvider.refresh()));
 
-	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.editEntry', async (integrationEntry: Integration) => {
+	context.subscriptions.push(vscode.commands.registerCommand('kaoto.integrations.editEntry', async (integrationEntry: Integration) => {
 		await vscode.window.showTextDocument(vscode.Uri.parse(integrationEntry.filepath));
 		// await vscode.commands.executeCommand('kaoto.open', vscode.Uri.parse(integrationEntry.filepath));
 	}));
-	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.deleteEntry', async (integrationEntry: Integration) => {
+	context.subscriptions.push(vscode.commands.registerCommand('kaoto.integrations.deleteEntry', async (integrationEntry: Integration) => {
 		const confirmation = await confirmFileDeleteDialog(integrationEntry.description as string); // integrationEntry.description ==> at the moment points to File name
 		if (confirmation) {
 			await vscode.workspace.fs.delete(vscode.Uri.file(integrationEntry.filepath), { useTrash: true });
@@ -130,7 +130,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			await vscode.window.showInformationMessage(`File '${integrationEntry.description}' was moved to Trash.`);
 		}
 	}));
-	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.jbang.run', async function (integrationEntry: Integration) {
+	context.subscriptions.push(vscode.commands.registerCommand('kaoto.integrations.jbang.run', async function (integrationEntry: Integration) {
 		if (!vscode.workspace.workspaceFolders) {
 			await vscode.window.showWarningMessage(WORKSPACE_WARNING_MESSAGE);
 			return;
@@ -138,16 +138,16 @@ export async function activate(context: vscode.ExtensionContext) {
 		await new CamelRunJBangTask(integrationEntry.filepath).executeOnly();
 		await new Promise((time) => setTimeout(time, 5_000)); // TODO
 		await vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
-		await sendCommandTrackingEvent('camel.integrations.jbang.run');
+		await sendCommandTrackingEvent('kaoto.integrations.jbang.run');
 	}));
-	context.subscriptions.push(vscode.commands.registerCommand('camel.integrations.kubernetes.run', async function (integrationEntry: Integration) {
+	context.subscriptions.push(vscode.commands.registerCommand('kaoto.integrations.kubernetes.run', async function (integrationEntry: Integration) {
 		if (!(await isCamelPluginInstalled('kubernetes'))) {
 			await new CamelAddPluginJBangTask('kubernetes').execute();
 		}
 		await new CamelKubernetesRunJBangTask(integrationEntry.filepath).executeOnly();
 		await new Promise((time) => setTimeout(time, 5_000)); // TODO
 		await vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
-		await sendCommandTrackingEvent('camel.integrations.kubernetes.run');
+		await sendCommandTrackingEvent('kaoto.integrations.kubernetes.run');
 	}));
 
 	// Define localhost ports (you can adjust these as per your requirements)
@@ -173,7 +173,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	// Register the Tree Data Provider
-	const treeView = vscode.window.createTreeView('camel.deployments', {
+	const treeView = vscode.window.createTreeView('kaoto.deployments', {
 		treeDataProvider: deploymentsProvider,
 		showCollapseAll: true
 	});
@@ -192,7 +192,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		const document = event.document;
 
 		// Check if the edited document is relevant
-		if (document.fileName.endsWith('.camel.yaml')) {
+		if (document.fileName.endsWith('.kaoto.yaml')) {
 			console.log(`Document edited: ${document.fileName}`);
 
 			// Clear any existing timer
@@ -213,14 +213,14 @@ export async function activate(context: vscode.ExtensionContext) {
 	 * register openapi view provider
 	 */
 	const openApiProvider = new OpenApiProvider();
-	vscode.window.registerTreeDataProvider('camel.openapi', openApiProvider);
+	vscode.window.registerTreeDataProvider('kaoto.openapi', openApiProvider);
 	context.subscriptions.push(openApiProvider);
 	context.subscriptions.push(vscode.commands.registerCommand(KAOTO_OPENAPI_VIEW_REFRESH_COMMAND_ID, () => openApiProvider.refresh()));
 
 	/*
 	 * register help & feedback view provider
 	 */
-	vscode.window.registerTreeDataProvider('camel.help', new HelpFeedbackProvider());
+	vscode.window.registerTreeDataProvider('kaoto.help', new HelpFeedbackProvider());
 
 	// register command for open camel source code in side to side editor
 	context.subscriptions.push(vscode.commands.registerCommand('kaoto.open.source', async () => {
@@ -234,7 +234,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	* register data mappings provider
 	*/
 	const dataMappingsProvider = new DataMappingsProvider();
-	vscode.window.registerTreeDataProvider('camel.datamappings', dataMappingsProvider);
+	vscode.window.registerTreeDataProvider('kaoto.datamappings', dataMappingsProvider);
 	context.subscriptions.push(dataMappingsProvider);
 	context.subscriptions.push(vscode.commands.registerCommand(KAOTO_DATAMAPPINGS_VIEW_REFRESH_COMMAND_ID, () => dataMappingsProvider.refresh()));
 
@@ -242,7 +242,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	* register tests provider
 	*/
 	const testsProvider = new TestsProvider();
-	vscode.window.registerTreeDataProvider('camel.tests', testsProvider);
+	vscode.window.registerTreeDataProvider('kaoto.tests', testsProvider);
 	context.subscriptions.push(testsProvider);
 	context.subscriptions.push(vscode.commands.registerCommand(KAOTO_TESTS_VIEW_REFRESH_COMMAND_ID, () => testsProvider.refresh()));
 
