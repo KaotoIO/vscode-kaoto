@@ -279,6 +279,12 @@
         "title": "Refresh",
         "category": "Kaoto",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "camel.tests.refresh",
+        "title": "Refresh",
+        "category": "Kaoto",
+        "icon": "$(refresh)"
       }
     ],
     "keybindings": {
@@ -379,6 +385,11 @@
           "command": "camel.datamappings.refresh",
           "group": "navigation",
           "when": "view == camel.datamappings"
+        },
+        {
+          "command": "camel.tests.refresh",
+          "group": "navigation",
+          "when": "view == camel.tests"
         }
       ],
       "view/item/context": [
@@ -468,6 +479,12 @@
           "contextualTitle": "Kaoto"
         },
         {
+          "id": "camel.tests",
+          "name": "Tests",
+          "contextualTitle": "Kaoto",
+          "visibility": "collapsed"
+        },
+        {
           "id": "camel.help",
           "name": "Help & Feedback",
           "contextualTitle": "Kaoto"
@@ -475,12 +492,6 @@
         {
           "id": "camel.connections",
           "name": "Connections",
-          "contextualTitle": "Kaoto",
-          "visibility": "collapsed"
-        },
-        {
-          "id": "camel.tests",
-          "name": "Tests",
           "contextualTitle": "Kaoto",
           "visibility": "collapsed"
         }
