@@ -24,6 +24,8 @@ export class CamelAddPluginJBangTask extends CamelJBangTask {
 	constructor(plugin: string) {
 		super(TaskScope.Workspace,
 			'Add required Camel JBang plugin',
-			new CamelJBang().add(plugin));
+			new CamelJBang().add(plugin),
+			true
+		);
 	}
 }

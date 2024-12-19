@@ -24,6 +24,8 @@ export class CamelInitJBangTask extends CamelJBangTask {
 	constructor(scope: WorkspaceFolder | TaskScope.Workspace, file: string) {
 		super(scope,
 			'Init Camel Route file with JBang',
-			new CamelJBang().init(file));
+			new CamelJBang().init(file),
+			true
+		);
 	}
 }

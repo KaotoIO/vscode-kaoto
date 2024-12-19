@@ -24,6 +24,8 @@ export class CamelExportJBangTask extends CamelJBangTask {
 	constructor(scope: WorkspaceFolder | TaskScope.Workspace, gav: string, runtime: string, outputPath: string) {
 		super(scope,
 			'Create a Camel project',
-			new CamelJBang().createProject(gav, runtime, outputPath));
+			new CamelJBang().createProject(gav, runtime, outputPath),
+			true
+		);
 	}
 }

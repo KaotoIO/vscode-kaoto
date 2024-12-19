@@ -24,7 +24,7 @@ export abstract class CamelJBangTask extends Task {
 
 	protected label: string;
 
-	constructor(scope: WorkspaceFolder | TaskScope.Workspace, label: string, shellExecution: ShellExecution) {
+	constructor(scope: WorkspaceFolder | TaskScope.Workspace, label: string, shellExecution: ShellExecution, closePanel: boolean = false) {
 
 		const taskDefinition: TaskDefinition = {
 			'label': label,
@@ -44,7 +44,8 @@ export abstract class CamelJBangTask extends Task {
 			clear: true,
 			echo: false,
 			showReuseMessage: false,
-			panel: TaskPanelKind.New
+			panel: TaskPanelKind.New,
+			close: closePanel
 		}
 	}
 
