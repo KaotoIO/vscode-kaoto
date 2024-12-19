@@ -19,6 +19,13 @@ import { globSync } from "glob";
 import { ShellExecution, ShellExecutionOptions, workspace, WorkspaceFolder } from "vscode";
 import { arePathsEqual, getCurrentWorkingDirectory } from "./helpers";
 
+export enum RouteOperation {
+	start = 'start',
+	stop = 'stop',
+	suspend = 'suspend',
+	resume = 'resume'
+}
+
 /**
  * Camel JBang class which allows shell execution of different JBang CLI commands
  */
@@ -61,6 +68,18 @@ export class CamelJBang {
 				'camel@apache/camel',
 				'stop',
 				name // TODO when running using '*' then stop button is not working properly
+			]
+		);
+	}
+
+	public route(operation: RouteOperation, integrationName: string, routeId: string): ShellExecution {
+		return new ShellExecution(this.jbang,
+			[`'-Dcamel.jbang.version=${this.camelJBangVersion}'`,
+				'camel@apache/camel',
+				'cmd',
+				`${operation}-route`,
+				integrationName,
+				`--id=${routeId}`
 			]
 		);
 	}

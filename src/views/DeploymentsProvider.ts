@@ -154,6 +154,7 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
                         route.routeId,
                         TreeItemCollapsibleState.None,
                         'child-localhost',
+                        element.label,
                         route
                     )
             );
@@ -167,6 +168,7 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
                         route.routeId,
                         TreeItemCollapsibleState.None,
                         'child-kubernetes',
+                        element.label,
                         route
                     )
             );
@@ -328,6 +330,7 @@ export class ChildItem extends TreeItem {
         public readonly label: string,
         public readonly collapsibleState: TreeItemCollapsibleState,
         public readonly contextValue: string,
+        public readonly integrationName: string,
         public readonly route?: Route
     ) {
         super(label, collapsibleState);
