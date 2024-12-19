@@ -174,10 +174,8 @@
       {
         "command": "kaoto.camel.jbang.run.all.root",
         "category": "Kaoto",
-        "title": "Camel Run all from Workspace Root",
-        "shortTitle": "Camel Run workspace",
-        "icon": "$(run-all)",
-        "enablement": "resourceFilename =~ /\\.(yaml)$/"
+        "title": "Run All",
+        "icon": "$(run-all)"
       },
       {
         "command": "kaoto.camel.jbang.run.all.folder",
@@ -358,12 +356,12 @@
         {
           "command": "kaoto.camel.jbang.run.all.root",
           "group": "navigation@0",
-          "when": "view == kaoto.integrations"
+          "when": "view == kaoto.integrations && kaoto.integrationExists"
         },
         {
           "submenu": "kaoto.new.file",
           "group": "navigation@1",
-          "when": "view == kaoto.integrations"
+          "when": "view == kaoto.integrations && kaoto.integrationExists"
         },
         {
           "command": "kaoto.integrations.refresh",

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { promises as fsPromises } from 'fs';
-import { Event, EventEmitter, FileSystemWatcher, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
+import { commands, Event, EventEmitter, FileSystemWatcher, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
 import { basename, join, normalize } from 'path';
 import { parse } from 'yaml';
 
@@ -50,7 +50,12 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 			return await this.getRoutesInsideIntegrationFile(integration.filepath);
 		}
 		const integrations = await this.getIntegrationsAvailableInWorkspace();
+		integrations.length > 0 ? this.setContext(true) : this.setContext(false);
 		return integrations;
+	}
+
+	private setContext(value: boolean) {
+		commands.executeCommand('setContext', 'kaoto.integrationExists', value);
 	}
 
 	private async getIntegrationsAvailableInWorkspace(): Promise<Integration[]> {
