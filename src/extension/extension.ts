@@ -48,7 +48,6 @@ export const WORKSPACE_WARNING_MESSAGE = `The action requires an opened folder/w
 export const CAMEL_JBANG_KUBERNETES_RUN_COMMAND_ID = 'kaoto.camel.jbang.kubernetes.run';
 export const CAMEL_JBANG_RUN_COMMAND_ID = 'kaoto.camel.jbang.run';
 export const CAMEL_JBANG_RUN_ALL_ROOT_COMMAND_ID = 'kaoto.camel.jbang.run.all.root';
-export const CAMEL_JBANG_RUN_ALL_FOLDER_COMMAND_ID = 'kaoto.camel.jbang.run.all.folder';
 
 export const KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID = 'kaoto.integrations.refresh';
 export const KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID = 'kaoto.deployments.refresh';
@@ -326,16 +325,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		await new Promise((time) => setTimeout(time, 5_000)); // TODO
 		await vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
 		await sendCommandTrackingEvent(CAMEL_JBANG_RUN_ALL_ROOT_COMMAND_ID);
-	}));
-	context.subscriptions.push(vscode.commands.registerCommand(CAMEL_JBANG_RUN_ALL_FOLDER_COMMAND_ID, async function () {
-		if (!vscode.workspace.workspaceFolders) {
-			await vscode.window.showWarningMessage(WORKSPACE_WARNING_MESSAGE);
-			return;
-		}
-		await new CamelRunJBangTask('*', '${fileDirname}').executeOnly();
-		await new Promise((time) => setTimeout(time, 5_000)); // TODO
-		await vscode.commands.executeCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID);
-		await sendCommandTrackingEvent(CAMEL_JBANG_RUN_ALL_FOLDER_COMMAND_ID);
 	}));
 }
 

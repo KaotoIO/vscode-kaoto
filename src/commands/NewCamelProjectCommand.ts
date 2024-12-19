@@ -20,7 +20,7 @@ import { AbstractNewCamelProjectCommand } from "./AbstractNewCamelProjectCommand
 
 export class NewCamelProjectCommand extends AbstractNewCamelProjectCommand {
 
-	public static readonly ID_COMMAND_CAMEL_NEW_PROJECT = 'kaoto.new.project';
+	public static readonly ID_COMMAND_CAMEL_NEW_PROJECT = 'kaoto.camel.jbang.export';
 
 	async getRuntime(): Promise<string | undefined> {
 		const selection = await this.showQuickPickForCamelRuntime();

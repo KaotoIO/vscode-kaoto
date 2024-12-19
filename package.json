@@ -125,7 +125,7 @@
         "icon": "$(new-file)"
       },
       {
-        "command": "kaoto.new.project",
+        "command": "kaoto.camel.jbang.export",
         "title": "Export",
         "category": "Kaoto",
         "icon": "$(link-external)"
@@ -176,14 +176,6 @@
         "category": "Kaoto",
         "title": "Run All",
         "icon": "$(run-all)"
-      },
-      {
-        "command": "kaoto.camel.jbang.run.all.folder",
-        "category": "Kaoto",
-        "title": "Camel Run all from Folder",
-        "shortTitle": "Camel Run folder",
-        "icon": "$(camel-run)",
-        "enablement": "resourceFilename =~ /\\.(yaml)$/"
       },
       {
         "command": "kaoto.camel.jbang.kubernetes.run",
@@ -401,7 +393,7 @@
           "group": "inline@2"
         },
         {
-          "command": "kaoto.new.project",
+          "command": "kaoto.camel.jbang.export",
           "when": "view == kaoto.integrations && viewItem == integration",
           "group": "inline@3"
         },
@@ -496,7 +488,7 @@
     "viewsWelcome": [
       {
         "view": "kaoto.integrations",
-        "contents": "In order to start with Apache Camel, you can create a standalone Camel File or bootstrap a new Camel Project.\n[Camel File...](command:kaoto.new.file)\n[Camel Project...](command:kaoto.new.project)\nTo learn more about Apache Camel [read docs](https://camel.apache.org/docs/)."
+        "contents": "In order to start with Apache Camel, you can create a standalone Camel File or bootstrap a new Camel Project.\n[Camel File...](command:kaoto.new.file)\n[Camel Project...](command:kaoto.camel.jbang.export)\nTo learn more about Apache Camel [read docs](https://camel.apache.org/docs/)."
       }
     ],
     "configuration": {
