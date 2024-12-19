@@ -69,8 +69,6 @@
     "No Code Integration"
   ],
   "activationEvents": [
-    "workspaceContains:**/*.kaoto.yaml",
-    "workspaceContains:**/*.kaoto.yml",
     "workspaceContains:**/*.camel.yaml",
     "workspaceContains:**/*.camel.yml",
     "workspaceContains:**/*.kamelet.yaml",
@@ -571,22 +569,8 @@
         "displayName": "Kaoto",
         "selector": [
           {
-            "filenamePattern": "*{.kaoto,.camel,.kamelet,.pipe,-pipe}.{yaml,yml}"
+            "filenamePattern": "*{.camel,.kamelet,.pipe,-pipe}.{yaml,yml}"
           }
-        ]
-      }
-    ],
-    "languages": [
-      {
-        "id": "kaoto-yaml",
-        "extensions": [
-          ".kaoto.yml",
-          ".kaoto.yaml"
-        ],
-        "aliases": [
-          "Kaoto (YAML)",
-          "kaoto.yaml",
-          "kaoto.yml"
         ]
       }
     ]

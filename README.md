@@ -37,7 +37,6 @@
 - Edit Pipe files following pattern (`*.pipe.yaml`, `*.pipe.yml`, `*-pipe.yaml` and `*-pipe.yml`)
 - Allow to edit `*.yaml` and `*.yml` when opening through contextual menu.
 - Setting to provide custom set of catalog
-- Edit Kaoto (`*.kaoto.yaml` and `*.kaoto.yml`) files. Note that these filename extensions are not supported by Camel JBang and are merely still here to stay backward-compatible with Kaoto v1.
 
 ### Limitations
 
