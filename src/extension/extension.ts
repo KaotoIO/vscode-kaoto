@@ -91,6 +91,16 @@ export async function activate(context: vscode.ExtensionContext) {
 	kaotoStatusBarItem.tooltip = 'Embedded Kaoto UI version';
 	kaotoStatusBarItem.text = `$(verified) Kaoto ${pjson.dependencies["@kaoto/kaoto"]}`;
 	context.subscriptions.push(kaotoStatusBarItem);
+	context.subscriptions.push(vscode.workspace.onDidOpenTextDocument((event) => {
+		if (event.fileName.endsWith('.camel.yaml')) {
+			kaotoStatusBarItem.show();
+		}
+	}));
+	context.subscriptions.push(vscode.workspace.onDidCloseTextDocument((event) => {
+		if (event.fileName.endsWith('.camel.yaml')) {
+			kaotoStatusBarItem.hide();
+		}
+	}));
 
 	/*
 	* register integrations view provider
