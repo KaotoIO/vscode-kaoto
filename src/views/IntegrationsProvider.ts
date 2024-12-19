@@ -49,12 +49,7 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 		if (integration) {
 			return await this.getRoutesInsideIntegrationFile(integration.filepath);
 		}
-
 		const integrations = await this.getIntegrationsAvailableInWorkspace();
-		if (integrations.length === 0) {
-			return [new TreeItem('No integrations found')];
-		}
-
 		return integrations;
 	}
 
