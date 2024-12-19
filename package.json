@@ -524,7 +524,7 @@
         "kaoto.camelJBang.Version": {
           "type": "string",
           "markdownDescription": "Apache Camel JBang version used for internal VS Code Camel JBang commands execution. Camel JBang requirements can differ between versions, it is recommended to use `default` version to ensure all extension features work properly.",
-          "default": "4.8.1"
+          "default": "4.9.0"
         },
         "kaoto.camelJBang.RedHatMavenRepository": {
           "type": "string",
