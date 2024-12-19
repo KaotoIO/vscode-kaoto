@@ -32,6 +32,7 @@ import { NewCamelProjectCommand } from "../../src/commands/NewCamelProjectComman
 import { CamelRunJBangTask } from "../../src/tasks/CamelRunJBangTask";
 import { CamelKubernetesRunJBangTask } from "../../src/tasks/CamelKubernetesRunJBangTask";
 import { CamelAddPluginJBangTask } from "../../src/tasks/CamelAddPluginJBangTask";
+import { CamelStopJBangTask } from "../../src/tasks/CamelStopJBangTask";
 import { IntegrationsProvider, Integration } from "../views/IntegrationsProvider";
 import { HelpFeedbackProvider } from "../../src/views/HelpFeedbackProvider";
 import { OpenApiProvider } from "../../src/views/OpenApiProvider";
@@ -256,6 +257,13 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand(NewCamelSpringBootProjectCommand.ID_COMMAND_CAMEL_SPRINGBOOT_PROJECT, async () => {
 		await new NewCamelSpringBootProjectCommand().create();
 		await sendCommandTrackingEvent(NewCamelSpringBootProjectCommand.ID_COMMAND_CAMEL_SPRINGBOOT_PROJECT);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('kaoto.deployments.integration.stop', async function (integrationEntry: Integration) {
+		await new CamelStopJBangTask(integrationEntry.label as string).execute();
+		await new Promise((time) => setTimeout(time, 500)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
+		deploymentsProvider.refresh();
+		await sendCommandTrackingEvent('kaoto.deployments.integration.stop');
 	}));
 }
 
