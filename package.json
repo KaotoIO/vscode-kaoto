@@ -164,28 +164,6 @@
         "enablement": "workspaceFolderCount != 0"
       },
       {
-        "command": "kaoto.camel.jbang.run",
-        "category": "Kaoto",
-        "title": "Camel Run",
-        "shortTitle": "Camel Run",
-        "icon": "$(camel-run)",
-        "enablement": "resourceFilename =~ /\\.(yaml)$/"
-      },
-      {
-        "command": "kaoto.camel.jbang.run.all.root",
-        "category": "Kaoto",
-        "title": "Run All",
-        "icon": "$(run-all)"
-      },
-      {
-        "command": "kaoto.camel.jbang.kubernetes.run",
-        "category": "Kaoto",
-        "title": "Deploy Camel to Kubernetes Cluster",
-        "shortTitle": "Camel Deploy",
-        "icon": "$(rocket)",
-        "enablement": "resourceFilename =~ /\\.(yaml)$/"
-      },
-      {
         "command": "kaoto.integrations.refresh",
         "title": "Refresh",
         "category": "Kaoto",
@@ -211,6 +189,12 @@
           "dark": "./icons/kaoto-run/kaoto-run-dark.png",
           "light": "./icons/kaoto-run/kaoto-run-light.png"
         }
+      },
+      {
+        "command": "kaoto.integrations.jbang.run.all",
+        "category": "Kaoto",
+        "title": "Run All",
+        "icon": "$(run-all)"
       },
       {
         "command": "kaoto.integrations.kubernetes.run",
@@ -346,7 +330,7 @@
       ],
       "view/title": [
         {
-          "command": "kaoto.camel.jbang.run.all.root",
+          "command": "kaoto.integrations.jbang.run.all",
           "group": "navigation@0",
           "when": "view == kaoto.integrations && kaoto.integrationExists"
         },
