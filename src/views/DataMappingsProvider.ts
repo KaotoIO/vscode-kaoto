@@ -16,9 +16,9 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 
-export class DataMappingsProvider implements vscode.TreeDataProvider<DataMappingItem> {
-    private _onDidChangeTreeData: vscode.EventEmitter<DataMappingItem | undefined | void> = new vscode.EventEmitter<DataMappingItem | undefined | void>();
-    readonly onDidChangeTreeData: vscode.Event<DataMappingItem | undefined | void> = this._onDidChangeTreeData.event;
+export class DataMappingsProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
+    private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined | void> = new vscode.EventEmitter<vscode.TreeItem | undefined | void>();
+    readonly onDidChangeTreeData: vscode.Event<vscode.TreeItem | undefined | void> = this._onDidChangeTreeData.event;
 
     private static readonly FILE_PATTERN = '**/*.xsl';
     private static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**}';
@@ -47,11 +47,14 @@ export class DataMappingsProvider implements vscode.TreeDataProvider<DataMapping
         return element;
     }
 
-    async getChildren(element?: DataMappingItem): Promise<DataMappingItem[]> {
+    async getChildren(element?: DataMappingItem): Promise<vscode.TreeItem[]> {
         if (element) {
             return []; // No children for individual files
         }
         const files = await vscode.workspace.findFiles(DataMappingsProvider.FILE_PATTERN, DataMappingsProvider.EXCLUDE_PATTERN);
+        if (files.length === 0) {
+            return [new vscode.TreeItem('No Data Mapping files found')];
+        }
         return files.map(file => new DataMappingItem(path.basename(file.fsPath), path.normalize(file.fsPath)));
     }
 }

@@ -16,9 +16,9 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 
-export class TestsProvider implements vscode.TreeDataProvider<TestItem> {
-    private _onDidChangeTreeData: vscode.EventEmitter<TestItem | undefined | void> = new vscode.EventEmitter<TestItem | undefined | void>();
-    readonly onDidChangeTreeData: vscode.Event<TestItem | undefined | void> = this._onDidChangeTreeData.event;
+export class TestsProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
+    private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined | void> = new vscode.EventEmitter<vscode.TreeItem | undefined | void>();
+    readonly onDidChangeTreeData: vscode.Event<vscode.TreeItem | undefined | void> = this._onDidChangeTreeData.event;
 
     private static readonly FILE_PATTERN = '**/*.{it.yaml,test.yaml}';
     private static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**}';
@@ -47,11 +47,14 @@ export class TestsProvider implements vscode.TreeDataProvider<TestItem> {
         return element;
     }
 
-    async getChildren(element?: TestItem): Promise<TestItem[]> {
+    async getChildren(element?: TestItem): Promise<vscode.TreeItem[]> {
         if (element) {
             return []; // No children for individual files
         }
         const files = await vscode.workspace.findFiles(TestsProvider.FILE_PATTERN, TestsProvider.EXCLUDE_PATTERN);
+        if (files.length === 0) {
+            return [new vscode.TreeItem('No Test files found')];
+        }
         return files.map(file => new TestItem(this.getDisplayName(path.basename(file.fsPath)), path.normalize(file.fsPath)));
     }
 
