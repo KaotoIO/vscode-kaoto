@@ -126,10 +126,9 @@
       },
       {
         "command": "kaoto.new.project",
-        "title": "New Camel Project...",
+        "title": "Export",
         "category": "Kaoto",
-        "enablement": "false",
-        "icon": "$(new-folder)"
+        "icon": "$(link-external)"
       },
       {
         "command": "kaoto.camel.jbang.routes.yaml",
@@ -402,6 +401,11 @@
           "command": "kaoto.integrations.kubernetes.run",
           "when": "view == kaoto.integrations && viewItem == integration",
           "group": "inline@2"
+        },
+        {
+          "command": "kaoto.new.project",
+          "when": "view == kaoto.integrations && viewItem == integration",
+          "group": "inline@3"
         },
         {
           "command": "kaoto.integrations.editEntry",
