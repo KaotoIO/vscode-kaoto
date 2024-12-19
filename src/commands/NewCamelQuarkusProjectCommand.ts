@@ -19,7 +19,7 @@ export class NewCamelQuarkusProjectCommand extends AbstractNewCamelProjectComman
 
 	public static readonly ID_COMMAND_CAMEL_QUARKUS_PROJECT = 'kaoto.camel.jbang.project.quarkus.new';
 
-	getRuntime(): string {
+	async getRuntime(): Promise<string> {
 		return 'quarkus';
 	}
 }

@@ -19,7 +19,7 @@ export class NewCamelSpringBootProjectCommand extends AbstractNewCamelProjectCom
 
 	public static readonly ID_COMMAND_CAMEL_SPRINGBOOT_PROJECT = 'kaoto.camel.jbang.project.springboot.new';
 
-	getRuntime(): string {
+	async getRuntime(): Promise<string> {
 		return 'spring-boot';
 	}
 }

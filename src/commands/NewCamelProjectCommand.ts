@@ -13,28 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { QuickPickItem, commands, window } from "vscode";
+import { QuickPickItem, window } from "vscode";
 import { NewCamelQuarkusProjectCommand } from "./NewCamelQuarkusProjectCommand";
 import { NewCamelSpringBootProjectCommand } from "./NewCamelSpringBootProjectCommand";
+import { AbstractNewCamelProjectCommand } from "./AbstractNewCamelProjectCommand";
 
-export class NewCamelProjectCommand {
+export class NewCamelProjectCommand extends AbstractNewCamelProjectCommand {
 
 	public static readonly ID_COMMAND_CAMEL_NEW_PROJECT = 'kaoto.new.project';
 
-	public async create(): Promise<void> {
+	async getRuntime(): Promise<string | undefined> {
 		const selection = await this.showQuickPickForCamelRuntime();
-		if (selection) {
-			const cmd = this.getCamelProjectCommandFromSelection(selection.label);
-			if(cmd){
-				await commands.executeCommand(cmd);
-			}
-		}
+		return selection.label ?? undefined;
 	}
 
 	protected async showQuickPickForCamelRuntime(): Promise<QuickPickItem> {
         const items: QuickPickItem[] = [
-            { label: 'Quarkus', description: 'Camel Quarkus' },
-            { label: 'Spring Boot', description: 'Camel Spring Boot' }
+            { label: 'quarkus', description: 'Camel Quarkus' },
+            { label: 'spring-boot', description: 'Camel on Spring Boot' }
         ];
         return await window.showQuickPick(items, {
             placeHolder: 'Please select a Camel Runtime.',
