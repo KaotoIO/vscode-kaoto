@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Event, EventEmitter, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
+import { Event, EventEmitter, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState, workspace } from 'vscode';
 import { join } from 'path';
 import { getBasenameIfAbsolute } from '../../src/helpers/helpers';
 
@@ -22,18 +22,28 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
     readonly onDidChangeTreeData: Event<TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
     private intervalId?: NodeJS.Timeout;
+    private interval: number;
     private loading: boolean = true;
 
     private kubernetesData: Map<string, Route[]> = new Map();
     private localhostData: Map<string, Route[]> = new Map();
 
+    public static readonly SETTINGS_DEPLOYMENTS_REFRESH_INTERVAL_ID: string = 'kaoto.deployments.refresh.interval';
+
     constructor(
         private fetchKubernetesData: () => Promise<Map<string, Route[]>>,
-        private localhostPorts: [number, number], // Ports for fetching localhost data
-        private interval: number = 30_000 // Default fetch interval: 30 seconds
+        private localhostPorts: [number, number] // Ports for fetching localhost data
     ) {
         this.initializeData(); // Fetch initial data
         this.startAutoRefresh(); // Start periodic updates
+        this.interval = workspace.getConfiguration().get(DeploymentsProvider.SETTINGS_DEPLOYMENTS_REFRESH_INTERVAL_ID) as number;
+    }
+
+    setAutoRefreshInterval(interval: number) {
+        this.dispose(); // reset current refresh interval
+        console.log(`Setting new auto-refresh interval to ${interval}ms`);
+        this.interval = interval;
+        this.startAutoRefresh(); // start new auto-refresh with new interval
     }
 
     refresh(): void {

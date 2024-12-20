@@ -560,6 +560,25 @@
           "default": [
             "--cluster-type=openshift"
           ]
+        },
+        "kaoto.deployments.refresh.interval": {
+          "type": "number",
+          "markdownDescription": "Set default auto-refresh interval in milliseconds for a `Kaoto > Deployments` view. **Default recommended interval is 30s.**",
+          "enum": [
+            1000,
+            5000,
+            15000,
+            30000,
+            60000
+          ],
+          "enumItemLabels": [
+            "1s",
+            "5s",
+            "15s",
+            "30s",
+            "60s"
+          ],
+          "default": 30000
         }
       }
     },

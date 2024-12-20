@@ -152,7 +152,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	}));
 
 	// Define localhost ports (you can adjust these as per your requirements)
-	const localhostPortRange: [number, number] = [8080, 8090];
+	const localhostPortRange: [number, number] = [8080, 8081];
 
 	// Function to fetch Kubernetes data (mock or real implementation)
 	const fetchKubernetesData = async (): Promise<Map<string, Route[]>> => {
@@ -188,6 +188,14 @@ export async function activate(context: vscode.ExtensionContext) {
 			deploymentsProvider.dispose();
 		}
 	});
+
+	// allow change auto-refresh interval using setting
+	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(e => {
+		if (e.affectsConfiguration(DeploymentsProvider.SETTINGS_DEPLOYMENTS_REFRESH_INTERVAL_ID)) {
+			const newInterval = vscode.workspace.getConfiguration().get(DeploymentsProvider.SETTINGS_DEPLOYMENTS_REFRESH_INTERVAL_ID) as number;
+			deploymentsProvider.setAutoRefreshInterval(newInterval);
+		}
+	}));
 
 	/*
 	 * register openapi view provider
