@@ -43,6 +43,7 @@ import * as pjson from '../../package.json';
 import { DataMappingsProvider } from "../../src/views/DataMappingsProvider";
 import { TestsProvider } from "../../src/views/TestsProvider";
 import { RouteOperation } from "../helpers/CamelJBang";
+import { CamelLogJBangTask } from "../../src/tasks/CamelLogJBangTask";
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -288,6 +289,10 @@ export async function activate(context: vscode.ExtensionContext) {
 		await new Promise((time) => setTimeout(time, 500)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
 		deploymentsProvider.refresh();
 		await sendCommandTrackingEvent('kaoto.deployments.integration.stop');
+	}));
+	context.subscriptions.push(vscode.commands.registerCommand('kaoto.deployments.integration.logs', async function (integration: ParentItem) {
+		await new CamelLogJBangTask(integration.label).executeOnly();
+		await sendCommandTrackingEvent('kaoto.deployments.integration.logs');
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand('kaoto.deployments.start', async function (route: ChildItem) {
 		await new CamelRouteOperationJBangTask(RouteOperation.start, route.integrationName, route.label).execute();

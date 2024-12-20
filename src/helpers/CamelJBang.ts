@@ -67,7 +67,7 @@ export class CamelJBang {
 			[`'-Dcamel.jbang.version=${this.camelJBangVersion}'`,
 				'camel@apache/camel',
 				'stop',
-				name // TODO when running using '*' then stop button is not working properly
+				name // TODO when running using '*' then log JBang option is not working properly
 			]
 		);
 	}
@@ -80,6 +80,16 @@ export class CamelJBang {
 				`${operation}-route`,
 				integrationName,
 				`--id=${routeId}`
+			]
+		);
+	}
+
+	public log(name: string): ShellExecution {
+		return new ShellExecution(this.jbang,
+			[`'-Dcamel.jbang.version=${this.camelJBangVersion}'`,
+				'camel@apache/camel',
+				'log',
+				name // TODO when running using '*' then log JBang option is not working properly
 			]
 		);
 	}
