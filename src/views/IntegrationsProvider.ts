@@ -113,7 +113,7 @@ export class Integration extends TreeItem {
 		this.description = this.filename;
 	}
 
-	iconPath = join(__filename, '..', '..', '..', 'icons', 'yaml.svg');
+	iconPath = join(__filename, '..', '..', '..', 'icons', 'integrations', 'yaml.svg');
 
 	command = { command: 'kaoto.open', title: 'Open with Kaoto', arguments: [Uri.parse(this.filepath)] };
 
@@ -127,8 +127,8 @@ export class Route extends TreeItem {
 	}
 
 	iconPath = {
-		light: join(__filename, '..', '..', '..', 'icons', 'route-red.svg'),
-		dark: join(__filename, '..', '..', '..', 'icons', 'route-white.svg')
+		light: join(__filename, '..', '..', '..', 'icons', 'integrations', 'route-black.svg'),
+		dark: join(__filename, '..', '..', '..', 'icons', 'integrations', 'route-white.svg')
 	};
 
 	contextValue = 'route';
