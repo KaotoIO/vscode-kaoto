@@ -183,6 +183,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	deploymentsTreeView.onDidChangeVisibility((event) => {
 		if (event.visible) {
 			deploymentsProvider.refresh();
+		} else {
+			console.log('Pausing REFRESH interval');
+			deploymentsProvider.dispose();
 		}
 	});
 

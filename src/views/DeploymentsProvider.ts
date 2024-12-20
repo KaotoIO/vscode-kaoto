@@ -43,9 +43,7 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 
     private async refreshData(): Promise<void> {
         try {
-            if (this.intervalId) {
-                clearInterval(this.intervalId); // Pause auto-refresh
-            }
+            this.dispose(); // Pause auto-refresh
 
             console.log('Manual refresh started...');
             const localhostData = await this.fetchLocalhostRoutes(this.localhostPorts);
@@ -68,8 +66,7 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 
             this._onDidChangeTreeData.fire(); // Trigger UI update
 
-            // Resume auto-refresh
-            this.startAutoRefresh();
+            this.startAutoRefresh(); // Resume auto-refresh
         } catch (error) {
             console.error('Error during manual refresh:', error);
 
@@ -83,6 +80,7 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
     dispose(): void {
         if (this.intervalId) {
             clearInterval(this.intervalId);
+            this.intervalId = undefined;
         }
     }
 
