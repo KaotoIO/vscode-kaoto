@@ -24,13 +24,12 @@ export class CamelRunJBangTask extends CamelJBangTask {
 
 	constructor(patternForCamelFiles: string, cwd?: string, port?: number) {
 		const label = getBasenameIfAbsolute(patternForCamelFiles);
+
 		super(TaskScope.Workspace,
 			`Kaoto: Running Integration - ${label}`,
-			new CamelJBang().run(patternForCamelFiles, cwd, port));
-        this.isBackground = true;
+			new CamelJBang().run(patternForCamelFiles, cwd, port)
+		);
 
-		// TODO generate port number in giver range :8080 - :XXXX ??
-
-		// TODO spawn http agent for giver port
+		this.isBackground = true;
 	}
 }

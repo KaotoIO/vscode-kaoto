@@ -16,6 +16,7 @@
 import { Event, EventEmitter, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState, workspace } from 'vscode';
 import { join } from 'path';
 import { getBasenameIfAbsolute } from '../../src/helpers/helpers';
+import { PortManager } from '../../src/helpers/PortManager';
 
 export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
     private _onDidChangeTreeData: EventEmitter<TreeItem | undefined | null | void> = new EventEmitter<TreeItem | undefined | null | void>();
@@ -24,6 +25,7 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
     private intervalId?: NodeJS.Timeout;
     private interval: number;
     private loading: boolean = true;
+    private localhostPorts: number[];
 
     private kubernetesData: Map<string, Route[]> = new Map();
     private localhostData: Map<string, Route[]> = new Map();
@@ -32,8 +34,10 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 
     constructor(
         private fetchKubernetesData: () => Promise<Map<string, Route[]>>,
-        private localhostPorts: [number, number] // Ports for fetching localhost data
+        private portManager: PortManager
     ) {
+        this.localhostPorts = this.portManager.getUsedPorts();
+        console.log('DeploymentsProvider ~ localhostPorts:', this.localhostPorts);
         this.initializeData(); // Fetch initial data
         this.startAutoRefresh(); // Start periodic updates
         this.interval = workspace.getConfiguration().get(DeploymentsProvider.SETTINGS_DEPLOYMENTS_REFRESH_INTERVAL_ID) as number;
@@ -48,6 +52,7 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 
     refresh(): void {
         console.log('Doing manual refresh of data...');
+        this.localhostPorts = this.portManager.getUsedPorts();
         this.refreshData(); // Explicitly re-fetch data
     }
 
@@ -213,14 +218,11 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
         }
     }
 
-    private async fetchLocalhostRoutes(ports: [number, number]): Promise<Map<string, Route[]>> {
+    private async fetchLocalhostRoutes(ports: number[]): Promise<Map<string, Route[]>> {
         const deployments: Map<string, Route[]> = new Map();
         const skippedPorts: number[] = [];
 
-        // Generate the list of ports from the range
-        const portRange = Array.from({ length: ports[1] - ports[0] + 1 }, (_, i) => ports[0] + i);
-
-        const fetchPromises = portRange.map(async (port) => {
+        const fetchPromises = ports.map(async (port) => {
             try {
                 const response = await fetch(`http://localhost:${port}/q/dev/route`, {
                     headers: { 'Accept': 'application/json' }
@@ -268,6 +270,10 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
         // Notify user about skipped ports if any
         if (skippedPorts.length > 0) {
             console.log(`Some ports were unavailable: ${skippedPorts.join(', ')}`);
+            for (const port of skippedPorts) {
+                console.warn('DeploymentsProvider ~ fetchLocalhostRoutes ~ FREE unused port:', port);
+                this.portManager.freePort(port); // TODO handle better on tasks side
+            }
         }
 
         return deployments;
@@ -279,30 +285,35 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
     }
 
     private startAutoRefresh(): void {
-        this.intervalId = setInterval(async () => {
-            try {
-                console.log('Starting auto-refresh...');
-                const newLocalhostData = await this.fetchLocalhostRoutes(this.localhostPorts);
-                const newKubernetesData = await this.fetchKubernetesData();
+        if (this.localhostPorts.length > 0) {
+            this.intervalId = setInterval(async () => {
+                try {
+                    console.log('Starting auto-refresh...');
+                    const newLocalhostData = await this.fetchLocalhostRoutes(this.localhostPorts);
+                    const newKubernetesData = await this.fetchKubernetesData();
 
-                // Update the Localhost data cache
-                for (const [key, value] of newLocalhostData.entries()) {
-                    this.localhostData.set(key, value);
+                    // Update the Localhost data cache
+                    for (const [key, value] of newLocalhostData.entries()) {
+                        this.localhostData.set(key, value);
+                    }
+
+                    // Update the Kubernetes data cache
+                    for (const [key, value] of newKubernetesData.entries()) {
+                        this.kubernetesData.set(key, value);
+                    }
+
+                    console.log('Updated Localhost Data:', this.localhostData);
+                    console.log('Updated Kubernetes Data:', this.kubernetesData);
+
+                    this.refresh(); // Refresh the UI after updating the caches
+                } catch (error) {
+                    console.error('Error during auto-refresh:', error);
                 }
-
-                // Update the Kubernetes data cache
-                for (const [key, value] of newKubernetesData.entries()) {
-                    this.kubernetesData.set(key, value);
-                }
-
-                console.log('Updated Localhost Data:', this.localhostData);
-                console.log('Updated Kubernetes Data:', this.kubernetesData);
-
-                this.refresh(); // Refresh the UI after updating the caches
-            } catch (error) {
-                console.error('Error during auto-refresh:', error);
-            }
-        }, this.interval);
+            }, this.interval);
+        } else {
+            console.warn('No available ports, pausing auto-refresh.');
+            this.dispose();
+        }
     }
 
 }

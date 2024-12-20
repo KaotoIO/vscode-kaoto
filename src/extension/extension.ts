@@ -44,6 +44,7 @@ import { DataMappingsProvider } from "../../src/views/DataMappingsProvider";
 import { TestsProvider } from "../../src/views/TestsProvider";
 import { RouteOperation } from "../helpers/CamelJBang";
 import { CamelLogJBangTask } from "../../src/tasks/CamelLogJBangTask";
+import { PortManager } from "../../src/helpers/PortManager";
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -103,6 +104,9 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 	}));
 
+	// create a Port Manager for Camel JBang Run with Dev console
+	const portManager = new PortManager(10111, 10999);
+
 	/*
 	* register integrations view provider
 	*/
@@ -130,7 +134,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			await vscode.window.showWarningMessage(WORKSPACE_WARNING_MESSAGE);
 			return;
 		}
-		await new CamelRunJBangTask(integrationEntry.filepath).executeOnly();
+		await new CamelRunJBangTask(integrationEntry.filepath, undefined, portManager.allocatePort()).executeOnly();
 		await new Promise((time) => setTimeout(time, 2_500)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
 		deploymentsProvider.refresh();
 		await sendCommandTrackingEvent('kaoto.integrations.jbang.run');
@@ -140,7 +144,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			await vscode.window.showWarningMessage(WORKSPACE_WARNING_MESSAGE);
 			return;
 		}
-		await new CamelRunJBangTask('*').executeOnly();
+		await new CamelRunJBangTask('*', undefined, portManager.allocatePort()).executeOnly();
 		await new Promise((time) => setTimeout(time, 2_500)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
 		deploymentsProvider.refresh();
 		await sendCommandTrackingEvent('kaoto.integrations.jbang.run.all');
@@ -155,9 +159,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		await sendCommandTrackingEvent('kaoto.integrations.kubernetes.run');
 	}));
 
-	// Define localhost ports (you can adjust these as per your requirements)
-	const localhostPortRange: [number, number] = [8080, 8081];
-
 	// Function to fetch Kubernetes data (mock or real implementation)
 	const fetchKubernetesData = async (): Promise<Map<string, Route[]>> => {
 		// TODO
@@ -169,7 +170,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	/*
 	 * register deployments view provider
 	 */
-	const deploymentsProvider = new DeploymentsProvider(fetchKubernetesData, localhostPortRange);
+	const deploymentsProvider = new DeploymentsProvider(fetchKubernetesData, portManager);
 	context.subscriptions.push(vscode.commands.registerCommand(KAOTO_DEPLOYMENTS_VIEW_REFRESH_COMMAND_ID, () => deploymentsProvider.refresh()));
 	context.subscriptions.push({
 		// Dispose the provider on deactivation
