@@ -82,7 +82,7 @@ describe('Kaoto basic development flow', function () {
     await checkEmptyCanvasLoaded(driver);
     await createNewRoute(driver);
     await addActiveMQStep(driver);
-    await checkStepWithTestIdPresent(driver, 'custom-node__activemq');
+    await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__activemq', 'activemq');
 
     await kaotoWebview.switchBack();
     assert.isTrue(
@@ -104,7 +104,7 @@ describe('Kaoto basic development flow', function () {
       true
     ));
     globalKaotoWebView = kaotoWebview;
-    await checkStepWithTestIdPresent(driver, 'custom-node__activemq');
+    await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__activemq', 'activemq');
     await kaotoWebview.switchBack();
   });
 
@@ -116,8 +116,8 @@ describe('Kaoto basic development flow', function () {
       true
     );
     globalKaotoWebView = kaotoWebview;
-    await checkStepWithTestIdPresent(driver, 'custom-node__timer');
-    await checkStepWithTestIdPresent(driver, 'custom-node__log');
+    await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__timer', 'timer');
+    await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__log', 'log');
     await kaotoWebview.switchBack();
     assert.isFalse(
       await kaotoEditor.isDirty(),
@@ -133,9 +133,9 @@ describe('Kaoto basic development flow', function () {
       true
     );
     globalKaotoWebView = kaotoWebview;
-    await checkStepWithTestIdPresent(driver, 'custom-node__timer');
-    await checkStepWithTestIdPresent(driver, 'custom-node__https');
-    await checkStepWithTestIdPresent(driver, 'custom-node__kamelet:sink');
+    await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__timer', 'timer');
+    await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__https', 'https');
+    await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__kamelet:sink', 'kamelet:sink');
     await kaotoWebview.switchBack();
     assert.isFalse(
       await kaotoEditor.isDirty(),
@@ -151,10 +151,10 @@ async function createNewRoute(driver: WebDriver) {
 
 async function addActiveMQStep(driver: WebDriver) {
   await driver.wait(
-    until.elementLocated(By.css('g[data-testid^="custom-node__timer"]'))
-  );
+    until.elementLocated(By.css('g[data-testid^="custom-node__timer"],g[data-testid="custom-node__route.from"]'))
+  , 5000, 'Cannot find the node for the timer');
 
-  const canvasNode = await driver.findElement(By.css('g[data-testid^="custom-node__timer"]'));
+  const canvasNode = await driver.findElement(By.css('g[data-testid^="custom-node__timer"],g[data-testid="custom-node__route.from"]'));
   await driver.actions().contextClick(canvasNode).perform();
 
   await driver.wait(
@@ -168,9 +168,15 @@ async function addActiveMQStep(driver: WebDriver) {
   await (await driver.findElement(By.xpath("//div[@data-testid='tile-activemq']"))).click();
 }
 
-async function checkStepWithTestIdPresent(driver: WebDriver, testId: string) {
+/**
+ * 
+ * @param driver 
+ * @param testId used for Kaoto 2.3
+ * @param nodeLabel used for Kaoto 2.4
+ */
+async function checkStepWithTestIdOrNodeLabelPresent(driver: WebDriver, testId: string, nodeLabel: string) {
   await driver.wait(
-    until.elementLocated(By.xpath(`//\*[name()='g' and starts-with(@data-testid,'${testId}')]`)
+    until.elementLocated(By.xpath(`//\*[name()='g' and starts-with(@data-testid,'${testId}') or @data-nodelabel='${nodeLabel}']`)
     ), 5_000);
 }
 
