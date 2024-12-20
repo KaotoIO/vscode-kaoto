@@ -131,6 +131,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 		await new CamelRunJBangTask(integrationEntry.filepath).executeOnly();
+		await new Promise((time) => setTimeout(time, 2_500)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
 		deploymentsProvider.refresh();
 		await sendCommandTrackingEvent('kaoto.integrations.jbang.run');
 	}));
@@ -140,6 +141,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 		await new CamelRunJBangTask('*').executeOnly();
+		await new Promise((time) => setTimeout(time, 2_500)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
 		deploymentsProvider.refresh();
 		await sendCommandTrackingEvent('kaoto.integrations.jbang.run.all');
 	}));
@@ -148,6 +150,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			await new CamelAddPluginJBangTask('kubernetes').execute();
 		}
 		await new CamelKubernetesRunJBangTask(integrationEntry.filepath).executeOnly();
+		await new Promise((time) => setTimeout(time, 2_500)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
 		deploymentsProvider.refresh();
 		await sendCommandTrackingEvent('kaoto.integrations.kubernetes.run');
 	}));
@@ -181,14 +184,14 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(deploymentsTreeView);
 
 	// Automatically refresh when the Tree View becomes visible
-	deploymentsTreeView.onDidChangeVisibility((event) => {
+	context.subscriptions.push(deploymentsTreeView.onDidChangeVisibility((event) => {
 		if (event.visible) {
 			deploymentsProvider.refresh();
 		} else {
 			console.log('Pausing REFRESH interval');
 			deploymentsProvider.dispose();
 		}
-	});
+	}));
 
 	// allow change auto-refresh interval using setting
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(e => {
