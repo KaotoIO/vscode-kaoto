@@ -14,7 +14,8 @@ describe('User Settings', function () {
 
     const locators = {
         TimerComponent: {
-            timer: `g[data-id^='timer'][data-kind='node']`,
+            timer_2_3: `g[data-id^='timer'][data-kind='node']`,
+            timer_2_4: `g[data-nodelabel='timerID']`,
             label: `.custom-node__label`,
         }
     }
@@ -63,8 +64,12 @@ describe('User Settings', function () {
 
     it(`Check 'id' Node Label is used instead of default 'description'`, async function () {
         this.timeout(60_000);
-
-        const timer = await driver.findElement(By.css(`${locators.TimerComponent.timer} ${locators.TimerComponent.label}`));
+        let timer;
+        try {
+            timer = await driver.findElement(By.css(`${locators.TimerComponent.timer_2_3} ${locators.TimerComponent.label}`));
+        } catch {
+            timer = await driver.findElement(By.css(`${locators.TimerComponent.timer_2_4} ${locators.TimerComponent.label}`));
+        }
         const label = await timer.getText();
 
         expect(label.split('\n')).to.contains('timerID');
