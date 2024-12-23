@@ -21,6 +21,10 @@ describe('Kaoto basic development flow', function () {
       path.join(workspaceFolder, 'empty_copy.camel.yaml')
     );
     fs.copySync(
+      path.join(workspaceFolder, 'empty.camel.yaml'),
+      path.join(workspaceFolder, 'for_datamapper_test.camel.yaml')
+    );
+    fs.copySync(
       path.join(workspaceFolder, 'emptyPipe.kaoto.yaml'),
       path.join(workspaceFolder, 'emptyPipe.pipe.yaml')
     );
@@ -34,6 +38,7 @@ describe('Kaoto basic development flow', function () {
 
   after(function () {
     fs.rmSync(path.join(workspaceFolder, 'empty_copy.camel.yaml'));
+    fs.rmSync(path.join(workspaceFolder, 'for_datamapper_test.camel.yaml'));
     fs.rmSync(path.join(workspaceFolder, 'emptyPipe.pipe.yaml'));
     fs.rmSync(path.join(workspaceFolder, 'emptyPipe-pipe.yaml'));
   });
@@ -108,6 +113,44 @@ describe('Kaoto basic development flow', function () {
     await kaotoWebview.switchBack();
   });
 
+
+  it('Open empty file, add a datamapper step and save', async function () {
+    let { kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(
+      workspaceFolder,
+      'for_datamapper_test.camel.yaml',
+      driver,
+      false
+    );
+    globalKaotoWebView = kaotoWebview;
+    await checkEmptyCanvasLoaded(driver);
+    await createNewRoute(driver);
+    await addDatamapperStep(driver);
+    await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__kaoto-datamapper', 'kaoto-datamapper');
+
+    await kaotoWebview.switchBack();
+    assert.isTrue(
+      await kaotoEditor.isDirty(),
+      'The Kaoto editor should be dirty after adding a DataMapper step.'
+    );
+    await kaotoEditor.save();
+    await waitUntil(async () => {
+      return !(await kaotoEditor.isDirty());
+    });
+
+    const editorView = new EditorView();
+    await editorView.closeAllEditors();
+
+    ({ kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(
+      workspaceFolder,
+      'for_datamapper_test.camel.yaml',
+      driver,
+      true
+    ));
+    globalKaotoWebView = kaotoWebview;
+    await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__kaoto-datamapper', 'kaoto-datamapper');
+    await kaotoWebview.switchBack();
+  });
+
   it('Open Camel file and check Kaoto UI is loading', async function () {
     const { kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(
       workspaceFolder,
@@ -166,6 +209,34 @@ async function addActiveMQStep(driver: WebDriver) {
     until.elementLocated(By.xpath("//div[@data-testid='tile-activemq']"))
   );
   await (await driver.findElement(By.xpath("//div[@data-testid='tile-activemq']"))).click();
+}
+
+async function addDatamapperStep(driver: WebDriver) {
+  await driver.wait(
+    until.elementLocated(By.css('g[data-testid^="custom-node__log"],g[data-testid="custom-node__route.from.steps.0.log"]'))
+  , 5000, 'Cannot find the node for the log');
+
+  const canvasNode = await driver.findElement(By.css('g[data-testid^="custom-node__log"],g[data-testid="custom-node__route.from.steps.0.log"]'));
+  await driver.actions().contextClick(canvasNode).perform();
+
+  await driver.wait(
+    until.elementLocated(By.className('pf-v5-c-dropdown pf-m-expanded'))
+  );
+  await (await driver.findElement(By.xpath("//*[@data-testid='context-menu-item-replace']"))).click();
+
+  await driver.wait(
+    until.elementLocated(By.xpath("//input[@placeholder='Filter by name, description or tag']"))
+  );
+  const filterInput = await driver.findElement(By.xpath("//input[@placeholder='Filter by name, description or tag']"));
+  await filterInput.sendKeys('datamapper');
+  await driver.wait(
+    until.elementLocated(By.xpath("//div[@data-testid='tile-kaoto-datamapper']")
+  ));
+
+  await (await driver.findElement(By.xpath("//div[@data-testid='tile-kaoto-datamapper']"))).click();
+
+  const kaotoNode = await driver.findElement(By.css('g[data-testid^="custom-node__kaoto-datamapper"],g[data-testid="custom-node__route.from.steps.0.kaoto-datamapper"]'));
+  await kaotoNode.click();
 }
 
 /**
