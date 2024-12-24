@@ -1,4 +1,4 @@
-import { By, EditorView, until, VSBrowser, WebDriver, WebView, logging } from 'vscode-extension-tester';
+import { By, EditorView, until, VSBrowser, WebDriver, WebView, logging, InputBox } from 'vscode-extension-tester';
 import { assert } from 'chai';
 import * as path from 'path';
 import { checkEmptyCanvasLoaded, checkTopologyLoaded, openAndSwitchToKaotoFrame } from './Util';
@@ -127,6 +127,21 @@ describe('Kaoto basic development flow', function () {
     await addDatamapperStep(driver);
     await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__kaoto-datamapper', 'kaoto-datamapper');
 
+    await openDataMapperEditor(driver);
+
+    await addXsdForSource(driver, kaotoWebview);
+
+// TODO: Add a target xsd
+// TODO: Map an element
+
+    await (await driver.findElement(By.css('a[data-testid="design-tab"]'))).click();
+    
+    const files = fs.readdirSync(workspaceFolder);
+    const xslFiles = files.filter(file => file.endsWith('.xsl'));
+    assert.isTrue(xslFiles.length === 1, `Expected one xsl file created, found ${xslFiles.length}`);
+
+    await deleteDataMapperStep(driver, workspaceFolder);
+    
     await kaotoWebview.switchBack();
     assert.isTrue(
       await kaotoEditor.isDirty(),
@@ -139,16 +154,6 @@ describe('Kaoto basic development flow', function () {
 
     const editorView = new EditorView();
     await editorView.closeAllEditors();
-
-    ({ kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(
-      workspaceFolder,
-      'for_datamapper_test.camel.yaml',
-      driver,
-      true
-    ));
-    globalKaotoWebView = kaotoWebview;
-    await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__kaoto-datamapper', 'kaoto-datamapper');
-    await kaotoWebview.switchBack();
   });
 
   it('Open Camel file and check Kaoto UI is loading', async function () {
@@ -187,6 +192,50 @@ describe('Kaoto basic development flow', function () {
   });
 
 });
+
+async function addXsdForSource(driver: WebDriver, kaotoWebview: WebView) {
+  await driver.wait(
+    until.elementLocated(By.css('button[data-testid="attach-schema-sourceBody-Body-button"]')),
+    5000, 'Cannot find the button to attach the schema');
+  await (await driver.findElement(By.css('button[data-testid="attach-schema-sourceBody-Body-button"]'))).click();
+
+  await kaotoWebview.switchBack();
+  const xsdInputbox = await InputBox.create(10000);
+  await xsdInputbox.setText('shiporder.xsd');
+  await xsdInputbox.confirm();
+  await kaotoWebview.switchToFrame();
+
+  //TODO: check content is loaded
+}
+
+async function openDataMapperEditor(driver: WebDriver) {
+  const kaotoNode = await driver.findElement(By.css('g[data-testid^="custom-node__kaoto-datamapper"],g[data-testid="custom-node__route.from.steps.0.kaoto-datamapper"]'));
+  await kaotoNode.click();
+  await driver.wait(
+    until.elementLocated(By.css('button[title="Click to launch the Kaoto DataMapper editor"]')),
+    5000, 'Cannot find the button to open the datamapper');
+  await (await driver.findElement(By.css('button[title="Click to launch the Kaoto DataMapper editor"]'))).click();
+}
+
+async function deleteDataMapperStep(driver: WebDriver, workspaceFolder: string) {
+  await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__kaoto-datamapper', 'kaoto-datamapper');
+  const kaotoNodeConfigured = await driver.findElement(By.css('g[data-testid^="custom-node__kaoto-datamapper"],g[data-testid="custom-node__route.from.steps.0.kaoto-datamapper"]'));
+  await kaotoNodeConfigured.click();
+  await driver.wait(
+    until.elementLocated(By.css('button[data-testid="step-toolbar-button-delete"]'))
+  );
+  await (await driver.findElement(By.css('button[data-testid="step-toolbar-button-delete"]'))).click();
+  await driver.wait(
+    until.elementLocated(By.css('button[data-testid="action-confirmation-modal-btn-del-step-and-file"]'))
+  );
+  await (await driver.findElement(By.css('button[data-testid="action-confirmation-modal-btn-del-step-and-file"]'))).click();
+
+  await waitUntil(() => {
+    const filesAfterDeletion = fs.readdirSync(workspaceFolder);
+    const xslFilesAfterDeletion = filesAfterDeletion.filter(file => file.endsWith('.xsl'));
+    return xslFilesAfterDeletion.length === 0;
+  });
+}
 
 async function createNewRoute(driver: WebDriver) {
   await (await driver.findElement(By.xpath("//button[@data-testid='dsl-list-btn']"))).click();
@@ -234,9 +283,6 @@ async function addDatamapperStep(driver: WebDriver) {
   ));
 
   await (await driver.findElement(By.xpath("//div[@data-testid='tile-kaoto-datamapper']"))).click();
-
-  const kaotoNode = await driver.findElement(By.css('g[data-testid^="custom-node__kaoto-datamapper"],g[data-testid="custom-node__route.from.steps.0.kaoto-datamapper"]'));
-  await kaotoNode.click();
 }
 
 /**
