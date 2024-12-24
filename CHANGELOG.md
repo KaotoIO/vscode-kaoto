@@ -1,5 +1,7 @@
 # 2.4.0
 
+- Fix Kaoto Datamapper editor on Windows (issue when attaching an xsd)
+
 # 2.3.0
 
 - Introduced a `Kaoto` output channel. It is initially used to log message of exceptions.
