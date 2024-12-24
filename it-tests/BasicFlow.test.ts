@@ -205,7 +205,10 @@ async function addXsdForSource(driver: WebDriver, kaotoWebview: WebView) {
   await xsdInputbox.confirm();
   await kaotoWebview.switchToFrame();
 
-  //TODO: check content is loaded
+  await driver.wait(
+    until.elementLocated(By.xpath('//div[starts-with(@data-testid, "node-source-field-shiporder-")]'))
+    , 5000
+    , 'Root of the imported xsd is not displayed in the UI');
 }
 
 async function openDataMapperEditor(driver: WebDriver) {
