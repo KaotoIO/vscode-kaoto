@@ -205,7 +205,10 @@ async function addXsdForSource(driver: WebDriver, kaotoWebview: WebView) {
   await xsdInputbox.confirm();
   await kaotoWebview.switchToFrame();
 
-  //TODO: check content is loaded
+  await driver.wait(
+    until.elementLocated(By.xpath('//div[starts-with(@data-testid, "node-source-field-shiporder-")]'))
+    , 5000
+    , 'Root of the imported xsd is not displayed in the UI');
 }
 
 async function openDataMapperEditor(driver: WebDriver) {
@@ -220,16 +223,15 @@ async function openDataMapperEditor(driver: WebDriver) {
 async function deleteDataMapperStep(driver: WebDriver, workspaceFolder: string) {
   await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__kaoto-datamapper', 'kaoto-datamapper');
   const kaotoNodeConfigured = await driver.findElement(By.css('g[data-testid^="custom-node__kaoto-datamapper"],g[data-testid="custom-node__route.from.steps.0.kaoto-datamapper"]'));
-  await kaotoNodeConfigured.click();
-  await driver.wait(
-    until.elementLocated(By.css('button[data-testid="step-toolbar-button-delete"]'))
-  );
-  await (await driver.findElement(By.css('button[data-testid="step-toolbar-button-delete"]'))).click();
-  await driver.wait(
-    until.elementLocated(By.css('button[data-testid="action-confirmation-modal-btn-del-step-and-file"]'))
-  );
-  await (await driver.findElement(By.css('button[data-testid="action-confirmation-modal-btn-del-step-and-file"]'))).click();
 
+  await driver.actions().contextClick(kaotoNodeConfigured).perform();
+
+  await driver.wait(
+    until.elementLocated(By.className('pf-v5-c-dropdown pf-m-expanded'))
+  );
+  await (await driver.findElement(By.xpath("//*[@data-testid='context-menu-item-delete']"))).click();
+
+  await (await driver.findElement(By.css('button[data-testid="action-confirmation-modal-btn-del-step-and-file"]'))).click();
   await waitUntil(() => {
     const filesAfterDeletion = fs.readdirSync(workspaceFolder);
     const xslFilesAfterDeletion = filesAfterDeletion.filter(file => file.endsWith('.xsl'));
