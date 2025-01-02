@@ -228,16 +228,21 @@ async function deleteDataMapperStep(driver: WebDriver, workspaceFolder: string) 
   console.log("deleting datamapper step...");
   await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__kaoto-datamapper', 'kaoto-datamapper');
   const kaotoNodeConfigured = await driver.findElement(By.css('g[data-testid^="custom-node__kaoto-datamapper"],g[data-testid="custom-node__route.from.steps.0.kaoto-datamapper"]'));
+  console.log("found kaoto datamapper step");
   await kaotoNodeConfigured.click();
+  console.log("kaoto datamapper step clicked");
   await driver.wait(
     until.elementLocated(By.css('button[data-testid="step-toolbar-button-delete"]'))
   );
+  console.log("step-toolbar button delete available");
   await (await driver.findElement(By.css('button[data-testid="step-toolbar-button-delete"]'))).click();
+  console.log("step-toolbar button delete clicked");
   await driver.wait(
     until.elementLocated(By.css('button[data-testid="action-confirmation-modal-btn-del-step-and-file"]'))
   );
+  console.log("confirmation dialog available");
   await (await driver.findElement(By.css('button[data-testid="action-confirmation-modal-btn-del-step-and-file"]'))).click();
-
+  console.log("confirmation dialog clicked");
   await waitUntil(() => {
     const filesAfterDeletion = fs.readdirSync(workspaceFolder);
     const xslFilesAfterDeletion = filesAfterDeletion.filter(file => file.endsWith('.xsl'));
