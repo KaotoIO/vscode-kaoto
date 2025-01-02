@@ -231,6 +231,9 @@ async function deleteDataMapperStep(driver: WebDriver, workspaceFolder: string) 
   console.log("found kaoto datamapper step");
   await kaotoNodeConfigured.click();
   console.log("kaoto datamapper step clicked");
+
+  await (await driver.findElement(By.id('reset-view'))).click();
+
   await driver.wait(
     until.elementLocated(By.css('button[data-testid="step-toolbar-button-delete"]'))
   );
