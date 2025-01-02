@@ -158,9 +158,11 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
         kaotoMetadataFile = await this.findKaotoMetadataToCreate();
       }
       return await vscode.window.showQuickPick(files.map((f) => {
-        logInKaotoOutputChannel('askUserForFileSelection picked path' + f.path, undefined);
-        logInKaotoOutputChannel('askUserForFileSelection dirname kaoto metadata path' + path.dirname(kaotoMetadataFile.fsPath), undefined);
-        logInKaotoOutputChannel('askUserForFileSelection returned value' + path.relative(path.dirname(kaotoMetadataFile.fsPath), f.path), undefined);
+        logInKaotoOutputChannel('askUserForFileSelection picked path ' + f.path, undefined);
+        logInKaotoOutputChannel('askUserForFileSelection picked fs path ' + f.fsPath, undefined);
+        logInKaotoOutputChannel('askUserForFileSelection dirname kaoto metadata path ' + path.dirname(kaotoMetadataFile.fsPath), undefined);
+        logInKaotoOutputChannel('askUserForFileSelection returned value ' + path.relative(path.dirname(kaotoMetadataFile.fsPath), f.path), undefined);
+        logInKaotoOutputChannel('askUserForFileSelection potential returned value using fsPath' + path.relative(path.dirname(kaotoMetadataFile.fsPath), f.fsPath), undefined);
         return path.relative(path.dirname(kaotoMetadataFile.fsPath), f.path);
       }), options as vscode.QuickPickOptions);
     } catch (ex) {
