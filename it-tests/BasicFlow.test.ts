@@ -135,6 +135,7 @@ describe('Kaoto basic development flow', function () {
 // TODO: Map an element
 
     await (await driver.findElement(By.css('a[data-testid="design-tab"]'))).click();
+    console.log("clicked to switch to design tab");
     
     const files = fs.readdirSync(workspaceFolder);
     const xslFiles = files.filter(file => file.endsWith('.xsl'));
@@ -194,6 +195,7 @@ describe('Kaoto basic development flow', function () {
 });
 
 async function addXsdForSource(driver: WebDriver, kaotoWebview: WebView) {
+  console.log("add xsd for source...");
   await driver.wait(
     until.elementLocated(By.css('button[data-testid="attach-schema-sourceBody-Body-button"]')),
     5000, 'Cannot find the button to attach the schema');
@@ -209,9 +211,11 @@ async function addXsdForSource(driver: WebDriver, kaotoWebview: WebView) {
     until.elementLocated(By.xpath('//div[starts-with(@data-testid, "node-source-field-shiporder-")]'))
     , 5000
     , 'Root of the imported xsd is not displayed in the UI');
+  console.log("xsd succesfuly added to source");
 }
 
 async function openDataMapperEditor(driver: WebDriver) {
+  console.log("open datamapper editor...");
   const kaotoNode = await driver.findElement(By.css('g[data-testid^="custom-node__kaoto-datamapper"],g[data-testid="custom-node__route.from.steps.0.kaoto-datamapper"]'));
   await kaotoNode.click();
   await driver.wait(
@@ -221,6 +225,7 @@ async function openDataMapperEditor(driver: WebDriver) {
 }
 
 async function deleteDataMapperStep(driver: WebDriver, workspaceFolder: string) {
+  console.log("deleting datamapper step...");
   await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__kaoto-datamapper', 'kaoto-datamapper');
   const kaotoNodeConfigured = await driver.findElement(By.css('g[data-testid^="custom-node__kaoto-datamapper"],g[data-testid="custom-node__route.from.steps.0.kaoto-datamapper"]'));
   await kaotoNodeConfigured.click();
@@ -238,6 +243,7 @@ async function deleteDataMapperStep(driver: WebDriver, workspaceFolder: string) 
     const xslFilesAfterDeletion = filesAfterDeletion.filter(file => file.endsWith('.xsl'));
     return xslFilesAfterDeletion.length === 0;
   });
+  console.log("datamapper step deleted");
 }
 
 async function createNewRoute(driver: WebDriver) {
