@@ -163,7 +163,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
         logInKaotoOutputChannel('askUserForFileSelection dirname kaoto metadata path ' + path.dirname(kaotoMetadataFile.fsPath), undefined);
         logInKaotoOutputChannel('askUserForFileSelection returned value ' + path.relative(path.dirname(kaotoMetadataFile.fsPath), f.path), undefined);
         logInKaotoOutputChannel('askUserForFileSelection potential returned value using fsPath' + path.relative(path.dirname(kaotoMetadataFile.fsPath), f.fsPath), undefined);
-        return path.relative(path.dirname(kaotoMetadataFile.fsPath), f.path);
+        return path.relative(path.dirname(kaotoMetadataFile.fsPath), f.fsPath);
       }), options as vscode.QuickPickOptions);
     } catch (ex) {
       const errorMessage = `Cannot get a user selection: ${ex.message}`;
