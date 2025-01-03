@@ -229,24 +229,32 @@ async function deleteDataMapperStep(driver: WebDriver, workspaceFolder: string) 
   await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__kaoto-datamapper', 'kaoto-datamapper');
   const kaotoNodeConfigured = await driver.findElement(By.css('g[data-testid^="custom-node__kaoto-datamapper"],g[data-testid="custom-node__route.from.steps.0.kaoto-datamapper"]'));
   console.log("found kaoto datamapper step");
-  await kaotoNodeConfigured.click();
-  console.log("kaoto datamapper step clicked");
 
-  console.log("will reset view to ensure toolbar will be visible");
-  await (await driver.findElement(By.id('reset-view'))).click();
-  console.log("reseted view to ensure toolbar will be visible");
-
-  driver.sleep(1000);
+  await driver.actions().contextClick(kaotoNodeConfigured).perform();
 
   await driver.wait(
-    until.elementLocated(By.css('button[data-testid="step-toolbar-button-delete"]'))
+    until.elementLocated(By.className('pf-v5-c-dropdown pf-m-expanded'))
   );
-  console.log("step-toolbar button delete available");
-  await (await driver.findElement(By.css('button[data-testid="step-toolbar-button-delete"]'))).click();
-  console.log("step-toolbar button delete clicked");
-  await driver.wait(
-    until.elementLocated(By.css('button[data-testid="action-confirmation-modal-btn-del-step-and-file"]'))
-  );
+  await (await driver.findElement(By.xpath("//*[@data-testid='context-menu-item-delete']"))).click();
+
+  // await kaotoNodeConfigured.click();
+  // console.log("kaoto datamapper step clicked");
+
+  // console.log("will reset view to ensure toolbar will be visible");
+  // await (await driver.findElement(By.id('reset-view'))).click();
+  // console.log("reseted view to ensure toolbar will be visible");
+
+  // driver.sleep(1000);
+
+  // await driver.wait(
+  //   until.elementLocated(By.css('button[data-testid="step-toolbar-button-delete"]'))
+  // );
+  // console.log("step-toolbar button delete available");
+  // await (await driver.findElement(By.css('button[data-testid="step-toolbar-button-delete"]'))).click();
+  // console.log("step-toolbar button delete clicked");
+  // await driver.wait(
+  //   until.elementLocated(By.css('button[data-testid="action-confirmation-modal-btn-del-step-and-file"]'))
+  // );
   console.log("confirmation dialog available");
   await (await driver.findElement(By.css('button[data-testid="action-confirmation-modal-btn-del-step-and-file"]'))).click();
   console.log("confirmation dialog clicked");
