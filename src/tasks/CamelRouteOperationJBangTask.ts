@@ -15,7 +15,7 @@
  */
 'use strict';
 
-import { TaskScope } from "vscode";
+import { TaskRevealKind, TaskScope } from "vscode";
 import { CamelJBangTask } from "./CamelJBangTask";
 import { CamelJBang, RouteOperation } from "../helpers/CamelJBang";
 
@@ -25,7 +25,8 @@ export class CamelRouteOperationJBangTask extends CamelJBangTask {
         super(TaskScope.Workspace,
             `Kaoto: ${operation} - ${integration}: ${route}`,
             new CamelJBang().route(operation, integration, route),
-            true
+            true,
+            TaskRevealKind.Silent
         );
     }
 }

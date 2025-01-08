@@ -15,7 +15,7 @@
  */
 'use strict';
 
-import { TaskScope } from "vscode";
+import { TaskRevealKind, TaskScope } from "vscode";
 import { CamelJBangTask } from "./CamelJBangTask";
 import { CamelJBang } from "../helpers/CamelJBang";
 
@@ -25,7 +25,8 @@ export class CamelStopJBangTask extends CamelJBangTask {
         super(TaskScope.Workspace,
             `Kaoto: Stop - ${name}`,
             new CamelJBang().stop(name),
-            true
+            true,
+            TaskRevealKind.Silent
         );
     }
 }

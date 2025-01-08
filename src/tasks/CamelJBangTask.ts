@@ -15,7 +15,7 @@
  */
 'use strict';
 
-import { ShellExecution, Task, TaskDefinition, TaskPanelKind, tasks, TaskScope, WorkspaceFolder } from 'vscode';
+import { ShellExecution, Task, TaskDefinition, TaskPanelKind, TaskRevealKind, tasks, TaskScope, WorkspaceFolder } from 'vscode';
 
 /**
  * This class represents implementation of vscode.task for Camel JBang.
@@ -24,7 +24,7 @@ export abstract class CamelJBangTask extends Task {
 
 	protected label: string;
 
-	constructor(scope: WorkspaceFolder | TaskScope.Workspace, label: string, shellExecution: ShellExecution, closePanel: boolean = false) {
+	constructor(scope: WorkspaceFolder | TaskScope.Workspace, label: string, shellExecution: ShellExecution, closePanel: boolean = false, revealTask: TaskRevealKind = TaskRevealKind.Always) {
 
 		const taskDefinition: TaskDefinition = {
 			'label': label,
@@ -45,7 +45,8 @@ export abstract class CamelJBangTask extends Task {
 			echo: false,
 			showReuseMessage: false,
 			panel: TaskPanelKind.New,
-			close: closePanel
+			close: closePanel,
+			reveal: revealTask
 		}
 	}
 
