@@ -45,6 +45,7 @@ import { TestsProvider } from "../../src/views/TestsProvider";
 import { RouteOperation } from "../helpers/CamelJBang";
 import { CamelLogJBangTask } from "../../src/tasks/CamelLogJBangTask";
 import { PortManager } from "../../src/helpers/PortManager";
+import * as path from 'path';
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -134,7 +135,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			await vscode.window.showWarningMessage(WORKSPACE_WARNING_MESSAGE);
 			return;
 		}
-		await new CamelRunJBangTask(integrationEntry.filepath, undefined, portManager.allocatePort()).executeOnly();
+		await new CamelRunJBangTask(path.basename(integrationEntry.filepath), path.dirname(integrationEntry.filepath), portManager.allocatePort()).executeOnly();
 		await new Promise((time) => setTimeout(time, 2_500)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
 		deploymentsProvider.refresh();
 		await sendCommandTrackingEvent('kaoto.integrations.jbang.run');
@@ -153,7 +154,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		if (!(await isCamelPluginInstalled('kubernetes'))) {
 			await new CamelAddPluginJBangTask('kubernetes').execute();
 		}
-		await new CamelKubernetesRunJBangTask(integrationEntry.filepath).executeOnly();
+		await new CamelKubernetesRunJBangTask(path.basename(integrationEntry.filepath), path.dirname(integrationEntry.filepath)).executeOnly();
 		await new Promise((time) => setTimeout(time, 2_500)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
 		deploymentsProvider.refresh();
 		await sendCommandTrackingEvent('kaoto.integrations.kubernetes.run');
