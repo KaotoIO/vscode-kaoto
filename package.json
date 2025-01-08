@@ -166,7 +166,9 @@
           "type": "boolean",
           "default": false,
           "markdownDescription": "Control whether to enable drag and drop feature",
-          "tags": ["experimental"]
+          "tags": [
+            "experimental"
+          ]
         }
       }
     },
