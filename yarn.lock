@@ -348,9 +348,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/kaoto@npm:2.3.0":
-  version: 2.3.0
-  resolution: "@kaoto/kaoto@npm:2.3.0"
+"@kaoto/kaoto@npm:2.4.0-RC1":
+  version: 2.4.0-RC1
+  resolution: "@kaoto/kaoto@npm:2.4.0-RC1"
   dependencies:
     "@dnd-kit/core": "npm:^6.1.0"
     "@kaoto-next/uniforms-patternfly": "npm:^0.7.14"
@@ -387,7 +387,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     react-monaco-editor: ^0.56.0
-  checksum: 10/7946c23daf37d19c32d179df4c9a2dc90c614e50ee349d04f971d621f7e9a3c95d8acb0c4524e4468d14121f5f963f06e8bc3cb431fae25a528fd294372e7b8e
+  checksum: 10/f6ffd020edded5636288c67247bf348b2d0ce699d4c4297263cc6406d3112cf28819e39b2181421a17e5405d2d3c29ea2ce8aaba6a1fed57b8f29478ae83259d
   languageName: node
   linkType: hard
 
@@ -8901,16 +8901,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto/kaoto": "npm:2.3.0"
+    "@kaoto/kaoto": "npm:2.4.0-RC1"
     "@kie-tools-core/backend": "npm:0.32.0"
     "@kie-tools-core/editor": "npm:0.32.0"
     "@kie-tools-core/i18n": "npm:0.32.0"
     "@kie-tools-core/vscode-extension": "npm:0.32.0"
     "@patternfly/patternfly": "npm:5.4.2"
-    "@patternfly/react-code-editor": "npm:5.4.11"
-    "@patternfly/react-core": "npm:5.4.8"
+    "@patternfly/react-code-editor": "npm:5.4.15"
+    "@patternfly/react-core": "npm:5.4.12"
     "@patternfly/react-icons": "npm:5.4.2"
-    "@patternfly/react-table": "npm:5.4.9"
+    "@patternfly/react-table": "npm:5.4.13"
     "@patternfly/react-topology": "npm:5.4.1"
     "@redhat-developer/vscode-redhat-telemetry": "npm:^0.9.1"
     "@types/chai": "npm:^4.3.11"
