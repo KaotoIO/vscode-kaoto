@@ -1,5 +1,5 @@
 import { KaotoEditorChannelApi } from '@kaoto/kaoto';
-import { ISettingsModel, NodeLabelType, SettingsModel } from '@kaoto/kaoto/models';
+import { ISettingsModel, NodeLabelType, NodeToolbarTrigger, SettingsModel } from '@kaoto/kaoto/models';
 import { BackendProxy } from '@kie-tools-core/backend/dist/api';
 import { I18n } from '@kie-tools-core/i18n/dist/core';
 import { NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
@@ -39,10 +39,16 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
   async getVSCodeKaotoSettings(): Promise<ISettingsModel> {
     const catalogUrl = await vscode.workspace.getConfiguration('kaoto').get<Promise<string | null>>('catalog.url');
     const nodeLabel = await vscode.workspace.getConfiguration('kaoto').get<Promise<NodeLabelType | null>>('nodeLabel');
+    const nodeToolbarTrigger = await vscode.workspace.getConfiguration('kaoto').get<Promise<NodeToolbarTrigger | null>>('nodeToolbarTrigger');
+    const enableDragAndDrop = await vscode.workspace.getConfiguration('kaoto').get<Promise<ISettingsModel['experimentalFeatures']['enableDragAndDrop'] | null>>('enableDragAndDrop');
 
     const settingsModel: Partial<ISettingsModel> = {
       catalogUrl: catalogUrl ?? '',
       nodeLabel: nodeLabel ?? NodeLabelType.Description,
+      nodeToolbarTrigger: nodeToolbarTrigger ?? NodeToolbarTrigger.onHover,
+      experimentalFeatures: {
+        enableDragAndDrop: enableDragAndDrop ?? false,
+      },
     };
 
     return new SettingsModel(settingsModel);

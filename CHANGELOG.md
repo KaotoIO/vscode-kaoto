@@ -2,6 +2,8 @@
 
 - Fix Kaoto Datamapper editor on Windows (issue when attaching an xsd)
 - Upgrade to Kaoto 2.4.0-RC1
+- Add the possibility to select how to show the Step toolbar (onHover or onSelection)
+- Add the possibility to enable drag & drop experimental feature
 
 # 2.3.0
 
