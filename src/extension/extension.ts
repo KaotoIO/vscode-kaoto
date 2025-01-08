@@ -242,7 +242,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	 */
 	context.subscriptions.push(vscode.window.onDidChangeTerminalState(async () => {
 		// TODO made actions for only Kaoto related files
-		await new Promise((time) => setTimeout(time, 500)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
+		await new Promise((time) => setTimeout(time, 750)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
 		deploymentsProvider.refresh();
 	}));
 
@@ -291,7 +291,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	// register deployments inline buttons
 	context.subscriptions.push(vscode.commands.registerCommand('kaoto.deployments.integration.stop', async function (integration: ParentItem) {
 		await new CamelStopJBangTask(integration.label).execute();
-		await new Promise((time) => setTimeout(time, 500)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
+		await new Promise((time) => setTimeout(time, 750)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
 		deploymentsProvider.refresh();
 		await sendCommandTrackingEvent('kaoto.deployments.integration.stop');
 	}));
@@ -301,25 +301,25 @@ export async function activate(context: vscode.ExtensionContext) {
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand('kaoto.deployments.start', async function (route: ChildItem) {
 		await new CamelRouteOperationJBangTask(RouteOperation.start, route.integrationName, route.label).execute();
-		await new Promise((time) => setTimeout(time, 500)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
+		await new Promise((time) => setTimeout(time, 750)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
 		deploymentsProvider.refresh();
 		await sendCommandTrackingEvent('kaoto.deployments.start');
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand('kaoto.deployments.stop', async function (route: ChildItem) {
 		await new CamelRouteOperationJBangTask(RouteOperation.stop, route.integrationName, route.label).execute();
-		await new Promise((time) => setTimeout(time, 500)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
+		await new Promise((time) => setTimeout(time, 750)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
 		deploymentsProvider.refresh();
 		await sendCommandTrackingEvent('kaoto.deployments.stop');
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand('kaoto.deployments.resume', async function (route: ChildItem) {
 		await new CamelRouteOperationJBangTask(RouteOperation.resume, route.integrationName, route.label).execute();
-		await new Promise((time) => setTimeout(time, 500)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
+		await new Promise((time) => setTimeout(time, 750)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
 		deploymentsProvider.refresh();
 		await sendCommandTrackingEvent('kaoto.deployments.resume');
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand('kaoto.deployments.suspend', async function (route: ChildItem) {
 		await new CamelRouteOperationJBangTask(RouteOperation.suspend, route.integrationName, route.label).execute();
-		await new Promise((time) => setTimeout(time, 500)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
+		await new Promise((time) => setTimeout(time, 750)); // TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
 		deploymentsProvider.refresh();
 		await sendCommandTrackingEvent('kaoto.deployments.suspend');
 	}));
