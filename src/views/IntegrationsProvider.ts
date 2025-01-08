@@ -22,7 +22,7 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 	private _onDidChangeTreeData: EventEmitter<TreeItem | undefined | null | void> = new EventEmitter<TreeItem | undefined | null | void>();
 	readonly onDidChangeTreeData: Event<TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
-	private static readonly FILE_PATTERN = '**/*.camel.yaml';
+	private static readonly FILE_PATTERN = '{**/*.camel.yaml,**/*.kamelet.yaml,**/*-pipe.yaml}';
 	private static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**}';
 	private fileWatcher: FileSystemWatcher;
 
@@ -47,7 +47,7 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 
 	async getChildren(integration?: Integration): Promise<TreeItem[]> {
 		if (integration) {
-			return await this.getRoutesInsideIntegrationFile(integration.filepath);
+			return integration.type === 'route' ? await this.getRoutesInsideIntegrationFile(integration.filepath) : [];
 		}
 		const integrations = await this.getIntegrationsAvailableInWorkspace();
 		integrations.length > 0 ? this.setContext(true) : this.setContext(false);
@@ -58,6 +58,25 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 		commands.executeCommand('setContext', 'kaoto.integrationExists', value);
 	}
 
+	private getInfo(fileName: string): { type: string, name: string } {
+		if (fileName.endsWith('.kamelet.yaml')) {
+			return {
+				type: 'kamelet',
+				name: basename(fileName, '.kamelet.yaml') // Integration name without extension
+			};
+		} else if (fileName.endsWith('-pipe.yaml')) {
+			return {
+				type: 'pipe',
+				name: basename(fileName, '-pipe.yaml') // Integration name without extension
+			};
+		} else {
+			return {
+				type: 'route',
+				name: basename(fileName, '.camel.yaml') // Integration name without extension
+			};
+		}
+	}
+
 	private async getIntegrationsAvailableInWorkspace(): Promise<Integration[]> {
 		const integrationFiles = await workspace.findFiles(IntegrationsProvider.FILE_PATTERN, IntegrationsProvider.EXCLUDE_PATTERN);
 
@@ -66,17 +85,19 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 		for (const file of integrationFiles) {
 			const filename = basename(file.fsPath);
 			const filepath = normalize(file.fsPath);
+			const int = this.getInfo(filename);
 
 			// Check if the file has routes
 			const routes = await this.getRoutesInsideIntegrationFile(filepath);
-			const collapsibleState = routes.length > 0 ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.None;
+			const collapsibleState = routes.length > 0 ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.None; // TODO
 
 			// Add the IntegrationFile with the correct collapsibleState
 			integrations.push(new Integration(
-				basename(filename, '.camel.yaml'), // Integration name without extension
+				int.name, // Integration name without extension
 				filename,
 				filepath,
-				collapsibleState
+				collapsibleState,
+				int.type
 			));
 		}
 
@@ -106,18 +127,47 @@ export class Integration extends TreeItem {
 		public readonly name: string,
 		private filename: string,
 		public readonly filepath: string,
-		public readonly collapsibleState: TreeItemCollapsibleState
+		public collapsibleState: TreeItemCollapsibleState,
+		public readonly type: string
 	) {
 		super(name, collapsibleState);
 		this.tooltip = this.filepath;
 		this.description = this.filename;
 	}
 
-	iconPath = join(__filename, '..', '..', '..', 'icons', 'integrations', 'yaml.svg');
+	iconPath = {
+		light: this.getIcon(this.type).light,
+		dark: this.getIcon(this.type).dark
+	};
 
 	command = { command: 'kaoto.open', title: 'Open with Kaoto', arguments: [Uri.parse(this.filepath)] };
 
 	contextValue = 'integration';
+
+	public setCollapsibleState(state: TreeItemCollapsibleState) {
+		this.collapsibleState = state;
+	}
+
+	private getIcon(type: string): { dark: string, light: string } {
+		switch (type) {
+			case 'kamelet':
+				return {
+					light: join(__filename, '..', '..', '..', 'icons', 'integrations', 'kamelets-file-icon-light.png'),
+					dark: join(__filename, '..', '..', '..', 'icons', 'integrations', 'kamelets-file-icon-dark.png')
+				}
+			case 'pipe':
+				return {
+					light: join(__filename, '..', '..', '..', 'icons', 'integrations', 'pipes-file-icon-light.png'),
+					dark: join(__filename, '..', '..', '..', 'icons', 'integrations', 'pipes-file-icon-dark.png')
+				}
+			default:
+				// every other considered as Camel Route file
+				return {
+					light: join(__filename, '..', '..', '..', 'icons', 'integrations', 'routes-file-icon-light.png'),
+					dark: join(__filename, '..', '..', '..', 'icons', 'integrations', 'routes-file-icon-dark.png')
+				}
+		}
+	}
 }
 
 export class Route extends TreeItem {
