@@ -152,6 +152,21 @@
             "id"
           ],
           "scope": "window"
+        },
+        "kaoto.nodeToolbarTrigger": {
+          "type": "string",
+          "default": "onHover",
+          "markdownDescription": "Choose when to open the Node toolbar. Can be either `onHover` or `onSelection`. If `onHover` is selected, the toolbar will be automatically open upon hovering a node, otherwise, it will be open when selecting a node",
+          "enum": [
+            "onHover",
+            "onSelection"
+          ]
+        },
+        "kaoto.enableDragAndDrop": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Control whether to enable drag and drop feature",
+          "tags": ["experimental"]
         }
       }
     },
