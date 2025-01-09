@@ -174,11 +174,11 @@ It is launching UI tests. Beware that it can take several minutes to start. Stay
     * Push changes in a Pull Request
     * Wait for Pull Request to be merged
 * Check that the version of VS Code extension aligns as much as possible with version of embedded Kaoto
-* Check build is working fine on [GitHub Actions](https://github.com/KaotoIO/vscode-kaoto/actions) and [Jenkins CI](https://master-jenkins-csb-fusetools-qe.apps.ocp-c1.prod.psi.redhat.com/view/VS%20Code%20-%20release/job/vscode/job/eng/job/vscode-kaoto-release/)
+* Check build is working fine on [GitHub Actions](https://github.com/KaotoIO/vscode-kaoto/actions) and [Jenkins CI](https://jenkins-csb-fusetools-qe-master.dno.corp.redhat.com/view/VS%20Code%20-%20release/job/vscode/job/eng/job/vscode-kaoto-release/)
 * Check that someone listed as _submitter_ in Jenkinsfile is available
 * Create a tag
 * Push the tag to vscode-kaoto repository
-* Start build on [Jenkins CI](https://master-jenkins-csb-fusetools-qe.apps.ocp-c1.prod.psi.redhat.com/view/VS%20Code%20-%20release/job/vscode/job/eng/job/vscode-kaoto-release/) with _publishToMarketPlace_ and _publishToOVSX_ parameters checked
+* Start build on [Jenkins CI](https://jenkins-csb-fusetools-qe-master.dno.corp.redhat.com/view/VS%20Code%20-%20release/job/vscode/job/eng/job/vscode-kaoto-release/) with _publishToMarketPlace_ and _publishToOVSX_ parameters checked
 * When the build hits the _Publish to Marketplace_ step, it will wait for an approval
 * It is possible to check that the produced vsix is valid by using the one pushed in [JBoss download area](https://download.jboss.org/jbosstools/vscode/snapshots/vscode-kaoto/)
 * For someone in _submitter_ list:
