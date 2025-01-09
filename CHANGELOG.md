@@ -1,3 +1,5 @@
+# 2.5.0
+
 # 2.4.0
 
 - Fix Kaoto Datamapper editor on Windows (issue when attaching an xsd)
