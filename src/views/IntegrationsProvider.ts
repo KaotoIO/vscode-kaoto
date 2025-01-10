@@ -88,7 +88,10 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 			const int = this.getInfo(filename);
 
 			// Check if the file has routes
-			const routes = await this.getRoutesInsideIntegrationFile(filepath);
+			let routes = [];
+			if(int.type === 'route') {
+				routes = await this.getRoutesInsideIntegrationFile(filepath);
+			}
 			const collapsibleState = routes.length > 0 ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.None; // TODO
 
 			// Add the IntegrationFile with the correct collapsibleState
