@@ -24,6 +24,8 @@ export class CamelBindJBangTask extends CamelJBangTask {
 	constructor(scope: WorkspaceFolder | TaskScope.Workspace, file: string, source: string = 'timer-source', sink: string = 'log-sink') {
 		super(scope,
 			'Init a Custom Resource Pipe with JBang',
-			new CamelJBang().bind(file, source, sink));
+			new CamelJBang().bind(file, source, sink),
+			true
+		);
 	}
 }
