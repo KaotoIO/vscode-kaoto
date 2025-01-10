@@ -168,10 +168,10 @@
         "icon": "$(refresh)"
       },
       {
-        "command": "kaoto.integrations.editEntry",
-        "title": "Edit Integration",
+        "command": "kaoto.integrations.editSource",
+        "title": "Show Source",
         "category": "Kaoto",
-        "icon": "$(edit)"
+        "icon": "$(code)"
       },
       {
         "command": "kaoto.integrations.deleteEntry",
@@ -380,7 +380,7 @@
           "group": "inline@3"
         },
         {
-          "command": "kaoto.integrations.editEntry",
+          "command": "kaoto.integrations.editSource",
           "when": "view == kaoto.integrations && viewItem == integration",
           "group": "navigation"
         },

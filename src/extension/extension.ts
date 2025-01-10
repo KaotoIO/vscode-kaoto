@@ -119,7 +119,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(integrationsTreeView);
 	context.subscriptions.push(vscode.commands.registerCommand(KAOTO_INTEGRATIONS_VIEW_REFRESH_COMMAND_ID, () => integrationsProvider.refresh()));
 
-	context.subscriptions.push(vscode.commands.registerCommand('kaoto.integrations.editEntry', async (integrationEntry: Integration) => {
+	context.subscriptions.push(vscode.commands.registerCommand('kaoto.integrations.editSource', async (integrationEntry: Integration) => {
 		await vscode.window.showTextDocument(vscode.Uri.parse(integrationEntry.filepath));
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand('kaoto.integrations.deleteEntry', async (integrationEntry: Integration) => {
