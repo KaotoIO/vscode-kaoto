@@ -20,7 +20,7 @@ import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension/dist";
 import { getRedHatService, TelemetryEvent, TelemetryService } from "@redhat-developer/vscode-redhat-telemetry";
 import * as vscode from "vscode";
-import { KAOTO_FILE_PATH_GLOB, isCamelPluginInstalled } from "../helpers/helpers";
+import { KAOTO_FILE_PATH_GLOB, isCamelPluginInstalled, verifyJBangIsInstalled } from "../helpers/helpers";
 import { VSCodeKaotoChannelApiProducer } from './../webview/VSCodeKaotoChannelApiProducer';
 import { NewCamelRouteCommand } from '../../src/commands/NewCamelRouteCommand';
 import { NewCamelKameletCommand } from '../../src/commands/NewCamelKameletCommand';
@@ -323,6 +323,16 @@ export async function activate(context: vscode.ExtensionContext) {
 		deploymentsProvider.refresh();
 		await sendCommandTrackingEvent('kaoto.deployments.suspend');
 	}));
+
+	// show warning message when JBang is not found on a system PATH
+	const jbangExec = await verifyJBangIsInstalled();
+	if (!jbangExec) {
+		const jbangINstallationLink: string = 'https://www.jbang.dev/documentation/guide/latest/installation.html';
+		const selection = await vscode.window.showWarningMessage(`JBang is missing on a system PATH. Please follow instructions below and install JBang. [JBang Installation Guide](${jbangINstallationLink}).`, 'Install');
+		if (selection !== undefined) {
+			await vscode.commands.executeCommand('vscode.open', `${jbangINstallationLink}`);
+		}
+	}
 }
 
 async function sendCommandTrackingEvent(commandId: string) {

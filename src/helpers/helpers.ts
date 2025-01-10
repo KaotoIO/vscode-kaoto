@@ -35,6 +35,20 @@ export async function isCamelPluginInstalled(plugin: string): Promise<boolean> {
 	return output.includes(plugin);
 }
 
+export async function verifyJBangIsInstalled(): Promise<boolean> {
+	let output = '';
+	await window.withProgress({
+		location: ProgressLocation.Window,
+		cancellable: false,
+		title: 'Checking JBang executable on a PATH...'
+	}, async (progress) => {
+		progress.report({ increment: 0 });
+		output = execSync('jbang --version', { stdio: 'pipe' }).toString();
+		progress.report({ increment: 100 });
+	});
+	return !output.includes('not found');
+}
+
 // Check if the input is an absolute path
 export function getBasenameIfAbsolute(input: string): string {
 	if (isAbsolute(input)) {
