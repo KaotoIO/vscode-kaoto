@@ -53,7 +53,7 @@ export class TestsProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
         }
         const files = await vscode.workspace.findFiles(TestsProvider.FILE_PATTERN, TestsProvider.EXCLUDE_PATTERN);
         if (files.length === 0) {
-            return [new vscode.TreeItem('No Test files found')];
+            return [new vscode.TreeItem('No Test files')];
         }
         return files.map(file => new TestItem(this.getDisplayName(path.basename(file.fsPath)), path.normalize(file.fsPath)));
     }

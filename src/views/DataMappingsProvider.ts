@@ -53,7 +53,7 @@ export class DataMappingsProvider implements vscode.TreeDataProvider<vscode.Tree
         }
         const files = await vscode.workspace.findFiles(DataMappingsProvider.FILE_PATTERN, DataMappingsProvider.EXCLUDE_PATTERN);
         if (files.length === 0) {
-            return [new vscode.TreeItem('No Data Mapping files found')];
+            return [new vscode.TreeItem('No Data Mapping files')];
         }
         return files.map(file => new DataMappingItem(path.basename(file.fsPath), path.normalize(file.fsPath)));
     }

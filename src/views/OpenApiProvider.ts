@@ -47,7 +47,7 @@ export class OpenApiProvider implements TreeDataProvider<TreeItem> {
         }
         const files = await this.getOpenApiFilesAvailableInWorkspace();
         if (files.length === 0) {
-            return [new TreeItem('No OpenAPI files found')];
+            return [new TreeItem('No OpenAPI files')];
         }
         return files;
     }
