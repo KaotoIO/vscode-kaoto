@@ -21,13 +21,13 @@ export class HelpFeedbackProvider implements TreeDataProvider<HelpFeedbackItem> 
     private items: HelpFeedbackItem[];
 
     private static readonly HELP_ITEMS = [
-        { label: 'Enterprise Integration Explorer', icon: 'integration.svg', url: 'https://camel.solutionpatterns.io/#/patterns' },
-        { label: 'Tutorials', icon: new ThemeIcon('library'), url: 'https://kaoto.io/workshop/' },
+        { label: 'Apache Camel', icon: 'camel-logo.svg', url: 'https://camel.apache.org/camel-core/getting-started/index.html' },
         { label: 'Documentation', icon: new ThemeIcon('book'), url: 'https://kaoto.io/docs/' },
+        { label: 'Enterprise Integration Explorer', icon: 'integration.svg', url: 'https://camel.solutionpatterns.io/#/patterns' },
         { label: 'Examples', icon: new ThemeIcon('github'), url: 'https://github.com/KaotoIO/kaoto-examples' },
         { label: 'Feedback', icon: new ThemeIcon('comment'), url: 'https://github.com/KaotoIO/kaoto/issues/new/choose' },
-        { label: 'Apache Camel', icon: 'camel-logo.svg', url: 'https://camel.apache.org/camel-core/getting-started/index.html' },
-        { label: 'Hawtio', icon: new ThemeIcon('flame'), url: 'https://hawt.io/docs/get-started.html' }
+        { label: 'Hawtio', icon: new ThemeIcon('flame'), url: 'https://hawt.io/docs/get-started.html' },
+        { label: 'Tutorials', icon: new ThemeIcon('library'), url: 'https://kaoto.io/workshop/' }
     ];
 
     constructor() {
