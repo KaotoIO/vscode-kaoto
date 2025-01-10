@@ -22,16 +22,16 @@ export class NewCamelRouteCommand extends AbstractNewCamelRouteCommand {
 
 	public static readonly ID_COMMAND_CAMEL_ROUTE_JBANG_YAML = 'kaoto.camel.jbang.routes.yaml';
 
-	public async create(targetFolder : Uri): Promise<void> {
+	public async create(targetFolder: Uri): Promise<void> {
 		const input = await this.showInputBoxForFileName(targetFolder ? targetFolder.fsPath : undefined);
-		if(input && this.camelDSL && this.workspaceFolder) {
+		if (input && this.camelDSL && this.workspaceFolder) {
 			const fileName = this.getFullName(input, this.camelDSL.extension);
-			const parentFolder = await this.computeTargetFolder(this.workspaceFolder, targetFolder);
-			const filePath = this.computeFullPath(parentFolder, fileName);
-
-			await new CamelInitJBangTask(this.workspaceFolder, path.relative(this.workspaceFolder.uri.fsPath, filePath)).execute();
-			await commands.executeCommand('vscode.open', Uri.file(filePath));
-			await commands.executeCommand('kaoto.integrations.refresh');
+			const parentFolder = await this.showDialogToPickFolder();
+			if (parentFolder) {
+				const filePath = this.computeFullPath(parentFolder.fsPath, fileName);
+				await new CamelInitJBangTask(this.workspaceFolder, path.relative(this.workspaceFolder.uri.fsPath, filePath)).execute();
+				await commands.executeCommand('vscode.open', Uri.file(filePath));
+			}
 		}
 	}
 }

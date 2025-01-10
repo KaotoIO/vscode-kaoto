@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {  QuickPickItem, Uri, commands, window } from "vscode";
+import { QuickPickItem, Uri, commands, window } from "vscode";
 import { AbstractNewCamelRouteCommand } from "./AbstractNewCamelRouteCommand";
 import { CamelInitJBangTask } from "../tasks/CamelInitJBangTask";
 import { CamelRouteDSL } from "./AbstractCamelCommand";
@@ -33,11 +33,12 @@ export class NewCamelKameletCommand extends AbstractNewCamelRouteCommand {
 			const name = await this.showInputBoxForFileName(targetFolder ? targetFolder.fsPath : undefined);
 			if (name) {
 				const fileName = this.getKameletFullName(name, type, this.camelDSL.extension);
-				const parentFolder = await this.computeTargetFolder(this.workspaceFolder, targetFolder);
-				const filePath = this.computeFullPath(parentFolder, fileName);
-
-				await new CamelInitJBangTask(this.workspaceFolder, path.relative(this.workspaceFolder.uri.fsPath, filePath)).execute();
-				await commands.executeCommand('vscode.open', Uri.file(filePath));
+				const parentFolder = await this.showDialogToPickFolder();
+				if (parentFolder) {
+					const filePath = this.computeFullPath(parentFolder.fsPath, fileName);
+					await new CamelInitJBangTask(this.workspaceFolder, path.relative(this.workspaceFolder.uri.fsPath, filePath)).execute();
+					await commands.executeCommand('vscode.open', Uri.file(filePath));
+				}
 			}
 		}
 	}

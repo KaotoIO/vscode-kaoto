@@ -27,11 +27,12 @@ export class NewCamelPipeCommand extends AbstractNewCamelRouteCommand {
 		const name = await this.showInputBoxForFileName(targetFolder ? targetFolder.fsPath : undefined);
 		if (name && this.camelDSL && this.workspaceFolder) {
 			const fileName = this.getPipeFullName(name, this.camelDSL.extension);
-			const parentFolder = await this.computeTargetFolder(this.workspaceFolder, targetFolder);
-			const filePath = this.computeFullPath(parentFolder, fileName);
-
-			await new CamelBindJBangTask(this.workspaceFolder, path.relative(this.workspaceFolder.uri.fsPath, filePath)).execute();
-			await commands.executeCommand('vscode.open', Uri.file(filePath));
+			const parentFolder = await this.showDialogToPickFolder();
+			if (parentFolder) {
+				const filePath = this.computeFullPath(parentFolder.fsPath, fileName);
+				await new CamelBindJBangTask(this.workspaceFolder, path.relative(this.workspaceFolder.uri.fsPath, filePath)).execute();
+				await commands.executeCommand('vscode.open', Uri.file(filePath));
+			}
 		}
 	}
 

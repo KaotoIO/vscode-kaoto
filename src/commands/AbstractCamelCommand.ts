@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import fs from 'fs';
 import { WorkspaceFolder, workspace } from "vscode";
 import isValidFilename from 'valid-filename'
 import path from 'path';
+import fs from 'fs';
 
 export interface CamelRouteDSL {
 	language: string;
@@ -68,58 +68,58 @@ export abstract class AbstractCamelCommand {
 	 * @param name
 	 * @returns string | undefined
 	 */
-		public validateCamelFileName(name: string, folderPath?: string): string | undefined {
-			if (!name) {
-				return 'Please provide a name for the new file (without extension).';
-			}
-
-			if (name.includes('.')) {
-				return 'Please provide a name without the extension.';
-			}
-
-			if (!this.camelDSL) {
-				return 'Internal error: Camel DSL is undefined.'; // camelDSL can't be undefined
-			}
-
-			if (!this.workspaceFolder) {
-				return 'Internal error: Workspace folder is undefined.';
-			}
-
-			const newFilePotentialFullPath: string = this.computeFullPath(folderPath ?? this.workspaceFolder.uri.fsPath, this.getFullName(name, this.camelDSL.extension));
-			if (fs.existsSync(newFilePotentialFullPath)) {
-				return 'The file already exists. Please choose a different file name.';
-			}
-			if (!isValidFilename(name)) {
-				return 'The filename is invalid.';
-			}
-
-			const patternJavaNamingConvention = '\\b[A-Z][a-zA-Z_$0-9]*';
-			if ((this.camelDSL.language === 'Java') && (!name.match(patternJavaNamingConvention) || name.includes(' '))) {
-				return `The filename needs to follow the ${this.camelDSL.language} naming convention. I.e. ${patternJavaNamingConvention}`;
-			}
-			return undefined;
+	public validateCamelFileName(name: string, folderPath?: string): string | undefined {
+		if (!name) {
+			return 'Please provide a name for the new file (without extension).';
 		}
 
-		/**
-		 * Get the full file name for provided name and suffix
-		 *
-		 * @param name of the file
-		 * @param suffix of the file
-		 * @returns the full file name format [name.suffix] eg. foo.yaml
-		 */
-		protected getFullName(name: string, suffix: string): string {
-			return `${name}.${suffix}`;
+		if (name.includes('.')) {
+			return 'Please provide a name without the extension.';
 		}
 
-		/**
-		 * Resolves absolute path for the given workspace and file
-		 *
-		 * @param folderPath
-		 * @param file
-		 * @returns absolute string Path
-		 */
-		protected computeFullPath(folderPath: string, file: string): string {
-			return path.join(folderPath, file);
+		if (!this.camelDSL) {
+			return 'Internal error: Camel DSL is undefined.'; // camelDSL can't be undefined
 		}
+
+		if (!this.workspaceFolder) {
+			return 'Internal error: Workspace folder is undefined.';
+		}
+
+		const newFilePotentialFullPath: string = this.computeFullPath(folderPath ?? this.workspaceFolder.uri.fsPath, this.getFullName(name, this.camelDSL.extension));
+		if (fs.existsSync(newFilePotentialFullPath)) {
+			return 'The file already exists. Please choose a different file name.';
+		}
+		if (!isValidFilename(name)) {
+			return 'The filename is invalid.';
+		}
+
+		const patternJavaNamingConvention = '\\b[A-Z][a-zA-Z_$0-9]*';
+		if ((this.camelDSL.language === 'Java') && (!name.match(patternJavaNamingConvention) || name.includes(' '))) {
+			return `The filename needs to follow the ${this.camelDSL.language} naming convention. I.e. ${patternJavaNamingConvention}`;
+		}
+		return undefined;
+	}
+
+	/**
+	 * Get the full file name for provided name and suffix
+	 *
+	 * @param name of the file
+	 * @param suffix of the file
+	 * @returns the full file name format [name.suffix] eg. foo.yaml
+	 */
+	protected getFullName(name: string, suffix: string): string {
+		return `${name}.${suffix}`;
+	}
+
+	/**
+	 * Resolves absolute path for the given workspace and file
+	 *
+	 * @param folderPath
+	 * @param file
+	 * @returns absolute string Path
+	 */
+	protected computeFullPath(folderPath: string, file: string): string {
+		return path.join(folderPath, file);
+	}
 
 }

@@ -28,7 +28,6 @@ export class NewCamelFileCommand {
 			const cmd = this.getCamelRouteCommandFromSelection(selection.label);
 			if(cmd){
 				await commands.executeCommand(cmd, uri);
-				await commands.executeCommand('kaoto.integrations.refresh');
 			}
 		}
 	}
