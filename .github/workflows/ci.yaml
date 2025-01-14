@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest,  windows-latest]
+        os: [ubuntu-22.04, macos-latest,  windows-latest]
 
     env:
       CODE_VERSION: max
@@ -36,30 +36,30 @@ jobs:
       run: yarn vsce package --no-dependencies --yarn
     - name: Run Unit tests on Linux
       run: xvfb-run -a yarn test:unit
-      if: ${{ matrix.os == 'ubuntu-latest' }}
+      if: ${{ matrix.os == 'ubuntu-22.04' }}
     - name: Run Unit tests on Other OSes than Linux
       run: yarn test:unit
-      if: ${{ matrix.os != 'ubuntu-latest' }}
+      if: ${{ matrix.os != 'ubuntu-22.04' }}
     - name: Run UI Tests on Linux
       run: xvfb-run -a yarn run test:it:with-prebuilt-vsix
-      if: ${{ matrix.os == 'ubuntu-latest' }}
+      if: ${{ matrix.os == 'ubuntu-22.04' }}
     - name: Run UI Tests on Other OSes than Linux
       run: yarn run test:it:with-prebuilt-vsix
-      if: ${{ matrix.os != 'ubuntu-latest' }}
+      if: ${{ matrix.os != 'ubuntu-22.04' }}
     - name: Generate SBOM
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-22.04'
       run: |
         npm install -g @cyclonedx/cdxgen
         cdxgen -o manifest.json
     - name: Store SBOM
       uses: actions/upload-artifact@v4
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-22.04'
       with:
         name: sbom
         path: manifest.json
     - name: Archive vsix
       uses: actions/upload-artifact@v4
-      if: ${{ matrix.os == 'ubuntu-latest' }}
+      if: ${{ matrix.os == 'ubuntu-22.04' }}
       with:
         name: 'vscode-kaoto-vsix'
         path: '*.vsix'
