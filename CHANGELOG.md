@@ -1,4 +1,5 @@
 # 2.5.0
+- Upgrade to Kaoto 2.5.0-M1
 
 # 2.4.0
 
