@@ -33,7 +33,7 @@ describe('Property panel loading test', function () {
     await driver.wait(until.elementLocated(stepWhenXpath), 5_000);
     await (await driver.findElement(stepWhenXpath)).click();
     await driver.wait(
-      until.elementLocated(By.className('pf-v5-c-card')
+      until.elementLocated(By.className('pf-v6-c-card')
     ), 5_000);
 
     const closeBtn = await driver.findElement(By.xpath("//button[@data-testid='close-side-bar']"));
@@ -50,7 +50,7 @@ describe('Property panel loading test', function () {
 
     try {
       await driver.wait(
-        until.elementLocated(By.className('pf-v5-c-card')
+        until.elementLocated(By.className('pf-v6-c-card')
       ), 5_000);
       throw new Error('Property panel was not closed!')
     } catch (error) {

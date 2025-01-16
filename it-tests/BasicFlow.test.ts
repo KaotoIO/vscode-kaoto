@@ -227,7 +227,7 @@ async function deleteDataMapperStep(driver: WebDriver, workspaceFolder: string) 
   await driver.actions().contextClick(kaotoNodeConfigured).perform();
 
   await driver.wait(
-    until.elementLocated(By.className('pf-v5-c-dropdown pf-m-expanded'))
+    until.elementLocated(By.className('pf-topology-context-menu__c-dropdown__menu'))
   );
   await (await driver.findElement(By.xpath("//*[@data-testid='context-menu-item-delete']"))).click();
 
@@ -252,7 +252,7 @@ async function addActiveMQStep(driver: WebDriver) {
   await driver.actions().contextClick(canvasNode).perform();
 
   await driver.wait(
-    until.elementLocated(By.className('pf-v5-c-dropdown pf-m-expanded'))
+    until.elementLocated(By.className('pf-topology-context-menu__c-dropdown__menu'))
   );
   await (await driver.findElement(By.xpath("//\*[@data-testid='context-menu-item-replace']"))).click();
 
@@ -271,7 +271,7 @@ async function addDatamapperStep(driver: WebDriver) {
   await driver.actions().contextClick(canvasNode).perform();
 
   await driver.wait(
-    until.elementLocated(By.className('pf-v5-c-dropdown pf-m-expanded'))
+    until.elementLocated(By.className('pf-topology-context-menu__c-dropdown__menu'))
   );
   await (await driver.findElement(By.xpath("//*[@data-testid='context-menu-item-replace']"))).click();
 

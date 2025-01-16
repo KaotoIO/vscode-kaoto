@@ -21,17 +21,17 @@ describe('User Settings', function () {
             selector: (label: string) => By.xpath(`//li[@data-testid='runtime-selector-${label}']`)
         },
         RuntimeSelectorItems: {
-            list: By.className('pf-v5-c-menu__list'),
-            listItem: By.className('pf-v5-c-menu__list-item'),
-            label: By.className('pf-v5-c-menu__item-text')
+            list: By.className('pf-v6-c-menu__list'),
+            listItem: By.className('pf-v6-c-menu__list-item'),
+            label: By.className('pf-v6-c-menu__item-text')
         },
         KaotoView: {
             catalogButton: By.xpath(`//button[@id='topology-control-bar-catalog-button']`),
             catalog: {
                 window: By.xpath(`//div[@data-ouia-component-id='CatalogModal']`),
-                list: By.className('pf-v5-c-data-list'),
-                gallery: By.className('pf-v5-l-gallery pf-m-gutter'),
-                listItem: By.className('pf-v5-c-data-list__item-row'),
+                list: By.className('pf-v6-c-data-list'),
+                gallery: By.className('pf-v6-l-gallery pf-m-gutter'),
+                listItem: By.className('pf-v6-c-data-list__item-row'),
                 listItemProvider: By.className('catalog-data-list-item__provider'),
                 listButton: By.xpath(`//button[@id='toggle-layout-button-List']`),
                 galleryButton: By.xpath(`//button[@id='toggle-layout-button-Gallery']`),

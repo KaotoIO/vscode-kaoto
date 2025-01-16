@@ -10,11 +10,11 @@ describe('Switching between editor tabs', function () {
 
 	const locators = {
 		EditorTabs: {
-			tabsList: 'pf-v5-c-tabs__list',
-			tabsItem: 'pf-v5-c-tabs__item',
+			tabsList: 'pf-v6-c-tabs__list',
+			tabsItem: 'pf-v6-c-tabs__item',
 			activeTabAttribute: 'aria-selected',
 			tabLabelAttribute: 'aria-label',
-			tabText: 'pf-v5-c-tabs__item-text',
+			tabText: 'pf-v6-c-tabs__item-text',
 			designTabLabel: 'Design canvas',
 			beansTabLabel: 'Beans editor',
 			dataMapperTabLabel: 'DataMapper',
@@ -27,7 +27,7 @@ describe('Switching between editor tabs', function () {
 			detailsView: 'metadata-editor-modal-details-view'
 		},
 		DataMapper: {
-			howTo: 'pf-v5-l-bullseye datamapper-howto'
+			howTo: 'pf-v6-l-bullseye datamapper-howto'
 		}
 	}
 
