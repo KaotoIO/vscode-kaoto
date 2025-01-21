@@ -31,6 +31,10 @@
     "test:it:with-prebuilt-vsix": "yarn build:test:it && extest get-vscode && extest get-chromedriver && extest install-vsix --vsix_file vscode-kaoto-$npm_package_version.vsix --extensions_dir ./test-resources && extest run-tests --uninstall_extension --extensions_dir ./test-resources 'out/**/*.test.js' --open_resource './test Fixture with speci@l chars'",
     "test:it:clean": "rimraf ./test-resources && rimraf ./out && rimraf *.vsix"
   },
+  "extensionDependencies": [
+    "redhat.vscode-apache-camel",
+    "redhat.vscode-debug-adapter-apache-camel"
+  ],
   "dependencies": {
     "@kaoto/kaoto": "2.5.0-M2",
     "@kie-tools-core/backend": "0.32.0",

@@ -16,11 +16,14 @@
  */
 import { assert } from 'chai';
 import * as vscode from 'vscode';
+import { waitUntil } from 'async-wait-until';
 
 suite('Extension is activated', () => {
-    test('Extension is activated', async() => {
+    test('Kaoto Extension is activated when the workspace used for tests contains yaml files', async() => {
         const extension = await vscode.extensions.getExtension('redhat.vscode-kaoto');
         assert.isNotNull(extension, 'VS Code Kaoto not found');
-        assert.isTrue(extension?.isActive, 'VS Code Kaoto is not activated despite the workspace used for tests contains yaml files');
+        await waitUntil(() => {
+            return extension?.isActive;
+        }, 10000, 1000);
     });
 })
