@@ -72,6 +72,12 @@ jobs:
       with:
         name: vscode-logs-${{ matrix.os }}
         path: test-resources/settings/logs
+    - name: Store VS Code Logs
+      uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: ${{ matrix.os }}-test-logs
+        path: .vscode-test/user-data/logs/*
     - name: Store VS Code UI Tests screenshots on failure
       uses: actions/upload-artifact@v4
       if: failure()
