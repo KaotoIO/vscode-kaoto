@@ -1,5 +1,7 @@
 # 2.5.0
+
 - Upgrade to Kaoto 2.5.0-M2
+- Add VS Code Language Support and Debug Adapter for Camel as extension dependencies. It allows to have several general Camel features such as Run/debug/Create/Export.
 
 # 2.4.0
 

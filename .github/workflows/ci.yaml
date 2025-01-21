@@ -26,6 +26,11 @@ jobs:
       with:
         node-version: 20
         cache: 'yarn'
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: 17
+        distribution: "temurin"
     - name: yarn
       run: yarn --network-timeout 1000000
     - name: yarn build:dev
@@ -66,21 +71,21 @@ jobs:
       with:
         name: 'vscode-kaoto-vsix'
         path: '*.vsix'
-    - name: Store VS Code logs
+    - name: Store UI Tests VS Code logs
       uses: actions/upload-artifact@v4
       if: always()
       with:
         name: vscode-logs-${{ matrix.os }}
         path: test-resources/settings/logs
-    - name: Store VS Code Logs
+    - name: Store Unit Tests VS Code Logs
       uses: actions/upload-artifact@v4
-      if: failure()
+      if: failure() || cancelled() || success()
       with:
         name: ${{ matrix.os }}-test-logs
         path: .vscode-test/user-data/logs/*
     - name: Store VS Code UI Tests screenshots on failure
       uses: actions/upload-artifact@v4
-      if: failure()
+      if: failure() || cancelled()
       with:
         name: ui-test-screenshots-${{ matrix.os }}
         path: test-resources/screenshots

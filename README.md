@@ -39,6 +39,10 @@
 - Setting to provide custom set of catalog
 - Edit Kaoto (`*.kaoto.yaml` and `*.kaoto.yml`) files. Note that these filename extensions are not supported by Camel JBang and are merely still here to stay backward-compatible with Kaoto v1.
 
+### Requirements
+
+Java 17+ must be available on the system path.
+
 ### Limitations
 
 - Kaoto files are always written and overwritten with `Linux-style` end of line (EOL).
