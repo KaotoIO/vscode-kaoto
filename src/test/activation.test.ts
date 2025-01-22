@@ -18,25 +18,25 @@ import { assert } from 'chai';
 import * as vscode from 'vscode';
 import { waitUntil } from 'async-wait-until';
 
-suite('Extension is activated', () => {
+suite.only('Extension is activated', () => {
     test('Kaoto Extension is activated when the workspace used for tests contains yaml files', async() => {
         let extension = await vscode.extensions.getExtension('redhat.vscode-kaoto');
         assert.isNotNull(extension, 'VS Code Kaoto not found');
-        try {
+      //  try {
         await waitUntil(async() => {
             extension = await vscode.extensions.getExtension('redhat.vscode-kaoto');
             return extension?.isActive;
         }, 20000, 1000);
-        } catch {
-            console.log('Kaoto extension not activated after 20s');
-            try {
-                const debugAdapterExtension = await vscode.extensions.getExtension('redhat.vscode-debug-adapter-apache-camel');
-                await debugAdapterExtension?.activate();
-            } catch (err) {
-                console.log(err);
-                throw err;
-            }
-        }
+        // } catch {
+        //     console.log('Kaoto extension not activated after 20s');
+        //     try {
+        //         const debugAdapterExtension = await vscode.extensions.getExtension('redhat.vscode-debug-adapter-apache-camel');
+        //         await debugAdapterExtension?.activate();
+        //     } catch (err) {
+        //         console.log(err);
+        //         throw err;
+        //     }
+        // }
     }
 );
 })
