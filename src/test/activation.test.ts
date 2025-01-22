@@ -28,8 +28,10 @@ suite('Extension is activated', () => {
             return extension?.isActive;
         }, 20000, 1000);
         } catch {
+            console.log('Kaoto extension not activated after 20s');
             try {
-                await extension?.activate();
+                const debugAdapterExtension = await vscode.extensions.getExtension('redhat.vscode-debug-adapter-apache-camel');
+                await debugAdapterExtension?.activate();
             } catch (err) {
                 console.log(err);
                 throw err;
