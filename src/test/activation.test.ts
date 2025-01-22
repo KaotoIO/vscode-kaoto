@@ -20,9 +20,10 @@ import { waitUntil } from 'async-wait-until';
 
 suite('Extension is activated', () => {
     test('Kaoto Extension is activated when the workspace used for tests contains yaml files', async() => {
-        const extension = await vscode.extensions.getExtension('redhat.vscode-kaoto');
+        let extension = await vscode.extensions.getExtension('redhat.vscode-kaoto');
         assert.isNotNull(extension, 'VS Code Kaoto not found');
-        await waitUntil(() => {
+        await waitUntil(async() => {
+            extension = await vscode.extensions.getExtension('redhat.vscode-kaoto');
             return extension?.isActive;
         }, 20000, 1000);
     });
