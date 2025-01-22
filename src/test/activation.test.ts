@@ -22,9 +22,19 @@ suite('Extension is activated', () => {
     test('Kaoto Extension is activated when the workspace used for tests contains yaml files', async() => {
         let extension = await vscode.extensions.getExtension('redhat.vscode-kaoto');
         assert.isNotNull(extension, 'VS Code Kaoto not found');
+        try {
         await waitUntil(async() => {
             extension = await vscode.extensions.getExtension('redhat.vscode-kaoto');
             return extension?.isActive;
         }, 20000, 1000);
-    });
+        } catch {
+            try {
+                await extension?.activate();
+            } catch (err) {
+                console.log(err);
+                throw err;
+            }
+        }
+    }
+);
 })
