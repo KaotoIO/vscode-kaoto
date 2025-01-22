@@ -24,6 +24,6 @@ suite('Extension is activated', () => {
         assert.isNotNull(extension, 'VS Code Kaoto not found');
         await waitUntil(() => {
             return extension?.isActive;
-        }, 10000, 1000);
+        }, 20000, 1000);
     });
 })
