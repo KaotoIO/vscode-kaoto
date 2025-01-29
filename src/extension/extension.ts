@@ -59,7 +59,7 @@ export const KAOTO_DATAMAPPINGS_VIEW_REFRESH_COMMAND_ID = 'kaoto.datamappings.re
 export const KAOTO_TESTS_VIEW_REFRESH_COMMAND_ID = 'kaoto.tests.refresh';
 
 export async function activate(context: vscode.ExtensionContext) {
-	console.info("Kaoto extension is alive.");
+	console.info("Kaoto extension is alive."); // TODO switch "all" console logs into Kaoto output channel
 
 	const redhatService = await getRedHatService(context);
 	telemetryService = await redhatService.getTelemetryService();
@@ -85,8 +85,10 @@ export async function activate(context: vscode.ExtensionContext) {
 		]),
 		backendProxy: backendProxy,
 		channelApiProducer: new VSCodeKaotoChannelApiProducer(),
-		editorDocumentType: "text" // TODO verify it will not break anything - this is needed for listeners to be able to update Kaoto view sections immediately
+		editorDocumentType: "text" // TODO verify it will not break anything - this is needed for listeners to be able to update Kaoto view sections immediately, look closer on 'kieEditorStore.activeEditor?.startListeningToDocumentChanges()'
 	});
+
+	// TODO the extension.ts file needs to be refactored into separated files - views, commands, status bar, ...
 
 	// create a new status bar item that we can now manage
 	const kaotoStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
@@ -106,7 +108,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	}));
 
 	// create a Port Manager for Camel JBang Run with Dev console
-	const portManager = new PortManager(10111, 10999);
+	const portManager = new PortManager(10111, 10999); // TODO revisit port numbers range
 
 	/*
 	* register integrations view provider
@@ -162,8 +164,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Function to fetch Kubernetes data (mock or real implementation)
 	const fetchKubernetesData = async (): Promise<Map<string, Route[]>> => {
-		// TODO
-		// Replace this with your actual implementation for Kubernetes data fetching
+		// TODO Replace with actual implementation for Kubernetes data fetching
 		const mockData = new Map<string, Route[]>();
 		return mockData;
 	};

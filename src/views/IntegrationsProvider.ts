@@ -92,7 +92,7 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 			if(int.type === 'route') {
 				routes = await this.getRoutesInsideIntegrationFile(filepath);
 			}
-			const collapsibleState = routes.length > 0 ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.None; // TODO
+			const collapsibleState = routes.length > 0 ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.None; // TODO here needs to be handled better to really expand automatically when eg new routes are created in empty file
 
 			// Add the IntegrationFile with the correct collapsibleState
 			integrations.push(new Integration(

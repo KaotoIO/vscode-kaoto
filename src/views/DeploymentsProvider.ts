@@ -218,10 +218,12 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
         }
     }
 
+    // fetch data from Camel Run Console running at defined port
     private async fetchLocalhostRoutes(ports: number[]): Promise<Map<string, Route[]>> {
         const deployments: Map<string, Route[]> = new Map();
         const skippedPorts: number[] = [];
 
+        // there can be multiple running integrations --> fetching all active (existing) ports
         const fetchPromises = ports.map(async (port) => {
             try {
                 const response = await fetch(`http://localhost:${port}/q/dev/route`, {
@@ -268,11 +270,12 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
         await Promise.all(fetchPromises); // Wait for all fetches to complete
 
         // Notify user about skipped ports if any
+        // TODO handle better on tasks side
         if (skippedPorts.length > 0) {
             console.log(`Some ports were unavailable: ${skippedPorts.join(', ')}`);
             for (const port of skippedPorts) {
                 console.warn('DeploymentsProvider ~ fetchLocalhostRoutes ~ FREE unused port:', port);
-                this.portManager.freePort(port); // TODO handle better on tasks side
+                this.portManager.freePort(port);
             }
         }
 
@@ -284,6 +287,8 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
         return match ? match[1] : fileName; // Extract the part before ".camel.yaml" or return the full name
     }
 
+    // because at the moment the Camel Run Console server is not exposing web socket, a fetch needs to be done "manually" by set timer trigger (simulating auto-refresh) for giver interval
+    // refresh interval can be specified through user settings
     private startAutoRefresh(): void {
         if (this.localhostPorts.length > 0) {
             this.intervalId = setInterval(async () => {
@@ -318,7 +323,7 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 
 }
 
-// TreeItem classes remain the same
+// root static elements - Localhost or Kubernetes
 export class RootItem extends TreeItem {
     constructor(
         public readonly label: string,
@@ -331,6 +336,7 @@ export class RootItem extends TreeItem {
     }
 }
 
+// top item represent a Camel integration file
 export class ParentItem extends TreeItem {
     constructor(
         public readonly label: string,
@@ -344,6 +350,7 @@ export class ParentItem extends TreeItem {
     }
 }
 
+// sub-items representing routes inside camel files
 export class ChildItem extends TreeItem {
     constructor(
         public readonly label: string,

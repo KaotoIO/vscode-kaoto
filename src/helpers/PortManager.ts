@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+// This class is used for automatic port allocation for Camel Run commands using --console parameter
 export class PortManager {
     private usedPorts: Set<number> = new Set();
     private readonly minPort: number;

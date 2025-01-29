@@ -41,6 +41,8 @@ export class CamelJBang {
 		return new ShellExecution(this.jbang, [`'-Dcamel.jbang.version=${this.camelJBangVersion}'`, 'camel@apache/camel', 'init', `'${file}'`]);
 	}
 
+	// Camel Run with '--console' and specified port '--port=XXXX' is used for fetching data of running local integrations
+	// it is easier to fetch data and parse a JSON format instead of 'camel get route' option, where it is needed to parse shell stdout
 	public run(filePattern: string, cwd?: string, port?: number): ShellExecution {
 		const shellExecOptions: ShellExecutionOptions = {
 			cwd: cwd
