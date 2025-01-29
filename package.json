@@ -199,8 +199,8 @@
         "title": "Deploy",
         "category": "Kaoto",
         "icon": {
-          "dark": "./icons/kubernetes/kube-dark-new.png",
-          "light": "./icons/kubernetes/kube-light-new.png"
+          "dark": "./icons/kubernetes/kube-dark.png",
+          "light": "./icons/kubernetes/kube-light.png"
         }
       },
       {
