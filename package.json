@@ -282,13 +282,6 @@
           "when": "workspaceFolderCount != 0"
         }
       ],
-      "file/newFile": [
-        {
-          "command": "kaoto.new.file",
-          "group": "Camel",
-          "when": "workspaceFolderCount != 0"
-        }
-      ],
       "commandPalette": [
         {
           "command": "kaoto.open",
@@ -312,11 +305,6 @@
           "command": "kaoto.open",
           "when": "resourceExtname == .yaml || resourceExtname == .yml",
           "group": "1_belowOpenWith"
-        },
-        {
-          "submenu": "kaoto.new.file",
-          "group": "navigation",
-          "when": "explorerResourceIsFolder"
         }
       ],
       "webview/context": [
