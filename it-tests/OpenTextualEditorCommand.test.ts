@@ -40,7 +40,7 @@ describe('Open Textual editor to the side', function () {
   it('Use command from palette', async function () {
     const editorView = await openFileInKaotoEditor(workspaceFolder);
 
-    await new Workbench().executeCommand('Open Camel file with textual editor on the side');
+    await new Workbench().executeCommand('Kaoto: Open Source Code');
 
     await checkTextualEditorIsOpenedOnTheSide(editorView);
   });
@@ -50,9 +50,9 @@ describe('Open Textual editor to the side', function () {
 
     let actionTitle;
     if(os.platform() === 'darwin') {
-      actionTitle = 'Open Camel file with textual editor on the side (⌘K V)';
+      actionTitle = 'Open Source Code (⌘K V)';
     } else {
-      actionTitle = 'Open Camel file with textual editor on the side (Ctrl+K V)';
+      actionTitle = 'Open Source Code (Ctrl+K V)';
     }
     await (await editorView.getAction(actionTitle))?.click();
 

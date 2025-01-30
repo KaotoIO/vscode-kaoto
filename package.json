@@ -646,7 +646,8 @@
     "react-dom": "18.3.1",
     "semver": "7.5.2",
     "dset": "^3.1.4",
-    "cross-spawn": "^7.0.5"
+    "cross-spawn": "^7.0.5",
+    "yaml": "^2.6.1"
   },
   "packageManager": "yarn@4.6.0"
 }

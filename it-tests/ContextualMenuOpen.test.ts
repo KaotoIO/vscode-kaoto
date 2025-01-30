@@ -68,7 +68,7 @@ describe('Contextual menu opening', function () {
       assert.fail('Cannot find the my.yaml file in explorer.');
     }
     const contextMenu: ContextMenu = await myYamlItem.openContextMenu();
-    await (await contextMenu.getItem('Open with Kaoto Graphical Editor for Camel'))?.click();
+    await (await contextMenu.getItem('Open with Kaoto'))?.click();
 
     const { kaotoWebview, kaotoEditor } = await switchToKaotoFrame(driver, false);
     await checkEmptyCanvasLoaded(driver);

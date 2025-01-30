@@ -40,11 +40,11 @@ describe('Kaoto basic development flow', function () {
       path.join(workspaceFolder, 'for_datamapper_test.camel.yaml')
     );
     fs.copySync(
-      path.join(workspaceFolder, 'emptyPipe.kaoto.yaml'),
+      path.join(workspaceFolder, 'emptyPipe.camel.yaml'),
       path.join(workspaceFolder, 'emptyPipe.pipe.yaml')
     );
     fs.copySync(
-      path.join(workspaceFolder, 'emptyPipe.kaoto.yaml'),
+      path.join(workspaceFolder, 'emptyPipe.camel.yaml'),
       path.join(workspaceFolder, 'emptyPipe-pipe.yaml')
     );
 
@@ -70,7 +70,7 @@ describe('Kaoto basic development flow', function () {
     await editorView.closeAllEditors();
   });
 
-  const pipeFiles = ['emptyPipe.kaoto.yaml', 'emptyPipe.pipe.yaml', 'emptyPipe-pipe.yaml'];
+  const pipeFiles = ['emptyPipe.camel.yaml', 'emptyPipe.pipe.yaml', 'emptyPipe-pipe.yaml'];
 
   pipeFiles.forEach(function (pipeFile) {
     it(`Open "${pipeFile}" file and check Kaoto UI is loading`, async function () {
