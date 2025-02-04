@@ -50,7 +50,7 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 			return integration.type === 'route' ? await this.getRoutesInsideIntegrationFile(integration.filepath) : [];
 		}
 		const integrations = await this.getIntegrationsAvailableInWorkspace();
-		integrations.length > 0 ? this.setContext(true) : this.setContext(false);
+		this.setContext(integrations.length > 0);
 		return integrations;
 	}
 
