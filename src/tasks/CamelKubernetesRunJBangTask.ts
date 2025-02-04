@@ -23,6 +23,5 @@ export class CamelKubernetesRunJBangTask extends CamelJBangTask {
 		super(TaskScope.Workspace,
 			'Deploy Integration with Apache Camel Kubernetes Run',
 			new CamelJBang().deploy(patternForCamelFiles, cwd));
-            // this.isBackground = true;
 	}
 }
