@@ -23,7 +23,7 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 	readonly onDidChangeTreeData: Event<TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
 	private static readonly FILE_PATTERN = '{**/*.camel.yaml,**/*.kamelet.yaml,**/*-pipe.yaml}';
-	private static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**}';
+	private static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**,**/target/**}';
 	private fileWatcher: FileSystemWatcher;
 
 	constructor() {

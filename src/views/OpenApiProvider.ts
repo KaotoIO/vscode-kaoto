@@ -23,7 +23,7 @@ export class OpenApiProvider implements TreeDataProvider<TreeItem> {
     readonly onDidChangeTreeData: Event<TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
     private static readonly FILE_PATTERN = '**/*.{yaml,json}';
-    private static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**,**/*.camel.yaml}';
+    private static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**,**/*.camel.yaml,**/target/**}';
     private fileWatcher: FileSystemWatcher;
 
     constructor() {
