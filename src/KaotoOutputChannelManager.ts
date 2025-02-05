@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2024 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,16 +17,16 @@ import * as vscode from "vscode";
 
 let kaotoOutputChannel: vscode.OutputChannel;
 
-function getKaotoOutputChannel() :vscode.OutputChannel {
+function getKaotoOutputChannel(): vscode.OutputChannel {
     if (kaotoOutputChannel === undefined) {
         kaotoOutputChannel = vscode.window.createOutputChannel('Kaoto');
     }
     return kaotoOutputChannel;
 }
 
-export function logInKaotoOutputChannel(errorMessage :string, exception :any) {
+export function logInKaotoOutputChannel(errorMessage: string, exception: any) {
     getKaotoOutputChannel().appendLine(errorMessage);
     if (exception instanceof Error) {
-      getKaotoOutputChannel().appendLine(exception.message);
+        getKaotoOutputChannel().appendLine(exception.message);
     }
 }
