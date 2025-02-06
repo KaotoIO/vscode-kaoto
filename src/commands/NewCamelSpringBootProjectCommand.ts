@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2024 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { AbstractNewCamelProjectCommand } from "./AbstractNewCamelProjectCommand";
 
-/**
- * Utilizes constants, methods, ... used in both, desktop or web extension context
- */
+export class NewCamelSpringBootProjectCommand extends AbstractNewCamelProjectCommand {
 
-export const KAOTO_FILE_PATH_GLOB: string = '**/*.{yml,yaml}';
+	public static readonly ID_COMMAND_CAMEL_SPRINGBOOT_PROJECT = 'kaoto.camel.jbang.project.springboot.new';
+
+	async getRuntime(): Promise<string> {
+		return 'spring-boot';
+	}
+}
