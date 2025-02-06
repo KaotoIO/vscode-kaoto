@@ -196,7 +196,25 @@
           "kaoto.yml"
         ]
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "kaoto-view",
+          "title": "Kaoto",
+          "icon": "icons/kaoto.png"
+        }
+      ]
+    },
+    "views": {
+      "kaoto-view": [
+        {
+          "id": "kaoto.help",
+          "name": "Help & Feedback",
+          "contextualTitle": "Kaoto"
+        }
+      ]
+    }
   },
   "devDependencies": {
     "@types/chai": "^4.3.11",

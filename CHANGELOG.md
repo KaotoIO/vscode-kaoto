@@ -1,5 +1,7 @@
 # 2.5.0
+
 - Upgrade to Kaoto 2.5.0-M2
+- Add Kaoto view container with initial Help & Feedback view
 
 # 2.4.0
 

@@ -22,6 +22,7 @@ import * as KogitoVsCode from "@kie-tools-core/vscode-extension/dist";
 import * as vscode from "vscode";
 import { KAOTO_FILE_PATH_GLOB } from "./helpers";
 import { VSCodeKaotoChannelApiProducer } from "./../webview/VSCodeKaotoChannelApiProducer";
+import { HelpFeedbackProvider } from "../views/providers/HelpFeedbackProvider";
 
 let backendProxy: VsCodeBackendProxy;
 
@@ -50,7 +51,7 @@ export async function activate(context: vscode.ExtensionContext) {
     backendProxy: backendProxy,
   });
 
-  vscode.commands.registerCommand('kaoto.open.textualeditor', async() => {
+  vscode.commands.registerCommand('kaoto.open.textualeditor', async () => {
     if (kieEditorStore.activeEditor !== undefined) {
       const doc = await vscode.workspace.openTextDocument(kieEditorStore.activeEditor?.document.document.uri);
       await vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside);
@@ -60,6 +61,11 @@ export async function activate(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand('kaoto.open', (uri: vscode.Uri) => {
     vscode.commands.executeCommand('vscode.openWith', uri, 'webviewEditorsKaoto');
   });
+
+  /*
+   * register help & feedback view provider
+   */
+  context.subscriptions.push(vscode.window.registerTreeDataProvider('kaoto.help', new HelpFeedbackProvider()));
 
   console.info("Extension is successfully setup.");
 }
