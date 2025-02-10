@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,14 +22,14 @@ import * as KogitoVsCode from "@kie-tools-core/vscode-extension/dist";
 import { getRedHatService, TelemetryService } from "@redhat-developer/vscode-redhat-telemetry";
 import * as vscode from "vscode";
 import { KAOTO_FILE_PATH_GLOB } from "./helpers";
-import { VSCodeKaotoChannelApiProducer } from './../webview/VSCodeKaotoChannelApiProducer';
-import { HelpFeedbackProvider } from "../views/providers/HelpFeedbackProvider";
+import { VSCodeKaotoChannelApiProducer } from "./../webview/VSCodeKaotoChannelApiProducer";
+import { ExtensionContextHandler } from "./ExtensionContextHandler";
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
 
 export async function activate(context: vscode.ExtensionContext) {
-  console.info("Kaoto Editor extension is alive.");
+  console.info("Kaoto extension is alive.");
 
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
@@ -46,38 +46,38 @@ export async function activate(context: vscode.ExtensionContext) {
         envelopeContent: {
           type: EnvelopeContentType.PATH,
           path: "dist/webview/KaotoEditorEnvelopeApp.js"
-        }
+        },
       }),
     ]),
     channelApiProducer: new VSCodeKaotoChannelApiProducer(),
     backendProxy: backendProxy,
   });
 
+  const contextHandler = new ExtensionContextHandler(context, kieEditorStore);
+
   /*
    * register commands for a toggle source code (open/close camel file in a side textual editor)
    */
-  context.subscriptions.push(vscode.commands.registerCommand('kaoto.open.source', async () => {
-    if (kieEditorStore.activeEditor !== undefined) {
-      const doc = await vscode.workspace.openTextDocument(kieEditorStore.activeEditor?.document.document.uri);
-      await vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside);
-    }
-  }));
-  context.subscriptions.push(vscode.commands.registerCommand('kaoto.close.source', async () => {
-    await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
-  }));
+  await contextHandler.registerToggleSourceCode();
 
-  vscode.commands.registerCommand('kaoto.open', (uri: vscode.Uri) => {
-    vscode.commands.executeCommand('vscode.openWith', uri, 'webviewEditorsKaoto');
-  });
+  /*
+   * register open with Kaoto Editor
+   */
+  contextHandler.registerOpenWithKaoto();
 
   /*
    * register help & feedback view provider
    */
-  context.subscriptions.push(vscode.window.registerTreeDataProvider('kaoto.help', new HelpFeedbackProvider()));
+  contextHandler.registerHelpAndFeedbackView();
 
+  /*
+   * enable Red Hat Telemetry
+   */
   const redhatService = await getRedHatService(context);
   telemetryService = await redhatService.getTelemetryService();
   telemetryService.sendStartupEvent();
+
+  console.info("Kaoto extension is successfully setup.");
 }
 
 export function deactivate() {
