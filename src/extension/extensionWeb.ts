@@ -51,12 +51,18 @@ export async function activate(context: vscode.ExtensionContext) {
     backendProxy: backendProxy,
   });
 
-  vscode.commands.registerCommand('kaoto.open.textualeditor', async () => {
+  /*
+   * register commands for a toggle source code (open/close camel file in a side textual editor)
+   */
+  context.subscriptions.push(vscode.commands.registerCommand('kaoto.open.source', async () => {
     if (kieEditorStore.activeEditor !== undefined) {
       const doc = await vscode.workspace.openTextDocument(kieEditorStore.activeEditor?.document.document.uri);
       await vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside);
     }
-  });
+  }));
+  context.subscriptions.push(vscode.commands.registerCommand('kaoto.close.source', async () => {
+    await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
+  }));
 
   vscode.commands.registerCommand('kaoto.open', (uri: vscode.Uri) => {
     vscode.commands.executeCommand('vscode.openWith', uri, 'webviewEditorsKaoto');

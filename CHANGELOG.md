@@ -2,6 +2,7 @@
 
 - Upgrade to Kaoto 2.5.0-M2
 - Add Kaoto view container with initial Help & Feedback view
+- Improve toggle source code (open/close camel file in a side textual editor) using one button
 
 # 2.4.0
 

@@ -1,63 +1,52 @@
-import {
-  EditorView,
-  TextEditor,
-  VSBrowser,
-  Workbench,
-} from 'vscode-extension-tester';
+import { EditorView, TextEditor, VSBrowser } from 'vscode-extension-tester';
 import { expect } from 'chai';
 import * as path from 'path';
 import * as os from 'os';
 
-describe('Open Textual editor to the side', function () {
-  this.timeout(20_000);
+describe('Toggle Source Code', function () {
+    this.timeout(30_000);
 
-  const workspaceFolder = path.join(__dirname, '../test Fixture with speci@l chars');
+    const WORKSPACE_FOLDER: string = path.join(__dirname, '../test Fixture with speci@l chars');
+    const CAMEL_FILE: string = 'my.camel.yaml';
 
-  before(async function () {
-    this.timeout(20_000);
-  });
+    let editorView: EditorView;
 
-  afterEach(async function () {
-    const editorView = new EditorView();
-    await editorView.closeAllEditors();
-  });
+    before(async function () {
+        await VSBrowser.instance.openResources(path.join(WORKSPACE_FOLDER, CAMEL_FILE));
+        editorView = new EditorView();
+    });
 
-  it('Use command from palette', async function () {
-    const editorView = await openFileInKaotoEditor(workspaceFolder);
+    after(async function () {
+        await editorView.closeAllEditors();
+    });
 
-    await new Workbench().executeCommand('Open Camel file with textual editor on the side');
+    it('open text editor to the side', async function () {
+        let actionTitle = 'Open Source Code';
+        if (os.platform() === 'darwin') {
+            actionTitle += ' (⌘K V)';
+        } else {
+            actionTitle += ' (Ctrl+K V)';
+        }
+        await (await editorView.getAction(actionTitle))?.click();
+        const groupsNum = await waitForEditorGroupsLength(2);
+        expect(groupsNum).to.equal(2);
 
-    await checkTextualEditorIsOpenedOnTheSide(editorView);
-  });
+        const editor = new TextEditor(await editorView.getEditorGroup(1));
+        expect(await editor.getTextAtLine(1)).contains('- route:');
+    });
 
-  it('Use quick action', async function () {
-    const editorView = await openFileInKaotoEditor(workspaceFolder);
+    it('close text editor', async function () {
+        await (await editorView.getAction('Close Source Code', 1))?.click();
+        const groupsNum = await waitForEditorGroupsLength(1);
+        expect(groupsNum).to.equal(1);
+    });
 
-    let actionTitle;
-    if(os.platform() === 'darwin') {
-      actionTitle = 'Open Camel file with textual editor on the side (⌘K V)';
-    } else {
-      actionTitle = 'Open Camel file with textual editor on the side (Ctrl+K V)';
+    async function waitForEditorGroupsLength(length: number, timeout: number = 5_000): Promise<number> {
+        await editorView.getDriver().wait(async () => {
+            const currentLength = (await editorView.getEditorGroups()).length;
+            return currentLength === length;
+        }, timeout, `The editor group length (expected: ${length}) was not satisfied.`);
+        return (await editorView.getEditorGroups()).length;
     }
-    await (await editorView.getAction(actionTitle))?.click();
 
-    await checkTextualEditorIsOpenedOnTheSide(editorView);
-  });
 });
-
-async function checkTextualEditorIsOpenedOnTheSide(editorView: EditorView) {
-  const driver = VSBrowser.instance.driver;
-  await driver.wait(async() => {
-    return (await editorView.getEditorGroups()).length === 2;
-  }, 5000, 'The second editor group has not opened');
-  const editor = new TextEditor(await editorView.getEditorGroup(1));
-  expect(await editor.getTextAtLine(1)).contains('- route:');
-}
-
-async function openFileInKaotoEditor(workspaceFolder: string) {
-  const filePath = path.join(workspaceFolder, 'my.camel.yaml');
-  await VSBrowser.instance.openResources(filePath);
-  const editorView = new EditorView();
-  expect(await editorView.getEditorGroups()).to.have.length(1);
-  return editorView;
-}

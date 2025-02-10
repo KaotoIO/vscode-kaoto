@@ -90,16 +90,27 @@
         "title": "Open with Kaoto Graphical Editor for Camel"
       },
       {
-        "command": "kaoto.open.textualeditor",
-        "title": "Open Camel file with textual editor on the side",
-        "shortTitle": "Show source",
+        "command": "kaoto.open.source",
+        "title": "Open Source Code",
+        "shortTitle": "Show Source",
         "enablement": "activeCustomEditorId == webviewEditorsKaoto",
-        "category": "Camel",
-        "icon": "$(go-to-file)"
+        "category": "Kaoto",
+        "icon": {
+          "dark": "./icons/commands/source_inactive_dark.png",
+          "light": "./icons/commands/source_inactive_light.png"
+        }
+      },
+      {
+        "command": "kaoto.close.source",
+        "title": "Close Source Code",
+        "shortTitle": "Close Source",
+        "enablement": "(resourceFilename =~ /\\.(camel|kamelet|pipe).yaml$/ || resourceFilename =~ /\\-pipe.yaml$/)",
+        "category": "Kaoto",
+        "icon": "./icons/commands/source_active.png"
       }
     ],
     "keybindings": {
-      "command": "kaoto.open.textualeditor",
+      "command": "kaoto.open.source",
       "key": "ctrl+k v",
       "mac": "cmd+k v",
       "when": "activeCustomEditorId == webviewEditorsKaoto"
@@ -109,13 +120,26 @@
         {
           "command": "kaoto.open",
           "when": "false"
+        },
+        {
+          "command": "kaoto.open.source",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.close.source",
+          "when": "false"
         }
       ],
       "editor/title": [
         {
-          "command": "kaoto.open.textualeditor",
+          "command": "kaoto.open.source",
           "when": "activeCustomEditorId == webviewEditorsKaoto",
-          "group": "navigation"
+          "group": "navigation@1"
+        },
+        {
+          "command": "kaoto.close.source",
+          "when": "(resourceFilename =~ /\\.(camel|kamelet|pipe).yaml$/ || resourceFilename =~ /\\-pipe.yaml$/) && activeCustomEditorId !== webviewEditorsKaoto",
+          "group": "navigation@1"
         }
       ],
       "explorer/context": [
