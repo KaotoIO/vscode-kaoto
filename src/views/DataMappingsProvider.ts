@@ -21,7 +21,7 @@ export class DataMappingsProvider implements vscode.TreeDataProvider<vscode.Tree
     readonly onDidChangeTreeData: vscode.Event<vscode.TreeItem | undefined | void> = this._onDidChangeTreeData.event;
 
     private static readonly FILE_PATTERN = '**/*.xsl';
-    private static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**}';
+    private static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**,**/target/**}';
 
     private fileWatcher: vscode.FileSystemWatcher;
 

@@ -21,7 +21,7 @@ export class TestsProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     readonly onDidChangeTreeData: vscode.Event<vscode.TreeItem | undefined | void> = this._onDidChangeTreeData.event;
 
     private static readonly FILE_PATTERN = '**/*.{it.yaml,test.yaml}';
-    private static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**}';
+    private static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**,**/target/**}';
 
     private fileWatcher: vscode.FileSystemWatcher;
 
