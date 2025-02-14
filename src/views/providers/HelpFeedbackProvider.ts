@@ -32,7 +32,7 @@ export class HelpFeedbackProvider implements TreeDataProvider<HelpFeedbackItem> 
         { label: 'YouTube Channel', icon: 'youtube-logo.svg', url: 'https://www.youtube.com/@KaotoIO' }
     ];
 
-    constructor() {
+    constructor(readonly extensionUriPath: string) {
         // since these items are static, it can be stored in a private property instead of re-creating them each time getChildren() is called.
         this.items = this.getHelpFeedbackItems();
     }
@@ -59,7 +59,7 @@ export class HelpFeedbackProvider implements TreeDataProvider<HelpFeedbackItem> 
     }
 
     private getIconPath(name: string): string {
-        return join(__filename, '..', '..', '..', 'icons', 'help', name);
+        return join(this.extensionUriPath, 'icons', 'help', name);
     }
 }
 
