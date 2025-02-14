@@ -16,6 +16,7 @@
 import * as vscode from "vscode";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension/dist";
 import { HelpFeedbackProvider } from "../views/providers/HelpFeedbackProvider";
+import { IntegrationsProvider } from "../views/providers/IntegrationsProvider";
 
 export class ExtensionContextHandler {
 
@@ -47,5 +48,15 @@ export class ExtensionContextHandler {
 
     public registerHelpAndFeedbackView() {
         this.context.subscriptions.push(vscode.window.registerTreeDataProvider('kaoto.help', new HelpFeedbackProvider(this.context.extensionUri.path)));
+    }
+
+    public registerIntegrationsView() {
+        const integrationsProvider = new IntegrationsProvider(this.context.extensionUri.path);
+        const integrationsTreeView = vscode.window.createTreeView('kaoto.integrations', {
+            treeDataProvider: integrationsProvider,
+            showCollapseAll: true
+        });
+        this.context.subscriptions.push(integrationsTreeView);
+        this.context.subscriptions.push(vscode.commands.registerCommand('kaoto.integrations.refresh', () => integrationsProvider.refresh()));
     }
 }

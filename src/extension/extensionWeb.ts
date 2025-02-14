@@ -65,7 +65,12 @@ export async function activate(context: vscode.ExtensionContext) {
   contextHandler.registerOpenWithKaoto();
 
   /*
-   * register help & feedback view provider
+   * register 'Integrations' view provider
+   */
+  contextHandler.registerIntegrationsView();
+
+  /*
+   * register 'Help & Feedback' view provider
    */
   contextHandler.registerHelpAndFeedbackView();
 
