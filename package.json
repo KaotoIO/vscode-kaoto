@@ -48,7 +48,8 @@
     "monaco-yaml": "5.2.3",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-monaco-editor": "0.56.2"
+    "react-monaco-editor": "0.56.2",
+    "yaml": "^2.7.0"
   },
   "icon": "icon.png",
   "main": "./dist/extension/extension.js",
@@ -107,6 +108,12 @@
         "enablement": "(resourceFilename =~ /\\.(camel|kamelet|pipe).yaml$/ || resourceFilename =~ /\\-pipe.yaml$/)",
         "category": "Kaoto",
         "icon": "./icons/commands/source_active.png"
+      },
+      {
+        "command": "kaoto.integrations.refresh",
+        "title": "Refresh",
+        "category": "Kaoto",
+        "icon": "$(refresh)"
       }
     ],
     "keybindings": {
@@ -147,6 +154,13 @@
           "command": "kaoto.open",
           "when": "resourceExtname == .yaml || resourceExtname == .yml",
           "group": "1_belowOpenWith"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "kaoto.integrations.refresh",
+          "group": "navigation",
+          "when": "view == kaoto.integrations"
         }
       ]
     },
@@ -233,9 +247,16 @@
     "views": {
       "kaoto-view": [
         {
+          "id": "kaoto.integrations",
+          "name": "Integrations",
+          "contextualTitle": "Kaoto",
+          "initialSize": 2
+        },
+        {
           "id": "kaoto.help",
           "name": "Help & Feedback",
-          "contextualTitle": "Kaoto"
+          "contextualTitle": "Kaoto",
+          "initialSize": 1
         }
       ]
     }
@@ -282,7 +303,8 @@
     "react-dom": "18.3.1",
     "semver": "7.5.2",
     "dset": "^3.1.4",
-    "cross-spawn": "^7.0.5"
+    "cross-spawn": "^7.0.5",
+    "yaml": "^2.7.0"
   },
   "packageManager": "yarn@4.6.0"
 }
