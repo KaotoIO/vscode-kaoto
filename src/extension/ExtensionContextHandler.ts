@@ -46,6 +46,6 @@ export class ExtensionContextHandler {
     }
 
     public registerHelpAndFeedbackView() {
-        this.context.subscriptions.push(vscode.window.registerTreeDataProvider('kaoto.help', new HelpFeedbackProvider()));
+        this.context.subscriptions.push(vscode.window.registerTreeDataProvider('kaoto.help', new HelpFeedbackProvider(this.context.extensionUri.path)));
     }
 }
