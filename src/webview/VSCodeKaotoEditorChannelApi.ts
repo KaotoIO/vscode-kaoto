@@ -12,7 +12,7 @@ import { ResourceContentService, WorkspaceChannelApi } from "@kie-tools-core/wor
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { findClasspathRoot } from '../extension/ClasspathRootFinder';
-import { logInKaotoOutputChannel } from './../KaotoOutputChannelManager';
+import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 
@@ -65,7 +65,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
         const kaotoMetadataFileContent = new TextDecoder().decode(await vscode.workspace.fs.readFile(kaotoMetadatafile));
         return JSON.parse(kaotoMetadataFileContent)[key]; // in case the key i snot present, should we look to other potential .kaoto files that could contain the information?
       } catch (ex){
-        logInKaotoOutputChannel(`Error when trying to get Metadata for key: ${key}`, ex);
+        KaotoOutputChannel.logError(`Error when trying to get Metadata for key: ${key}`, ex);
         // Should we look to other potential .kaoto files and ignore one which is invalid?
         return undefined; // or should we throw a specific exception?
       }
@@ -103,7 +103,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
     } catch (ex) {
       // TODO: this is an ugly workaround that could lead to path clashes. 2 different APIs must be provided to retrieve content, one relative to classpath and the other relative to .kaoto metadata file
       const errorMessage = `Cannot retrieve content of ${relativePath} relatively to the classpath root ${classpathRoot}. Will attempt to use the relative path to .kaoto metadata file.`;
-      logInKaotoOutputChannel(errorMessage, ex);
+      KaotoOutputChannel.logError(errorMessage, ex);
       let kaotoMetadataFile = await this.findExistingKaotoMetadataFile(this.currentEditedDocument.uri);
       try {
         if (kaotoMetadataFile !== undefined) {
@@ -113,7 +113,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
       } catch (ex2) {
         const errorMessage = `Cannot retrieve content of ${relativePath} relatively to the classpath root ${classpathRoot} neither the .kaoto metadata file ${kaotoMetadataFile}`;
         vscode.window.showErrorMessage(errorMessage);
-        logInKaotoOutputChannel(errorMessage, ex);
+        KaotoOutputChannel.logError(errorMessage, ex);
         return undefined;
       }
     }
@@ -127,7 +127,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
     } catch (ex) {
       const errorMessage = `Cannot write content of ${relativePath} relatively to ${classpathRoot}`;
       vscode.window.showErrorMessage(errorMessage);
-      logInKaotoOutputChannel(errorMessage, ex);
+      KaotoOutputChannel.logError(errorMessage, ex);
       return undefined;
     }
   }
@@ -141,7 +141,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
     } catch (ex) {
       const errorMessage = `Cannot delete ${relativePath} relatively to ${classpathRoot}`;
       vscode.window.showErrorMessage(errorMessage);
-      logInKaotoOutputChannel(errorMessage, ex);
+      KaotoOutputChannel.logError(errorMessage, ex);
       return false;
     }
   }
@@ -169,7 +169,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
     } catch (ex) {
       const errorMessage = `Cannot get a user selection: ${ex.message}`;
       vscode.window.showErrorMessage(errorMessage);
-      logInKaotoOutputChannel(errorMessage, ex);
+      KaotoOutputChannel.logError(errorMessage, ex);
       return undefined;
     }
   }
