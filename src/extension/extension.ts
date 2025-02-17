@@ -24,12 +24,13 @@ import * as vscode from "vscode";
 import { KAOTO_FILE_PATH_GLOB } from "./helpers";
 import { VSCodeKaotoChannelApiProducer } from "./../webview/VSCodeKaotoChannelApiProducer";
 import { ExtensionContextHandler } from "./ExtensionContextHandler";
+import { KaotoOutputChannel } from './KaotoOutputChannel';
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
 
 export async function activate(context: vscode.ExtensionContext) {
-  console.info("Kaoto extension is alive.");
+  KaotoOutputChannel.logInfo("Kaoto extension is alive.");
 
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
@@ -77,10 +78,11 @@ export async function activate(context: vscode.ExtensionContext) {
   telemetryService = await redhatService.getTelemetryService();
   telemetryService.sendStartupEvent();
 
-  console.info("Kaoto extension is successfully setup.");
+  KaotoOutputChannel.logInfo("Kaoto extension is successfully setup.");
 }
 
 export function deactivate() {
   backendProxy?.stopServices();
   telemetryService.sendShutdownEvent();
+  KaotoOutputChannel.dispose();
 }
