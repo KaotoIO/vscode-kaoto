@@ -164,52 +164,65 @@
         }
       ]
     },
-    "configuration": {
-      "properties": {
-        "redhat.telemetry.enabled": {
-          "type": "boolean",
-          "default": null,
-          "markdownDescription": "Enable usage data and errors to be sent to Red Hat servers. Read our [privacy statement](https://developers.redhat.com/article/tool-data-collection).",
-          "tags": [
-            "telemetry"
-          ],
-          "scope": "window"
-        },
-        "kaoto.catalog.url": {
-          "type": "string",
-          "default": null,
-          "markdownDescription": "URL to a Kaoto catalog. For instance `https://raw.githubusercontent.com/KaotoIO/catalogs/main/catalogs/index.json`. Documentation to generate your own set of catalog is available [here](https://github.com/KaotoIO/kaoto/tree/main/packages/catalog-generator). It requires to reopen the Kaoto editors to be effective.",
-          "scope": "window"
-        },
-        "kaoto.nodeLabel": {
-          "type": "string",
-          "default": "description",
-          "markdownDescription": "Node label, which will be used for nodes in the canvas. Can be either `description` or `id`. If `description` is selected, it will be displayed only if it is available, otherwise `id` will be displayed by default. It requires to reopen the Kaoto editors to be effective.",
-          "enum": [
-            "description",
-            "id"
-          ],
-          "scope": "window"
-        },
-        "kaoto.nodeToolbarTrigger": {
-          "type": "string",
-          "default": "onHover",
-          "markdownDescription": "Choose when to open the Node toolbar. Can be either `onHover` or `onSelection`. If `onHover` is selected, the toolbar will be automatically open upon hovering a node, otherwise, it will be open when selecting a node. It requires to reopen the Kaoto editors to be effective.",
-          "enum": [
-            "onHover",
-            "onSelection"
-          ]
-        },
-        "kaoto.enableDragAndDrop": {
-          "type": "boolean",
-          "default": false,
-          "markdownDescription": "Control whether to enable drag and drop feature. It requires to reopen the Kaoto editors to be effective.",
-          "tags": [
-            "experimental"
-          ]
+    "configuration": [
+      {
+        "title": "Kaoto",
+        "properties": {
+          "kaoto.catalog.url": {
+            "type": "string",
+            "default": null,
+            "markdownDescription": "URL to a Kaoto catalog. For instance `https://raw.githubusercontent.com/KaotoIO/catalogs/main/catalogs/index.json`. Documentation to generate your own set of catalog is available [here](https://github.com/KaotoIO/kaoto/tree/main/packages/catalog-generator). It requires to reopen the Kaoto editors to be effective.",
+            "scope": "window"
+          },
+          "redhat.telemetry.enabled": {
+            "type": "boolean",
+            "default": null,
+            "markdownDescription": "Enable usage data and errors to be sent to Red Hat servers. Read our [privacy statement](https://developers.redhat.com/article/tool-data-collection).",
+            "tags": [
+              "telemetry"
+            ],
+            "scope": "window"
+          }
+        }
+      },
+      {
+        "title": "Canvas",
+        "properties": {
+          "kaoto.nodeLabel": {
+            "type": "string",
+            "default": "description",
+            "markdownDescription": "Node label, which will be used for nodes in the canvas. Can be either `description` or `id`. If `description` is selected, it will be displayed only if it is available, otherwise `id` will be displayed by default. It requires to reopen the Kaoto editors to be effective.",
+            "enum": [
+              "description",
+              "id"
+            ],
+            "scope": "window"
+          },
+          "kaoto.nodeToolbarTrigger": {
+            "type": "string",
+            "default": "onHover",
+            "markdownDescription": "Choose when to open the Node toolbar. Can be either `onHover` or `onSelection`. If `onHover` is selected, the toolbar will be automatically open upon hovering a node, otherwise, it will be open when selecting a node. It requires to reopen the Kaoto editors to be effective.",
+            "enum": [
+              "onHover",
+              "onSelection"
+            ]
+          }
+        }
+      },
+      {
+        "title": "Experimental",
+        "properties": {
+          "kaoto.enableDragAndDrop": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "Control whether to enable drag and drop feature. It requires to reopen the Kaoto editors to be effective.",
+            "tags": [
+              "experimental"
+            ]
+          }
         }
       }
-    },
+    ],
     "customEditors": [
       {
         "viewType": "webviewEditorsKaoto",
