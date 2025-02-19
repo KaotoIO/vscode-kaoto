@@ -26,11 +26,11 @@ describe('Kaoto basic development flow', function () {
       path.join(workspaceFolder, 'for_datamapper_test.camel.yaml')
     );
     fs.copySync(
-      path.join(workspaceFolder, 'emptyPipe.kaoto.yaml'),
+      path.join(workspaceFolder, 'emptyPipe_template.pipe.yaml'),
       path.join(workspaceFolder, 'emptyPipe.pipe.yaml')
     );
     fs.copySync(
-      path.join(workspaceFolder, 'emptyPipe.kaoto.yaml'),
+      path.join(workspaceFolder, 'emptyPipe_template.pipe.yaml'),
       path.join(workspaceFolder, 'emptyPipe-pipe.yaml')
     );
 
@@ -56,7 +56,7 @@ describe('Kaoto basic development flow', function () {
     await editorView.closeAllEditors();
   });
 
-  const pipeFiles = ['emptyPipe.kaoto.yaml', 'emptyPipe.pipe.yaml', 'emptyPipe-pipe.yaml'];
+  const pipeFiles = ['emptyPipe.pipe.yaml', 'emptyPipe-pipe.yaml'];
 
   pipeFiles.forEach(function (pipeFile) {
     it(`Open "${pipeFile}" file and check Kaoto UI is loading`, async function () {
@@ -132,17 +132,17 @@ describe('Kaoto basic development flow', function () {
 
     await addXsdForSource(driver, kaotoWebview);
 
-// TODO: Add a target xsd
-// TODO: Map an element
+    // TODO: Add a target xsd
+    // TODO: Map an element
 
     await (await driver.findElement(By.css('a[data-testid="design-tab"]'))).click();
-    
+
     const files = fs.readdirSync(workspaceFolder);
     const xslFiles = files.filter(file => file.endsWith('.xsl'));
     assert.isTrue(xslFiles.length === 1, `Expected one xsl file created, found ${xslFiles.length}`);
 
     await deleteDataMapperStep(driver, workspaceFolder);
-    
+
     await kaotoWebview.switchBack();
     assert.isTrue(
       await kaotoEditor.isDirty(),
@@ -247,7 +247,7 @@ async function createNewRoute(driver: WebDriver) {
 async function addActiveMQStep(driver: WebDriver) {
   await driver.wait(
     until.elementLocated(By.css('g[data-testid^="custom-node__timer"],g[data-testid="custom-node__route.from"]'))
-  , 5000, 'Cannot find the node for the timer');
+    , 5000, 'Cannot find the node for the timer');
 
   const canvasNode = await driver.findElement(By.css('g[data-testid^="custom-node__timer"],g[data-testid="custom-node__route.from"]'));
   await driver.actions().contextClick(canvasNode).perform();
@@ -266,7 +266,7 @@ async function addActiveMQStep(driver: WebDriver) {
 async function addDatamapperStep(driver: WebDriver) {
   await driver.wait(
     until.elementLocated(By.css('g[data-testid^="custom-node__log"],g[data-testid="custom-node__route.from.steps.0.log"]'))
-  , 5000, 'Cannot find the node for the log');
+    , 5000, 'Cannot find the node for the log');
 
   const canvasNode = await driver.findElement(By.css('g[data-testid^="custom-node__log"],g[data-testid="custom-node__route.from.steps.0.log"]'));
   await driver.actions().contextClick(canvasNode).perform();
@@ -283,7 +283,7 @@ async function addDatamapperStep(driver: WebDriver) {
   await filterInput.sendKeys('datamapper');
   await driver.wait(
     until.elementLocated(By.xpath("//div[@data-testid='tile-kaoto-datamapper']")
-  ));
+    ));
 
   await (await driver.findElement(By.xpath("//div[@data-testid='tile-kaoto-datamapper']"))).click();
 }
