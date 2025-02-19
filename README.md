@@ -36,6 +36,7 @@
 - Edit Kamelet files following pattern (`*.kamelet.yaml` and `*.kamelet.yml`).
 - Edit Pipe files following pattern (`*.pipe.yaml`, `*.pipe.yml`, `*-pipe.yaml` and `*-pipe.yml`)
 - Browse Kaoto supported files within `Kaoto: Integrations` view
+- Init Camel `Routes`, `Pipes` and `Kamelets` within `Kaoto: Integrations` view
 - Allow to edit `*.yaml` and `*.yml` when opening through contextual menu.
 - Setting to provide custom set of catalog
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2025 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
 import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
 import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension/dist";
 import * as vscode from "vscode";
-import { KAOTO_FILE_PATH_GLOB } from "./helpers";
+import { KAOTO_FILE_PATH_GLOB } from "../helpers/helpers";
 import { VSCodeKaotoChannelApiProducer } from "./../webview/VSCodeKaotoChannelApiProducer";
 import { ExtensionContextHandler } from "./ExtensionContextHandler";
 import { KaotoOutputChannel } from './KaotoOutputChannel';
