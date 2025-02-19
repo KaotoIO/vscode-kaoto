@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2025 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,10 @@ import { ActivityBar, SideBarView, ViewControl, ViewItem, ViewSection, VSBrowser
 describe('Kaoto View Container', function () {
     this.timeout(30_000)
 
-    const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars');
+    const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars/kaoto-view');
 
     let kaotoViewContainer: ViewControl | undefined;
     let kaotoView: SideBarView | undefined;
-    let helpFeedbackSection: ViewSection | undefined;
 
     before(async function () {
         await VSBrowser.instance.openResources(WORKSPACE_FOLDER);
@@ -50,6 +49,8 @@ describe('Kaoto View Container', function () {
 
     describe('Help & Feedback view', function () {
 
+        let helpFeedbackSection: ViewSection | undefined;
+
         it('is present', async function () {
             helpFeedbackSection = await kaotoView?.getContent().getSection('Help & Feedback');
             expect(helpFeedbackSection).to.not.be.undefined;
@@ -59,6 +60,16 @@ describe('Kaoto View Container', function () {
             const items = await helpFeedbackSection?.getVisibleItems() as ViewItem[];
             const labels = await Promise.all(items.map((item) => item.getText()));
             expect(labels).to.not.be.empty;
+        });
+    });
+
+    describe('Integrations view', function () {
+
+        let integrationsSection: ViewSection | undefined;
+
+        it('is present', async function () {
+            integrationsSection = await kaotoView?.getContent().getSection('Integrations');
+            expect(integrationsSection).to.not.be.undefined;
         });
     });
 });

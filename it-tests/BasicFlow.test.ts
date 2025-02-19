@@ -14,6 +14,7 @@ describe('Kaoto basic development flow', function () {
   let globalKaotoWebView: WebView;
 
   before(async function () {
+    await VSBrowser.instance.openResources(workspaceFolder);
     const logger = logging.getLogger('webdriver');
     logger.setLevel(logging.Level.DEBUG);
     fs.copySync(
