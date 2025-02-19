@@ -6,6 +6,7 @@
 - Add Kaoto view container with initial Help & Feedback view
 - Improve toggle source code (open/close camel file in a side textual editor) using one button
 - Add Integrations view into Kaoto view container
+- Add `New File...` button into `Kaoto: Integrations` view
 
 # 2.4.0
 

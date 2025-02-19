@@ -49,6 +49,7 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-monaco-editor": "0.56.2",
+    "valid-filename": "4.0.0",
     "yaml": "^2.7.0"
   },
   "icon": "icon.png",
@@ -108,6 +109,24 @@
         "icon": "./icons/commands/source_active.png"
       },
       {
+        "command": "kaoto.camel.jbang.init.route.yaml",
+        "shortTitle": "New Camel Route...",
+        "title": "Create a Camel Route using YAML DSL",
+        "category": "Kaoto"
+      },
+      {
+        "command": "kaoto.camel.jbang.init.kamelet.yaml",
+        "shortTitle": "New Kamelet...",
+        "title": "Create a Kamelet using YAML DSL",
+        "category": "Kaoto"
+      },
+      {
+        "command": "kaoto.camel.jbang.init.pipe.yaml",
+        "shortTitle": "New Pipe...",
+        "title": "Create a Custom Resource Pipe using YAML DSL",
+        "category": "Kaoto"
+      },
+      {
         "command": "kaoto.integrations.refresh",
         "title": "Refresh",
         "category": "Kaoto",
@@ -121,6 +140,20 @@
       "when": "activeCustomEditorId == webviewEditorsKaoto"
     },
     "menus": {
+      "kaoto.new.file": [
+        {
+          "command": "kaoto.camel.jbang.init.route.yaml",
+          "group": "kaoto@1"
+        },
+        {
+          "command": "kaoto.camel.jbang.init.kamelet.yaml",
+          "group": "kaoto@2"
+        },
+        {
+          "command": "kaoto.camel.jbang.init.pipe.yaml",
+          "group": "kaoto@3"
+        }
+      ],
       "commandPalette": [
         {
           "command": "kaoto.open",
@@ -132,6 +165,18 @@
         },
         {
           "command": "kaoto.close.source",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.camel.jbang.init.route.yaml",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.camel.jbang.init.kamelet.yaml",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.camel.jbang.init.pipe.yaml",
           "when": "false"
         }
       ],
@@ -156,12 +201,24 @@
       ],
       "view/title": [
         {
+          "submenu": "kaoto.new.file",
+          "group": "navigation@1",
+          "when": "view == kaoto.integrations"
+        },
+        {
           "command": "kaoto.integrations.refresh",
-          "group": "navigation",
+          "group": "navigation@2",
           "when": "view == kaoto.integrations"
         }
       ]
     },
+    "submenus": [
+      {
+        "id": "kaoto.new.file",
+        "label": "New File...",
+        "icon": "$(new-file)"
+      }
+    ],
     "configuration": [
       {
         "title": "Kaoto",
@@ -217,6 +274,16 @@
             "tags": [
               "experimental"
             ]
+          }
+        }
+      },
+      {
+        "title": "JBang",
+        "properties": {
+          "kaoto.camelJBang.Version": {
+            "type": "string",
+            "markdownDescription": "Apache [Camel JBang](https://camel.apache.org/manual/camel-jbang.html) version used for internal Kaoto VS Code extension Camel CLI calls. Camel JBang requirements can differ between versions.\n\nIt is recommended to use `default` version to ensure all extension features works properly.",
+            "default": "4.10.0"
           }
         }
       }

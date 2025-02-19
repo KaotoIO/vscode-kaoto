@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { assert } from 'chai';
-import { findClasspathRoot } from '../extension/ClasspathRootFinder';
+import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
