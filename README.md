@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://marketplace.visualstudio.com/items?itemName=redhat.vscode-kaoto"><img src="https://img.shields.io/visual-studio-marketplace/v/redhat.vscode-kaoto?style=for-the-badge" alt="Marketplace Version"/></a>
   <a href="https://github.com/KaotoIO/kaoto/releases"><img alt="Kaoto UI version" src="https://img.shields.io/badge/Kaoto_UI-2.5.0--M2-orange?style=for-the-badge"></a>
-  <img src="https://img.shields.io/badge/VS%20Code-1.74.0+-blue?style=for-the-badge" alt="Visual Studio Code Support"/>
+  <img src="https://img.shields.io/badge/VS%20Code-1.95.0+-blue?style=for-the-badge" alt="Visual Studio Code Support"/>
   <a href="https://github.com/KaotoIO/vscode-kaoto/blob/main/LICENSE"><img src="https://img.shields.io/github/license/KaotoIO/vscode-kaoto?color=blue&style=for-the-badge" alt="License"/></a>
   <a href="https://camel.zulipchat.com/#narrow/stream/258729-camel-tooling"><img src="https://img.shields.io/badge/zulip-join_chat-brightgreen?color=yellow&style=for-the-badge" alt="Zulip"/></a></br>
   <a href="https://github.com/KaotoIO/vscode-kaoto/actions/workflows/main-kaoto.yaml"><img src="https://img.shields.io/github/actions/workflow/status/KaotoIO/vscode-kaoto/main-kaoto.yaml?style=for-the-badge&label=main%20kaoto%20ui" alt="Build with Main branch of Kaoto UI"></a>
