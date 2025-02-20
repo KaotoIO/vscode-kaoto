@@ -43,7 +43,7 @@
 
 ## Supported Formats
 
-- **Camel Route files**: `*.camel.yaml`
+- **Camel Route files**: `*.camel.yaml`, `*.camel.xml`
 - **Kamelet files**: `*.kamelet.yaml`
 - **Pipe files**: `*.pipe.yaml`
 
