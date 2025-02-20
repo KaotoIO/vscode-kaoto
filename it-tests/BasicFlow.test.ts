@@ -18,6 +18,7 @@ describe('Kaoto basic development flow', function () {
 		const logger = logging.getLogger('webdriver');
 		logger.setLevel(logging.Level.DEBUG);
 		fs.copySync(path.join(workspaceFolder, 'empty.camel.yaml'), path.join(workspaceFolder, 'empty_copy.camel.yaml'));
+		fs.copySync(path.join(workspaceFolder, 'empty.camel.xml'), path.join(workspaceFolder, 'empty_copy.camel.xml'));
 		fs.copySync(path.join(workspaceFolder, 'empty.camel.yaml'), path.join(workspaceFolder, 'for_datamapper_test.camel.yaml'));
 		fs.copySync(path.join(workspaceFolder, 'emptyPipe_template.pipe.yaml'), path.join(workspaceFolder, 'emptyPipe.pipe.yaml'));
 		fs.copySync(path.join(workspaceFolder, 'emptyPipe_template.pipe.yaml'), path.join(workspaceFolder, 'emptyPipe-pipe.yaml'));
@@ -27,6 +28,7 @@ describe('Kaoto basic development flow', function () {
 
 	after(function () {
 		fs.rmSync(path.join(workspaceFolder, 'empty_copy.camel.yaml'));
+		fs.rmSync(path.join(workspaceFolder, 'empty_copy.camel.xml'));
 		fs.rmSync(path.join(workspaceFolder, 'for_datamapper_test.camel.yaml'));
 		fs.rmSync(path.join(workspaceFolder, 'emptyPipe.pipe.yaml'));
 		fs.rmSync(path.join(workspaceFolder, 'emptyPipe-pipe.yaml'));
@@ -57,28 +59,32 @@ describe('Kaoto basic development flow', function () {
 		});
 	});
 
-	it('Open "empty.camel.yaml" file, check Kaoto UI is loading, add a step and save', async function () {
-		let { kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(workspaceFolder, 'empty_copy.camel.yaml', driver, false);
-		globalKaotoWebView = kaotoWebview;
-		await checkEmptyCanvasLoaded(driver);
-		await createNewRoute(driver);
-		await addAMQPStep(driver);
-		await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__amqp', 'amqp');
+	const routeFiles = ['empty_copy.camel.yaml', 'empty_copy.camel.xml'];
 
-		await kaotoWebview.switchBack();
-		assert.isTrue(await kaotoEditor.isDirty(), 'The Kaoto editor should be dirty after adding a step.');
-		await kaotoEditor.save();
-		await waitUntil(async () => {
-			return !(await kaotoEditor.isDirty());
+	routeFiles.forEach(function (routeFile) {
+		it(`Open "${routeFile}" file, check Kaoto UI is loading, add a step and save`, async function () {
+			let { kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(workspaceFolder, routeFile, driver, false);
+			globalKaotoWebView = kaotoWebview;
+			await checkEmptyCanvasLoaded(driver);
+			await createNewRoute(driver);
+			await addAMQPStep(driver);
+			await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__amqp', 'amqp');
+
+			await kaotoWebview.switchBack();
+			assert.isTrue(await kaotoEditor.isDirty(), 'The Kaoto editor should be dirty after adding a step.');
+			await kaotoEditor.save();
+			await waitUntil(async () => {
+				return !(await kaotoEditor.isDirty());
+			});
+
+			const editorView = new EditorView();
+			await editorView.closeAllEditors();
+
+			({ kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(workspaceFolder, routeFile, driver, true));
+			globalKaotoWebView = kaotoWebview;
+			await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__amqp', 'amqp');
+			await kaotoWebview.switchBack();
 		});
-
-		const editorView = new EditorView();
-		await editorView.closeAllEditors();
-
-		({ kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(workspaceFolder, 'empty_copy.camel.yaml', driver, true));
-		globalKaotoWebView = kaotoWebview;
-		await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__amqp', 'amqp');
-		await kaotoWebview.switchBack();
 	});
 
 	it('Open empty file, add a datamapper step and save', async function () {

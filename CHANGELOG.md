@@ -16,6 +16,10 @@
 - Add `Export` inline button into Kaoto: Integrations view
 - Add `Run` inline button into Kaoto: Integrations view
 - Add `Deploy` inline button into Kaoto: Integrations view
+- Add support for XML files - `*.camel.xml` files are automatically opened in Kaoto editor
+  - Kaoto: Integrations view
+    - create new Camel Route using XML DSL
+    - list XML files with route elements
 
 # 2.4.0
 
