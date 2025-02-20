@@ -23,7 +23,7 @@ import { normalize } from 'path';
  * Utilizes constants, methods, ... used in both, desktop or web extension context
  */
 
-export const KAOTO_FILE_PATH_GLOB: string = '**/*.{yml,yaml}';
+export const KAOTO_FILE_PATH_GLOB: string = '**/*.{yml,yaml,xml}';
 
 export async function verifyJBangExists(): Promise<boolean> {
 	const execPromise = promisify(exec);

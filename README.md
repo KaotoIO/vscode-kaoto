@@ -32,12 +32,12 @@
 
 ### Features
 
-- Edit Camel files following pattern (`*.camel.yaml` and `*.camel.yml`).
+- Edit Camel files following pattern (`*.camel.yaml`, `*.camel.yml` and `*.camel.xml`).
 - Edit Kamelet files following pattern (`*.kamelet.yaml` and `*.kamelet.yml`).
 - Edit Pipe files following pattern (`*.pipe.yaml`, `*.pipe.yml`, `*-pipe.yaml` and `*-pipe.yml`)
 - Browse Kaoto supported files within `Kaoto: Integrations` view
 - Init Camel `Routes`, `Pipes` and `Kamelets` within `Kaoto: Integrations` view
-- Allow to edit `*.yaml` and `*.yml` when opening through contextual menu.
+- Allow to edit `*.yaml`, `*.yml` and `*.xml` when opening through contextual menu.
 - Setting to provide custom set of catalog
 - Export single integration file into Maven project (Quarkus or Spring Boot)
 
