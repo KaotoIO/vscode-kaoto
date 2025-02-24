@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { commands, Event, EventEmitter, FileSystemWatcher, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
+import { commands, Event, EventEmitter, FileSystemWatcher, IconPath, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
 import { basename, dirname, join, relative } from 'path';
 import { parse } from 'yaml';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
@@ -63,15 +63,15 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 		return { type: 'route', name: basename(fileName, '.camel.yaml') };
 	}
 
-	private getIcon(type: string): { dark: string, light: string } {
+	private getIcon(type: string): { light: Uri, dark: Uri } {
 		const basePath = join(this.extensionUriPath, 'icons', 'integrations');
 		switch (type) {
-			case 'kamelet': return { light: join(basePath, 'kamelets-file-icon-light.png'), dark: join(basePath, 'kamelets-file-icon-dark.png') };
-			case 'pipe': return { light: join(basePath, 'pipes-file-icon-light.png'), dark: join(basePath, 'pipes-file-icon-dark.png') };
-			case 'route': return { light: join(basePath, 'routes-file-icon-light.png'), dark: join(basePath, 'routes-file-icon-dark.png') };
-			case 'route-child': return { light: join(basePath, 'route-black.svg'), dark: join(basePath, 'route-white.svg') };
+			case 'kamelet': return { light: Uri.file(join(basePath, 'kamelets-file-icon-light.png')), dark: Uri.file(join(basePath, 'kamelets-file-icon-dark.png')) };
+			case 'pipe': return { light: Uri.file(join(basePath, 'pipes-file-icon-light.png')), dark: Uri.file(join(basePath, 'pipes-file-icon-dark.png')) };
+			case 'route': return { light: Uri.file(join(basePath, 'routes-file-icon-light.png')), dark: Uri.file(join(basePath, 'routes-file-icon-dark.png')) };
+			case 'route-child': return { light: Uri.file(join(basePath, 'route-black.svg')), dark: Uri.file(join(basePath, 'route-white.svg')) };
 			// every unknown is considered as Route integration file
-			default: return { light: join(basePath, 'routes-file-icon-light.png'), dark: join(basePath, 'routes-file-icon-light.png') };
+			default: return { light: Uri.file(join(basePath, 'routes-file-icon-light.png')), dark: Uri.file(join(basePath, 'routes-file-icon-light.png')) };
 		}
 	}
 
@@ -116,7 +116,7 @@ export class Integration extends TreeItem {
 		public readonly filepath: Uri,
 		public collapsibleState: TreeItemCollapsibleState,
 		public readonly type: string,
-		public readonly icon: { light: string | Uri; dark: string | Uri }
+		public readonly icon: string | IconPath
 	) {
 		super(filename, collapsibleState);
 		this.iconPath = icon;
@@ -141,7 +141,7 @@ export class Route extends TreeItem {
 	constructor(
 		public readonly name: string,
 		public readonly description: string,
-		public readonly icon: { light: string | Uri; dark: string | Uri }
+		public readonly icon: string | IconPath
 	) {
 		super(name || '[missing route id]', TreeItemCollapsibleState.None);
 		this.description = description;

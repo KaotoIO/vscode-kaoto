@@ -66,7 +66,7 @@ export class HelpFeedbackProvider implements TreeDataProvider<HelpFeedbackItem> 
 export class HelpFeedbackItem extends TreeItem {
     constructor(
         public readonly name: string,
-        public readonly icon: string | Uri | { light: string | Uri; dark: string | Uri } | ThemeIcon,
+        public readonly icon: string | ThemeIcon,
         public readonly url: string
     ) {
         super(name, TreeItemCollapsibleState.None);
