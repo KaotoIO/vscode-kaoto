@@ -26,6 +26,20 @@ jobs:
       with:
         node-version: 20
         cache: 'yarn'
+    - uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+    - name: Install JBang (ubuntu, macOS)
+      if: ${{ startsWith(matrix.os, 'ubuntu') }} || matrix.os == 'macos-latest'
+      run: |
+        curl -Ls https://sh.jbang.dev | bash -s - app setup
+        echo "$HOME/.jbang/bin" >> $GITHUB_PATH
+    - name: Install JBang (windows)
+      if: matrix.os == 'windows-latest'
+      run: choco install jbang
+    - name: Setup JBang (trusted sources)
+      run: jbang trust add https://github.com/apache/
     - name: yarn
       run: yarn --network-timeout 1000000
     - name: yarn build:dev
