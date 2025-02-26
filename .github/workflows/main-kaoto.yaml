@@ -36,6 +36,12 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '21'
+    - name: Install JBang
+      run: |
+        curl -Ls https://sh.jbang.dev | bash -s - app setup
+        echo "$HOME/.jbang/bin" >> $GITHUB_PATH
+    - name: Setup JBang (trusted sources)
+      run: jbang trust add https://github.com/apache/
     - name: Kaoto build
       working-directory: kaoto
       run: |
