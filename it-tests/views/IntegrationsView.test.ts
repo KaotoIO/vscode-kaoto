@@ -19,7 +19,7 @@ import { ActivityBar, EditorView, SideBarView, TreeItem, ViewControl, ViewSectio
 import { checkTopologyLoaded, switchToKaotoFrame } from "../Util";
 
 describe('Integrations View', function () {
-    this.timeout(60_000)
+    this.timeout(60_000);
 
     const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars/kaoto-view');
 
@@ -50,7 +50,7 @@ describe('Integrations View', function () {
     });
 
     it('integration (*.camel.yaml) loaded', async function () {
-        const integrations = labels.filter((label) => label.includes('.camel.yaml'))
+        const integrations = labels.filter((label) => label.includes('.camel.yaml'));
 
         expect(integrations).to.not.be.empty;
         expect(integrations.length).to.be.equal(3);
@@ -58,7 +58,7 @@ describe('Integrations View', function () {
     });
 
     it('pipes (*.pipe.yaml | *-pipe.yaml) loaded', async function () {
-        const pipes = labels.filter((label) => label.includes('.pipe.yaml') || label.includes('-pipe.yaml'))
+        const pipes = labels.filter((label) => label.includes('.pipe.yaml') || label.includes('-pipe.yaml'));
 
         expect(pipes).to.not.be.empty;
         expect(pipes.length).to.be.equal(2);
@@ -67,7 +67,7 @@ describe('Integrations View', function () {
     });
 
     it('kamelets (*.kamelet.yaml) loaded', async function () {
-        const kamelets = labels.filter((label) => label.includes('.kamelet.yaml'))
+        const kamelets = labels.filter((label) => label.includes('.kamelet.yaml'));
 
         expect(kamelets).to.not.be.empty;
         expect(kamelets.length).to.be.equal(1);

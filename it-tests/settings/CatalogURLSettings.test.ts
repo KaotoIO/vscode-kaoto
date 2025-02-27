@@ -38,7 +38,7 @@ describe('User Settings', function () {
                 closeButton: By.xpath(`//button[@data-ouia-component-id='CatalogModal-ModalBoxCloseButton']`)
             }
         }
-    }
+    };
 
     before(async function () {
         this.timeout(60_000);
@@ -50,7 +50,7 @@ describe('User Settings', function () {
         const settings = await new Workbench().openSettings();
         const textSetting = await driver.wait(async () => {
             return await settings.findSetting('Url', 'Kaoto', 'Catalog') as TextSetting;
-        })
+        });
         await textSetting.setValue(CATALOG_URL);
         await driver.sleep(1_000); // stabilize tests which are sometimes failing on macOS CI
         await closeEditor('Settings', true);
@@ -102,9 +102,9 @@ describe('User Settings', function () {
                 await driver.wait(
                     until.elementLocated(locators.RuntimeSelectorItems.list
                     ), 5_000);
-                throw new Error('Dropdown was not closed!')
+                throw new Error('Dropdown was not closed!');
             } catch (error) {
-                if (error.name !== 'TimeoutError') {
+                if (error instanceof Error && error.name !== 'TimeoutError') {
                     throw new Error(error.message);
                 }
             }

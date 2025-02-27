@@ -72,9 +72,9 @@ export abstract class AbstractNewCamelRouteCommand extends AbstractCamelCommand 
 	protected async waitForFileExists(fileUri: Uri, maxWaitMs: number = 5_000, delayMs: number = 100): Promise<void> {
 		return new Promise((resolve, reject) => {
 			const startTime = Date.now();
-			const checkFile = async () => {
+			const checkFile = () => {
 				try {
-					await workspace.fs.stat(fileUri);
+					workspace.fs.stat(fileUri);
 					resolve();
 				} catch {
 					if (Date.now() - startTime >= maxWaitMs) {

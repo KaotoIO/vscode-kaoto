@@ -1,4 +1,4 @@
-import { ActivityBar, after, By, ComboSetting, TextSetting, until, VSBrowser, WebDriver, WebView, Workbench } from 'vscode-extension-tester';
+import { ActivityBar, after, By, ComboSetting, VSBrowser, WebDriver, WebView, Workbench } from 'vscode-extension-tester';
 import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame, resetUserSettings } from '../Util';
 import { join } from 'path';
 import { expect } from 'chai';
@@ -18,7 +18,7 @@ describe('User Settings', function () {
             timer_2_4: `g[data-nodelabel='timerID']`,
             label: `.custom-node__label`,
         }
-    }
+    };
 
     before(async function () {
         this.timeout(60_000);
@@ -30,7 +30,7 @@ describe('User Settings', function () {
         const settings = await new Workbench().openSettings();
         const textSetting = await driver.wait(async () => {
             return await settings.findSetting('Node Label', 'Kaoto') as ComboSetting;
-        })
+        });
         await textSetting.setValue('id');
         await driver.sleep(1_000); // stabilize tests which are sometimes failing on macOS CI
         await closeEditor('Settings', true);

@@ -9,12 +9,12 @@ export async function openAndSwitchToKaotoFrame(
   fileNameToOpen: string,
   driver: WebDriver,
   checkNotDirty: boolean
-) {
+): Promise<{ kaotoWebview: WebView, kaotoEditor: CustomEditor }> {
   await VSBrowser.instance.openResources(path.join(workspaceFolder, fileNameToOpen));
   return await switchToKaotoFrame(driver, checkNotDirty);
 }
 
-export async function switchToKaotoFrame(driver: WebDriver, checkNotDirty: boolean) {
+export async function switchToKaotoFrame(driver: WebDriver, checkNotDirty: boolean): Promise<{ kaotoWebview: WebView, kaotoEditor: CustomEditor }> {
   let kaotoEditor = new CustomEditor();
   if (checkNotDirty) {
     assert.isFalse(
@@ -59,9 +59,9 @@ export const storageFolder = process.env.TEST_RESOURCES ? process.env.TEST_RESOU
  * @param id ID of setting to reset.
  */
 export function resetUserSettings(id: string): void {
-	const settingsPath = path.resolve(storageFolder, 'settings', 'User', 'settings.json');
-	const reset = fs.readFileSync(settingsPath, 'utf-8').replace(new RegExp(`"${id}.*`), '').replace(/,(?=[^,]*$)/, '');
-	fs.writeFileSync(settingsPath, reset, 'utf-8');
+  const settingsPath = path.resolve(storageFolder, 'settings', 'User', 'settings.json');
+  const reset = fs.readFileSync(settingsPath, 'utf-8').replace(new RegExp(`"${id}.*`), '').replace(/,(?=[^,]*$)/, '');
+  fs.writeFileSync(settingsPath, reset, 'utf-8');
 }
 
 /**
@@ -71,14 +71,14 @@ export function resetUserSettings(id: string): void {
  * @param save true/false
  */
 export async function closeEditor(title: string, save?: boolean) {
-	const dirty = await new TextEditor().isDirty();
-	await new EditorView().closeEditor(title);
-	if (dirty) {
-		const dialog = new ModalDialog();
-		if (save) {
-			await dialog.pushButton('Save');
-		} else {
-			await dialog.pushButton('Don\'t Save');
-		}
-	}
+  const dirty = await new TextEditor().isDirty();
+  await new EditorView().closeEditor(title);
+  if (dirty) {
+    const dialog = new ModalDialog();
+    if (save) {
+      await dialog.pushButton('Save');
+    } else {
+      await dialog.pushButton('Don\'t Save');
+    }
+  }
 }

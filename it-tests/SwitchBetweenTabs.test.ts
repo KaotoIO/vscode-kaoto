@@ -4,7 +4,7 @@ import { join } from 'path';
 import { expect } from 'chai';
 
 describe('Switching between editor tabs', function () {
-	this.timeout(90_000)
+	this.timeout(90_000);
 
 	const WORKSPACE_FOLDER = join(__dirname, '../test Fixture with speci@l chars');
 
@@ -29,7 +29,7 @@ describe('Switching between editor tabs', function () {
 		DataMapper: {
 			howTo: 'pf-v6-l-bullseye datamapper-howto'
 		}
-	}
+	};
 
 	let driver: WebDriver;
 	let kaotoWebview: WebView;

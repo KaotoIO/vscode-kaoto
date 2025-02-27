@@ -31,4 +31,4 @@ suite('Classpath root finder', () => {
         const classpathRoot = findClasspathRoot(camelRoute);
         assert.equal(classpathRoot, `${path.sep}tmp${path.sep}fake${path.sep}camel`);
     });
-})
+});

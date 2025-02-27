@@ -80,13 +80,13 @@ export async function activate(context: vscode.ExtensionContext) {
    */
   const redhatService = await getRedHatService(context);
   telemetryService = await redhatService.getTelemetryService();
-  telemetryService.sendStartupEvent();
+  await telemetryService.sendStartupEvent();
 
   KaotoOutputChannel.logInfo("Kaoto extension is successfully setup.");
 }
 
-export function deactivate() {
+export async function deactivate() {
   backendProxy?.stopServices();
-  telemetryService.sendShutdownEvent();
+  await telemetryService.sendShutdownEvent();
   KaotoOutputChannel.dispose();
 }

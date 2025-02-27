@@ -45,7 +45,7 @@ export abstract class CamelJBangTask extends Task {
 			panel: TaskPanelKind.New,
 			close: closePanel, // (optional) the terminal is closed after executing the task, default is false = not to close
 			reveal: revealTask // task output is reveal in the user interface, default is RevealKind.Always
-		}
+		};
 	}
 
 	/**
