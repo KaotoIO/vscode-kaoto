@@ -57,4 +57,4 @@ suite.skip('Channel API', () => {
     test('get content with invalid path return undefined', async() => {
         assert.fail('Not yet implemented');
     });
-})
+});

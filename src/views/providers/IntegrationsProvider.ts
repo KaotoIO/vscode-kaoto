@@ -57,9 +57,15 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 	}
 
 	private getFileType(fileName: string): { type: string, name: string } {
-		if (fileName.endsWith('.kamelet.yaml')) return { type: 'kamelet', name: basename(fileName, '.kamelet.yaml') };
-		if (fileName.endsWith('-pipe.yaml')) return { type: 'pipe', name: basename(fileName, '-pipe.yaml') };
-		if (fileName.endsWith('.pipe.yaml')) return { type: 'pipe', name: basename(fileName, '.pipe.yaml') };
+		if (fileName.endsWith('.kamelet.yaml')) {
+			return { type: 'kamelet', name: basename(fileName, '.kamelet.yaml') };
+		}
+		if (fileName.endsWith('-pipe.yaml')) {
+			return { type: 'pipe', name: basename(fileName, '-pipe.yaml') };
+		}
+		if (fileName.endsWith('.pipe.yaml')) {
+			return { type: 'pipe', name: basename(fileName, '.pipe.yaml') };
+		}
 		return { type: 'route', name: basename(fileName, '.camel.yaml') };
 	}
 
@@ -97,7 +103,9 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 			const parsedYaml = parse(String.fromCharCode.apply(null, fileBuffer));
 
 			// skip empty YAML files
-			if (!parsedYaml || typeof parsedYaml !== 'object') return [];
+			if (!parsedYaml || typeof parsedYaml !== 'object') {
+				return [];
+			}
 
 			return Object.values(parsedYaml)
 				.filter((item: any) => item.route)
@@ -132,7 +140,7 @@ export class Integration extends TreeItem {
 		if (workspace.workspaceFolders && workspace.workspaceFolders.length > 1) {
 			return dirname(relative(dirname(workspace.getWorkspaceFolder(filepath)?.uri.fsPath as string), filepath.fsPath));
 		} else {
-			return dirname(relative(workspace.getWorkspaceFolder(filepath)?.uri.fsPath as string, filepath.fsPath))
+			return dirname(relative(workspace.getWorkspaceFolder(filepath)?.uri.fsPath as string, filepath.fsPath));
 		}
 	}
 }

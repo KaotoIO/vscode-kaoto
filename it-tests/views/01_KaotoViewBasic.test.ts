@@ -18,7 +18,7 @@ import { join } from "path";
 import { ActivityBar, SideBarView, ViewControl, ViewItem, ViewSection, VSBrowser } from "vscode-extension-tester";
 
 describe('Kaoto View Container', function () {
-    this.timeout(30_000)
+    this.timeout(30_000);
 
     const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars/kaoto-view');
 

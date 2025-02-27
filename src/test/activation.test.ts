@@ -23,4 +23,4 @@ suite('Extension is activated', () => {
         assert.isNotNull(extension, 'VS Code Kaoto not found');
         assert.isTrue(extension?.isActive, 'VS Code Kaoto is not activated despite the workspace used for tests contains yaml files');
     });
-})
+});

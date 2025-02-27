@@ -20,7 +20,7 @@ import { ActivityBar, after, afterEach, before, beforeEach, By, EditorView, Inpu
 import { switchToKaotoFrame } from "../Util";
 
 describe('Integrations View', function () {
-    this.timeout(180_000)
+    this.timeout(180_000);
 
     const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars/kaoto-view');
 
@@ -61,7 +61,7 @@ describe('Integrations View', function () {
         beforeEach(async function () {
             await driver.actions().move({origin: integrationsSection}).perform(); // move mouse to bring auto-hided buttons visible again
             newFileButton = await driver.wait(async function () {
-                return await integrationsSection?.getAction('New File...') as ViewPanelActionDropdown
+                return await integrationsSection?.getAction('New File...') as ViewPanelActionDropdown;
             }, 10_000, `'New File...' button was not found!`);
         });
 
