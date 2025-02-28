@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { commands, Uri } from "vscode";
-import { CamelInitJBangTask } from "../tasks/CamelInitJBangTask";
-import { AbstractNewCamelRouteCommand } from "./AbstractNewCamelRouteCommand";
-import path from "path";
+import { commands, Uri } from 'vscode';
+import { CamelInitJBangTask } from '../tasks/CamelInitJBangTask';
+import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
+import path from 'path';
 
 export class NewCamelRouteCommand extends AbstractNewCamelRouteCommand {
-
 	public static readonly ID_COMMAND_CAMEL_ROUTE_YAML = 'kaoto.camel.jbang.init.route.yaml';
 	protected static readonly PROGRESS_NOTIFICATION_MESSAGE = 'Creating a new Route file...';
 
@@ -34,7 +33,9 @@ export class NewCamelRouteCommand extends AbstractNewCamelRouteCommand {
 					const filePath = this.computeFullPath(targetFolder.fsPath, fileName);
 
 					const wsFolderTarget = wsFolder || this.singleWorkspaceFolder;
-					await new CamelInitJBangTask(wsFolderTarget, path.relative(wsFolderTarget.uri.fsPath, filePath)).executeAndWaitWithProgress(NewCamelRouteCommand.PROGRESS_NOTIFICATION_MESSAGE);
+					await new CamelInitJBangTask(wsFolderTarget, path.relative(wsFolderTarget.uri.fsPath, filePath)).executeAndWaitWithProgress(
+						NewCamelRouteCommand.PROGRESS_NOTIFICATION_MESSAGE,
+					);
 					const targetFileURI = Uri.file(filePath);
 					await this.waitForFileExists(targetFileURI);
 					await commands.executeCommand('kaoto.open', targetFileURI);

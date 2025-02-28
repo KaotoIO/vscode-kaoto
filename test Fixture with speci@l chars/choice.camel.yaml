@@ -3,13 +3,13 @@
     from:
       uri: direct:start
       steps:
-      - choice:
-          when:
-          - simple: demo
-            steps:
-            - log:
-                message: in the when
-          otherwise:
-            steps:
-            - log:
-                message: in the otherwise
+        - choice:
+            when:
+              - simple: demo
+                steps:
+                  - log:
+                      message: in the when
+            otherwise:
+              steps:
+                - log:
+                    message: in the otherwise

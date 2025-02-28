@@ -13,26 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import path from "path";
-import vscode from "vscode";
+import path from 'path';
+import vscode from 'vscode';
 
 /**
- * 
- * @param camelRouteFile 
+ *
+ * @param camelRouteFile
  * @returns The classpath root for the corresponding Camel Route file.
  *          In Maven-based project, it is searching for the closest src/main/resources folder.
  *          If not found, it supposed that it is a Camel JBang project and so that it is a flat classpath, using the parent folder of the Camel route.
  */
 export function findClasspathRoot(camelRouteFile: vscode.Uri): string {
-    const camelRoutePath = camelRouteFile.fsPath;
-    const folderClasspathPattern = `src${path.sep}main${path.sep}resources`;
-    const indexOfClasspath = camelRoutePath.lastIndexOf(folderClasspathPattern);
-    let classpathRoot: string;
-    if (indexOfClasspath !== -1) {
-      classpathRoot = camelRoutePath.substring(0, indexOfClasspath + folderClasspathPattern.length);
-    } else {
-      // In non Maven based project, we consider the folder at same level than Camel route to be the classpath route
-      classpathRoot = path.dirname(camelRouteFile.fsPath);
-    }
-    return classpathRoot;
-  }
+	const camelRoutePath = camelRouteFile.fsPath;
+	const folderClasspathPattern = `src${path.sep}main${path.sep}resources`;
+	const indexOfClasspath = camelRoutePath.lastIndexOf(folderClasspathPattern);
+	let classpathRoot: string;
+	if (indexOfClasspath !== -1) {
+		classpathRoot = camelRoutePath.substring(0, indexOfClasspath + folderClasspathPattern.length);
+	} else {
+		// In non Maven based project, we consider the folder at same level than Camel route to be the classpath route
+		classpathRoot = path.dirname(camelRouteFile.fsPath);
+	}
+	return classpathRoot;
+}

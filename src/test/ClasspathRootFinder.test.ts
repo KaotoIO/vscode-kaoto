@@ -20,15 +20,15 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 
 suite('Classpath root finder', () => {
-    test('Find src/main/resources', async() => {
-        const camelRoute = vscode.Uri.file('/tmp/fake/src/main/resources/camel/Camelroute.camel.yaml');
-        const classpathRoot = findClasspathRoot(camelRoute);
-        assert.equal(classpathRoot, `${path.sep}tmp${path.sep}fake${path.sep}src${path.sep}main${path.sep}resources`);
-    });
+	test('Find src/main/resources', async () => {
+		const camelRoute = vscode.Uri.file('/tmp/fake/src/main/resources/camel/Camelroute.camel.yaml');
+		const classpathRoot = findClasspathRoot(camelRoute);
+		assert.equal(classpathRoot, `${path.sep}tmp${path.sep}fake${path.sep}src${path.sep}main${path.sep}resources`);
+	});
 
-    test('Find parent folder of Camel route when no src/main/resources on the path', async() => {
-        const camelRoute = vscode.Uri.file('/tmp/fake/camel/Camelroute.camel.yaml');
-        const classpathRoot = findClasspathRoot(camelRoute);
-        assert.equal(classpathRoot, `${path.sep}tmp${path.sep}fake${path.sep}camel`);
-    });
+	test('Find parent folder of Camel route when no src/main/resources on the path', async () => {
+		const camelRoute = vscode.Uri.file('/tmp/fake/camel/Camelroute.camel.yaml');
+		const classpathRoot = findClasspathRoot(camelRoute);
+		assert.equal(classpathRoot, `${path.sep}tmp${path.sep}fake${path.sep}camel`);
+	});
 });

@@ -35,12 +35,12 @@ Comments that don't follow this standard may be ignored.
 
 There are a few things to consider when sending a pull request merge:
 
-* Small commits. We prefer small commits because they are easier to review
-* All commits must pass tests: Each commit should have consistency on its own and don't break any functionality
-* All jobs/checks must be green: This includes test coverage, code smells, security issues,...
-* Be descriptive on the PR text about what the changes are. Better to have duplicated explanation than no explanation at all. Provide examples.
-* Add screenshots and videos of what your PR is doing. Especially if you are adding a new feature.
-* High test coverage: Your code must be covered by unit and e2e tests. If for some reason your PR can't or shouldn't, be very clear why. The tests must be included in the same PR.
+- Small commits. We prefer small commits because they are easier to review
+- All commits must pass tests: Each commit should have consistency on its own and don't break any functionality
+- All jobs/checks must be green: This includes test coverage, code smells, security issues,...
+- Be descriptive on the PR text about what the changes are. Better to have duplicated explanation than no explanation at all. Provide examples.
+- Add screenshots and videos of what your PR is doing. Especially if you are adding a new feature.
+- High test coverage: Your code must be covered by unit and e2e tests. If for some reason your PR can't or shouldn't, be very clear why. The tests must be included in the same PR.
 
 ### How your commits messages should look like
 
@@ -62,12 +62,12 @@ The commit message should be structured as follows:
 
 The commit contains the following structural elements, to communicate intent to the consumers of your library:
 
-* fix: a commit of the type fix patches a bug in your codebase (this correlates with PATCH in Semantic Versioning).
-* feat: a commit of the type feat introduces a new feature to the codebase (this correlates with MINOR in Semantic Versioning).
-* BREAKING CHANGE: a commit that has a footer BREAKING CHANGE:, or appends a ! after the type/scope, introduces a breaking API change
-(correlating with MAJOR in Semantic Versioning). A BREAKING CHANGE can be part of commits of any type.
-* types other than fix: and feat: are allowed, like build:, chore:, ci:, docs:, style:, refactor:, perf:, test:, and others.
-* footers other than BREAKING CHANGE: `description` may be provided and follow a convention similar to git trailer format.
+- fix: a commit of the type fix patches a bug in your codebase (this correlates with PATCH in Semantic Versioning).
+- feat: a commit of the type feat introduces a new feature to the codebase (this correlates with MINOR in Semantic Versioning).
+- BREAKING CHANGE: a commit that has a footer BREAKING CHANGE:, or appends a ! after the type/scope, introduces a breaking API change
+  (correlating with MAJOR in Semantic Versioning). A BREAKING CHANGE can be part of commits of any type.
+- types other than fix: and feat: are allowed, like build:, chore:, ci:, docs:, style:, refactor:, perf:, test:, and others.
+- footers other than BREAKING CHANGE: `description` may be provided and follow a convention similar to git trailer format.
 
 Additional types are not mandated by the Conventional Commits specification, and have no implicit effect in Semantic Versioning
 (unless they include a BREAKING CHANGE). A scope may be provided to a commit’s type, to provide additional contextual information and
@@ -77,10 +77,10 @@ is contained within parenthesis, e.g., `feat(parser): add ability to parse array
 
 ### How to build locally
 
-* `yarn`
-* `yarn build:dev`
-* `yarn build:prod`
-* `yarn vsce package --no-dependencies --yarn` to build the vsix binary
+- `yarn`
+- `yarn build:dev`
+- `yarn build:prod`
+- `yarn vsce package --no-dependencies --yarn` to build the vsix binary
 
 ### How to launch VS Code extension during development
 
@@ -98,25 +98,25 @@ You need to launch the script task `yarn run run:webmode`
 
 If you'd like to test latest Kaoto and not rely on a released version, follow these steps:
 
-* In `kaoto` local clone folder:
-  * `yarn`
-  * `yarn workspace @kaoto/camel-catalog run build`
-  * `yarn workspace @kaoto/kaoto run build:lib`
-* Open VS Code on `vscode-kaoto` local clone folder
-* `yarn`
-* `yarn link` _\<kaoto local clone folder uri>/packages/kaoto_
-  * i.e. `yarn link ~/repositories/kaoto/packages/ui`
-* `yarn build:dev`
-* In `Run and debug` perspective, call the `Run Extension` launch configuration
-* In the new VS Code opened (which has `[Extension Development host]` in window title),
-  * Open a folder (use the one you want)
-  * Create a file named with the following pattern `*.camel.yaml`
-  * Open the file
+- In `kaoto` local clone folder:
+  - `yarn`
+  - `yarn workspace @kaoto/camel-catalog run build`
+  - `yarn workspace @kaoto/kaoto run build:lib`
+- Open VS Code on `vscode-kaoto` local clone folder
+- `yarn`
+- `yarn link` _\<kaoto local clone folder uri>/packages/kaoto_
+  - i.e. `yarn link ~/repositories/kaoto/packages/ui`
+- `yarn build:dev`
+- In `Run and debug` perspective, call the `Run Extension` launch configuration
+- In the new VS Code opened (which has `[Extension Development host]` in window title),
+  - Open a folder (use the one you want)
+  - Create a file named with the following pattern `*.camel.yaml`
+  - Open the file
 
 To return to the default Kaoto version, just write on `vscode-kaoto` local clone folder:
 
-* `yarn unlink` _\<kaoto local clone folder uri>/packages/ui_
-  * i.e. `yarn unlink ~/repositories/kaoto/packages/ui`
+- `yarn unlink` _\<kaoto local clone folder uri>/packages/ui_
+  - i.e. `yarn unlink ~/repositories/kaoto/packages/ui`
 
 More information about [linking](https://yarnpkg.com/cli/link) and [unlinking](https://yarnpkg.com/cli/unlink) local packages with [yarn](https://yarnpkg.com/)
 
@@ -132,11 +132,12 @@ It is launching UI tests. Beware that it can take several minutes to start. Stay
 
 ## How to upgrade embedded Kaoto UI version
 
-* To have everything working properly, we need to double check that versions of package list below is up to date with [kaoto dependencies](https://github.com/KaotoIO/kaoto/blob/main/packages/ui/package.json#L44) versions of same packages
-* Inside `package.json`
-  * Check to have the version of the VS Code extension similar to the version of Kaoto
-  * :exclamation: update `dependencies` section, update`"@kaoto/kaoto": "<version>"` to next version of publish Kaoto UI package
-  * :warning: update `resolutions` and `dependencies` section
+- To have everything working properly, we need to double check that versions of package list below is up to date with [kaoto dependencies](https://github.com/KaotoIO/kaoto/blob/main/packages/ui/package.json#L44) versions of same packages
+- Inside `package.json`
+
+  - Check to have the version of the VS Code extension similar to the version of Kaoto
+  - :exclamation: update `dependencies` section, update`"@kaoto/kaoto": "<version>"` to next version of publish Kaoto UI package
+  - :warning: update `resolutions` and `dependencies` section
 
   ```json
     // dependencies
@@ -163,30 +164,30 @@ It is launching UI tests. Beware that it can take several minutes to start. Stay
     "@patternfly/react-topology": "5.2.1"
   ```
 
-* Open new PR and wait till checks are green
-* Wait for review from contributors
+- Open new PR and wait till checks are green
+- Wait for review from contributors
 
 ## How to provide a new release version on VS Code Marketplace
 
-* Check that the version in package.json has not been published yet
-  * If already published:
-    * Update version in `package.json`
-    * Push changes in a Pull Request
-    * Wait for Pull Request to be merged
-* Check that the version of VS Code extension aligns as much as possible with version of embedded Kaoto
-* Check build is working fine on [GitHub Actions](https://github.com/KaotoIO/vscode-kaoto/actions) and [Jenkins CI](https://jenkins-csb-fusetools-qe-master.dno.corp.redhat.com/view/VS%20Code%20-%20release/job/vscode/job/eng/job/vscode-kaoto-release/)
-* Check that someone listed as _submitter_ in Jenkinsfile is available
-* Create a tag
-* Push the tag to vscode-kaoto repository
-* Start build on [Jenkins CI](https://jenkins-csb-fusetools-qe-master.dno.corp.redhat.com/view/VS%20Code%20-%20release/job/vscode/job/eng/job/vscode-kaoto-release/) with _publishToMarketPlace_ and _publishToOVSX_ parameters checked
-* When the build hits the _Publish to Marketplace_ step, it will wait for an approval
-* It is possible to check that the produced vsix is valid by using the one pushed in [JBoss download area](https://download.jboss.org/jbosstools/vscode/snapshots/vscode-kaoto/)
-* For someone in _submitter_ list:
-  * Ensure you are logged in
-  * Go to the console log of the build and click `Proceed`
-* Wait few minutes and check that it has been published on [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-kaoto) and [Open VSX Marketplace](https://open-vsx.org/extension/redhat/vscode-kaoto)
-* Keep build forever on Jenkins CI for later reference and edit build information to indicate the version
-* Prepare next iteration:
-  * Update version in `package.json`
-  * Push changes in a Pull Request
-  * Follow Pull Request until it is approved/merged
+- Check that the version in package.json has not been published yet
+  - If already published:
+    - Update version in `package.json`
+    - Push changes in a Pull Request
+    - Wait for Pull Request to be merged
+- Check that the version of VS Code extension aligns as much as possible with version of embedded Kaoto
+- Check build is working fine on [GitHub Actions](https://github.com/KaotoIO/vscode-kaoto/actions) and [Jenkins CI](https://jenkins-csb-fusetools-qe-master.dno.corp.redhat.com/view/VS%20Code%20-%20release/job/vscode/job/eng/job/vscode-kaoto-release/)
+- Check that someone listed as _submitter_ in Jenkinsfile is available
+- Create a tag
+- Push the tag to vscode-kaoto repository
+- Start build on [Jenkins CI](https://jenkins-csb-fusetools-qe-master.dno.corp.redhat.com/view/VS%20Code%20-%20release/job/vscode/job/eng/job/vscode-kaoto-release/) with _publishToMarketPlace_ and _publishToOVSX_ parameters checked
+- When the build hits the _Publish to Marketplace_ step, it will wait for an approval
+- It is possible to check that the produced vsix is valid by using the one pushed in [JBoss download area](https://download.jboss.org/jbosstools/vscode/snapshots/vscode-kaoto/)
+- For someone in _submitter_ list:
+  - Ensure you are logged in
+  - Go to the console log of the build and click `Proceed`
+- Wait few minutes and check that it has been published on [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-kaoto) and [Open VSX Marketplace](https://open-vsx.org/extension/redhat/vscode-kaoto)
+- Keep build forever on Jenkins CI for later reference and edit build information to indicate the version
+- Prepare next iteration:
+  - Update version in `package.json`
+  - Push changes in a Pull Request
+  - Follow Pull Request until it is approved/merged
