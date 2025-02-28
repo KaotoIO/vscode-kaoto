@@ -5,11 +5,13 @@ import ts from '@typescript-eslint/parser';
 import tsEslint from '@typescript-eslint/eslint-plugin';
 import stylisticEslint from '@stylistic/eslint-plugin';
 import chaiFriendly from 'eslint-plugin-chai-friendly';
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 
 export default defineConfig([
     {
         ignores: ['**/*.test.js', 'node_modules/*', 'dist/*', 'out/*'],
     },
+    eslintPluginPrettierRecommended,
     {
         files: ['**/*.ts', '**/*.tsx'],
         languageOptions: {
@@ -67,6 +69,7 @@ export default defineConfig([
             '@typescript-eslint/no-floating-promises': 'warn',
             'no-unused-expressions': 'off', // Disable the default rule
             '@chai-friendly/no-unused-expressions': 'error', // Use chai-friendly version
+            'prettier/prettier': ['warn'],
         },
     },
 ]);
