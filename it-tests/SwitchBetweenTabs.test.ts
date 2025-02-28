@@ -20,15 +20,15 @@ describe('Switching between editor tabs', function () {
 			dataMapperTabLabel: 'DataMapper',
 		},
 		DesignCanvas: {
-			canvas: 'topology'
+			canvas: 'topology',
 		},
 		BeansEditor: {
 			listView: 'metadata-editor-modal-list-view',
-			detailsView: 'metadata-editor-modal-details-view'
+			detailsView: 'metadata-editor-modal-details-view',
 		},
 		DataMapper: {
-			howTo: 'pf-v6-l-bullseye datamapper-howto'
-		}
+			howTo: 'pf-v6-l-bullseye datamapper-howto',
+		},
 	};
 
 	let driver: WebDriver;
@@ -44,12 +44,7 @@ describe('Switching between editor tabs', function () {
 	});
 
 	it('Open "my.camel.yaml" file and check "Design" tab is active by default', async function () {
-		kaotoWebview = (await openAndSwitchToKaotoFrame(
-			WORKSPACE_FOLDER,
-			'my.camel.yaml',
-			driver,
-			true
-		)).kaotoWebview;
+		kaotoWebview = (await openAndSwitchToKaotoFrame(WORKSPACE_FOLDER, 'my.camel.yaml', driver, true)).kaotoWebview;
 		expect(await getTabsCount()).to.equal(3);
 		expect(await getActiveTabName()).to.equal('Design');
 	});
@@ -77,41 +72,39 @@ describe('Switching between editor tabs', function () {
 	}
 
 	async function getTabsCount(): Promise<number> {
-		await driver.wait(
-			until.elementLocated(By.className(locators.EditorTabs.tabsList)),
-			5_000, 'Editor tabs are not displayed properly!'
-		);
+		await driver.wait(until.elementLocated(By.className(locators.EditorTabs.tabsList)), 5_000, 'Editor tabs are not displayed properly!');
 		return (await getTabsWebElements()).length;
 	}
 
 	async function getActiveTabName(): Promise<string> {
-		const tabName = await driver.findElement(By.className(locators.EditorTabs.tabsList)).findElement(By.xpath(`//button[@${locators.EditorTabs.activeTabAttribute}='true']`)).findElement(By.className(locators.EditorTabs.tabText));
+		const tabName = await driver
+			.findElement(By.className(locators.EditorTabs.tabsList))
+			.findElement(By.xpath(`//button[@${locators.EditorTabs.activeTabAttribute}='true']`))
+			.findElement(By.className(locators.EditorTabs.tabText));
 		return await tabName.getText();
 	}
 
 	async function switchToTab(name: string): Promise<void> {
-		await driver.findElement(By.className(locators.EditorTabs.tabsList)).findElement(By.xpath(`//button[@${locators.EditorTabs.tabLabelAttribute}='${name}']`)).click();
+		await driver
+			.findElement(By.className(locators.EditorTabs.tabsList))
+			.findElement(By.xpath(`//button[@${locators.EditorTabs.tabLabelAttribute}='${name}']`))
+			.click();
 	}
 
 	async function waitForDesignCanvasIsLoaded(): Promise<void> {
 		await driver.wait(
 			until.elementLocated(By.xpath(`//div[@data-test-id='${locators.DesignCanvas.canvas}']`)),
-			5_000, 'Design canvas of editor was not loaded properly!'
+			5_000,
+			'Design canvas of editor was not loaded properly!',
 		);
 	}
 
 	async function waitForBeansEditorIsLoaded(): Promise<void> {
-		await driver.wait(until.elementLocated(By.className(locators.BeansEditor.listView)),
-			5_000, 'Beans "list" view was not loaded properly!'
-		);
-		await driver.wait(until.elementLocated(By.className(locators.BeansEditor.detailsView)),
-			5_000, 'Beans "details" view was not loaded properly!'
-		);
+		await driver.wait(until.elementLocated(By.className(locators.BeansEditor.listView)), 5_000, 'Beans "list" view was not loaded properly!');
+		await driver.wait(until.elementLocated(By.className(locators.BeansEditor.detailsView)), 5_000, 'Beans "details" view was not loaded properly!');
 	}
 
 	async function waitForDataMapperIsLoaded() {
-		await driver.wait(until.elementLocated(By.className(locators.DataMapper.howTo)),
-			5_000, 'DataMapper "howTo" content was not loaded properly!'
-		);
+		await driver.wait(until.elementLocated(By.className(locators.DataMapper.howTo)), 5_000, 'DataMapper "howTo" content was not loaded properly!');
 	}
 });

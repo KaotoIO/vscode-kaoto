@@ -17,44 +17,43 @@
 import { assert } from 'chai';
 
 suite.skip('Channel API', () => {
+	test('get Metadata for existing key', async () => {
+		assert.fail('Not yet implemented');
+	});
 
-    test('get Metadata for existing key', async() => {
-        assert.fail('Not yet implemented');
-    });
+	test('get Metadata for not existing key in existing .kaoto file at root of the workspace', async () => {
+		assert.fail('Not yet implemented');
+	});
 
-    test('get Metadata for not existing key in existing .kaoto file at root of the workspace', async() => {
-        assert.fail('Not yet implemented');
-    });
+	test('get Metadata for not existing key in existing .kaoto file to the side of the Camel file', async () => {
+		assert.fail('Not yet implemented');
+	});
 
-    test('get Metadata for not existing key in existing .kaoto file to the side of the Camel file', async() => {
-        assert.fail('Not yet implemented');
-    });
+	test('get Metadata with no .kaoto file', async () => {
+		assert.fail('Not yet implemented');
+	});
 
-    test('get Metadata with no .kaoto file', async() => {
-        assert.fail('Not yet implemented');
-    });
+	test('set Metadata', async () => {
+		assert.fail('Not yet implemented');
+	});
 
-    test('set Metadata', async() => {
-        assert.fail('Not yet implemented');
-    });
+	test('set Metadata when no .kaoto file exist yet', async () => {
+		assert.fail('Not yet implemented');
+	});
 
-    test('set Metadata when no .kaoto file exist yet', async() => {
-        assert.fail('Not yet implemented');
-    });
+	test('unset Metadata', async () => {
+		assert.fail('Not yet implemented');
+	});
 
-    test('unset Metadata', async() => {
-        assert.fail('Not yet implemented');
-    });
+	test('set content', async () => {
+		assert.fail('Not yet implemented');
+	});
 
-    test('set content', async() => {
-        assert.fail('Not yet implemented');
-    });
+	test('get content', async () => {
+		assert.fail('Not yet implemented');
+	});
 
-    test('get content', async() => {
-        assert.fail('Not yet implemented');
-    });
-
-    test('get content with invalid path return undefined', async() => {
-        assert.fail('Not yet implemented');
-    });
+	test('get content with invalid path return undefined', async () => {
+		assert.fail('Not yet implemented');
+	});
 });

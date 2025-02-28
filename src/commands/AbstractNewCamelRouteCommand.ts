@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { commands, Uri, window, workspace, WorkspaceFolder } from "vscode";
-import { AbstractCamelCommand } from "./AbstractCamelCommand";
-import { KaotoOutputChannel } from "../extension/KaotoOutputChannel";
+import { commands, Uri, window, workspace, WorkspaceFolder } from 'vscode';
+import { AbstractCamelCommand } from './AbstractCamelCommand';
+import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 
 export abstract class AbstractNewCamelRouteCommand extends AbstractCamelCommand {
-
 	protected fileNameInputPrompt = 'Please provide a name for the new file (without extension).';
 
 	protected async showInputBoxForFileName(targetFolder?: string): Promise<string> {
@@ -33,15 +32,14 @@ export abstract class AbstractNewCamelRouteCommand extends AbstractCamelCommand 
 	}
 
 	protected async showDialogToPickFolder(defUri?: Uri): Promise<Uri | undefined> {
-		const selectedFolders = await window.showOpenDialog(
-			{
-				canSelectMany: false,
-				canSelectFolders: true,
-				canSelectFiles: false,
-				openLabel: 'Select',
-				title: 'Select a folder to create the file in. ESC to cancel a file creation.',
-				defaultUri: defUri || this.singleWorkspaceFolder?.uri
-			});
+		const selectedFolders = await window.showOpenDialog({
+			canSelectMany: false,
+			canSelectFolders: true,
+			canSelectFiles: false,
+			openLabel: 'Select',
+			title: 'Select a folder to create the file in. ESC to cancel a file creation.',
+			defaultUri: defUri || this.singleWorkspaceFolder?.uri,
+		});
 		return selectedFolders ? selectedFolders[0] : undefined;
 	}
 
@@ -87,5 +85,4 @@ export abstract class AbstractNewCamelRouteCommand extends AbstractCamelCommand 
 			checkFile();
 		});
 	}
-
 }

@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Uri, commands } from "vscode";
-import { AbstractNewCamelRouteCommand } from "./AbstractNewCamelRouteCommand";
-import { CamelBindJBangTask } from "../tasks/CamelBindJBangTask";
-import { CamelRouteDSL } from "./AbstractCamelCommand";
-import path from "path";
+import { Uri, commands } from 'vscode';
+import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
+import { CamelBindJBangTask } from '../tasks/CamelBindJBangTask';
+import { CamelRouteDSL } from './AbstractCamelCommand';
+import path from 'path';
 
 export class NewCamelPipeCommand extends AbstractNewCamelRouteCommand {
-
 	public static readonly ID_COMMAND_CAMEL_PIPE_YAML = 'kaoto.camel.jbang.init.pipe.yaml';
 	protected static readonly PROGRESS_NOTIFICATION_MESSAGE = 'Creating a new Pipe file...';
 
@@ -35,7 +34,9 @@ export class NewCamelPipeCommand extends AbstractNewCamelRouteCommand {
 					const filePath = this.computeFullPath(targetFolder.fsPath, fileName);
 
 					const wsFolderTarget = wsFolder || this.singleWorkspaceFolder;
-					await new CamelBindJBangTask(wsFolderTarget, path.relative(wsFolderTarget.uri.fsPath, filePath)).executeAndWaitWithProgress(NewCamelPipeCommand.PROGRESS_NOTIFICATION_MESSAGE);
+					await new CamelBindJBangTask(wsFolderTarget, path.relative(wsFolderTarget.uri.fsPath, filePath)).executeAndWaitWithProgress(
+						NewCamelPipeCommand.PROGRESS_NOTIFICATION_MESSAGE,
+					);
 
 					const targetFileURI = Uri.file(filePath);
 					await this.waitForFileExists(targetFileURI);
