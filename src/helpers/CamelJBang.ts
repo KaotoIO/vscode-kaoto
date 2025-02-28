@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ShellExecution, workspace } from "vscode";
+import { ShellExecution, workspace } from 'vscode';
 
 export enum RouteOperation {
 	start = 'start',
 	stop = 'stop',
 	suspend = 'suspend',
-	resume = 'resume'
+	resume = 'resume',
 }
 
 /**
  * Camel JBang class which allows shell execution of different JBang CLI commands
  */
 export class CamelJBang {
-
 	private readonly camelJBangVersion: string;
 
 	constructor(private readonly jbang: string = 'jbang') {
@@ -38,6 +37,15 @@ export class CamelJBang {
 	}
 
 	public bind(file: string, source: string, sink: string): ShellExecution {
-		return new ShellExecution(this.jbang, [`'-Dcamel.jbang.version=${this.camelJBangVersion}'`, 'camel@apache/camel', 'bind', '--source', source, '--sink', sink, `'${file}'`]);
+		return new ShellExecution(this.jbang, [
+			`'-Dcamel.jbang.version=${this.camelJBangVersion}'`,
+			'camel@apache/camel',
+			'bind',
+			'--source',
+			source,
+			'--sink',
+			sink,
+			`'${file}'`,
+		]);
 	}
 }

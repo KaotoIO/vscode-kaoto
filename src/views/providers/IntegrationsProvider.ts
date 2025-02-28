@@ -56,7 +56,7 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 		commands.executeCommand('setContext', 'kaoto.integrationExists', value);
 	}
 
-	private getFileType(fileName: string): { type: string, name: string } {
+	private getFileType(fileName: string): { type: string; name: string } {
 		if (fileName.endsWith('.kamelet.yaml')) {
 			return { type: 'kamelet', name: basename(fileName, '.kamelet.yaml') };
 		}
@@ -69,31 +69,38 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 		return { type: 'route', name: basename(fileName, '.camel.yaml') };
 	}
 
-	private getIcon(type: string): { light: Uri, dark: Uri } {
+	private getIcon(type: string): { light: Uri; dark: Uri } {
 		const basePath = join(this.extensionUriPath, 'icons', 'integrations');
 		switch (type) {
-			case 'kamelet': return { light: Uri.file(join(basePath, 'kamelets-file-icon-light.png')), dark: Uri.file(join(basePath, 'kamelets-file-icon-dark.png')) };
-			case 'pipe': return { light: Uri.file(join(basePath, 'pipes-file-icon-light.png')), dark: Uri.file(join(basePath, 'pipes-file-icon-dark.png')) };
-			case 'route': return { light: Uri.file(join(basePath, 'routes-file-icon-light.png')), dark: Uri.file(join(basePath, 'routes-file-icon-dark.png')) };
-			case 'route-child': return { light: Uri.file(join(basePath, 'route-black.svg')), dark: Uri.file(join(basePath, 'route-white.svg')) };
+			case 'kamelet':
+				return { light: Uri.file(join(basePath, 'kamelets-file-icon-light.png')), dark: Uri.file(join(basePath, 'kamelets-file-icon-dark.png')) };
+			case 'pipe':
+				return { light: Uri.file(join(basePath, 'pipes-file-icon-light.png')), dark: Uri.file(join(basePath, 'pipes-file-icon-dark.png')) };
+			case 'route':
+				return { light: Uri.file(join(basePath, 'routes-file-icon-light.png')), dark: Uri.file(join(basePath, 'routes-file-icon-dark.png')) };
+			case 'route-child':
+				return { light: Uri.file(join(basePath, 'route-black.svg')), dark: Uri.file(join(basePath, 'route-white.svg')) };
 			// every unknown is considered as Route integration file
-			default: return { light: Uri.file(join(basePath, 'routes-file-icon-light.png')), dark: Uri.file(join(basePath, 'routes-file-icon-light.png')) };
+			default:
+				return { light: Uri.file(join(basePath, 'routes-file-icon-light.png')), dark: Uri.file(join(basePath, 'routes-file-icon-light.png')) };
 		}
 	}
 
 	private async getIntegrationsAvailableInWorkspace(): Promise<Integration[]> {
 		const integrationFiles = await workspace.findFiles(IntegrationsProvider.FILE_PATTERN, IntegrationsProvider.EXCLUDE_PATTERN);
-		const integrations = await Promise.all(integrationFiles.map(async file => {
-			const filename = basename(file.fsPath);
-			const { type, name } = this.getFileType(filename);
-			const icon = this.getIcon(type);
+		const integrations = await Promise.all(
+			integrationFiles.map(async (file) => {
+				const filename = basename(file.fsPath);
+				const { type, name } = this.getFileType(filename);
+				const icon = this.getIcon(type);
 
-			// process routes only if it's a route integration
-			const routes = type === 'route' ? await this.getRoutesInsideIntegrationFile(file) : [];
-			const collapsibleState = routes.length > 0 ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.None;
+				// process routes only if it's a route integration
+				const routes = type === 'route' ? await this.getRoutesInsideIntegrationFile(file) : [];
+				const collapsibleState = routes.length > 0 ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.None;
 
-			return new Integration(name, filename, file, collapsibleState, type, icon);
-		}));
+				return new Integration(name, filename, file, collapsibleState, type, icon);
+			}),
+		);
 		return Array.from(integrations.values()).sort((a, b) => a.filepath.fsPath.localeCompare(b.filepath.fsPath));
 	}
 
@@ -124,7 +131,7 @@ export class Integration extends TreeItem {
 		public readonly filepath: Uri,
 		public collapsibleState: TreeItemCollapsibleState,
 		public readonly type: string,
-		public readonly icon: string | IconPath
+		public readonly icon: string | IconPath,
 	) {
 		super(filename, collapsibleState);
 		this.iconPath = icon;
@@ -149,7 +156,7 @@ export class Route extends TreeItem {
 	constructor(
 		public readonly name: string,
 		public readonly description: string,
-		public readonly icon: string | IconPath
+		public readonly icon: string | IconPath,
 	) {
 		super(name || '[missing route id]', TreeItemCollapsibleState.None);
 		this.description = description;

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Uri, WorkspaceFolder, workspace } from "vscode";
-import isValidFilename from "valid-filename";
-import path from "path";
+import { Uri, WorkspaceFolder, workspace } from 'vscode';
+import isValidFilename from 'valid-filename';
+import path from 'path';
 
 export interface CamelRouteDSL {
 	language: string;
@@ -24,7 +24,6 @@ export interface CamelRouteDSL {
 }
 
 export abstract class AbstractCamelCommand {
-
 	protected singleWorkspaceFolder: WorkspaceFolder | undefined;
 	protected camelDSL: CamelRouteDSL | undefined;
 
@@ -80,7 +79,10 @@ export abstract class AbstractCamelCommand {
 		if (!this.camelDSL) {
 			throw new Error('Camel DSL cannot be undefined.');
 		}
-		const newFilePotentialFullPath: string = this.computeFullPath(folderPath ?? this.singleWorkspaceFolder.uri.fsPath, this.getFullName(name, this.camelDSL.extension));
+		const newFilePotentialFullPath: string = this.computeFullPath(
+			folderPath ?? this.singleWorkspaceFolder.uri.fsPath,
+			this.getFullName(name, this.camelDSL.extension),
+		);
 		let newFilePotentialPathExist = false;
 		try {
 			await workspace.fs.stat(Uri.file(newFilePotentialFullPath));
@@ -119,5 +121,4 @@ export abstract class AbstractCamelCommand {
 	protected computeFullPath(folderPath: string, file: string): string {
 		return path.join(folderPath, file);
 	}
-
 }

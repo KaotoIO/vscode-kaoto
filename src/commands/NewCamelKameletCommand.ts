@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { QuickPickItem, Uri, commands, window } from "vscode";
-import { AbstractNewCamelRouteCommand } from "./AbstractNewCamelRouteCommand";
-import { CamelInitJBangTask } from "../tasks/CamelInitJBangTask";
-import { CamelRouteDSL } from "./AbstractCamelCommand";
-import path from "path";
+import { QuickPickItem, Uri, commands, window } from 'vscode';
+import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
+import { CamelInitJBangTask } from '../tasks/CamelInitJBangTask';
+import { CamelRouteDSL } from './AbstractCamelCommand';
+import path from 'path';
 
 export class NewCamelKameletCommand extends AbstractNewCamelRouteCommand {
-
 	public static readonly ID_COMMAND_CAMEL_KAMELET_YAML = 'kaoto.camel.jbang.init.kamelet.yaml';
 	protected static readonly PROGRESS_NOTIFICATION_MESSAGE = 'Creating a new Kamelet file...';
 
@@ -40,7 +39,9 @@ export class NewCamelKameletCommand extends AbstractNewCamelRouteCommand {
 						const filePath = this.computeFullPath(targetFolder.fsPath, fileName);
 
 						const wsFolderTarget = wsFolder || this.singleWorkspaceFolder;
-						await new CamelInitJBangTask(wsFolderTarget, path.relative(wsFolderTarget.uri.fsPath, filePath)).executeAndWaitWithProgress(NewCamelKameletCommand.PROGRESS_NOTIFICATION_MESSAGE);
+						await new CamelInitJBangTask(wsFolderTarget, path.relative(wsFolderTarget.uri.fsPath, filePath)).executeAndWaitWithProgress(
+							NewCamelKameletCommand.PROGRESS_NOTIFICATION_MESSAGE,
+						);
 						const targetFileURI = Uri.file(filePath);
 						await this.waitForFileExists(targetFileURI);
 						await commands.executeCommand('kaoto.open', targetFileURI);
@@ -61,20 +62,26 @@ export class NewCamelKameletCommand extends AbstractNewCamelRouteCommand {
 	}
 
 	protected async showInputBoxForFileName(targetFolder?: string): Promise<string> {
-		return await window.showInputBox({
-			prompt: this.fileNameInputPrompt,
-			placeHolder: this.camelDSL?.placeHolder,
-			validateInput: (fileName) => {
-				return this.validateCamelFileName(`${fileName}-${this.kameletType}`, targetFolder);
-			},
-		}) ?? '';
+		return (
+			(await window.showInputBox({
+				prompt: this.fileNameInputPrompt,
+				placeHolder: this.camelDSL?.placeHolder,
+				validateInput: (fileName) => {
+					return this.validateCamelFileName(`${fileName}-${this.kameletType}`, targetFolder);
+				},
+			})) ?? ''
+		);
 	}
 
 	protected async showQuickPickForKameletType(): Promise<QuickPickItem | undefined> {
 		const items: QuickPickItem[] = [
-			{ label: 'source', description: 'A route that produces data.', detail: 'You use a source Kamelet to retrieve data from a component.', },
+			{ label: 'source', description: 'A route that produces data.', detail: 'You use a source Kamelet to retrieve data from a component.' },
 			{ label: 'sink', description: 'A route that consumes data.', detail: 'You use a sink Kamelet to send data to a component.' },
-			{ label: 'action', description: 'A route that performs an action on data.', detail: 'You can use an action Kamelet to manipulate data when it passes from a source Kamelet to a sink Kamelet.' }
+			{
+				label: 'action',
+				description: 'A route that performs an action on data.',
+				detail: 'You can use an action Kamelet to manipulate data when it passes from a source Kamelet to a sink Kamelet.',
+			},
 		];
 		return await window.showQuickPick(items, {
 			placeHolder: 'Please select a Kamelet type.',

@@ -35,5 +35,5 @@ spec:
       parameters:
         period: "{{period}}"
       steps:
-      - to: https://random-data-api.com/api/v2/users
-      - to: "kamelet:sink"
+        - to: https://random-data-api.com/api/v2/users
+        - to: "kamelet:sink"

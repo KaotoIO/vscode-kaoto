@@ -1,26 +1,23 @@
 {
-	"baseUrl": ".",
-	"exclude": [
-		"node_modules",
-		".vscode-test",
-		"test-resources"],
-	"include": ["src"],
-	"compilerOptions": {
-	  "baseUrl": ".",
-	  "lib": ["es6", "dom", "es2018.promise", "es2019", "esnext"],
-	  "target": "ES6",
-	  "declaration": false,
-	  "declarationMap": false,
-	  "sourceMap": true,
-	  "noImplicitAny": true,
-	  "noImplicitThis": true,
-	  "removeComments": true,
-	  "strictNullChecks": true,
-	  "experimentalDecorators": true,
-	  "downlevelIteration": true,
-	  "skipLibCheck": true,
-	  "jsx": "react-jsx",
-	  "moduleResolution":"Bundler",
-	  "esModuleInterop": true
-	}
+  "baseUrl": ".",
+  "exclude": ["node_modules", ".vscode-test", "test-resources"],
+  "include": ["src"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "lib": ["es6", "dom", "es2018.promise", "es2019", "esnext"],
+    "target": "ES6",
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "removeComments": true,
+    "strictNullChecks": true,
+    "experimentalDecorators": true,
+    "downlevelIteration": true,
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "moduleResolution": "Bundler",
+    "esModuleInterop": true
+  }
 }

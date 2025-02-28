@@ -1,6 +1,6 @@
 # 2.5.0
 
-- `Breaking:` Remove legacy support for Kaoto v1 file patterns (*.kaoto.yaml,*.kaoto.yml)
+- `Breaking:` Remove legacy support for Kaoto v1 file patterns (`*.kaoto.yaml`, `*.kaoto.yml`)
 - `Breaking:` Bump minimal VS Code version from 1.74.0 to 1.95.0
 - Upgrade to Kaoto 2.5.0-M2
 - Add Kaoto view container with initial Help & Feedback view

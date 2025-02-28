@@ -16,39 +16,39 @@
 import * as vscode from 'vscode';
 
 export class KaotoOutputChannel {
-    private static instance: vscode.OutputChannel;
+	private static instance: vscode.OutputChannel;
 
-    // Get or create the Kaoto Output Channel instance
-    public static getInstance(): vscode.OutputChannel {
-        if (!KaotoOutputChannel.instance) {
-            KaotoOutputChannel.instance = vscode.window.createOutputChannel('Kaoto');
-        }
-        return KaotoOutputChannel.instance;
-    }
+	// Get or create the Kaoto Output Channel instance
+	public static getInstance(): vscode.OutputChannel {
+		if (!KaotoOutputChannel.instance) {
+			KaotoOutputChannel.instance = vscode.window.createOutputChannel('Kaoto');
+		}
+		return KaotoOutputChannel.instance;
+	}
 
-    public static logInfo(message: string): void {
-        this.logMessage('INFO', message);
-    }
+	public static logInfo(message: string): void {
+		this.logMessage('INFO', message);
+	}
 
-    public static logWarning(message: string): void {
-        this.logMessage('WARNING', message);
-    }
+	public static logWarning(message: string): void {
+		this.logMessage('WARNING', message);
+	}
 
-    public static logError(message: string, error?: any): void {
-        const errorMsg = error instanceof Error ? error.message : String(error);
-        this.logMessage('ERROR', `${message}\n${errorMsg}`);
-    }
+	public static logError(message: string, error?: any): void {
+		const errorMsg = error instanceof Error ? error.message : String(error);
+		this.logMessage('ERROR', `${message}\n${errorMsg}`);
+	}
 
-    // Log a formatted message with a timestamp
-    private static logMessage(level: string, message: string): void {
-        const timestamp = new Date().toUTCString();
-        this.getInstance().appendLine(`[${timestamp}] [${level}] ${message}`);
-    }
+	// Log a formatted message with a timestamp
+	private static logMessage(level: string, message: string): void {
+		const timestamp = new Date().toUTCString();
+		this.getInstance().appendLine(`[${timestamp}] [${level}] ${message}`);
+	}
 
-    // Dispose the Output Channel (mainly when the extension is deactivated)
-    public static dispose(): void {
-        if (KaotoOutputChannel.instance) {
-            KaotoOutputChannel.instance.dispose();
-        }
-    }
+	// Dispose the Output Channel (mainly when the extension is deactivated)
+	public static dispose(): void {
+		if (KaotoOutputChannel.instance) {
+			KaotoOutputChannel.instance.dispose();
+		}
+	}
 }

@@ -17,67 +17,66 @@ import { join } from 'path';
 import { ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
 
 export class HelpFeedbackProvider implements TreeDataProvider<HelpFeedbackItem> {
+	private readonly items: HelpFeedbackItem[];
 
-    private readonly items: HelpFeedbackItem[];
+	private static readonly HELP_ITEMS = [
+		{ label: 'Apache Camel', icon: 'camel-logo.svg', url: 'https://camel.apache.org/camel-core/getting-started/index.html' },
+		{ label: 'Documentation', icon: new ThemeIcon('book'), url: 'https://kaoto.io/docs/manual/' },
+		{ label: 'Enterprise Integration Explorer', icon: 'integration.svg', url: 'https://camel.solutionpatterns.io/#/patterns' },
+		{ label: 'Examples', icon: new ThemeIcon('github'), url: 'https://github.com/KaotoIO/kaoto-examples' },
+		{ label: 'Feedback', icon: new ThemeIcon('comment'), url: 'https://github.com/KaotoIO/kaoto/issues/new/choose' },
+		{ label: 'Hawtio', icon: new ThemeIcon('flame'), url: 'https://hawt.io/docs/get-started.html' },
+		{
+			label: 'Red Hat Demos',
+			icon: 'redhat-logo.svg',
+			url: 'https://www.redhat.com/architect/portfolio/detail/75-kaoto-apache-camel-integration-designer-demo',
+		},
+		{ label: 'Tutorials', icon: new ThemeIcon('library'), url: 'https://kaoto.io/workshop/' },
+		{ label: 'YouTube Channel', icon: 'youtube-logo.svg', url: 'https://www.youtube.com/@KaotoIO' },
+	];
 
-    private static readonly HELP_ITEMS = [
-        { label: 'Apache Camel', icon: 'camel-logo.svg', url: 'https://camel.apache.org/camel-core/getting-started/index.html' },
-        { label: 'Documentation', icon: new ThemeIcon('book'), url: 'https://kaoto.io/docs/manual/' },
-        { label: 'Enterprise Integration Explorer', icon: 'integration.svg', url: 'https://camel.solutionpatterns.io/#/patterns' },
-        { label: 'Examples', icon: new ThemeIcon('github'), url: 'https://github.com/KaotoIO/kaoto-examples' },
-        { label: 'Feedback', icon: new ThemeIcon('comment'), url: 'https://github.com/KaotoIO/kaoto/issues/new/choose' },
-        { label: 'Hawtio', icon: new ThemeIcon('flame'), url: 'https://hawt.io/docs/get-started.html' },
-        { label: 'Red Hat Demos', icon: 'redhat-logo.svg', url: 'https://www.redhat.com/architect/portfolio/detail/75-kaoto-apache-camel-integration-designer-demo' },
-        { label: 'Tutorials', icon: new ThemeIcon('library'), url: 'https://kaoto.io/workshop/' },
-        { label: 'YouTube Channel', icon: 'youtube-logo.svg', url: 'https://www.youtube.com/@KaotoIO' }
-    ];
+	constructor(readonly extensionUriPath: string) {
+		// since these items are static, it can be stored in a private property instead of re-creating them each time getChildren() is called.
+		this.items = this.getHelpFeedbackItems();
+	}
 
-    constructor(readonly extensionUriPath: string) {
-        // since these items are static, it can be stored in a private property instead of re-creating them each time getChildren() is called.
-        this.items = this.getHelpFeedbackItems();
-    }
+	getTreeItem(item: HelpFeedbackItem): HelpFeedbackItem {
+		return item;
+	}
 
-    getTreeItem(item: HelpFeedbackItem): HelpFeedbackItem {
-        return item;
-    }
+	getChildren(item?: HelpFeedbackItem): Thenable<HelpFeedbackItem[]> {
+		if (item) {
+			return Promise.resolve([]);
+		}
+		return Promise.resolve(this.items);
+	}
 
-    getChildren(item?: HelpFeedbackItem): Thenable<HelpFeedbackItem[]> {
-        if (item) {
-            return Promise.resolve([]);
-        }
-        return Promise.resolve(this.items);
-    }
+	private getHelpFeedbackItems(): HelpFeedbackItem[] {
+		return HelpFeedbackProvider.HELP_ITEMS.map(
+			(item) => new HelpFeedbackItem(item.label, typeof item.icon === 'string' ? this.getIconPath(item.icon) : item.icon, item.url),
+		);
+	}
 
-    private getHelpFeedbackItems(): HelpFeedbackItem[] {
-        return HelpFeedbackProvider.HELP_ITEMS.map(item =>
-            new HelpFeedbackItem(
-                item.label,
-                typeof item.icon === 'string' ? this.getIconPath(item.icon) : item.icon,
-                item.url
-            )
-        );
-    }
-
-    private getIconPath(name: string): string {
-        return join(this.extensionUriPath, 'icons', 'help', name);
-    }
+	private getIconPath(name: string): string {
+		return join(this.extensionUriPath, 'icons', 'help', name);
+	}
 }
 
 export class HelpFeedbackItem extends TreeItem {
-    constructor(
-        public readonly name: string,
-        public readonly icon: string | ThemeIcon,
-        public readonly url: string
-    ) {
-        super(name, TreeItemCollapsibleState.None);
+	constructor(
+		public readonly name: string,
+		public readonly icon: string | ThemeIcon,
+		public readonly url: string,
+	) {
+		super(name, TreeItemCollapsibleState.None);
 
-        this.iconPath = this.icon;
-        this.contextValue = 'help';
-        this.command = {
-            command: 'vscode.open',
-            title: `Open ${this.name}`,
-            arguments: [Uri.parse(this.url)]
-        };
-        this.tooltip = `Open ${this.name} in your browser`;
-    }
+		this.iconPath = this.icon;
+		this.contextValue = 'help';
+		this.command = {
+			command: 'vscode.open',
+			title: `Open ${this.name}`,
+			arguments: [Uri.parse(this.url)],
+		};
+		this.tooltip = `Open ${this.name} in your browser`;
+	}
 }
