@@ -76,6 +76,11 @@ export async function activate(context: vscode.ExtensionContext) {
 	contextHandler.registerHelpAndFeedbackView();
 
 	/*
+	 * Check Apache Camel Trusted Source is configured
+	 */
+	await contextHandler.checkCamelJbangTrustedSource();
+
+	/*
 	 * enable Red Hat Telemetry
 	 */
 	const redhatService = await getRedHatService(context);

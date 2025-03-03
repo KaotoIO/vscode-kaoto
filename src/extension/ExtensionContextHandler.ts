@@ -15,11 +15,14 @@
  */
 import * as vscode from 'vscode';
 import * as KogitoVsCode from '@kie-tools-core/vscode-extension/dist';
+import { execSync } from 'child_process';
 import { HelpFeedbackProvider } from '../views/providers/HelpFeedbackProvider';
 import { IntegrationsProvider } from '../views/providers/IntegrationsProvider';
 import { NewCamelRouteCommand } from '../commands/NewCamelRouteCommand';
 import { NewCamelKameletCommand } from '../commands/NewCamelKameletCommand';
 import { NewCamelPipeCommand } from '../commands/NewCamelPipeCommand';
+import { verifyCamelJBangTrustedSource } from '../helpers/helpers';
+import { KaotoOutputChannel } from './KaotoOutputChannel';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -28,6 +31,15 @@ export class ExtensionContextHandler {
 	constructor(context: vscode.ExtensionContext, kieEditorStore: KogitoVsCode.VsCodeKieEditorStore) {
 		this.kieEditorStore = kieEditorStore;
 		this.context = context;
+	}
+
+	public async checkCamelJbangTrustedSource() {
+		const camelTrustedSource = await verifyCamelJBangTrustedSource();
+		if (!camelTrustedSource) {
+			const camelTrustUrl: string = 'https://github.com/apache/camel/';
+			execSync(`jbang trust add ${camelTrustUrl}`);
+			KaotoOutputChannel.logInfo('Apache Camel Trusted Source was added into JBang configuration.');
+		}
 	}
 
 	public async registerToggleSourceCode() {

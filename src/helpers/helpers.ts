@@ -14,8 +14,33 @@
  * limitations under the License.
  */
 
+import { ProgressLocation, window } from 'vscode';
+import { execSync } from 'child_process';
+
 /**
  * Utilizes constants, methods, ... used in both, desktop or web extension context
  */
 
 export const KAOTO_FILE_PATH_GLOB: string = '**/*.{yml,yaml}';
+
+export async function verifyCamelJBangTrustedSource(): Promise<boolean> {
+	let output = await runJBangCommandWithStatusBar('trust list', 'Checking Apache Camel Trusted Source is a part of JBang configuration...');
+	return output.includes('https://github.com/apache/camel/');
+}
+
+async function runJBangCommandWithStatusBar(args: string, msg: string): Promise<string> {
+	let output = '';
+	await window.withProgress(
+		{
+			location: ProgressLocation.Window,
+			cancellable: false,
+			title: msg,
+		},
+		async (progress) => {
+			progress.report({ increment: 0 });
+			output = execSync(`jbang ${args}`, { stdio: 'pipe' }).toString();
+			progress.report({ increment: 100 });
+		},
+	);
+	return output;
+}
