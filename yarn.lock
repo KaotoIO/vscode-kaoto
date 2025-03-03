@@ -7719,9 +7719,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-yaml@npm:5.2.3":
-  version: 5.2.3
-  resolution: "monaco-yaml@npm:5.2.3"
+"monaco-yaml@npm:5.3.1":
+  version: 5.3.1
+  resolution: "monaco-yaml@npm:5.3.1"
   dependencies:
     jsonc-parser: "npm:^3.0.0"
     monaco-languageserver-types: "npm:^0.4.0"
@@ -7729,14 +7729,14 @@ __metadata:
     monaco-types: "npm:^0.1.0"
     monaco-worker-manager: "npm:^2.0.0"
     path-browserify: "npm:^1.0.0"
-    prettier: "npm:^2.0.0"
+    prettier: "npm:^3.0.0"
     vscode-languageserver-textdocument: "npm:^1.0.0"
     vscode-languageserver-types: "npm:^3.0.0"
     vscode-uri: "npm:^3.0.0"
     yaml: "npm:^2.0.0"
   peerDependencies:
     monaco-editor: ">=0.36"
-  checksum: 10/1745cc241c14de1b7dbccc4b6d60b1dce0e9862220cb119a6b242d05ad2d0e6399a5c7b5d128edd5290e9f45ab77692c3245b22f4f693f849846a79ea40789ee
+  checksum: 10/6b03652f1b06e6dbcbdc7336b308b78e3ae50fa7aaf7ea07d047fb2a5cd03bdea5f6159e47f8fea2bfe73eecead70a267339b01ef8d2c2580c474aecdb3c062c
   languageName: node
   linkType: hard
 
@@ -8670,12 +8670,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.0.0":
-  version: 2.8.8
-  resolution: "prettier@npm:2.8.8"
+"prettier@npm:^3.0.0":
+  version: 3.5.3
+  resolution: "prettier@npm:3.5.3"
   bin:
-    prettier: bin-prettier.js
-  checksum: 10/00cdb6ab0281f98306cd1847425c24cbaaa48a5ff03633945ab4c701901b8e96ad558eb0777364ffc312f437af9b5a07d0f45346266e8245beaf6247b9c62b24
+    prettier: bin/prettier.cjs
+  checksum: 10/7050c08f674d9e49fbd9a4c008291d0715471f64e94cc5e4b01729affce221dfc6875c8de7e66b728c64abc9352eefb7eaae071b5f79d30081be207b53774b78
   languageName: node
   linkType: hard
 
@@ -10821,7 +10821,7 @@ __metadata:
     mocha: "npm:^11.1.0"
     mocha-jenkins-reporter: "npm:^0.4.8"
     monaco-editor: "npm:^0.50.0"
-    monaco-yaml: "npm:5.2.3"
+    monaco-yaml: "npm:5.3.1"
     node-fetch: "npm:2"
     npm-link-shared: "npm:^0.5.6"
     os-browserify: "npm:^0.3.0"
