@@ -81,6 +81,10 @@
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": false
+    },
+    "virtualWorkspaces": {
+      "supported": "limited",
+      "description": "In virtual workspaces, actions which requires Camel JBang CLI cannot be working because of missing Shell Execution environment."
     }
   },
   "contributes": {
@@ -203,7 +207,7 @@
         {
           "submenu": "kaoto.new.file",
           "group": "navigation@1",
-          "when": "view == kaoto.integrations"
+          "when": "view == kaoto.integrations && !virtualWorkspace"
         },
         {
           "command": "kaoto.integrations.refresh",
