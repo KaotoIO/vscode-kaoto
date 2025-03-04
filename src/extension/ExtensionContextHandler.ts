@@ -21,7 +21,7 @@ import { IntegrationsProvider } from '../views/providers/IntegrationsProvider';
 import { NewCamelRouteCommand } from '../commands/NewCamelRouteCommand';
 import { NewCamelKameletCommand } from '../commands/NewCamelKameletCommand';
 import { NewCamelPipeCommand } from '../commands/NewCamelPipeCommand';
-import { verifyCamelJBangTrustedSource } from '../helpers/helpers';
+import { verifyCamelJBangTrustedSource, verifyJBangExists } from '../helpers/helpers';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 
 export class ExtensionContextHandler {
@@ -33,6 +33,18 @@ export class ExtensionContextHandler {
 		this.context = context;
 	}
 
+	public async checkJbangOnPath() {
+		const jbangExec = await verifyJBangExists();
+		if (!jbangExec) {
+			const jbangINstallationLink: string = 'https://www.jbang.dev/documentation/guide/latest/installation.html';
+			const msg: string = `JBang is missing on a system PATH. Please follow instructions below and install JBang. [JBang Installation Guide](${jbangINstallationLink}).`;
+			KaotoOutputChannel.logInfo(msg);
+			const selection = await vscode.window.showWarningMessage(msg, 'Install');
+			if (selection !== undefined) {
+				await vscode.commands.executeCommand('vscode.open', `${jbangINstallationLink}`);
+			}
+		}
+	}
 	public async checkCamelJbangTrustedSource() {
 		const camelTrustedSource = await verifyCamelJBangTrustedSource();
 		if (!camelTrustedSource) {
