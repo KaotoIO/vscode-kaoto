@@ -7,6 +7,7 @@
 - Improve toggle source code (open/close camel file in a side textual editor) using one button
 - Add Integrations view into Kaoto view container
 - Add `New File...` button into `Kaoto: Integrations` view
+- Add automatically Apache Camel into JBang Trusted Sources
 
 # 2.4.0
 
