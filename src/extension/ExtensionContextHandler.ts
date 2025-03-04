@@ -21,7 +21,7 @@ import { IntegrationsProvider } from '../views/providers/IntegrationsProvider';
 import { NewCamelRouteCommand } from '../commands/NewCamelRouteCommand';
 import { NewCamelKameletCommand } from '../commands/NewCamelKameletCommand';
 import { NewCamelPipeCommand } from '../commands/NewCamelPipeCommand';
-import { verifyCamelJBangTrustedSource } from '../helpers/helpers';
+import { verifyCamelJBangTrustedSource, verifyJBangExists } from '../helpers/helpers';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 
 export class ExtensionContextHandler {
@@ -33,11 +33,28 @@ export class ExtensionContextHandler {
 		this.context = context;
 	}
 
+	public async checkJbangOnPath(): Promise<boolean> {
+		const jbangExec = await verifyJBangExists();
+		await vscode.commands.executeCommand('setContext', 'kaoto.jbangAvailable', jbangExec); // store availability in VS Code context
+		if (!jbangExec) {
+			const jbangInstallationLink: string = 'https://www.jbang.dev/documentation/guide/latest/installation.html';
+			const msg: string = `JBang is missing on a system PATH. Please follow instructions below and install JBang. [JBang Installation Guide](${jbangInstallationLink}).`;
+			KaotoOutputChannel.logWarning(msg);
+			const selection = await vscode.window.showWarningMessage(msg, 'Install');
+			if (selection !== undefined) {
+				await vscode.commands.executeCommand('vscode.open', `${jbangInstallationLink}`);
+			} else {
+				await vscode.window.showWarningMessage('JBang is not installed. Some Kaoto extension features may not work properly.', 'OK');
+			}
+			return false;
+		}
+		return true;
+	}
 	public async checkCamelJbangTrustedSource() {
 		const camelTrustedSource = await verifyCamelJBangTrustedSource();
 		if (!camelTrustedSource) {
 			const camelTrustUrl: string = 'https://github.com/apache/camel/';
-			execSync(`jbang trust add ${camelTrustUrl}`);
+			execSync(`jbang trust add ${camelTrustUrl}`, { stdio: ['pipe', 'pipe', process.stderr] });
 			KaotoOutputChannel.logInfo('Apache Camel Trusted Source was added into JBang configuration.');
 		}
 	}

@@ -14,13 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { waitUntil } from 'async-wait-until';
 import { assert } from 'chai';
 import * as vscode from 'vscode';
 
-suite('Extension is activated', () => {
+suite('Extension is activated', function () {
+	this.timeout(15_000);
 	test('Extension is activated', async () => {
-		const extension = await vscode.extensions.getExtension('redhat.vscode-kaoto');
+		const extension = vscode.extensions.getExtension('redhat.vscode-kaoto');
 		assert.isNotNull(extension, 'VS Code Kaoto not found');
-		assert.isTrue(extension?.isActive, 'VS Code Kaoto is not activated despite the workspace used for tests contains yaml files');
+		const activated = await waitUntil(
+			async () => {
+				return extension?.isActive;
+			},
+			10_000,
+			500,
+		);
+		assert.isTrue(activated, 'VS Code Kaoto is not activated despite the workspace used for tests contains yaml files');
 	});
 });
