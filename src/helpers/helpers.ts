@@ -23,6 +23,11 @@ import { execSync } from 'child_process';
 
 export const KAOTO_FILE_PATH_GLOB: string = '**/*.{yml,yaml}';
 
+export async function verifyJBangExists(): Promise<boolean> {
+	let output = await runJBangCommandWithStatusBar('--version', 'Checking JBang executable on a PATH...');
+	return !output.includes('not found');
+}
+
 export async function verifyCamelJBangTrustedSource(): Promise<boolean> {
 	let output = await runJBangCommandWithStatusBar('trust list', 'Checking Apache Camel Trusted Source is a part of JBang configuration...');
 	return output.includes('https://github.com/apache/camel/');
