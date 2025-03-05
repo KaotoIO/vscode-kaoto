@@ -48,9 +48,13 @@ describe('User Settings', function () {
 
 		// provide the Catalog URL using Settings UI editor
 		const settings = await new Workbench().openSettings();
-		const textSetting = await driver.wait(async () => {
-			return (await settings.findSetting('Url', 'Kaoto', 'Catalog')) as TextSetting;
-		});
+		const textSetting = await driver.wait(
+			async () => {
+				return (await settings.findSetting('Url', 'Kaoto', 'Catalog')) as TextSetting;
+			},
+			5_000,
+			'Looking for "Kaoto > Catalog: Url" text field.',
+		);
 		await textSetting.setValue(CATALOG_URL);
 		await driver.sleep(1_000); // stabilize tests which are sometimes failing on macOS CI
 		await closeEditor('Settings', true);
