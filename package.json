@@ -113,6 +113,13 @@
         "icon": "./icons/commands/source_active.png"
       },
       {
+        "command": "kaoto.new.camel.file",
+        "title": "Camel File...",
+        "category": "Kaoto",
+        "enablement": "false",
+        "icon": "$(new-file)"
+      },
+      {
         "command": "kaoto.camel.jbang.init.route.yaml",
         "shortTitle": "New Camel Route...",
         "title": "Create a Camel Route using YAML DSL",
@@ -207,7 +214,7 @@
         {
           "submenu": "kaoto.new.file",
           "group": "navigation@1",
-          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable"
+          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 0"
         },
         {
           "command": "kaoto.integrations.refresh",
@@ -221,6 +228,18 @@
         "id": "kaoto.new.file",
         "label": "New File...",
         "icon": "$(new-file)"
+      }
+    ],
+    "viewsWelcome": [
+      {
+        "view": "kaoto.integrations",
+        "contents": "In order to start with Apache Camel, you can create a standalone Camel File.\n[Camel File...](command:kaoto.new.camel.file)\nTo learn more about Apache Camel [read docs](https://camel.apache.org/docs/).",
+        "when": "!virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 0"
+      },
+      {
+        "view": "kaoto.integrations",
+        "contents": "You have not yet added a folder to the workspace.\n[Open Folder](command:vscode.openFolder)",
+        "when": "workspaceFolderCount == 0"
       }
     ],
     "configuration": [
