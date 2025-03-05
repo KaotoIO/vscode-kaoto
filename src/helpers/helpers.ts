@@ -18,8 +18,6 @@ import { ProgressLocation, window } from 'vscode';
 import { exec, execSync } from 'child_process';
 import { promisify } from 'util';
 
-const execPromise = promisify(exec);
-
 /**
  * Utilizes constants, methods, ... used in both, desktop or web extension context
  */
@@ -27,6 +25,7 @@ const execPromise = promisify(exec);
 export const KAOTO_FILE_PATH_GLOB: string = '**/*.{yml,yaml}';
 
 export async function verifyJBangExists(): Promise<boolean> {
+	const execPromise = promisify(exec);
 	return await window.withProgress<boolean>(
 		{
 			location: ProgressLocation.Window,
