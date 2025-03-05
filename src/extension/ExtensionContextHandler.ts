@@ -23,6 +23,7 @@ import { NewCamelKameletCommand } from '../commands/NewCamelKameletCommand';
 import { NewCamelPipeCommand } from '../commands/NewCamelPipeCommand';
 import { verifyCamelJBangTrustedSource, verifyJBangExists } from '../helpers/helpers';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
+import { NewCamelFileCommand } from '../commands/NewCamelFileCommand';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -99,6 +100,12 @@ export class ExtensionContextHandler {
 	}
 
 	private registerNewCamelYamlFilesCommands() {
+		// register custom command for a Camel YAML file creation (eg. used in Integrations view Welcome Content)
+		this.context.subscriptions.push(
+			vscode.commands.registerCommand(NewCamelFileCommand.ID_COMMAND_CAMEL_NEW_FILE, async () => {
+				await new NewCamelFileCommand().create();
+			}),
+		);
 		// register commands for new Camel files creation using YAML DSL - Routes, Kamelets, Pipes
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(NewCamelRouteCommand.ID_COMMAND_CAMEL_ROUTE_YAML, async () => {
