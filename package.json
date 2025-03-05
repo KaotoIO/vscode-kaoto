@@ -142,6 +142,18 @@
         "title": "Refresh",
         "category": "Kaoto",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "kaoto.integrations.showSource",
+        "title": "Show Source",
+        "category": "Kaoto",
+        "icon": "$(code)"
+      },
+      {
+        "command": "kaoto.integrations.delete",
+        "title": "Delete",
+        "category": "Kaoto",
+        "icon": "$(trash)"
       }
     ],
     "keybindings": {
@@ -189,6 +201,14 @@
         {
           "command": "kaoto.camel.jbang.init.pipe.yaml",
           "when": "false"
+        },
+        {
+          "command": "kaoto.integrations.showSource",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.integrations.delete",
+          "when": "false"
         }
       ],
       "editor/title": [
@@ -220,6 +240,18 @@
           "command": "kaoto.integrations.refresh",
           "group": "navigation@2",
           "when": "view == kaoto.integrations"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "kaoto.integrations.showSource",
+          "when": "view == kaoto.integrations && viewItem == integration",
+          "group": "navigation@1"
+        },
+        {
+          "command": "kaoto.integrations.delete",
+          "when": "view == kaoto.integrations && viewItem == integration",
+          "group": "navigation@2"
         }
       ]
     },

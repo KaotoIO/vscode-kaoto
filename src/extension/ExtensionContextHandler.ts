@@ -17,13 +17,14 @@ import * as vscode from 'vscode';
 import * as KogitoVsCode from '@kie-tools-core/vscode-extension/dist';
 import { execSync } from 'child_process';
 import { HelpFeedbackProvider } from '../views/providers/HelpFeedbackProvider';
-import { IntegrationsProvider } from '../views/providers/IntegrationsProvider';
+import { Integration, IntegrationsProvider } from '../views/providers/IntegrationsProvider';
 import { NewCamelRouteCommand } from '../commands/NewCamelRouteCommand';
 import { NewCamelKameletCommand } from '../commands/NewCamelKameletCommand';
 import { NewCamelPipeCommand } from '../commands/NewCamelPipeCommand';
 import { verifyCamelJBangTrustedSource, verifyJBangExists } from '../helpers/helpers';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { NewCamelFileCommand } from '../commands/NewCamelFileCommand';
+import { confirmFileDeleteDialog } from '../helpers/modals';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -32,6 +33,10 @@ export class ExtensionContextHandler {
 	constructor(context: vscode.ExtensionContext, kieEditorStore: KogitoVsCode.VsCodeKieEditorStore) {
 		this.kieEditorStore = kieEditorStore;
 		this.context = context;
+	}
+
+	public isWorkspaceVirtual(): boolean | undefined {
+		return vscode.workspace.workspaceFolders?.every((f) => f.uri.scheme !== 'file');
 	}
 
 	public async checkJbangOnPath(): Promise<boolean> {
@@ -97,6 +102,26 @@ export class ExtensionContextHandler {
 		this.context.subscriptions.push(integrationsTreeView);
 		this.context.subscriptions.push(vscode.commands.registerCommand('kaoto.integrations.refresh', () => integrationsProvider.refresh()));
 		this.registerNewCamelYamlFilesCommands();
+		this.registerIntegrationsItemsContextMenu();
+	}
+
+	private registerIntegrationsItemsContextMenu() {
+		// register show source menu button
+		this.context.subscriptions.push(
+			vscode.commands.registerCommand('kaoto.integrations.showSource', async (integration: Integration) => {
+				await vscode.window.showTextDocument(integration.filepath);
+			}),
+		);
+		// register delete menu button
+		this.context.subscriptions.push(
+			vscode.commands.registerCommand('kaoto.integrations.delete', async (integration: Integration) => {
+				const confirmation = await confirmFileDeleteDialog(integration.filename);
+				if (confirmation) {
+					await vscode.workspace.fs.delete(integration.filepath);
+					KaotoOutputChannel.logInfo(`File '${integration.filepath}' was deleted.`);
+				}
+			}),
+		);
 	}
 
 	private registerNewCamelYamlFilesCommands() {
