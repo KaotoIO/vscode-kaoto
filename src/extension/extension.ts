@@ -76,9 +76,16 @@ export async function activate(context: vscode.ExtensionContext) {
 	contextHandler.registerHelpAndFeedbackView();
 
 	/*
+	 * Check JBang is available on a system PATH
+	 */
+	const jbang = await contextHandler.checkJbangOnPath();
+
+	/*
 	 * Check Apache Camel Trusted Source is configured
 	 */
-	await contextHandler.checkCamelJbangTrustedSource();
+	if (jbang) {
+		await contextHandler.checkCamelJbangTrustedSource();
+	}
 
 	/*
 	 * enable Red Hat Telemetry

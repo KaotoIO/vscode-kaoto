@@ -112,6 +112,7 @@ const commonConfig = (env) => {
 				child_process: false,
 				net: false,
 				buffer: require.resolve('buffer/'),
+				util: false,
 			},
 			extensions: ['.tsx', '.ts', '.js', '.jsx'],
 			modules: ['node_modules'],

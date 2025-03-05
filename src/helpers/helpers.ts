@@ -15,13 +15,37 @@
  */
 
 import { ProgressLocation, window } from 'vscode';
-import { execSync } from 'child_process';
+import { exec, execSync } from 'child_process';
+import { promisify } from 'util';
+
+const execPromise = promisify(exec);
 
 /**
  * Utilizes constants, methods, ... used in both, desktop or web extension context
  */
 
 export const KAOTO_FILE_PATH_GLOB: string = '**/*.{yml,yaml}';
+
+export async function verifyJBangExists(): Promise<boolean> {
+	return await window.withProgress<boolean>(
+		{
+			location: ProgressLocation.Window,
+			cancellable: false,
+			title: 'Checking JBang executable on PATH...',
+		},
+		async (progress) => {
+			progress.report({ increment: 0 });
+			try {
+				const { stdout } = await execPromise('jbang --version');
+				progress.report({ increment: 100 });
+				return !stdout.includes('not found'); // JBang exists
+			} catch (error) {
+				progress.report({ increment: 100 });
+				return false; // JBang not found
+			}
+		},
+	);
+}
 
 export async function verifyCamelJBangTrustedSource(): Promise<boolean> {
 	let output = await runJBangCommandWithStatusBar('trust list', 'Checking Apache Camel Trusted Source is a part of JBang configuration...');
