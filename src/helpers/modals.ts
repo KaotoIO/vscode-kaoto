@@ -26,3 +26,17 @@ export async function confirmFileDeleteDialog(filename: string) {
 	const continueOption = 'Delete';
 	return await window.showWarningMessage(message, { modal: true }, continueOption);
 }
+
+/**
+ * Shows a modal asking for user confirmation of a potential destructive action in the selected folder.
+ * VSCode automatically provides a 'Cancel' option which return `undefined`. The continue option will return the string `Continue`.
+ *
+ * @param outputPath path to be shown in the warning message.
+ *
+ * @returns string | undefined
+ */
+export async function confirmDestructiveActionInSelectedFolder(outputPath: string) {
+	const message = `Files in the folder: ${outputPath} WILL BE DELETED before project creation, continue?`;
+	const continueOption = 'Continue';
+	return await window.showWarningMessage(message, { modal: true }, continueOption);
+}

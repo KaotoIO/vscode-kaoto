@@ -17,6 +17,7 @@
 import { ProgressLocation, window } from 'vscode';
 import { exec, execSync } from 'child_process';
 import { promisify } from 'util';
+import { normalize } from 'path';
 
 /**
  * Utilizes constants, methods, ... used in both, desktop or web extension context
@@ -66,4 +67,24 @@ async function runJBangCommandWithStatusBar(args: string, msg: string): Promise<
 		},
 	);
 	return output;
+}
+
+/**
+ * Compare two given paths to see if they are the same. Normalizes the string and takes case-sensitive OSes into account.
+ *
+ * @param path1 string representing the first path to be compared
+ * @param path2 string representing t,he second path to be compared
+ * @returns `true` if paths are equal `false` otherwise.
+ */
+export function arePathsEqual(path1: string, path2: string): boolean {
+	const normalizedPath1 = normalize(path1);
+	const normalizedPath2 = normalize(path2);
+
+	// on Windows and macOS, perform case-insensitive comparison
+	if (process.platform === 'win32' || process.platform === 'darwin') {
+		return normalizedPath1.toLowerCase() === normalizedPath2.toLowerCase();
+	}
+
+	// on Linux (and other case-sensitive systems), compare as-is
+	return normalizedPath1 === normalizedPath2;
 }

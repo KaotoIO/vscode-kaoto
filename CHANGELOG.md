@@ -13,6 +13,7 @@
   - show Open Folder when there is no workspace
   - show New Camel File if no Camel related file is found in workspace (when Integrations view is empty)
 - send events into Red hat Telemetry for Kaoto extension commands
+- Add `Export` inline button into Kaoto: Integrations view
 
 # 2.4.0
 
