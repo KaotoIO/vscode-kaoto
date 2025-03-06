@@ -26,6 +26,7 @@ import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { NewCamelFileCommand } from '../commands/NewCamelFileCommand';
 import { confirmFileDeleteDialog } from '../helpers/modals';
 import { TelemetryEvent, TelemetryService } from '@redhat-developer/vscode-redhat-telemetry';
+import { NewCamelProjectCommand } from '../commands/NewCamelProjectCommand';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -114,6 +115,7 @@ export class ExtensionContextHandler {
 		this.context.subscriptions.push(integrationsTreeView);
 		this.context.subscriptions.push(vscode.commands.registerCommand('kaoto.integrations.refresh', () => integrationsProvider.refresh()));
 		this.registerNewCamelYamlFilesCommands();
+		this.registerNewCamelProjectCommands();
 		this.registerIntegrationsItemsContextMenu();
 	}
 
@@ -166,6 +168,14 @@ export class ExtensionContextHandler {
 			vscode.commands.registerCommand(NewCamelPipeCommand.ID_COMMAND_CAMEL_PIPE_YAML, async () => {
 				await new NewCamelPipeCommand('YAML').create();
 				await this.sendCommandTrackingEvent(NewCamelPipeCommand.ID_COMMAND_CAMEL_PIPE_YAML);
+			}),
+		);
+	}
+
+	private registerNewCamelProjectCommands() {
+		this.context.subscriptions.push(
+			vscode.commands.registerCommand(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT, async (integration: Integration) => {
+				await new NewCamelProjectCommand().create(integration.filepath);
 			}),
 		);
 	}
