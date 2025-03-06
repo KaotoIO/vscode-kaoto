@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 import { ShellExecution, workspace } from 'vscode';
+import { arePathsEqual } from './helpers';
+import { dirname } from 'path';
 
 export enum RouteOperation {
 	start = 'start',
@@ -27,25 +29,32 @@ export enum RouteOperation {
  */
 export class CamelJBang {
 	private readonly camelJBangVersion: string;
+	private readonly defaultJbangArgs: string[];
 
 	constructor(private readonly jbang: string = 'jbang') {
 		this.camelJBangVersion = workspace.getConfiguration().get('kaoto.camelJBang.Version') as string;
+		this.defaultJbangArgs = [`'-Dcamel.jbang.version=${this.camelJBangVersion}'`, 'camel@apache/camel'];
 	}
 
 	public init(file: string): ShellExecution {
-		return new ShellExecution(this.jbang, [`'-Dcamel.jbang.version=${this.camelJBangVersion}'`, 'camel@apache/camel', 'init', `'${file}'`]);
+		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'init', `'${file}'`]);
 	}
 
 	public bind(file: string, source: string, sink: string): ShellExecution {
-		return new ShellExecution(this.jbang, [
-			`'-Dcamel.jbang.version=${this.camelJBangVersion}'`,
-			'camel@apache/camel',
-			'bind',
-			'--source',
-			source,
-			'--sink',
-			sink,
-			`'${file}'`,
-		]);
+		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'bind', '--source', source, '--sink', sink, `'${file}'`]);
+	}
+
+	public export(filePath: string, gav: string, runtime: string, outputPath: string): ShellExecution {
+		// workaround for an issue during Camel JBang execution in Windows machines.
+		// specifying the --directory option with the complete path when it is equal to the current working directory causes issues.
+		// omitting the option (using default '.') works as expected.
+		const directoryArg = arePathsEqual(dirname(filePath), outputPath) ? '' : `'--directory=${outputPath}'`;
+
+		return new ShellExecution(
+			this.jbang,
+			[...this.defaultJbangArgs, 'export', `'${filePath}'`, `--runtime=${runtime}`, `--gav=${gav}`, directoryArg].filter(function (arg) {
+				return arg; // remove ALL empty values ("", null, undefined and 0)
+			}),
+		);
 	}
 }
