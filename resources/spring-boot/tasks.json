@@ -1,0 +1,24 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start Camel Spring Boot application with camel.debug profile",
+			"type": "shell",
+			"command": "mvn", // mvn binary of Maven must be available on command-line
+			"args": [
+				"spring-boot:run",
+				"-Pcamel.debug"
+			],
+			"options": {
+				"env": {
+					"CAMEL_DEBUGGER_SUSPEND": "false" // Can be turned on with Camel on Spring Boot 4.8+. A debugger must be attached for message to be processed.
+				}
+			},
+			"problemMatcher": "$camel.debug.problemMatcher",
+			"presentation": {
+				"reveal": "always"
+			},
+			"isBackground": true // Must be set as background as the Maven commands doesn't return until the Camel application stops.
+		}
+	]
+}

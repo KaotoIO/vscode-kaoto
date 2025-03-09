@@ -9,9 +9,10 @@
 - Add `New File...` button into `Kaoto: Integrations` view
 - Add automatically Apache Camel into JBang Trusted Sources
 - Bump Camel JBang CLI default version from 4.10.0 to 4.10.1
-- add welcome content into Kaoto: Integrations view
+- Add welcome content into Kaoto: Integrations view
   - show Open Folder when there is no workspace
   - show New Camel File if no Camel related file is found in workspace (when Integrations view is empty)
+- Add `Export` inline button into Kaoto: Integrations view
 
 # 2.4.0
 

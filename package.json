@@ -138,6 +138,12 @@
         "category": "Kaoto"
       },
       {
+        "command": "kaoto.camel.jbang.export",
+        "title": "Export",
+        "category": "Kaoto",
+        "icon": "$(link-external)"
+      },
+      {
         "command": "kaoto.integrations.refresh",
         "title": "Refresh",
         "category": "Kaoto",
@@ -203,6 +209,10 @@
           "when": "false"
         },
         {
+          "command": "kaoto.camel.jbang.export",
+          "when": "false"
+        },
+        {
           "command": "kaoto.integrations.showSource",
           "when": "false"
         },
@@ -252,6 +262,11 @@
           "command": "kaoto.integrations.delete",
           "when": "view == kaoto.integrations && viewItem == integration",
           "group": "navigation@2"
+        },
+        {
+          "command": "kaoto.camel.jbang.export",
+          "when": "view == kaoto.integrations && viewItem == integration && !virtualWorkspace && kaoto.jbangAvailable",
+          "group": "inline"
         }
       ]
     },
