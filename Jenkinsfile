@@ -8,6 +8,11 @@ def installBuildRequirements(){
 }
 
 node('rhel9'){
+	environmentVariables {
+        env('TEST_RESOURCES', 'test-resources')
+		env('CODE_VERSION', 'max')
+        keepBuildVariables(true)
+    }
 
 	stage 'Checkout vscode-kaoto code'
 	deleteDir()
@@ -21,6 +26,10 @@ node('rhel9'){
 	sh "yarn build:dev"
 	sh "yarn build:prod"
 
+	stage 'Package vscode-kaoto'
+	def packageJson = readJSON file: 'package.json'
+	sh "yarn vsce package --no-dependencies --yarn -o vscode-kaoto-${packageJson.version}-${env.BUILD_NUMBER}.vsix"
+s
 	stage('Unit Tests') {
 		wrap([$class: 'Xvnc']) {
 			sh "yarn test:unit"
@@ -28,13 +37,9 @@ node('rhel9'){
 	}
 	stage('UI Tests') {
 		wrap([$class: 'Xvnc']) {
-			sh "yarn test:it"
+			sh "yarn test:it:with-prebuilt-vsix"
 		}
 	}
-
-	stage 'Package vscode-kaoto'
-	def packageJson = readJSON file: 'package.json'
-	sh "yarn vsce package --no-dependencies --yarn -o vscode-kaoto-${packageJson.version}-${env.BUILD_NUMBER}.vsix"
 
 	stage 'Upload vscode-kaoto to staging'
 	def vsix = findFiles(glob: '**.vsix')
