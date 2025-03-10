@@ -53,7 +53,13 @@ export async function activate(context: vscode.ExtensionContext) {
 		backendProxy: backendProxy,
 	});
 
-	const contextHandler = new ExtensionContextHandler(context, kieEditorStore);
+	/*
+	 * init Red Hat Telemetry
+	 */
+	const redhatService = await getRedHatService(context);
+	telemetryService = await redhatService.getTelemetryService();
+
+	const contextHandler = new ExtensionContextHandler(context, kieEditorStore, telemetryService);
 
 	/*
 	 * register commands for a toggle source code (open/close camel file in a side textual editor)
@@ -76,22 +82,20 @@ export async function activate(context: vscode.ExtensionContext) {
 	contextHandler.registerHelpAndFeedbackView();
 
 	/*
-	 * Check JBang is available on a system PATH
+	 * check JBang is available on a system PATH
 	 */
 	const jbang = await contextHandler.checkJbangOnPath();
 
 	/*
-	 * Check Apache Camel Trusted Source is configured
+	 * check Apache Camel Trusted Source is configured
 	 */
 	if (jbang) {
 		await contextHandler.checkCamelJbangTrustedSource();
 	}
 
 	/*
-	 * enable Red Hat Telemetry
+	 * send extension startup event into Red Hat Telemetry
 	 */
-	const redhatService = await getRedHatService(context);
-	telemetryService = await redhatService.getTelemetryService();
 	await telemetryService.sendStartupEvent();
 
 	KaotoOutputChannel.logInfo('Kaoto extension is successfully setup.');

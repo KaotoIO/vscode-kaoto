@@ -25,12 +25,17 @@ import { verifyCamelJBangTrustedSource, verifyJBangExists } from '../helpers/hel
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { NewCamelFileCommand } from '../commands/NewCamelFileCommand';
 import { confirmFileDeleteDialog } from '../helpers/modals';
+import { TelemetryEvent, TelemetryService } from '@redhat-developer/vscode-redhat-telemetry';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
 	protected context: vscode.ExtensionContext;
 
-	constructor(context: vscode.ExtensionContext, kieEditorStore: KogitoVsCode.VsCodeKieEditorStore) {
+	constructor(
+		context: vscode.ExtensionContext,
+		kieEditorStore: KogitoVsCode.VsCodeKieEditorStore,
+		readonly telemetryService: TelemetryService | undefined,
+	) {
 		this.kieEditorStore = kieEditorStore;
 		this.context = context;
 	}
@@ -66,25 +71,32 @@ export class ExtensionContextHandler {
 	}
 
 	public async registerToggleSourceCode() {
+		const OPEN_SOURCE_COMMAND_ID: string = 'kaoto.open.source';
+		const CLOSE_SOURCE_COMMAND_ID: string = 'kaoto.close.source';
+
 		this.context.subscriptions.push(
-			vscode.commands.registerCommand('kaoto.open.source', async () => {
+			vscode.commands.registerCommand(OPEN_SOURCE_COMMAND_ID, async () => {
 				if (this.kieEditorStore.activeEditor !== undefined) {
 					const doc = await vscode.workspace.openTextDocument(this.kieEditorStore.activeEditor?.document.document.uri);
 					await vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside);
+					await this.sendCommandTrackingEvent(OPEN_SOURCE_COMMAND_ID);
 				}
 			}),
 		);
 		this.context.subscriptions.push(
-			vscode.commands.registerCommand('kaoto.close.source', async () => {
+			vscode.commands.registerCommand(CLOSE_SOURCE_COMMAND_ID, async () => {
 				await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
+				await this.sendCommandTrackingEvent(CLOSE_SOURCE_COMMAND_ID);
 			}),
 		);
 	}
 
 	public registerOpenWithKaoto() {
+		const OPEN_WITH_KAOTO_COMMAND_ID: string = 'kaoto.open';
 		this.context.subscriptions.push(
-			vscode.commands.registerCommand('kaoto.open', (uri: vscode.Uri) => {
-				vscode.commands.executeCommand('vscode.openWith', uri, 'webviewEditorsKaoto');
+			vscode.commands.registerCommand(OPEN_WITH_KAOTO_COMMAND_ID, async (uri: vscode.Uri) => {
+				await vscode.commands.executeCommand('vscode.openWith', uri, 'webviewEditorsKaoto');
+				await this.sendCommandTrackingEvent(OPEN_WITH_KAOTO_COMMAND_ID);
 			}),
 		);
 	}
@@ -106,20 +118,25 @@ export class ExtensionContextHandler {
 	}
 
 	private registerIntegrationsItemsContextMenu() {
+		const INTEGRATIONS_SHOW_SOURCE_COMMAND_ID: string = 'kaoto.integrations.showSource';
+		const INTEGRATIONS_DELETE_COMMAND_ID: string = 'kaoto.integrations.delete';
+
 		// register show source menu button
 		this.context.subscriptions.push(
-			vscode.commands.registerCommand('kaoto.integrations.showSource', async (integration: Integration) => {
+			vscode.commands.registerCommand(INTEGRATIONS_SHOW_SOURCE_COMMAND_ID, async (integration: Integration) => {
 				await vscode.window.showTextDocument(integration.filepath);
+				await this.sendCommandTrackingEvent(INTEGRATIONS_SHOW_SOURCE_COMMAND_ID);
 			}),
 		);
 		// register delete menu button
 		this.context.subscriptions.push(
-			vscode.commands.registerCommand('kaoto.integrations.delete', async (integration: Integration) => {
+			vscode.commands.registerCommand(INTEGRATIONS_DELETE_COMMAND_ID, async (integration: Integration) => {
 				const confirmation = await confirmFileDeleteDialog(integration.filename);
 				if (confirmation) {
 					await vscode.workspace.fs.delete(integration.filepath);
 					KaotoOutputChannel.logInfo(`File '${integration.filepath}' was deleted.`);
 				}
+				await this.sendCommandTrackingEvent(INTEGRATIONS_DELETE_COMMAND_ID);
 			}),
 		);
 	}
@@ -129,23 +146,40 @@ export class ExtensionContextHandler {
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(NewCamelFileCommand.ID_COMMAND_CAMEL_NEW_FILE, async () => {
 				await new NewCamelFileCommand().create();
+				await this.sendCommandTrackingEvent(NewCamelFileCommand.ID_COMMAND_CAMEL_NEW_FILE);
 			}),
 		);
 		// register commands for new Camel files creation using YAML DSL - Routes, Kamelets, Pipes
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(NewCamelRouteCommand.ID_COMMAND_CAMEL_ROUTE_YAML, async () => {
 				await new NewCamelRouteCommand('YAML').create();
+				await this.sendCommandTrackingEvent(NewCamelRouteCommand.ID_COMMAND_CAMEL_ROUTE_YAML);
 			}),
 		);
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(NewCamelKameletCommand.ID_COMMAND_CAMEL_KAMELET_YAML, async () => {
 				await new NewCamelKameletCommand('YAML').create();
+				await this.sendCommandTrackingEvent(NewCamelKameletCommand.ID_COMMAND_CAMEL_KAMELET_YAML);
 			}),
 		);
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(NewCamelPipeCommand.ID_COMMAND_CAMEL_PIPE_YAML, async () => {
 				await new NewCamelPipeCommand('YAML').create();
+				await this.sendCommandTrackingEvent(NewCamelPipeCommand.ID_COMMAND_CAMEL_PIPE_YAML);
 			}),
 		);
+	}
+
+	private async sendCommandTrackingEvent(commandId: string) {
+		const telemetryEvent: TelemetryEvent = {
+			type: 'track',
+			name: 'command',
+			properties: {
+				identifier: commandId,
+			},
+		};
+		if (this.telemetryService) {
+			await this.telemetryService.send(telemetryEvent);
+		}
 	}
 }

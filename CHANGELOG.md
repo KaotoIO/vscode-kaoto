@@ -12,6 +12,7 @@
 - add welcome content into Kaoto: Integrations view
   - show Open Folder when there is no workspace
   - show New Camel File if no Camel related file is found in workspace (when Integrations view is empty)
+- send events into Red hat Telemetry for Kaoto extension commands
 
 # 2.4.0
 
