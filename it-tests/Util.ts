@@ -2,7 +2,20 @@ import { assert } from 'chai';
 import * as path from 'path';
 import * as fs from 'node:fs';
 import * as os from 'os';
-import { By, CustomEditor, EditorView, ModalDialog, TextEditor, until, VSBrowser, WebDriver, WebView } from 'vscode-extension-tester';
+import {
+	ActivityBar,
+	By,
+	CustomEditor,
+	EditorView,
+	ExtensionsViewItem,
+	ExtensionsViewSection,
+	ModalDialog,
+	TextEditor,
+	until,
+	VSBrowser,
+	WebDriver,
+	WebView,
+} from 'vscode-extension-tester';
 
 export async function openAndSwitchToKaotoFrame(
 	workspaceFolder: string,
@@ -80,5 +93,34 @@ export async function closeEditor(title: string, save?: boolean) {
 		} else {
 			await dialog.pushButton("Don't Save");
 		}
+	}
+}
+
+export async function openResourcesAndWaitForActivation(path: string, timeout: number = 150_000, interval: number = 1_000): Promise<void> {
+	await VSBrowser.instance.openResources(path);
+	await VSBrowser.instance.waitForWorkbench();
+	await VSBrowser.instance.driver.wait(
+		async function () {
+			return await extensionIsActivated('Kaoto');
+		},
+		timeout,
+		`The Kaoto extension was not activated after ${timeout} sec.`,
+		interval,
+	);
+}
+
+async function extensionIsActivated(displayName: string): Promise<boolean> {
+	try {
+		const extensionsView = await (await new ActivityBar().getViewControl('Extensions'))?.openView();
+		const marketplace = (await extensionsView?.getContent().getSection('Installed')) as ExtensionsViewSection;
+		const item = (await marketplace.findItem(`@installed ${displayName}`)) as ExtensionsViewItem;
+		const activationTime = await item.findElement(By.className('activationTime'));
+		if (activationTime) {
+			return true;
+		} else {
+			return false;
+		}
+	} catch (err) {
+		return false;
 	}
 }

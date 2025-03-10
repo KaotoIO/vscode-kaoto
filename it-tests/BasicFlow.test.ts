@@ -1,7 +1,7 @@
 import { By, EditorView, until, VSBrowser, WebDriver, WebView, logging, InputBox } from 'vscode-extension-tester';
 import { assert } from 'chai';
 import * as path from 'path';
-import { checkEmptyCanvasLoaded, checkTopologyLoaded, openAndSwitchToKaotoFrame } from './Util';
+import { checkEmptyCanvasLoaded, checkTopologyLoaded, openAndSwitchToKaotoFrame, openResourcesAndWaitForActivation } from './Util';
 import { waitUntil } from 'async-wait-until';
 import * as fs from 'fs-extra';
 
@@ -14,7 +14,7 @@ describe('Kaoto basic development flow', function () {
 	let globalKaotoWebView: WebView;
 
 	before(async function () {
-		await VSBrowser.instance.openResources(workspaceFolder);
+		await openResourcesAndWaitForActivation(workspaceFolder);
 		const logger = logging.getLogger('webdriver');
 		logger.setLevel(logging.Level.DEBUG);
 		fs.copySync(path.join(workspaceFolder, 'empty.camel.yaml'), path.join(workspaceFolder, 'empty_copy.camel.yaml'));

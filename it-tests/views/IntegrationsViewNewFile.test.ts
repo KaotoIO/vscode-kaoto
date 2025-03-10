@@ -35,7 +35,7 @@ import {
 	WebDriver,
 	WebElement,
 } from 'vscode-extension-tester';
-import { switchToKaotoFrame } from '../Util';
+import { openResourcesAndWaitForActivation, switchToKaotoFrame } from '../Util';
 
 describe('Integrations View', function () {
 	this.timeout(180_000);
@@ -50,8 +50,7 @@ describe('Integrations View', function () {
 
 	before(async function () {
 		driver = VSBrowser.instance.driver;
-		await VSBrowser.instance.openResources(WORKSPACE_FOLDER);
-		await VSBrowser.instance.waitForWorkbench();
+		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
 
 		kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
 		kaotoView = await kaotoViewContainer?.openView();
