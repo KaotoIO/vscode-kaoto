@@ -15,8 +15,8 @@
  */
 import { expect } from 'chai';
 import { join, sep } from 'path';
-import { ActivityBar, EditorView, SideBarView, TreeItem, ViewControl, ViewSection, VSBrowser } from 'vscode-extension-tester';
-import { checkTopologyLoaded, switchToKaotoFrame } from '../Util';
+import { ActivityBar, EditorView, SideBarView, TreeItem, ViewControl, ViewSection } from 'vscode-extension-tester';
+import { checkTopologyLoaded, openResourcesAndWaitForActivation, switchToKaotoFrame } from '../Util';
 
 describe('Integrations View', function () {
 	this.timeout(60_000);
@@ -30,7 +30,7 @@ describe('Integrations View', function () {
 	let labels: string[];
 
 	before(async function () {
-		await VSBrowser.instance.openResources(WORKSPACE_FOLDER);
+		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
 
 		kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
 		kaotoView = await kaotoViewContainer?.openView();

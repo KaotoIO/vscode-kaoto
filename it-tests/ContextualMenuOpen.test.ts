@@ -12,7 +12,7 @@ import {
 } from 'vscode-extension-tester';
 import { assert, expect } from 'chai';
 import * as path from 'path';
-import { checkEmptyCanvasLoaded, switchToKaotoFrame } from './Util';
+import { checkEmptyCanvasLoaded, openResourcesAndWaitForActivation, switchToKaotoFrame } from './Util';
 
 describe('Contextual menu opening', function () {
 	this.timeout(60_000);
@@ -61,7 +61,7 @@ describe('Contextual menu opening', function () {
 
 	it('Open Camel file with name my.yaml opens with text editor by default', async function () {
 		const filePath = path.join(workspaceFolder, 'my.yaml');
-		await VSBrowser.instance.openResources(filePath);
+		await openResourcesAndWaitForActivation(filePath);
 		const editor = new TextEditor();
 		expect(await editor.getTextAtLine(1)).contains('- route:');
 		await editor.save();

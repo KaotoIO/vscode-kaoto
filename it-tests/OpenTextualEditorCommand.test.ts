@@ -1,7 +1,8 @@
-import { EditorView, TextEditor, VSBrowser } from 'vscode-extension-tester';
+import { EditorView, TextEditor } from 'vscode-extension-tester';
 import { expect } from 'chai';
 import * as path from 'path';
 import * as os from 'os';
+import { openResourcesAndWaitForActivation } from './Util';
 
 describe('Toggle Source Code', function () {
 	this.timeout(30_000);
@@ -12,7 +13,7 @@ describe('Toggle Source Code', function () {
 	let editorView: EditorView;
 
 	before(async function () {
-		await VSBrowser.instance.openResources(path.join(WORKSPACE_FOLDER, CAMEL_FILE));
+		await openResourcesAndWaitForActivation(path.join(WORKSPACE_FOLDER, CAMEL_FILE));
 		editorView = new EditorView();
 	});
 

@@ -15,7 +15,8 @@
  */
 import { expect } from 'chai';
 import { join } from 'path';
-import { ActivityBar, SideBarView, ViewControl, ViewItem, ViewSection, VSBrowser } from 'vscode-extension-tester';
+import { ActivityBar, SideBarView, ViewControl, ViewItem, ViewSection } from 'vscode-extension-tester';
+import { openResourcesAndWaitForActivation } from '../Util';
 
 describe('Kaoto View Container', function () {
 	this.timeout(30_000);
@@ -26,7 +27,7 @@ describe('Kaoto View Container', function () {
 	let kaotoView: SideBarView | undefined;
 
 	before(async function () {
-		await VSBrowser.instance.openResources(WORKSPACE_FOLDER);
+		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
 	});
 
 	after(async function () {
