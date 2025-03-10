@@ -51,7 +51,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		backendProxy: backendProxy,
 	});
 
-	const contextHandler = new ExtensionContextHandler(context, kieEditorStore);
+	const contextHandler = new ExtensionContextHandler(context, kieEditorStore, undefined);
 
 	/*
 	 * register commands for a toggle source code (open/close camel file in a side textual editor)
