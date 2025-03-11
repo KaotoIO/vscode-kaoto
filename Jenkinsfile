@@ -28,7 +28,11 @@ node('rhel9'){
 	}
 	stage('UI Tests') {
 		wrap([$class: 'Xvnc']) {
-			sh "yarn test:it"
+			env.TEST_RESOURCES = 'test-resources'
+			env.CODE_VERSION = 'max'
+			sh "yarn vsce package --no-dependencies --yarn"
+			sh "yarn test:it:with-prebuilt-vsix"
+			sh "rm -rf *.vsix"
 		}
 	}
 
