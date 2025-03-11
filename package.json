@@ -160,6 +160,15 @@
         "title": "Delete",
         "category": "Kaoto",
         "icon": "$(trash)"
+      },
+      {
+        "command": "kaoto.integrations.run",
+        "title": "Run",
+        "category": "Kaoto",
+        "icon": {
+          "dark": "./icons/kaoto-run/kaoto-run-dark.png",
+          "light": "./icons/kaoto-run/kaoto-run-light.png"
+        }
       }
     ],
     "keybindings": {
@@ -210,6 +219,10 @@
         },
         {
           "command": "kaoto.camel.jbang.export",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.integrations.run",
           "when": "false"
         },
         {
@@ -264,9 +277,14 @@
           "group": "navigation@2"
         },
         {
+          "command": "kaoto.integrations.run",
+          "when": "view == kaoto.integrations && viewItem == integration && !virtualWorkspace && kaoto.jbangAvailable",
+          "group": "inline@1"
+        },
+        {
           "command": "kaoto.camel.jbang.export",
           "when": "view == kaoto.integrations && viewItem == integration && !virtualWorkspace && kaoto.jbangAvailable",
-          "group": "inline"
+          "group": "inline@2"
         }
       ]
     },
@@ -297,7 +315,13 @@
             "type": "string",
             "default": null,
             "markdownDescription": "URL to a Kaoto catalog. For instance `https://raw.githubusercontent.com/KaotoIO/catalogs/main/catalogs/index.json`. Documentation to generate your own set of catalog is available [here](https://github.com/KaotoIO/kaoto/tree/main/packages/catalog-generator). It requires to reopen the Kaoto editors to be effective.",
-            "scope": "window"
+            "scope": "window",
+            "order": 0
+          },
+          "kaoto.camelVersion": {
+            "type": "string",
+            "markdownDescription": "Camel version used for internal Camel JBang CLI commands execution. As default Camel Version is used `#kaoto.camelJBang.Version#`.",
+            "order": 1
           },
           "redhat.telemetry.enabled": {
             "type": "boolean",
@@ -306,7 +330,8 @@
             "tags": [
               "telemetry"
             ],
-            "scope": "window"
+            "scope": "window",
+            "order": 2
           }
         }
       },
@@ -352,8 +377,37 @@
         "properties": {
           "kaoto.camelJBang.Version": {
             "type": "string",
-            "markdownDescription": "Apache [Camel JBang](https://camel.apache.org/manual/camel-jbang.html) version used for internal Kaoto VS Code extension Camel CLI calls. Camel JBang requirements can differ between versions.\n\nIt is recommended to use `default` version to ensure all extension features works properly.",
-            "default": "4.10.2"
+            "markdownDescription": "Apache [Camel JBang](https://camel.apache.org/manual/camel-jbang.html) version used for an internal Camel JBang CLI calls. Requirements can differ between versions.\n\nIt is recommended to use `default` version to ensure all extension features works properly.",
+            "default": "4.10.2",
+            "order": 0
+          },
+          "kaoto.camelJBang.RunArguments": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            },
+            "additionalProperties": false,
+            "markdownDescription": "User defined arguments to be applied at every launch. In case of spaces, the values needs to be enclosed with quotes.\n\nFor possible values see [official docs](https://camel.apache.org/manual/camel-jbang.html#_creating_and_running_camel_routes).",
+            "default": [
+              "--dev",
+              "--logging-level=info",
+              "--local-kamelet-dir=.",
+              "*.xsl"
+            ],
+            "order": 1
+          },
+          "kaoto.camelJBang.redHatMavenRepository": {
+            "type": "string",
+            "markdownDescription": "Define Red Hat Maven Repository, which is used automatically in case the `#kaoto.camelVersion#` uses Red Hat productized Camel version (e.g. `4.8.0.redhat-00017`).",
+            "default": "https://maven.repository.redhat.com/ga/",
+            "order": 2
+          },
+          "kaoto.camelJBang.redHatMavenRepository.global": {
+            "type": "boolean",
+            "markdownDescription": "The `#repos` placeholder will be added by default to use also repositories defined in global Camel JBang configuration file.\n\n**Note**: The placeholder is available for versions `3.20.7/3.21` onwards.",
+            "default": true,
+            "order": 3
           }
         }
       }

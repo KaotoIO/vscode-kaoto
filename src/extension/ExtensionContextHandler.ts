@@ -15,6 +15,7 @@
  */
 import * as vscode from 'vscode';
 import * as KogitoVsCode from '@kie-tools-core/vscode-extension/dist';
+import { dirname } from 'path';
 import { execSync } from 'child_process';
 import { HelpFeedbackProvider } from '../views/providers/HelpFeedbackProvider';
 import { Integration, IntegrationsProvider } from '../views/providers/IntegrationsProvider';
@@ -27,6 +28,7 @@ import { NewCamelFileCommand } from '../commands/NewCamelFileCommand';
 import { confirmFileDeleteDialog } from '../helpers/modals';
 import { TelemetryEvent, TelemetryService } from '@redhat-developer/vscode-redhat-telemetry';
 import { NewCamelProjectCommand } from '../commands/NewCamelProjectCommand';
+import { CamelRunJBangTask } from '../tasks/CamelRunJBangTask';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -116,6 +118,7 @@ export class ExtensionContextHandler {
 		this.context.subscriptions.push(vscode.commands.registerCommand('kaoto.integrations.refresh', () => integrationsProvider.refresh()));
 		this.registerNewCamelYamlFilesCommands();
 		this.registerNewCamelProjectCommands();
+		this.registerRunIntegrationCommands();
 		this.registerIntegrationsItemsContextMenu();
 	}
 
@@ -176,6 +179,18 @@ export class ExtensionContextHandler {
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT, async (integration: Integration) => {
 				await new NewCamelProjectCommand().create(integration.filepath);
+				await this.sendCommandTrackingEvent(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT);
+			}),
+		);
+	}
+
+	private registerRunIntegrationCommands() {
+		const INTEGRATIONS_RUN_COMMAND_ID: string = 'kaoto.integrations.run';
+
+		this.context.subscriptions.push(
+			vscode.commands.registerCommand(INTEGRATIONS_RUN_COMMAND_ID, async (integration: Integration) => {
+				await new CamelRunJBangTask(integration.filepath.fsPath, dirname(integration.filepath.fsPath)).execute();
+				await this.sendCommandTrackingEvent(INTEGRATIONS_RUN_COMMAND_ID);
 			}),
 		);
 	}

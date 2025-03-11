@@ -116,6 +116,8 @@ const commonConfig = (env) => {
 				net: false,
 				buffer: require.resolve('buffer/'),
 				util: false,
+				url: false,
+				stream: false,
 			},
 			extensions: ['.tsx', '.ts', '.js', '.jsx'],
 			modules: ['node_modules'],
