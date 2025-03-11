@@ -40,6 +40,7 @@
 - Allow to edit `*.yaml` and `*.yml` when opening through contextual menu.
 - Setting to provide custom set of catalog
 - Export single integration file into Maven project (Quarkus or Spring Boot)
+- Run single integration file locally
 
 ### Limitations
 
