@@ -16,6 +16,7 @@
 import { commands, Event, EventEmitter, FileSystemWatcher, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
 import { basename, join } from 'path';
 import { parse } from 'yaml';
+import { XMLParser } from 'fast-xml-parser';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
 import { Integration } from './integrationTreeItems/Integration';
 import { Route } from './integrationTreeItems/Route';
@@ -26,7 +27,7 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 	private readonly _onDidChangeTreeData: EventEmitter<TreeItemType> = new EventEmitter<TreeItemType>();
 	readonly onDidChangeTreeData: Event<TreeItemType> = this._onDidChangeTreeData.event;
 
-	private static readonly FILE_PATTERN = '{**/*.camel.yaml,**/*.kamelet.yaml,**/*-pipe.yaml,**/*.pipe.yaml}';
+	private static readonly FILE_PATTERN = '{**/*.camel.yaml,**/*.camel.xml,**/*.kamelet.yaml,**/*-pipe.yaml,**/*.pipe.yaml}';
 	private static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**,**/target/**}';
 	private readonly fileWatcher: FileSystemWatcher;
 
@@ -47,7 +48,8 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 
 	async getChildren(integration?: Integration): Promise<TreeItem[]> {
 		if (integration) {
-			return integration.type === 'route' ? await this.getRoutesInsideIntegrationFile(integration.filepath) : [];
+			const routes = integration.type === 'route' ? await this.getRoutesInsideIntegrationFile(integration.dsl, integration.filepath) : [];
+			return routes || [];
 		}
 		const integrations = await this.getIntegrationsAvailableInWorkspace();
 		this.setContext(integrations.length > 0);
@@ -58,17 +60,20 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 		commands.executeCommand('setContext', 'kaoto.integrationExists', value);
 	}
 
-	private getFileType(fileName: string): { type: string; name: string } {
+	private getFileType(fileName: string): { dsl: string; type: string; name: string } {
 		if (fileName.endsWith('.kamelet.yaml')) {
-			return { type: 'kamelet', name: basename(fileName, '.kamelet.yaml') };
+			return { dsl: 'yaml', type: 'kamelet', name: basename(fileName, '.kamelet.yaml') };
 		}
 		if (fileName.endsWith('-pipe.yaml')) {
-			return { type: 'pipe', name: basename(fileName, '-pipe.yaml') };
+			return { dsl: 'yaml', type: 'pipe', name: basename(fileName, '-pipe.yaml') };
 		}
 		if (fileName.endsWith('.pipe.yaml')) {
-			return { type: 'pipe', name: basename(fileName, '.pipe.yaml') };
+			return { dsl: 'yaml', type: 'pipe', name: basename(fileName, '.pipe.yaml') };
 		}
-		return { type: 'route', name: basename(fileName, '.camel.yaml') };
+		if (fileName.endsWith('.camel.xml')) {
+			return { dsl: 'xml', type: 'route', name: basename(fileName, '.camel.xml') };
+		}
+		return { dsl: 'yaml', type: 'route', name: basename(fileName, '.camel.yaml') };
 	}
 
 	private getIcon(type: string): { light: Uri; dark: Uri } {
@@ -93,20 +98,31 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 		const integrations = await Promise.all(
 			integrationFiles.map(async (file) => {
 				const filename = basename(file.fsPath);
-				const { type, name } = this.getFileType(filename);
+				const { dsl, type, name } = this.getFileType(filename);
 				const icon = this.getIcon(type);
 
 				// process routes only if it's a route integration
-				const routes = type === 'route' ? await this.getRoutesInsideIntegrationFile(file) : [];
+				const routes = type === 'route' ? await this.getRoutesInsideIntegrationFile(dsl, file) : [];
 				const collapsibleState = routes.length > 0 ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.None;
 
-				return new Integration(name, filename, file, collapsibleState, type, icon);
+				return new Integration(name, filename, file, collapsibleState, type, dsl, icon);
 			}),
 		);
 		return Array.from(integrations.values()).sort((a, b) => a.filepath.fsPath.localeCompare(b.filepath.fsPath));
 	}
 
-	private async getRoutesInsideIntegrationFile(filePath: Uri): Promise<Route[]> {
+	private async getRoutesInsideIntegrationFile(dsl: string, filePath: Uri): Promise<Route[]> {
+		switch (dsl) {
+			case 'yaml':
+				return await this.parseYamlFile(filePath);
+			case 'xml':
+				return await this.parseXmlFile(filePath);
+			default:
+				return [];
+		}
+	}
+
+	private async parseYamlFile(filePath: Uri): Promise<Route[]> {
 		try {
 			const fileBuffer = await workspace.fs.readFile(filePath);
 			const parsedYaml = parse(String.fromCharCode.apply(null, fileBuffer));
@@ -120,7 +136,49 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 				.filter((item: any) => item.route)
 				.map((item: any) => new Route(item.route.id, item.route.description, this.getIcon('route-child')));
 		} catch (error) {
-			KaotoOutputChannel.logError(`Error parsing file: ${filePath.fsPath}`, error);
+			KaotoOutputChannel.logError(`Error parsing YAML file: ${filePath.fsPath}`, error);
+			return [];
+		}
+	}
+
+	private async parseXmlFile(filePath: Uri): Promise<Route[]> {
+		try {
+			const fileBuffer = await workspace.fs.readFile(filePath);
+			if (!fileBuffer || fileBuffer.length === 0) {
+				// skip empty XML file
+				return [];
+			}
+
+			const fileContent = fileBuffer.toString().trim(); // remove unnecessary whitespaces
+
+			const parser = new XMLParser({
+				ignoreAttributes: false,
+				attributeNamePrefix: '',
+				parseAttributeValue: true,
+				trimValues: true,
+				isArray: (name) => name === 'route', // force route to always be an array
+			});
+
+			const parsedXml = parser.parse(fileContent);
+			if (!parsedXml || typeof parsedXml !== 'object') {
+				KaotoOutputChannel.logWarning(`Invalid XML structure: ${filePath.fsPath}`);
+				return [];
+			}
+
+			// normalize route structure (handling JBang init vs Kaoto XML)
+			let routes: any[] = [];
+			if (parsedXml.routes?.route) {
+				routes = Array.isArray(parsedXml.routes.route) ? parsedXml.routes.route : [parsedXml.routes.route];
+			} else if (parsedXml.camel?.route) {
+				routes = Array.isArray(parsedXml.camel.route) ? parsedXml.camel.route : [parsedXml.camel.route];
+			} else {
+				KaotoOutputChannel.logWarning(`No <route> elements found in XML: ${filePath.fsPath}`);
+				return [];
+			}
+
+			return routes.map((route) => new Route(route.id, route.description, this.getIcon('route-child')));
+		} catch (error) {
+			KaotoOutputChannel.logError(`Error parsing XML file: ${filePath.fsPath}`, error);
 			return [];
 		}
 	}

@@ -23,6 +23,7 @@ export class Integration extends TreeItem {
 		public readonly filepath: Uri,
 		public collapsibleState: TreeItemCollapsibleState,
 		public readonly type: string,
+		public readonly dsl: string,
 		public readonly icon: string | IconPath,
 	) {
 		super(filename, collapsibleState);
