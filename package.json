@@ -121,7 +121,7 @@
         "icon": "$(new-file)"
       },
       {
-        "command": "kaoto.camel.jbang.init.route.yaml",
+        "command": "kaoto.camel.jbang.init.route",
         "shortTitle": "New Camel Route...",
         "title": "Create a Camel Route using YAML DSL",
         "category": "Kaoto"
@@ -172,7 +172,7 @@
     "menus": {
       "kaoto.new.file": [
         {
-          "command": "kaoto.camel.jbang.init.route.yaml",
+          "command": "kaoto.camel.jbang.init.route",
           "group": "kaoto@1"
         },
         {
@@ -198,7 +198,7 @@
           "when": "false"
         },
         {
-          "command": "kaoto.camel.jbang.init.route.yaml",
+          "command": "kaoto.camel.jbang.init.route",
           "when": "false"
         },
         {

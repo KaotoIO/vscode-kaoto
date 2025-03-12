@@ -27,14 +27,16 @@ export abstract class AbstractCamelCommand {
 	protected singleWorkspaceFolder: WorkspaceFolder | undefined;
 	protected camelDSL: CamelRouteDSL | undefined;
 
-	constructor(dsl: string) {
+	constructor(dsl?: string) {
 		this.camelDSL = this.getDSL(dsl);
 		this.singleWorkspaceFolder = this.getSingleWorkspaceFolder();
 	}
 
-	protected getDSL(dsl: string): CamelRouteDSL | undefined {
+	protected getDSL(dsl?: string): CamelRouteDSL | undefined {
 		if (dsl === 'YAML') {
 			return { language: 'YAML', extension: 'camel.yaml', placeHolder: 'sample-route' };
+		} else if (dsl === 'XML') {
+			return { language: 'XML', extension: 'camel.xml', placeHolder: 'sample-route' };
 		} else {
 			return undefined;
 		}

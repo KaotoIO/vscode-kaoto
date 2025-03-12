@@ -13,16 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { commands, Uri } from 'vscode';
+import { commands, QuickPickItem, Uri, window } from 'vscode';
 import { CamelInitJBangTask } from '../tasks/CamelInitJBangTask';
 import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
 import path from 'path';
 
 export class NewCamelRouteCommand extends AbstractNewCamelRouteCommand {
-	public static readonly ID_COMMAND_CAMEL_ROUTE_YAML = 'kaoto.camel.jbang.init.route.yaml';
+	public static readonly ID_COMMAND_CAMEL_ROUTE = 'kaoto.camel.jbang.init.route';
 	protected static readonly PROGRESS_NOTIFICATION_MESSAGE = 'Creating a new Route file...';
 
 	public async create(): Promise<void> {
+		const dslPick = await this.showQuickPickForCamelRouteDSL();
+		if (!dslPick) {
+			return;
+		}
+		if (!this.camelDSL) {
+			this.camelDSL = this.getDSL(dslPick.label);
+		}
+
 		const wsFolder = await this.showWorkspaceFolderPick();
 		if (wsFolder || this.singleWorkspaceFolder) {
 			const targetFolder = await this.showDialogToPickFolder(wsFolder?.uri);
@@ -44,5 +52,16 @@ export class NewCamelRouteCommand extends AbstractNewCamelRouteCommand {
 		} else {
 			await this.showNoWorkspaceNotification();
 		}
+	}
+
+	private async showQuickPickForCamelRouteDSL(): Promise<QuickPickItem | undefined> {
+		const items: QuickPickItem[] = [
+			{ label: 'YAML', description: 'Camel Route using YAML DSL' },
+			{ label: 'XML', description: 'Camel Route using XML DSL' },
+		];
+		return await window.showQuickPick(items, {
+			placeHolder: 'Please select a Camel DSL.',
+			title: 'DSL selection...',
+		});
 	}
 }
