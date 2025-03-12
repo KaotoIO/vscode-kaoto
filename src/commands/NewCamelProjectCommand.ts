@@ -79,7 +79,7 @@ export class NewCamelProjectCommand {
 	 * @param name
 	 * @returns string | undefined
 	 */
-	private validateGAV(name: string): string | undefined {
+	public validateGAV(name: string): string | undefined {
 		if (!name) {
 			return 'Please provide a GAV for the new project following groupId:artifactId:version pattern.';
 		}
@@ -95,22 +95,22 @@ export class NewCamelProjectCommand {
 			return 'The groupId cannot start with a .';
 		}
 		for (const groupIdSubPart of groupIdSplit) {
-			const regExpSearch = /^[a-z]\w*$/.exec(groupIdSubPart);
+			const regExpSearch = /^(?!\.)[a-z0-9]+(\.[a-z0-9]+)*$/.exec(groupIdSubPart);
 			if (regExpSearch === null || regExpSearch.length === 0) {
-				return `Invalid subpart of groupId: ${groupIdSubPart}} . It must follow groupId:artifactId:version pattern with groupId subpart separated by dot needs to follow this specific pattern: [a-zA-Z]\\w*`;
+				return `Invalid subpart of groupId: '${groupIdSubPart}'. The groupId is expected to follow the Java package naming conventions.`;
 			}
 		}
 
 		const artifactId = gavs[1];
-		const regExpSearchArtifactId = /^[a-zA-Z]\w*$/.exec(artifactId);
+		const regExpSearchArtifactId = /^(?!-)[a-z0-9]+(-[a-z0-9]+)*$/.exec(artifactId);
 		if (regExpSearchArtifactId === null || regExpSearchArtifactId.length === 0) {
-			return `Invalid artifactId: ${artifactId}} . It must follow groupId:artifactId:version pattern with artifactId specific pattern: [a-zA-Z]\\w*`;
+			return `Invalid artifactId: '${artifactId}'. The identifiers should only consist of lowercase letters, digits, and hyphens.`;
 		}
 
 		const version = gavs[2];
-		const regExpSearch = /^\d[\w-.]*$/.exec(version);
+		const regExpSearch = /^(\d+\.\d+(\.\d+)?(-[A-Za-z0-9]+(-\d+)?)?(\+[A-Za-z0-9]+)?)$/.exec(version);
 		if (regExpSearch === null || regExpSearch.length === 0) {
-			return `Invalid version: ${version} . It must follow groupId:artifactId:version pattern with version specific pattern: \\d[\\w-.]*`;
+			return `Invalid version: '${version}'. The version is expected be compliant with Semantic Versioning 1.0.0.`;
 		}
 		return undefined;
 	}
