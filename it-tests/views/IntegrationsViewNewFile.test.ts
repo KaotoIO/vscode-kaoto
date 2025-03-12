@@ -66,7 +66,8 @@ describe('Integrations View', function () {
 	});
 
 	(process.platform === 'darwin' ? describe.skip : describe)(`Click 'New File...' button`, function () {
-		const CAMEL_ROUTE_FILE: string = 'newSample.camel.yaml';
+		const CAMEL_ROUTE_YAML_FILE: string = 'newSample.camel.yaml';
+		const CAMEL_ROUTE_XML_FILE: string = 'newSample.camel.xml';
 		const KAMELET_FILE: string = 'newKam-sink.kamelet.yaml';
 		const PIPE_FILE: string = 'newPipe.pipe.yaml';
 
@@ -88,27 +89,39 @@ describe('Integrations View', function () {
 		});
 
 		after(function () {
-			fs.rmSync(join(WORKSPACE_FOLDER, CAMEL_ROUTE_FILE), { force: true });
+			fs.rmSync(join(WORKSPACE_FOLDER, CAMEL_ROUTE_YAML_FILE), { force: true });
+			fs.rmSync(join(WORKSPACE_FOLDER, CAMEL_ROUTE_XML_FILE), { force: true });
 			fs.rmSync(join(WORKSPACE_FOLDER, 'kamelets', KAMELET_FILE), { force: true });
 			fs.rmSync(join(WORKSPACE_FOLDER, 'pipes', 'others', PIPE_FILE), { force: true });
 		});
 
-		it(`Check new 'Camel Route' can be created`, async function () {
-			const menu = await newFileButton?.open();
-			await menu?.select('New Camel Route...');
+		const dsls = [
+			{ label: 'YAML', fileName: CAMEL_ROUTE_YAML_FILE },
+			{ label: 'XML', fileName: CAMEL_ROUTE_XML_FILE },
+		];
 
-			input = await InputBox.create(30_000);
-			await input.confirm();
+		dsls.forEach(function (dsl) {
+			it(`Check new 'Camel Route using ${dsl.label} DSL' can be created`, async function () {
+				const menu = await newFileButton?.open();
+				await menu?.select('New Camel Route...');
 
-			input = await InputBox.create(30_000);
-			await input.setText('newSample');
-			await input.confirm();
+				input = await InputBox.create(30_000);
+				await input.setText(dsl.label);
+				await input.confirm();
 
-			const newCamelRoute = await getTreeItem(driver, integrationsSection, CAMEL_ROUTE_FILE, 120_000);
-			expect(newCamelRoute).to.not.be.undefined;
-			expect(await newCamelRoute?.getDescription()).to.be.equal('.');
+				input = await InputBox.create(30_000);
+				await input.confirm();
 
-			await switchToKaotoAndCheckIntegrationType(CAMEL_ROUTE_FILE, 'Camel Route', 'setBody');
+				input = await InputBox.create(30_000);
+				await input.setText('newSample');
+				await input.confirm();
+
+				const newCamelRoute = await getTreeItem(driver, integrationsSection, dsl.fileName, 120_000);
+				expect(newCamelRoute).to.not.be.undefined;
+				expect(await newCamelRoute?.getDescription()).to.be.equal('.');
+
+				await switchToKaotoAndCheckIntegrationType(dsl.fileName, 'Camel Route', 'setBody');
+			});
 		});
 
 		it(`Check new 'Kamelet' can be created`, async function () {
