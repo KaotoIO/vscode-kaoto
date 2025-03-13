@@ -1,6 +1,9 @@
 const { merge } = require('webpack-merge');
 const CopyPlugin = require('copy-webpack-plugin');
 const path = require('path');
+const { DefinePlugin } = require('webpack');
+const { version } = require('./package.json');
+
 function posixPath(pathStr) {
 	return pathStr.split(path.sep).join(path.posix.sep);
 }
@@ -41,13 +44,13 @@ const commonConfig = (env) => {
 					enforce: 'pre',
 					use: ['source-map-loader'],
 				},
-			]
+		  ]
 		: [];
 
 	const devtool = sourceMaps
 		? {
 				devtool: 'inline-source-map',
-			}
+		  }
 		: {};
 
 	const importsNotUsedAsValues = live ? { importsNotUsedAsValues: 'preserve' } : {};
@@ -129,6 +132,9 @@ const commonConfig = (env) => {
 						to: 'webview/editors/kaoto/camel-catalog',
 					},
 				],
+			}),
+			new DefinePlugin({
+				__VSCODE_KAOTO_VERSION: JSON.stringify(version),
 			}),
 		],
 		externals: {
