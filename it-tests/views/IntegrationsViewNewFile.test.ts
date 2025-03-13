@@ -33,7 +33,6 @@ import {
 	ViewSection,
 	VSBrowser,
 	WebDriver,
-	WebElement,
 } from 'vscode-extension-tester';
 import { openResourcesAndWaitForActivation, switchToKaotoFrame } from '../Util';
 
@@ -110,7 +109,7 @@ describe('Integrations View', function () {
 			expect(newCamelRoute).to.not.be.undefined;
 			expect(await newCamelRoute?.getDescription()).to.be.equal('.');
 
-			await switchToKaotoAndCheckIntegrationType(CAMEL_ROUTE_FILE, 'Camel Route');
+			await switchToKaotoAndCheckIntegrationType(CAMEL_ROUTE_FILE, 'Camel Route', 'setBody');
 		});
 
 		it(`Check new 'Kamelet' can be created`, async function () {
@@ -134,7 +133,7 @@ describe('Integrations View', function () {
 			expect(newKamelet).to.not.be.undefined;
 			expect(await newKamelet?.getDescription()).to.be.equal('kamelets');
 
-			await switchToKaotoAndCheckIntegrationType(KAMELET_FILE, 'Kamelet');
+			await switchToKaotoAndCheckIntegrationType(KAMELET_FILE, 'Kamelet', 'kamelet:source');
 		});
 
 		it(`Check new 'Pipe' can be created`, async function () {
@@ -154,7 +153,7 @@ describe('Integrations View', function () {
 			expect(newCamelRoute).to.not.be.undefined;
 			expect(await newCamelRoute?.getDescription()).to.be.equal(`pipes${sep}others`);
 
-			await switchToKaotoAndCheckIntegrationType(PIPE_FILE, 'Pipe');
+			await switchToKaotoAndCheckIntegrationType(PIPE_FILE, 'Pipe', 'timer-source');
 		});
 
 		async function getNewFileTreeItem(filename: string): Promise<TreeItem> {
@@ -167,12 +166,15 @@ describe('Integrations View', function () {
 			);
 		}
 
-		async function getKaotoTypeDropdown(timeout: number = 10_000): Promise<WebElement> {
-			await driver.wait(until.elementLocated(By.xpath("//div[@class='pf-v6-c-toolbar__content']")), timeout);
-			return await driver.findElement(By.className('pf-v6-c-menu-toggle__text'));
+		async function checkStepWithNodeLabelPresent(nodeLabel: string, timeout: number = 10_000) {
+			await driver.wait(
+				until.elementLocated(By.xpath(`//*[name()='g' and @data-nodelabel='${nodeLabel}']`)),
+				timeout,
+				`'${nodeLabel}' was not found in current topology.`,
+			);
 		}
 
-		async function switchToKaotoAndCheckIntegrationType(filename: string, type: string): Promise<void> {
+		async function switchToKaotoAndCheckIntegrationType(filename: string, type: string, nodeLabel: string): Promise<void> {
 			await driver.wait(
 				async function () {
 					return (await new EditorView().getOpenEditorTitles()).includes(filename);
@@ -182,10 +184,7 @@ describe('Integrations View', function () {
 			);
 
 			const { kaotoWebview } = await switchToKaotoFrame(driver, true);
-			const typeDropdown = await getKaotoTypeDropdown();
-			expect(typeDropdown).to.not.be.undefined;
-			expect(await typeDropdown.getText()).to.be.equal(type);
-
+			await checkStepWithNodeLabelPresent(nodeLabel);
 			await kaotoWebview.switchBack();
 		}
 	});
