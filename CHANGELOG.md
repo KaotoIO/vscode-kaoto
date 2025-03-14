@@ -14,6 +14,10 @@
   - show New Camel File if no Camel related file is found in workspace (when Integrations view is empty)
 - send events into Red hat Telemetry for Kaoto extension commands
 - Add `Export` inline button into Kaoto: Integrations view
+- Add support for XML files - `*.camel.xml` files are automatically opened in Kaoto editor
+  - Kaoto: Integrations view
+    - create new Camel Route using XML DSL
+    - list XML files with route elements
 
 # 2.4.0
 
