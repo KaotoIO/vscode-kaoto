@@ -15,6 +15,7 @@
 - send events into Red hat Telemetry for Kaoto extension commands
 - Add `Export` inline button into Kaoto: Integrations view
 - Add `Run` inline button into Kaoto: Integrations view
+- Add `Deploy` inline button into Kaoto: Integrations view
 
 # 2.4.0
 

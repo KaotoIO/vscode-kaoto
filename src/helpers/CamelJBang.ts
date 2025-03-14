@@ -37,6 +37,10 @@ export class CamelJBang {
 		this.defaultJbangArgs = [`'-Dcamel.jbang.version=${this.camelJBangVersion}'`, 'camel@apache/camel'];
 	}
 
+	public add(plugin: string): ShellExecution {
+		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'plugin', 'add', plugin]);
+	}
+
 	public init(file: string): ShellExecution {
 		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'init', `'${file}'`]);
 	}
@@ -77,6 +81,28 @@ export class CamelJBang {
 			}),
 			shellExecOptions,
 		);
+	}
+
+	public kubernetesRun(filePattern: string, cwd?: string): ShellExecution {
+		const shellExecOptions: ShellExecutionOptions = {
+			cwd: cwd,
+		};
+		return new ShellExecution(
+			this.jbang,
+			[...this.defaultJbangArgs, 'kubernetes', 'run', filePattern, this.getCamelVersion(), ...this.getKubernetesRunArguments()].filter(function (arg) {
+				return arg;
+			}), // remove ALL empty values ("", null, undefined and 0)
+			shellExecOptions,
+		);
+	}
+
+	private getKubernetesRunArguments(): string[] {
+		const kubernetesRunArgs = workspace.getConfiguration().get('kaoto.camelJBang.KubernetesRunArguments') as string[];
+		if (kubernetesRunArgs) {
+			return kubernetesRunArgs;
+		} else {
+			return [];
+		}
 	}
 
 	private getRunArguments(filePath: string): string[] {

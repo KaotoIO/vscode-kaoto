@@ -144,6 +144,15 @@
         "icon": "$(link-external)"
       },
       {
+        "command": "kaoto.integrations.kubernetes.run",
+        "title": "Deploy",
+        "category": "Kaoto",
+        "icon": {
+          "dark": "./icons/kubernetes/kube-dark.png",
+          "light": "./icons/kubernetes/kube-light.png"
+        }
+      },
+      {
         "command": "kaoto.integrations.refresh",
         "title": "Refresh",
         "category": "Kaoto",
@@ -226,6 +235,10 @@
           "when": "false"
         },
         {
+          "command": "kaoto.integrations.kubernetes.run",
+          "when": "false"
+        },
+        {
           "command": "kaoto.integrations.showSource",
           "when": "false"
         },
@@ -282,9 +295,14 @@
           "group": "inline@1"
         },
         {
-          "command": "kaoto.camel.jbang.export",
+          "command": "kaoto.integrations.kubernetes.run",
           "when": "view == kaoto.integrations && viewItem == integration && !virtualWorkspace && kaoto.jbangAvailable",
           "group": "inline@2"
+        },
+        {
+          "command": "kaoto.camel.jbang.export",
+          "when": "view == kaoto.integrations && viewItem == integration && !virtualWorkspace && kaoto.jbangAvailable",
+          "group": "inline@3"
         }
       ]
     },
@@ -407,6 +425,20 @@
             "type": "boolean",
             "markdownDescription": "The `#repos` placeholder will be added by default to use also repositories defined in global Camel JBang configuration file.\n\n**Note**: The placeholder is available for versions `3.20.7/3.21` onwards.",
             "default": true,
+            "order": 3
+          },
+          "kaoto.camelJBang.KubernetesRunArguments": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            },
+            "additionalProperties": false,
+            "markdownDescription": "User defined arguments to be applied at every deploy (See [Camel JBang Kubernetes](https://camel.apache.org/manual/camel-jbang-kubernetes.html)). In case of spaces, the values needs to be enclosed with quotes.\n\n**Note**: Excluding `--camel-version` which is already being set in `#kaoto.camelVersion#`.",
+            "default": [
+              "--cluster-type=openshift",
+              "--dev"
+            ],
             "order": 3
           }
         }

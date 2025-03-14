@@ -41,6 +41,8 @@
 - Setting to provide custom set of catalog
 - Export single integration file into Maven project (Quarkus or Spring Boot)
 - Run single integration file locally
+- Deploy single integration file into OpenShift/Kubernetes cluster
+  - For Minikube, check out the [Deployment Tips & Troubleshooting Guide](https://camel.apache.org/manual/camel-jbang-kubernetes.html#_minikube_deployment_tips_and_troubleshooting)
 
 ### Limitations
 
