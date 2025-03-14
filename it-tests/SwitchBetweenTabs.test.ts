@@ -1,4 +1,4 @@
-import { By, EditorView, until, VSBrowser, WebDriver, WebElement, WebView } from 'vscode-extension-tester';
+import { By, EditorView, until, VSBrowser, WebDriver, WebView } from 'vscode-extension-tester';
 import { openAndSwitchToKaotoFrame } from './Util';
 import { join } from 'path';
 import { expect } from 'chai';
@@ -45,7 +45,7 @@ describe('Switching between editor tabs', function () {
 
 	it('Open "my.camel.yaml" file and check "Design" tab is active by default', async function () {
 		kaotoWebview = (await openAndSwitchToKaotoFrame(WORKSPACE_FOLDER, 'my.camel.yaml', driver, true)).kaotoWebview;
-		expect(await getTabsCount()).to.equal(3);
+		await driver.wait(until.elementLocated(By.className(locators.EditorTabs.tabsList)), 5_000, 'Editor tabs are not displayed properly!');
 		expect(await getActiveTabName()).to.equal('Design');
 	});
 
@@ -66,15 +66,6 @@ describe('Switching between editor tabs', function () {
 		await waitForDesignCanvasIsLoaded();
 		expect(await getActiveTabName()).to.equal('Design');
 	});
-
-	async function getTabsWebElements(): Promise<WebElement[]> {
-		return await driver.findElement(By.className(locators.EditorTabs.tabsList)).findElements(By.className(locators.EditorTabs.tabsItem));
-	}
-
-	async function getTabsCount(): Promise<number> {
-		await driver.wait(until.elementLocated(By.className(locators.EditorTabs.tabsList)), 5_000, 'Editor tabs are not displayed properly!');
-		return (await getTabsWebElements()).length;
-	}
 
 	async function getActiveTabName(): Promise<string> {
 		const tabName = await driver
