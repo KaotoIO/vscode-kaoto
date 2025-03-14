@@ -48,8 +48,13 @@ export async function verifyJBangExists(): Promise<boolean> {
 }
 
 export async function verifyCamelJBangTrustedSource(): Promise<boolean> {
-	let output = await runJBangCommandWithStatusBar('trust list', 'Checking Apache Camel Trusted Source is a part of JBang configuration...');
+	const output = await runJBangCommandWithStatusBar('trust list', 'Checking Apache Camel Trusted Source is a part of JBang configuration...');
 	return output.includes('https://github.com/apache/camel/');
+}
+
+export async function verifyCamelKubernetesPluginIsInstalled(): Promise<boolean> {
+	const output = await runJBangCommandWithStatusBar('camel@apache/camel plugin get', 'Checking Camel JBang Kubernetes plugin...');
+	return output.includes('kubernetes');
 }
 
 async function runJBangCommandWithStatusBar(args: string, msg: string): Promise<string> {

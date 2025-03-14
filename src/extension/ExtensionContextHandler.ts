@@ -22,13 +22,15 @@ import { Integration, IntegrationsProvider } from '../views/providers/Integratio
 import { NewCamelRouteCommand } from '../commands/NewCamelRouteCommand';
 import { NewCamelKameletCommand } from '../commands/NewCamelKameletCommand';
 import { NewCamelPipeCommand } from '../commands/NewCamelPipeCommand';
-import { verifyCamelJBangTrustedSource, verifyJBangExists } from '../helpers/helpers';
+import { verifyCamelJBangTrustedSource, verifyCamelKubernetesPluginIsInstalled, verifyJBangExists } from '../helpers/helpers';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { NewCamelFileCommand } from '../commands/NewCamelFileCommand';
 import { confirmFileDeleteDialog } from '../helpers/modals';
 import { TelemetryEvent, TelemetryService } from '@redhat-developer/vscode-redhat-telemetry';
 import { NewCamelProjectCommand } from '../commands/NewCamelProjectCommand';
 import { CamelRunJBangTask } from '../tasks/CamelRunJBangTask';
+import { CamelAddPluginJBangTask } from '../tasks/CamelAddPluginJBangTask';
+import { CamelKubernetesRunJBangTask } from '../tasks/CamelKubernetesRunJBangTask';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -118,6 +120,7 @@ export class ExtensionContextHandler {
 		this.context.subscriptions.push(vscode.commands.registerCommand('kaoto.integrations.refresh', () => integrationsProvider.refresh()));
 		this.registerNewCamelYamlFilesCommands();
 		this.registerNewCamelProjectCommands();
+		this.registerKubernetesRunCommands();
 		this.registerRunIntegrationCommands();
 		this.registerIntegrationsItemsContextMenu();
 	}
@@ -191,6 +194,21 @@ export class ExtensionContextHandler {
 			vscode.commands.registerCommand(INTEGRATIONS_RUN_COMMAND_ID, async (integration: Integration) => {
 				await new CamelRunJBangTask(integration.filepath.fsPath, dirname(integration.filepath.fsPath)).execute();
 				await this.sendCommandTrackingEvent(INTEGRATIONS_RUN_COMMAND_ID);
+			}),
+		);
+	}
+
+	private registerKubernetesRunCommands() {
+		const INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID: string = 'kaoto.integrations.kubernetes.run';
+
+		this.context.subscriptions.push(
+			vscode.commands.registerCommand(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID, async (integration: Integration) => {
+				if (!(await verifyCamelKubernetesPluginIsInstalled())) {
+					await new CamelAddPluginJBangTask('kubernetes').executeAndWait();
+					KaotoOutputChannel.logInfo('Apache Camel JBang Kubernetes plugin was installed.');
+				}
+				await new CamelKubernetesRunJBangTask(integration.filepath.fsPath, dirname(integration.filepath.fsPath)).execute();
+				await this.sendCommandTrackingEvent(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID);
 			}),
 		);
 	}
