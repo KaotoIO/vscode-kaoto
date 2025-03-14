@@ -4,18 +4,87 @@ import * as fs from 'node:fs';
 import * as os from 'os';
 import {
 	ActivityBar,
+	BottomBarPanel,
 	By,
 	CustomEditor,
 	EditorView,
 	ExtensionsViewItem,
 	ExtensionsViewSection,
 	ModalDialog,
+	TerminalView,
 	TextEditor,
+	TreeItem,
 	until,
+	ViewSection,
 	VSBrowser,
 	WebDriver,
 	WebView,
 } from 'vscode-extension-tester';
+
+/**
+ * Checks if the terminal view has the specified texts in the given textArray.
+ * @param driver The WebDriver instance to use.
+ * @param textArray An array of strings representing the texts to search for in the terminal view.
+ * @param interval (Optional) The interval in milliseconds to wait between checks. Default is 2000ms.
+ * @param timeout (Optional) The timeout in milliseconds. Default is 60000ms.
+ * @returns A Promise that resolves to a boolean indicating whether the terminal view has the texts or not.
+ */
+export async function waitUntilTerminalHasText(driver: WebDriver, textArray: string[], interval = 2000, timeout = 60000): Promise<void> {
+	await driver.sleep(interval);
+	await driver.wait(
+		async function () {
+			try {
+				const terminal = await activateTerminalView();
+				const terminalText = await terminal.getText();
+				for await (const text of textArray) {
+					if (!terminalText.includes(text)) {
+						return false;
+					}
+				}
+				return true;
+			} catch (err) {
+				return false;
+			}
+		},
+		timeout,
+		undefined,
+		interval,
+	);
+}
+
+/**
+ * Click on button to kill running process in Terminal View
+ */
+export async function killTerminal(): Promise<void> {
+	await (await activateTerminalView()).killTerminal();
+}
+
+/**
+ * Ensures Terminal View is opened and focused
+ * @returns A Promise that resolves to TerminalView instance.
+ */
+export async function activateTerminalView(): Promise<TerminalView> {
+	return await new BottomBarPanel().openTerminalView();
+}
+
+export async function getTreeItem(
+	driver: WebDriver,
+	integrationsSection: ViewSection | undefined,
+	filename: string,
+	timeout: number = 10_000,
+): Promise<TreeItem | undefined> {
+	return await driver.wait(
+		async function () {
+			try {
+				return (await integrationsSection?.findItem(filename)) as TreeItem;
+			} catch (error) {
+				return undefined;
+			}
+		},
+		timeout,
+		`${filename} was not found within Integrations view!`,
+	);
+}
 
 export async function openAndSwitchToKaotoFrame(
 	workspaceFolder: string,
