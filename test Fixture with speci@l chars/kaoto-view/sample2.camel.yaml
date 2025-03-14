@@ -9,4 +9,4 @@
       steps:
         - log:
             id: log-1858
-            message: ${body}
+            message: Hello World

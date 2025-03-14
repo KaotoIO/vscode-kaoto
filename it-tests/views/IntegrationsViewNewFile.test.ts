@@ -26,7 +26,6 @@ import {
 	EditorView,
 	InputBox,
 	SideBarView,
-	TreeItem,
 	until,
 	ViewControl,
 	ViewPanelActionDropdown,
@@ -34,7 +33,7 @@ import {
 	VSBrowser,
 	WebDriver,
 } from 'vscode-extension-tester';
-import { openResourcesAndWaitForActivation, switchToKaotoFrame } from '../Util';
+import { getTreeItem, openResourcesAndWaitForActivation, switchToKaotoFrame } from '../Util';
 
 describe('Integrations View', function () {
 	this.timeout(180_000);
@@ -105,7 +104,7 @@ describe('Integrations View', function () {
 			await input.setText('newSample');
 			await input.confirm();
 
-			const newCamelRoute = await getNewFileTreeItem(CAMEL_ROUTE_FILE);
+			const newCamelRoute = await getTreeItem(driver, integrationsSection, CAMEL_ROUTE_FILE, 120_000);
 			expect(newCamelRoute).to.not.be.undefined;
 			expect(await newCamelRoute?.getDescription()).to.be.equal('.');
 
@@ -129,7 +128,7 @@ describe('Integrations View', function () {
 			await input.setText('newKam');
 			await input.confirm();
 
-			const newKamelet = await getNewFileTreeItem(KAMELET_FILE);
+			const newKamelet = await getTreeItem(driver, integrationsSection, KAMELET_FILE, 120_000);
 			expect(newKamelet).to.not.be.undefined;
 			expect(await newKamelet?.getDescription()).to.be.equal('kamelets');
 
@@ -149,22 +148,12 @@ describe('Integrations View', function () {
 			await input.setText('newPipe');
 			await input.confirm();
 
-			const newCamelRoute = await getNewFileTreeItem(PIPE_FILE);
+			const newCamelRoute = await getTreeItem(driver, integrationsSection, PIPE_FILE, 120_000);
 			expect(newCamelRoute).to.not.be.undefined;
 			expect(await newCamelRoute?.getDescription()).to.be.equal(`pipes${sep}others`);
 
 			await switchToKaotoAndCheckIntegrationType(PIPE_FILE, 'Pipe', 'timer-source');
 		});
-
-		async function getNewFileTreeItem(filename: string): Promise<TreeItem> {
-			return await driver.wait(
-				async function () {
-					return (await integrationsSection?.findItem(filename)) as TreeItem;
-				},
-				120_000,
-				`${filename} was not created properly within Integrations view!`,
-			);
-		}
 
 		async function checkStepWithNodeLabelPresent(nodeLabel: string, timeout: number = 10_000) {
 			await driver.wait(

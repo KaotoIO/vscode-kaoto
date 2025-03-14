@@ -32,6 +32,7 @@ import {
 	VSBrowser,
 	WebDriver,
 } from 'vscode-extension-tester';
+import { getTreeItem } from './Util';
 
 /**
  * This test needs to be always executed as last in suite
@@ -62,7 +63,7 @@ describe('Integrations View', function () {
 	});
 
 	it(`'Export' button is available`, async function () {
-		const item = await getTreeItem('kam1.kamelet.yaml');
+		const item = await getTreeItem(driver, integrationsSection, 'kam1.kamelet.yaml');
 		const exportButton = await item?.getActionButton('Export');
 		expect(exportButton).to.not.be.undefined;
 	});
@@ -78,7 +79,7 @@ describe('Integrations View', function () {
 
 		before(async function () {
 			fs.mkdirSync(PROJECT_OUTPUT_DIR, { recursive: true });
-			const item = await getTreeItem('sample1.camel.yaml');
+			const item = await getTreeItem(driver, integrationsSection, 'sample1.camel.yaml');
 			exportButton = await item?.getActionButton('Export');
 			await exportButton?.click();
 		});
@@ -133,18 +134,4 @@ describe('Integrations View', function () {
 			);
 		}
 	});
-
-	async function getTreeItem(filename: string): Promise<TreeItem | undefined> {
-		return await driver.wait(
-			async function () {
-				try {
-					return (await integrationsSection?.findItem(filename)) as TreeItem;
-				} catch (error) {
-					return undefined;
-				}
-			},
-			10_000,
-			`${filename} was not found within Integrations view!`,
-		);
-	}
 });
