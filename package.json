@@ -461,7 +461,7 @@
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "@vscode/test-web": "^0.0.67",
-    "@vscode/vsce": "^3.2.2",
+    "@vscode/vsce": "^3.3.0",
     "async-wait-until": "^2.0.23",
     "buffer": "^6.0.3",
     "chai": "^4.3.10",
