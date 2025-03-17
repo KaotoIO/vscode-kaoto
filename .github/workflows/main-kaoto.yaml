@@ -9,10 +9,8 @@ name: Build with main branch of kaoto
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     env:
       CODE_VERSION: max
@@ -35,6 +33,20 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "21"
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Start Minikube
+        uses: medyagh/setup-minikube@latest
+        with:
+          driver: docker
+          addons: registry,registry-aliases
+          container-runtime: docker
+          insecure-registry: "10.0.0.0/24"
+      - name: Set Minikube ENV
+        run: |
+          eval $(minikube -p minikube docker-env)
+          echo "INSTALL_REGISTRY=$(kubectl -n kube-system get service registry -o jsonpath='{.spec.clusterIP}')" >> $GITHUB_ENV
+          echo $INSTALL_REGISTRY
       - name: Install JBang
         run: |
           curl -Ls https://sh.jbang.dev | bash -s - app setup
@@ -57,14 +69,15 @@ jobs:
         working-directory: vscode-kaoto
         run: yarn vsce package --no-dependencies --yarn
       - name: Allow unprivileged user namespace (ubuntu)
-        if: ${{ startsWith(matrix.os, 'ubuntu') }}
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Run Unit tests
         working-directory: vscode-kaoto
         run: xvfb-run -a yarn test:unit
       - name: Run UI Tests
         working-directory: vscode-kaoto
-        run: xvfb-run -a yarn run test:it:with-prebuilt-vsix
+        run: |
+          eval $(minikube -p minikube docker-env)
+          xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
       - name: Archive vsix
         uses: actions/upload-artifact@v4
         with:
