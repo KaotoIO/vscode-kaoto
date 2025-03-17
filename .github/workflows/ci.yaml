@@ -14,6 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
+    timeout-minutes: 30
 
     env:
       CODE_VERSION: max
@@ -29,6 +30,23 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "21"
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+      - name: Start Minikube
+        uses: medyagh/setup-minikube@latest
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        with:
+          driver: docker
+          addons: registry,registry-aliases
+          container-runtime: docker
+          insecure-registry: "10.0.0.0/24"
+      - name: Set Minikube ENV
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        run: |
+          eval $(minikube -p minikube docker-env)
+          echo "INSTALL_REGISTRY=$(kubectl -n kube-system get service registry -o jsonpath='{.spec.clusterIP}')" >> $GITHUB_ENV
+          echo $INSTALL_REGISTRY
       - name: Install JBang (ubuntu, macOS)
         if: ${{ startsWith(matrix.os, 'ubuntu') }} || matrix.os == 'macos-latest'
         run: |
@@ -55,7 +73,9 @@ jobs:
         run: yarn test:unit
         if: ${{ matrix.os != 'ubuntu-latest' }}
       - name: Run UI Tests on Linux
-        run: xvfb-run -a yarn run test:it:with-prebuilt-vsix
+        run: |
+          eval $(minikube -p minikube docker-env)
+          xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
         if: ${{ matrix.os == 'ubuntu-latest' }}
       - name: Run UI Tests on Other OSes than Linux
         run: yarn run test:it:with-prebuilt-vsix

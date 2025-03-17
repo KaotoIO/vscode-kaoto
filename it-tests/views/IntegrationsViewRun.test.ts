@@ -15,11 +15,16 @@
  */
 import { expect } from 'chai';
 import { join } from 'path';
-import { ActivityBar, after, before, EditorView, SideBarView, ViewControl, ViewItemAction, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
+import { ActivityBar, after, before, EditorView, SideBarView, ViewControl, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
 import { getTreeItem, killTerminal, waitUntilTerminalHasText } from '../Util';
 
+/**
+ * Note:
+ * - OC login needs to be done before executing this test for deployment into OpenShift
+ * - Linux Only for a Deploy part
+ */
 describe('Integrations View', function () {
-	this.timeout(240_000);
+	this.timeout(1200_000); // 20 minutes
 
 	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars', 'kaoto-view');
 
@@ -43,25 +48,35 @@ describe('Integrations View', function () {
 		await new EditorView().closeAllEditors();
 	});
 
-	it(`'Run' button is available`, async function () {
-		const item = await getTreeItem(driver, integrationsSection, 'pipe1.pipe.yaml');
-		const runButton = await item?.getActionButton('Run');
-		expect(runButton).to.not.be.undefined;
+	const buttons = [
+		{ label: 'Run', interval: 4_000, timeout: 180_000 },
+		{ label: 'Deploy', interval: 10_000, timeout: 900_000 },
+	];
+
+	buttons.forEach((btn) => {
+		it(`'${btn.label}' button is available`, async function () {
+			const item = await getTreeItem(driver, integrationsSection, 'pipe1.pipe.yaml');
+			const button = await item?.getActionButton(btn.label);
+			expect(button).to.not.be.undefined;
+		});
 	});
 
-	describe(`Click 'Run' button`, function () {
-		let runButton: ViewItemAction | undefined;
+	buttons.forEach((btn) => {
+		describe(`Click '${btn.label}' button`, function () {
+			after(async function () {
+				await killTerminal();
+			});
 
-		after(async function () {
-			await killTerminal();
-		});
+			it(`check 'sample2.camel.yaml' is running`, async function () {
+				if (btn.label === 'Deploy' && process.platform !== 'linux') {
+					this.skip();
+				}
+				const item = await getTreeItem(driver, integrationsSection, 'sample2.camel.yaml');
+				const button = await item?.getActionButton(btn.label);
+				await button?.click();
 
-		it(`check 'sample2.camel.yaml' is running`, async function () {
-			const item = await getTreeItem(driver, integrationsSection, 'sample2.camel.yaml');
-			runButton = await item?.getActionButton('Run');
-			await runButton?.click();
-
-			await waitUntilTerminalHasText(driver, ['Routes startup', 'Hello World'], 4_000, 180_000);
+				await waitUntilTerminalHasText(driver, ['Routes startup', 'Hello World'], btn.interval, btn.timeout);
+			});
 		});
 	});
 });
