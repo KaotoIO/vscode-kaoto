@@ -118,7 +118,7 @@ export class ExtensionContextHandler {
 		});
 		this.context.subscriptions.push(integrationsTreeView);
 		this.context.subscriptions.push(vscode.commands.registerCommand('kaoto.integrations.refresh', () => integrationsProvider.refresh()));
-		this.registerNewCamelYamlFilesCommands();
+		this.registerNewCamelFilesCommands();
 		this.registerNewCamelProjectCommands();
 		this.registerKubernetesRunCommands();
 		this.registerRunIntegrationCommands();
@@ -149,21 +149,22 @@ export class ExtensionContextHandler {
 		);
 	}
 
-	private registerNewCamelYamlFilesCommands() {
-		// register custom command for a Camel YAML file creation (eg. used in Integrations view Welcome Content)
+	private registerNewCamelFilesCommands() {
+		// register custom command for a Camel YAML or XML file creation (eg. used in Integrations view Welcome Content)
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(NewCamelFileCommand.ID_COMMAND_CAMEL_NEW_FILE, async () => {
 				await new NewCamelFileCommand().create();
 				await this.sendCommandTrackingEvent(NewCamelFileCommand.ID_COMMAND_CAMEL_NEW_FILE);
 			}),
 		);
-		// register commands for new Camel files creation using YAML DSL - Routes, Kamelets, Pipes
+		// register commands for new Camel files creation using YAML or XML DSL - Camel Routes
 		this.context.subscriptions.push(
-			vscode.commands.registerCommand(NewCamelRouteCommand.ID_COMMAND_CAMEL_ROUTE_YAML, async () => {
-				await new NewCamelRouteCommand('YAML').create();
-				await this.sendCommandTrackingEvent(NewCamelRouteCommand.ID_COMMAND_CAMEL_ROUTE_YAML);
+			vscode.commands.registerCommand(NewCamelRouteCommand.ID_COMMAND_CAMEL_ROUTE, async () => {
+				await new NewCamelRouteCommand().create();
+				await this.sendCommandTrackingEvent(NewCamelRouteCommand.ID_COMMAND_CAMEL_ROUTE);
 			}),
 		);
+		// register commands for new Camel files creation using YAML DSL - Kamelets, Pipes
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(NewCamelKameletCommand.ID_COMMAND_CAMEL_KAMELET_YAML, async () => {
 				await new NewCamelKameletCommand('YAML').create();

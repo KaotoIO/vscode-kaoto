@@ -49,12 +49,20 @@ describe('Integrations View', function () {
 		expect(labels).to.not.be.empty;
 	});
 
-	it('integration (*.camel.yaml) loaded', async function () {
-		const integrations = labels.filter((label) => label.includes('.camel.yaml'));
+	it('camel routes (*.camel.xml) loaded', async function () {
+		const xmlRoutes = labels.filter((label) => label.includes('.camel.xml'));
 
-		expect(integrations).to.not.be.empty;
-		expect(integrations.length).to.be.equal(3);
-		expect(integrations).to.include.members(['sample1.camel.yaml', 'sample2.camel.yaml', 'sample3.camel.yaml']);
+		expect(xmlRoutes).to.not.be.empty;
+		expect(xmlRoutes.length).to.be.equal(2);
+		expect(xmlRoutes).to.include.members(['sample.camel.xml', 'kaoto.camel.xml']);
+	});
+
+	it('camel routes (*.camel.yaml) loaded', async function () {
+		const yamlRoutes = labels.filter((label) => label.includes('.camel.yaml'));
+
+		expect(yamlRoutes).to.not.be.empty;
+		expect(yamlRoutes.length).to.be.equal(3);
+		expect(yamlRoutes).to.include.members(['sample1.camel.yaml', 'sample2.camel.yaml', 'sample3.camel.yaml']);
 	});
 
 	it('pipes (*.pipe.yaml | *-pipe.yaml) loaded', async function () {
@@ -87,7 +95,7 @@ describe('Integrations View', function () {
 	it('routes are parsed and displayed', async function () {
 		const routes = labels.filter((label) => label.startsWith('route'));
 		expect(routes).to.not.be.empty;
-		expect(routes.length).to.be.equal(5);
+		expect(routes.length).to.be.equal(10);
 
 		const route = (await integrationsSection?.findItem('route-2700')) as TreeItem;
 		expect(route).to.not.be.undefined;
