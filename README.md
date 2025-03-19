@@ -33,8 +33,9 @@
 
 - 📝 **Design and edit Camel files** with an intuitive low-code interface.
 - ⚙️ **Extensive customization options** including defining a custom catalog and other user-configurable settings to tailor your workflow experience.
-- 🔎 Discover **powerful view**, gain full control over your integration files.
+- 🔎 Discover **powerful views**, gain full control over your integrations.
   - **Browse** and navigate all integration files with ease.
+  - **Orchestrate** and manage all Camel integrations running locally through a dedicated view
   - **Initialize** Camel Routes, Pipes and Kamelets quickly.
   - **Export** integrations as **Maven projects** for Quarkus or Spring Boot deployments.
   - **Run locally** – Test and execute individual integration files effortlessly.

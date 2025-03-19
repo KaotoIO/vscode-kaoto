@@ -46,12 +46,14 @@
     "@patternfly/react-table": "6.1.0",
     "@patternfly/react-topology": "6.1.0",
     "@redhat-developer/vscode-redhat-telemetry": "^0.9.1",
+    "get-port-please": "^3.1.2",
     "monaco-editor": "^0.50.0",
     "monaco-yaml": "5.2.3",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-monaco-editor": "0.56.2",
     "valid-filename": "4.0.0",
+    "wait-on": "^8.0.3",
     "yaml": "^2.7.0"
   },
   "icon": "icon.png",
@@ -181,6 +183,12 @@
           "dark": "./icons/kaoto-run/kaoto-run-dark.png",
           "light": "./icons/kaoto-run/kaoto-run-light.png"
         }
+      },
+      {
+        "command": "kaoto.deployments.refresh",
+        "title": "Refresh",
+        "category": "Kaoto",
+        "icon": "$(refresh)"
       }
     ],
     "keybindings": {
@@ -279,6 +287,11 @@
           "command": "kaoto.integrations.refresh",
           "group": "navigation@2",
           "when": "view == kaoto.integrations"
+        },
+        {
+          "command": "kaoto.deployments.refresh",
+          "group": "navigation",
+          "when": "view == kaoto.deployments"
         }
       ],
       "view/item/context": [
@@ -344,6 +357,27 @@
             "markdownDescription": "Camel version used for internal Camel JBang CLI commands execution. As default Camel Version is used `#kaoto.camelJBang.Version#`.",
             "order": 1
           },
+          "kaoto.deployments.refresh.interval": {
+            "type": "number",
+            "markdownDescription": "Set default auto-refresh interval in milliseconds for a `Kaoto > Deployments` view. **Default recommended interval is 30s.**",
+            "enum": [
+              1000,
+              5000,
+              15000,
+              30000,
+              60000
+            ],
+            "enumItemLabels": [
+              "1s",
+              "5s",
+              "15s",
+              "30s",
+              "60s"
+            ],
+            "default": 30000,
+            "scope": "window",
+            "order": 2
+          },
           "redhat.telemetry.enabled": {
             "type": "boolean",
             "default": null,
@@ -352,7 +386,7 @@
               "telemetry"
             ],
             "scope": "window",
-            "order": 2
+            "order": 3
           }
         }
       },
@@ -476,12 +510,22 @@
           "id": "kaoto.integrations",
           "name": "Integrations",
           "contextualTitle": "Kaoto",
+          "icon": "icons/kaoto.png",
           "initialSize": 2
+        },
+        {
+          "id": "kaoto.deployments",
+          "name": "Deployments",
+          "contextualTitle": "Kaoto",
+          "icon": "icons/kaoto.png",
+          "initialSize": 2,
+          "when": "!virtualWorkspace && kaoto.jbangAvailable"
         },
         {
           "id": "kaoto.help",
           "name": "Help & Feedback",
           "contextualTitle": "Kaoto",
+          "icon": "icons/kaoto.png",
           "initialSize": 1
         }
       ]
@@ -494,6 +538,7 @@
     "@types/mocha": "^10.0.10",
     "@types/react": "18.3.1",
     "@types/vscode": "^1.95.0",
+    "@types/wait-on": "^5.3.4",
     "@typescript-eslint/eslint-plugin": "^8.28.0",
     "@typescript-eslint/parser": "^8.28.0",
     "@vscode/test-cli": "^0.0.10",

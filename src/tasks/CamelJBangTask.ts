@@ -16,6 +16,12 @@
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { ProgressLocation, ShellExecution, Task, TaskDefinition, TaskPanelKind, TaskRevealKind, tasks, TaskScope, window, WorkspaceFolder } from 'vscode';
 
+export interface CamelJBangTaskDefinition extends TaskDefinition {
+	label: string;
+	type: 'camel-jbang';
+	port: number;
+}
+
 /**
  * This class represents implementation of vscode.task for Camel JBang.
  */
@@ -28,10 +34,12 @@ export abstract class CamelJBangTask extends Task {
 		shellExecution: ShellExecution,
 		closePanel: boolean = false,
 		revealTask: TaskRevealKind = TaskRevealKind.Always,
+		port?: number,
 	) {
-		const taskDefinition: TaskDefinition = {
-			label: label,
-			type: 'shell',
+		const taskDefinition: CamelJBangTaskDefinition = {
+			label,
+			type: 'camel-jbang',
+			port: port!,
 		};
 
 		super(taskDefinition, scope, label, 'kaoto', shellExecution);

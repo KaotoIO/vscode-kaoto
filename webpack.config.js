@@ -44,13 +44,13 @@ const commonConfig = (env) => {
 					enforce: 'pre',
 					use: ['source-map-loader'],
 				},
-		  ]
+			]
 		: [];
 
 	const devtool = sourceMaps
 		? {
 				devtool: 'inline-source-map',
-		  }
+			}
 		: {};
 
 	const importsNotUsedAsValues = live ? { importsNotUsedAsValues: 'preserve' } : {};
