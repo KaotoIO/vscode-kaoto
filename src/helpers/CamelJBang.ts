@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ShellExecution, ShellExecutionOptions, Uri, workspace, WorkspaceFolder } from 'vscode';
+import { ShellExecution, ShellExecutionOptions, workspace } from 'vscode';
 import { arePathsEqual } from './helpers';
 import { dirname } from 'path';
 import { globSync } from 'glob';
@@ -147,8 +147,7 @@ export class CamelJBang {
 	 * it is caused by null glob option disabled by default for ZSH shell
 	 */
 	private handleMissingXslFiles(filePath: string, runArgs: string[]): string[] {
-		const currentFileWorkspace = workspace.getWorkspaceFolder(Uri.file(filePath)) as WorkspaceFolder;
-		const xsls = globSync(`${currentFileWorkspace.uri.path}/**/*.xsl`).length > 0;
+		const xsls = globSync(`${dirname(filePath)}/*.xsl`).length > 0;
 		if (xsls) {
 			return runArgs; // don't modify default run arguments specified via settings which should by default contain *.xsl
 		} else {
