@@ -24,6 +24,7 @@ import { KAOTO_FILE_PATH_GLOB } from '../helpers/helpers';
 import { VSCodeKaotoChannelApiProducer } from './../webview/VSCodeKaotoChannelApiProducer';
 import { ExtensionContextHandler } from './ExtensionContextHandler';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
+import { PortManager } from '../helpers/PortManager';
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -53,6 +54,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		backendProxy: backendProxy,
 	});
 
+	const portManager = new PortManager();
+
 	/*
 	 * init Red Hat Telemetry
 	 */
@@ -75,6 +78,15 @@ export async function activate(context: vscode.ExtensionContext) {
 	 * register 'Integrations' view provider
 	 */
 	contextHandler.registerIntegrationsView();
+	contextHandler.registerNewCamelFilesCommands();
+	contextHandler.registerNewCamelProjectCommands();
+	contextHandler.registerKubernetesRunCommands();
+	contextHandler.registerRunIntegrationCommands(portManager);
+
+	/*
+	 * register 'Deployments' view provider
+	 */
+	contextHandler.registerDeploymentsView(portManager);
 
 	/*
 	 * register 'Help & Feedback' view provider

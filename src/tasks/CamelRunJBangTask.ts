@@ -19,13 +19,14 @@ import { CamelJBang } from '../helpers/CamelJBang';
 import { basename, dirname } from 'path';
 
 export class CamelRunJBangTask extends CamelJBangTask {
-	private constructor(shellExecution: ShellExecution, filePath: string) {
-		super(TaskScope.Workspace, `Running - ${basename(filePath)}`, shellExecution);
+	private constructor(shellExecution: ShellExecution, filePath: string, port?: number) {
+		super(TaskScope.Workspace, `Running - ${basename(filePath)}`, shellExecution, undefined, undefined, port);
+
 		this.isBackground = true;
 	}
 
-	static async create(filePath: string): Promise<CamelRunJBangTask> {
-		const shellExecution = await new CamelJBang().run(filePath, dirname(filePath));
-		return new CamelRunJBangTask(shellExecution, filePath);
+	static async create(filePath: string, port?: number): Promise<CamelRunJBangTask> {
+		const shellExecution = await new CamelJBang().run(filePath, dirname(filePath), port);
+		return new CamelRunJBangTask(shellExecution, filePath, port);
 	}
 }

@@ -62,14 +62,23 @@ export class CamelJBang {
 		);
 	}
 
-	public async run(filePath: string, cwd?: string): Promise<ShellExecution> {
+	public async run(filePath: string, cwd?: string, port?: number): Promise<ShellExecution> {
 		const shellExecOptions: ShellExecutionOptions = {
 			cwd: cwd,
 		};
 		const runArgs = await this.getRunArguments(filePath);
 		return new ShellExecution(
 			this.jbang,
-			[...this.defaultJbangArgs, 'run', `'${filePath}'`, ...runArgs, this.getCamelVersion(), this.getRedHatMavenRepository()].filter(function (arg) {
+			[
+				...this.defaultJbangArgs,
+				'run',
+				`'${filePath}'`,
+				'--console',
+				`--port=${port ?? 8080}`,
+				...runArgs,
+				this.getCamelVersion(),
+				this.getRedHatMavenRepository(),
+			].filter(function (arg) {
 				return arg; // remove ALL empty values ("", null, undefined and 0)
 			}),
 			shellExecOptions,

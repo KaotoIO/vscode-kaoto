@@ -18,8 +18,8 @@ import { basename, join } from 'path';
 import { parse } from 'yaml';
 import { XMLParser } from 'fast-xml-parser';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
-import { Integration } from './integrationTreeItems/Integration';
-import { Route } from './integrationTreeItems/Route';
+import { Integration } from '../integrationTreeItems/Integration';
+import { Route } from '../integrationTreeItems/Route';
 
 type TreeItemType = TreeItem | undefined | null | void;
 

@@ -20,6 +20,7 @@
   - Kaoto: Integrations view
     - create new Camel Route using XML DSL
     - list XML files with route elements
+- Add `Deployments` view into Kaoto view container which displays all local running integrations
 
 # 2.4.0
 
