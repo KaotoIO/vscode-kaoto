@@ -58,6 +58,20 @@ describe('User Settings', function () {
 		await driver.sleep(1_000); // stabilize tests which are sometimes failing on macOS CI
 		await closeEditor('Settings', true);
 
+		await driver.wait(
+			async () => {
+				try {
+					const viewControls = await driver.findElements(
+						By.xpath(`.//ul[@aria-label='Active View Switcher']`) /*ActivityBar.locators.ActivityBar.viewContainer*/,
+					);
+					return viewControls.length > 0;
+				} catch {
+					return false;
+				}
+			},
+			5_000,
+			'The activityBar is not reachable after 5 seconds. Maybe the modal dialog has not been successfully closed previously?',
+		);
 		// close sidebar
 		await (await new ActivityBar().getViewControl('Explorer'))?.closeView();
 
