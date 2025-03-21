@@ -502,7 +502,7 @@
     "constants-browserify": "^1.0.0",
     "copy-webpack-plugin": "^13.0.0",
     "css-loader": "6.8.1",
-    "eslint": "^9.22.0",
+    "eslint": "^9.23.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-define-config": "^2.1.0",
     "eslint-plugin-chai-friendly": "^1.0.1",
