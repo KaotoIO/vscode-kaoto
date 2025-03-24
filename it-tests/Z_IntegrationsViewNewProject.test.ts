@@ -68,10 +68,7 @@ describe('Integrations View', function () {
 		expect(exportButton).to.not.be.undefined;
 	});
 
-	/**
-	 * Skip on macOS - see https://issues.redhat.com/browse/FUSETOOLS2-2553
-	 */
-	(process.platform === 'darwin' ? describe.skip : describe)(`Click 'Export' button`, function () {
+	describe(`Click 'Export' button`, function () {
 		const PROJECT_OUTPUT_DIR: string = join(WORKSPACE_FOLDER, 'quarkus-export-example');
 
 		let input: InputBox;
@@ -103,8 +100,12 @@ describe('Integrations View', function () {
 			input = await InputBox.create(30_000);
 			await input.setText(PROJECT_OUTPUT_DIR);
 			await input.confirm();
-			await input.confirm(); // for some reason when using setText for a path pick input it needs to be confirmed twice (see https://github.com/redhat-developer/vscode-extension-tester/issues/1778)
-
+			if (process.platform !== 'darwin') {
+				/* when the provided path is not exactly formatted to the OS specificities, there is first a `Select` button and then a `Confirm`
+				 * see also see https://github.com/redhat-developer/vscode-extension-tester/issues/1778
+				 */
+				await input.confirm();
+			}
 			const dialog = new ModalDialog();
 			await driver.wait(
 				async function () {
