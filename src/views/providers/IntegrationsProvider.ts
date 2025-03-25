@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { commands, Event, EventEmitter, FileSystemWatcher, IconPath, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
-import { basename, dirname, join, relative } from 'path';
+import { commands, Event, EventEmitter, FileSystemWatcher, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
+import { basename, join } from 'path';
 import { parse } from 'yaml';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
+import { Integration } from './integrationTreeItems/Integration';
+import { Route } from './integrationTreeItems/Route';
 
 type TreeItemType = TreeItem | undefined | null | void;
 
@@ -122,46 +124,4 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 			return [];
 		}
 	}
-}
-
-export class Integration extends TreeItem {
-	constructor(
-		public readonly name: string,
-		public readonly filename: string,
-		public readonly filepath: Uri,
-		public collapsibleState: TreeItemCollapsibleState,
-		public readonly type: string,
-		public readonly icon: string | IconPath,
-	) {
-		super(filename, collapsibleState);
-		this.iconPath = icon;
-		this.tooltip = this.filepath.fsPath;
-		this.description = this.getDescription(filepath);
-	}
-
-	command = { command: 'kaoto.open', title: 'Open with Kaoto', arguments: [this.filepath] };
-
-	contextValue = 'integration';
-
-	private getDescription(filepath: Uri): string {
-		if (workspace.workspaceFolders && workspace.workspaceFolders.length > 1) {
-			return dirname(relative(dirname(workspace.getWorkspaceFolder(filepath)?.uri.fsPath as string), filepath.fsPath));
-		} else {
-			return dirname(relative(workspace.getWorkspaceFolder(filepath)?.uri.fsPath as string, filepath.fsPath));
-		}
-	}
-}
-
-export class Route extends TreeItem {
-	constructor(
-		public readonly name: string,
-		public readonly description: string,
-		public readonly icon: string | IconPath,
-	) {
-		super(name || '[missing route id]', TreeItemCollapsibleState.None);
-		this.description = description;
-		this.iconPath = icon;
-	}
-
-	contextValue = 'route';
 }
