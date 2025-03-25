@@ -62,8 +62,8 @@ describe('Kaoto basic development flow', function () {
 		globalKaotoWebView = kaotoWebview;
 		await checkEmptyCanvasLoaded(driver);
 		await createNewRoute(driver);
-		await addActiveMQStep(driver);
-		await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__activemq', 'activemq');
+		await addAMQPStep(driver);
+		await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__amqp', 'amqp');
 
 		await kaotoWebview.switchBack();
 		assert.isTrue(await kaotoEditor.isDirty(), 'The Kaoto editor should be dirty after adding a step.');
@@ -77,7 +77,7 @@ describe('Kaoto basic development flow', function () {
 
 		({ kaotoWebview, kaotoEditor } = await openAndSwitchToKaotoFrame(workspaceFolder, 'empty_copy.camel.yaml', driver, true));
 		globalKaotoWebView = kaotoWebview;
-		await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__activemq', 'activemq');
+		await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__amqp', 'amqp');
 		await kaotoWebview.switchBack();
 	});
 
@@ -192,7 +192,7 @@ async function createNewRoute(driver: WebDriver) {
 	await (await driver.findElement(By.xpath("//button[@data-testid='dsl-list-btn']"))).click();
 }
 
-async function addActiveMQStep(driver: WebDriver) {
+async function addAMQPStep(driver: WebDriver) {
 	await driver.wait(
 		until.elementLocated(By.css('g[data-testid^="custom-node__timer"],g[data-testid="custom-node__route.from"]')),
 		5000,
@@ -205,8 +205,8 @@ async function addActiveMQStep(driver: WebDriver) {
 	await driver.wait(until.elementLocated(By.className('pf-topology-context-menu__c-dropdown__menu')));
 	await (await driver.findElement(By.xpath("//\*[@data-testid='context-menu-item-replace']"))).click();
 
-	await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='tile-activemq']")));
-	await (await driver.findElement(By.xpath("//div[@data-testid='tile-activemq']"))).click();
+	await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='tile-header-amqp']")));
+	await (await driver.findElement(By.xpath("//div[@data-testid='tile-header-amqp']"))).click();
 }
 
 async function addDatamapperStep(driver: WebDriver) {
