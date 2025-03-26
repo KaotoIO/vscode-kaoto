@@ -41,6 +41,15 @@ describe('Integrations View', function () {
 		kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
 		kaotoView = await kaotoViewContainer?.openView();
 		integrationsSection = await kaotoView?.getContent().getSection('Integrations');
+		await driver.actions().move({ origin: integrationsSection }).perform(); // move mouse to bring auto-hided buttons visible again
+		const collapseItems = await driver.wait(
+			async function () {
+				return await integrationsSection?.getAction('Collapse All');
+			},
+			5_000,
+			`'Collapse All' button was not found!`,
+		);
+		await collapseItems?.click();
 	});
 
 	after(async function () {

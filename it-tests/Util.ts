@@ -69,20 +69,20 @@ export async function activateTerminalView(): Promise<TerminalView> {
 
 export async function getTreeItem(
 	driver: WebDriver,
-	integrationsSection: ViewSection | undefined,
+	section: ViewSection | undefined,
 	filename: string,
 	timeout: number = 10_000,
 ): Promise<TreeItem | undefined> {
 	return await driver.wait(
 		async function () {
 			try {
-				return (await integrationsSection?.findItem(filename)) as TreeItem;
+				return (await section?.findItem(filename)) as TreeItem;
 			} catch (error) {
 				return undefined;
 			}
 		},
 		timeout,
-		`${filename} was not found within Integrations view!`,
+		`${filename} was not found within ${await section?.getTitle()} view!`,
 	);
 }
 

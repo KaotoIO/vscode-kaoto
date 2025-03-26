@@ -77,9 +77,14 @@ jobs:
           eval $(minikube -p minikube docker-env)
           xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
         if: ${{ matrix.os == 'ubuntu-latest' }}
-      - name: Run UI Tests on Other OSes than Linux
+      - name: Run UI Tests on macOS
         run: yarn run test:it:with-prebuilt-vsix
-        if: ${{ matrix.os != 'ubuntu-latest' }}
+        if: matrix.os == 'macos-latest'
+      - name: Run UI Tests on windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          Set-DisplayResolution -Width 1920 -Height 1080 -Force
+          yarn run test:it:with-prebuilt-vsix
       - name: Generate SBOM
         if: matrix.os == 'ubuntu-latest'
         run: |
