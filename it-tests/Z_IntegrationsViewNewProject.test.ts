@@ -20,6 +20,7 @@ import {
 	ActivityBar,
 	after,
 	before,
+	By,
 	EditorView,
 	InputBox,
 	ModalDialog,
@@ -100,12 +101,16 @@ describe('Integrations View', function () {
 			input = await InputBox.create(30_000);
 			await input.setText(PROJECT_OUTPUT_DIR);
 			await input.confirm();
-			if (process.platform !== 'darwin') {
-				/* when the provided path is not exactly formatted to the OS specificities, there is first a `Select` button and then a `Confirm`
+
+			const nextButton = await input.findElement(By.className('monaco-button'));
+			if (nextButton && (await nextButton.getText()) === 'Select') {
+				/**
+				 * when the provided path is not exactly formatted to the OS specificities, there is first a `Select` button and then a `Confirm`
 				 * see also see https://github.com/redhat-developer/vscode-extension-tester/issues/1778
 				 */
 				await input.confirm();
 			}
+
 			const dialog = new ModalDialog();
 			await driver.wait(
 				async function () {
