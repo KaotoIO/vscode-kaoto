@@ -25,12 +25,16 @@ describe('Kaoto View Container', function () {
 
 	let kaotoViewContainer: ViewControl | undefined;
 	let kaotoView: SideBarView | undefined;
+	let helpFeedbackSection: ViewSection | undefined;
+	let integrationsSection: ViewSection | undefined;
+	let deploymentsSection: ViewSection | undefined;
 
 	before(async function () {
 		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
 	});
 
 	after(async function () {
+		await helpFeedbackSection?.collapse();
 		await kaotoViewContainer?.closeView();
 	});
 
@@ -49,8 +53,6 @@ describe('Kaoto View Container', function () {
 	});
 
 	describe('Help & Feedback view', function () {
-		let helpFeedbackSection: ViewSection | undefined;
-
 		it('is present', async function () {
 			helpFeedbackSection = await kaotoView?.getContent().getSection('Help & Feedback');
 			expect(helpFeedbackSection).to.not.be.undefined;
@@ -64,11 +66,16 @@ describe('Kaoto View Container', function () {
 	});
 
 	describe('Integrations view', function () {
-		let integrationsSection: ViewSection | undefined;
-
 		it('is present', async function () {
 			integrationsSection = await kaotoView?.getContent().getSection('Integrations');
 			expect(integrationsSection).to.not.be.undefined;
+		});
+	});
+
+	describe('Deployments view', function () {
+		it('is present', async function () {
+			deploymentsSection = await kaotoView?.getContent().getSection('Deployments');
+			expect(deploymentsSection).to.not.be.undefined;
 		});
 	});
 });

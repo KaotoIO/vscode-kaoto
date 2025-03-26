@@ -26,6 +26,7 @@ describe('Integrations View', function () {
 	let kaotoViewContainer: ViewControl | undefined;
 	let kaotoView: SideBarView | undefined;
 	let integrationsSection: ViewSection | undefined;
+	let deploymentsSection: ViewSection | undefined;
 	let items: TreeItem[];
 	let labels: string[];
 
@@ -34,6 +35,8 @@ describe('Integrations View', function () {
 
 		kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
 		kaotoView = await kaotoViewContainer?.openView();
+		deploymentsSection = await kaotoView?.getContent().getSection('Deployments');
+		await deploymentsSection?.collapse();
 		integrationsSection = await kaotoView?.getContent().getSection('Integrations');
 
 		items = (await integrationsSection?.getVisibleItems()) as TreeItem[];
@@ -41,6 +44,7 @@ describe('Integrations View', function () {
 	});
 
 	after(async function () {
+		await deploymentsSection?.expand();
 		await kaotoViewContainer?.closeView();
 		await new EditorView().closeAllEditors();
 	});
