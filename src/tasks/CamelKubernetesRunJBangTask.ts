@@ -16,10 +16,10 @@
 import { TaskScope } from 'vscode';
 import { CamelJBangTask } from './CamelJBangTask';
 import { CamelJBang } from '../helpers/CamelJBang';
-import { basename } from 'path';
+import { basename, dirname } from 'path';
 
 export class CamelKubernetesRunJBangTask extends CamelJBangTask {
-	constructor(filePath: string, cwd?: string) {
-		super(TaskScope.Workspace, `Deploying - ${basename(filePath)}`, new CamelJBang().kubernetesRun(filePath, cwd));
+	constructor(filePath: string) {
+		super(TaskScope.Workspace, `Deploying - ${basename(filePath)}`, new CamelJBang().kubernetesRun(filePath, dirname(filePath)));
 	}
 }
