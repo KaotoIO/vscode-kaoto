@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ShellExecution, ShellExecutionOptions, workspace } from 'vscode';
+import { RelativePattern, ShellExecution, ShellExecutionOptions, Uri, workspace } from 'vscode';
 import { arePathsEqual } from './helpers';
 import { dirname } from 'path';
-import { globSync } from 'glob';
 
 export enum RouteOperation {
 	start = 'start',
@@ -63,20 +62,14 @@ export class CamelJBang {
 		);
 	}
 
-	public run(filePath: string, cwd?: string): ShellExecution {
+	public async run(filePath: string, cwd?: string): Promise<ShellExecution> {
 		const shellExecOptions: ShellExecutionOptions = {
 			cwd: cwd,
 		};
+		const runArgs = await this.getRunArguments(filePath);
 		return new ShellExecution(
 			this.jbang,
-			[
-				...this.defaultJbangArgs,
-				'run',
-				`'${filePath}'`,
-				...this.getRunArguments(filePath),
-				this.getCamelVersion(),
-				this.getRedHatMavenRepository(),
-			].filter(function (arg) {
+			[...this.defaultJbangArgs, 'run', `'${filePath}'`, ...runArgs, this.getCamelVersion(), this.getRedHatMavenRepository()].filter(function (arg) {
 				return arg; // remove ALL empty values ("", null, undefined and 0)
 			}),
 			shellExecOptions,
@@ -105,10 +98,10 @@ export class CamelJBang {
 		}
 	}
 
-	private getRunArguments(filePath: string): string[] {
+	private async getRunArguments(filePath: string): Promise<string[]> {
 		const runArgs = workspace.getConfiguration().get('kaoto.camelJBang.RunArguments') as string[];
 		if (runArgs) {
-			return this.handleMissingXslFiles(filePath, runArgs);
+			return await this.handleMissingXslFiles(filePath, runArgs);
 		} else {
 			return [];
 		}
@@ -146,9 +139,10 @@ export class CamelJBang {
 	 * Mainly in ZSH shell there is problem when Camel JBang is executed with non existing files added using '*.xsl' file pattern
 	 * it is caused by null glob option disabled by default for ZSH shell
 	 */
-	private handleMissingXslFiles(filePath: string, runArgs: string[]): string[] {
-		const xsls = globSync(`${dirname(filePath)}/*.xsl`).length > 0;
-		if (xsls) {
+	private async handleMissingXslFiles(filePath: string, runArgs: string[]): Promise<string[]> {
+		const folderUri = Uri.file(dirname(filePath));
+		const xsls = await workspace.findFiles(new RelativePattern(folderUri, '*.xsl'));
+		if (xsls.length > 0) {
 			return runArgs; // don't modify default run arguments specified via settings which should by default contain *.xsl
 		} else {
 			return runArgs.filter((parameter) => parameter !== '*.xsl');

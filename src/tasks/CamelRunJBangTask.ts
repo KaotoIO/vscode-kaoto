@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TaskScope } from 'vscode';
+import { ShellExecution, TaskScope } from 'vscode';
 import { CamelJBangTask } from './CamelJBangTask';
 import { CamelJBang } from '../helpers/CamelJBang';
-import { basename } from 'path';
+import { basename, dirname } from 'path';
 
 export class CamelRunJBangTask extends CamelJBangTask {
-	constructor(filePath: string, cwd?: string) {
-		super(TaskScope.Workspace, `Running - ${basename(filePath)}`, new CamelJBang().run(filePath, cwd));
-
+	private constructor(shellExecution: ShellExecution, filePath: string) {
+		super(TaskScope.Workspace, `Running - ${basename(filePath)}`, shellExecution);
 		this.isBackground = true;
+	}
+
+	static async create(filePath: string): Promise<CamelRunJBangTask> {
+		const shellExecution = await new CamelJBang().run(filePath, dirname(filePath));
+		return new CamelRunJBangTask(shellExecution, filePath);
 	}
 }

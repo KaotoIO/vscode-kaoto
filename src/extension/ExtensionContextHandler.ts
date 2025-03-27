@@ -15,7 +15,6 @@
  */
 import * as vscode from 'vscode';
 import * as KogitoVsCode from '@kie-tools-core/vscode-extension/dist';
-import { dirname } from 'path';
 import { execSync } from 'child_process';
 import { HelpFeedbackProvider } from '../views/providers/HelpFeedbackProvider';
 import { IntegrationsProvider } from '../views/providers/IntegrationsProvider';
@@ -193,7 +192,8 @@ export class ExtensionContextHandler {
 
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(INTEGRATIONS_RUN_COMMAND_ID, async (integration: Integration) => {
-				await new CamelRunJBangTask(integration.filepath.fsPath, dirname(integration.filepath.fsPath)).execute();
+				const runTask = await CamelRunJBangTask.create(integration.filepath.fsPath);
+				await runTask.execute();
 				await this.sendCommandTrackingEvent(INTEGRATIONS_RUN_COMMAND_ID);
 			}),
 		);
@@ -208,7 +208,7 @@ export class ExtensionContextHandler {
 					await new CamelAddPluginJBangTask('kubernetes').executeAndWait();
 					KaotoOutputChannel.logInfo('Apache Camel JBang Kubernetes plugin was installed.');
 				}
-				await new CamelKubernetesRunJBangTask(integration.filepath.fsPath, dirname(integration.filepath.fsPath)).execute();
+				await new CamelKubernetesRunJBangTask(integration.filepath.fsPath).execute();
 				await this.sendCommandTrackingEvent(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID);
 			}),
 		);
