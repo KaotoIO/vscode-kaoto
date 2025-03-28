@@ -33,6 +33,8 @@ import { CamelAddPluginJBangTask } from '../tasks/CamelAddPluginJBangTask';
 import { CamelKubernetesRunJBangTask } from '../tasks/CamelKubernetesRunJBangTask';
 import { DeploymentsProvider } from '../views/providers/DeploymentsProvider';
 import { PortManager } from '../helpers/PortManager';
+import { ParentItem } from '../views/deploymentTreeItems/ParentItem';
+import { CamelStopJBangTask } from '../tasks/CamelStopJBangTask';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -147,6 +149,9 @@ export class ExtensionContextHandler {
 				}
 			}),
 		);
+
+		// register Stop and Logs view item action buttons
+		this.registerDeploymentsIntegrationCommands(deploymentsProvider);
 	}
 
 	private registerIntegrationsItemsContextMenu() {
@@ -236,6 +241,29 @@ export class ExtensionContextHandler {
 				}
 				await new CamelKubernetesRunJBangTask(integration.filepath.fsPath).execute();
 				await this.sendCommandTrackingEvent(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID);
+			}),
+		);
+	}
+
+	public registerDeploymentsIntegrationCommands(deploymentsProvider: DeploymentsProvider) {
+		const DEPLOYMENTS_INTEGRATION_STOP_COMMAND_ID: string = 'kaoto.deployments.stop';
+		const DEPLOYMENTS_INTEGRATION_LOGS_COMMAND_ID: string = 'kaoto.deployments.logs';
+
+		this.context.subscriptions.push(
+			vscode.commands.registerCommand(DEPLOYMENTS_INTEGRATION_STOP_COMMAND_ID, async (integration: ParentItem) => {
+				await new CamelStopJBangTask(integration.label as string).executeAndWait();
+				// TODO remove static time, at the moment just to give some more time to ensure Camel JBang reflects properly new state
+				await new Promise((time) => setTimeout(time, 750));
+				deploymentsProvider.refresh();
+				await this.sendCommandTrackingEvent(DEPLOYMENTS_INTEGRATION_STOP_COMMAND_ID);
+			}),
+		);
+
+		this.context.subscriptions.push(
+			vscode.commands.registerCommand(DEPLOYMENTS_INTEGRATION_LOGS_COMMAND_ID, async (integration: ParentItem) => {
+				const terminal = vscode.window.terminals.find((t) => t.name === `Running - ${integration.description as string}`);
+				terminal?.show();
+				await this.sendCommandTrackingEvent(DEPLOYMENTS_INTEGRATION_LOGS_COMMAND_ID);
 			}),
 		);
 	}

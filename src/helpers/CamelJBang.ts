@@ -98,6 +98,10 @@ export class CamelJBang {
 		);
 	}
 
+	public stop(name: string): ShellExecution {
+		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'stop', name]);
+	}
+
 	private getKubernetesRunArguments(): string[] {
 		const kubernetesRunArgs = workspace.getConfiguration().get('kaoto.camelJBang.KubernetesRunArguments') as string[];
 		if (kubernetesRunArgs) {

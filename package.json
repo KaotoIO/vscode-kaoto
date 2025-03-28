@@ -189,6 +189,18 @@
         "title": "Refresh",
         "category": "Kaoto",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "kaoto.deployments.stop",
+        "title": "Stop",
+        "category": "Kaoto",
+        "icon": "$(circle-slash)"
+      },
+      {
+        "command": "kaoto.deployments.logs",
+        "title": "Follow Logs",
+        "category": "Kaoto",
+        "icon": "$(terminal)"
       }
     ],
     "keybindings": {
@@ -256,6 +268,14 @@
         {
           "command": "kaoto.integrations.delete",
           "when": "false"
+        },
+        {
+          "command": "kaoto.deployments.stop",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.deployments.logs",
+          "when": "false"
         }
       ],
       "editor/title": [
@@ -319,6 +339,16 @@
           "command": "kaoto.camel.jbang.export",
           "when": "view == kaoto.integrations && viewItem == integration && !virtualWorkspace && kaoto.jbangAvailable",
           "group": "inline@3"
+        },
+        {
+          "command": "kaoto.deployments.stop",
+          "group": "inline@1",
+          "when": "view == kaoto.deployments && viewItem == parent-localhost"
+        },
+        {
+          "command": "kaoto.deployments.logs",
+          "group": "inline@2",
+          "when": "view == kaoto.deployments && viewItem == parent-localhost"
         }
       ]
     },
