@@ -12094,7 +12094,7 @@ __metadata:
     webpack-cli: "npm:6.0.1"
     webpack-merge: "npm:6.0.1"
     webpack-permissions-plugin: "npm:^1.0.10"
-    yaml: "npm:^2.7.0"
+    yaml: "npm:^2.7.1"
   languageName: unknown
   linkType: soft
 
