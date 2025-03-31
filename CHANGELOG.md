@@ -21,6 +21,7 @@
     - list XML files with route elements
 - Add `Deployments` view into Kaoto view container which displays all local running integrations
 - Add `Stop` and `Follow Logs` action buttons into Deployments view
+- Add `Start/Stop/Suspend/Resume` action button on `route` level within Deployments view
 
 # 2.4.0
 

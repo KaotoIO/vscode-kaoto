@@ -16,9 +16,16 @@
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 import { Route } from './Route';
 import { join } from 'path';
+import { ParentItem } from './ParentItem';
 
 export class ChildItem extends TreeItem {
-	constructor(label: string, state: TreeItemCollapsibleState, baseContext: string, route?: Route) {
+	constructor(
+		public readonly parentIntegration: ParentItem,
+		label: string,
+		state: TreeItemCollapsibleState,
+		baseContext: string,
+		route?: Route,
+	) {
 		super(label, state);
 
 		if (route) {
@@ -42,21 +49,21 @@ export class ChildItem extends TreeItem {
 		const visuals: Record<string, { icon: string; context: string }> = {
 			Started: {
 				icon: join(base, 'route-started.png'),
-				context: 'resumeDisabled suspendEnabled stopEnabled',
+				context: 'startDisabled resumeDisabled suspendEnabled stopEnabled',
 			},
 			Suspended: {
 				icon: join(base, 'route-suspended.png'),
-				context: 'resumeEnabled suspendDisabled stopEnabled',
+				context: 'startDisabled resumeEnabled suspendDisabled stopEnabled',
 			},
 			Stopped: {
 				icon: join(base, 'route-stopped.png'),
-				context: 'resumeEnabled suspendDisabled stopDisabled',
+				context: 'startEnabled resumeDisabled suspendDisabled stopDisabled',
 			},
 		};
 
 		const visual = visuals[state] || {
 			icon: join(base, 'route-default.png'),
-			context: 'resumeDisabled suspendDisabled stopDisabled',
+			context: 'startDisabled resumeDisabled suspendDisabled stopDisabled',
 		};
 
 		const description = state === 'Started' ? `${state} (${route.uptime})` : state;
