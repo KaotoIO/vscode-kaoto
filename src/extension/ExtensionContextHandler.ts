@@ -35,6 +35,9 @@ import { DeploymentsProvider } from '../views/providers/DeploymentsProvider';
 import { PortManager } from '../helpers/PortManager';
 import { ParentItem } from '../views/deploymentTreeItems/ParentItem';
 import { CamelStopJBangTask } from '../tasks/CamelStopJBangTask';
+import { ChildItem } from '../views/deploymentTreeItems/ChildItem';
+import { CamelRouteOperationJBangTask } from '../tasks/CamelRouteOperationJBangTask';
+import { RouteOperation } from '../helpers/CamelJBang';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -152,6 +155,8 @@ export class ExtensionContextHandler {
 
 		// register Stop and Logs view item action buttons
 		this.registerDeploymentsIntegrationCommands();
+		// register Stop/Start/Resume/Suspend route level buttons
+		this.registerDeploymentsRouteCommands(deploymentsProvider);
 	}
 
 	private registerIntegrationsItemsContextMenu() {
@@ -266,6 +271,46 @@ export class ExtensionContextHandler {
 					KaotoOutputChannel.logWarning(`Terminal with a name "${runningLabel}" was not found.`);
 				}
 				await this.sendCommandTrackingEvent(DEPLOYMENTS_INTEGRATION_LOGS_COMMAND_ID);
+			}),
+		);
+	}
+
+	public registerDeploymentsRouteCommands(deploymentsProvider: DeploymentsProvider) {
+		const DEPLOYMENTS_ROUTE_START_COMMAND_ID: string = 'kaoto.deployments.route.start';
+		const DEPLOYMENTS_ROUTE_STOP_COMMAND_ID: string = 'kaoto.deployments.route.stop';
+		const DEPLOYMENTS_ROUTE_RESUME_COMMAND_ID: string = 'kaoto.deployments.route.resume';
+		const DEPLOYMENTS_ROUTE_SUSPEND_COMMAND_ID: string = 'kaoto.deployments.route.suspend';
+
+		this.context.subscriptions.push(
+			vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_START_COMMAND_ID, async (route: ChildItem) => {
+				await new CamelRouteOperationJBangTask(RouteOperation.start, route.parentIntegration.label as string, route.label as string).executeAndWait();
+				await deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Started');
+				deploymentsProvider.refresh();
+				await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_START_COMMAND_ID);
+			}),
+		);
+		this.context.subscriptions.push(
+			vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_STOP_COMMAND_ID, async (route: ChildItem) => {
+				await new CamelRouteOperationJBangTask(RouteOperation.stop, route.parentIntegration.label as string, route.label as string).executeAndWait();
+				await deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Stopped');
+				deploymentsProvider.refresh();
+				await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_STOP_COMMAND_ID);
+			}),
+		);
+		this.context.subscriptions.push(
+			vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_RESUME_COMMAND_ID, async (route: ChildItem) => {
+				await new CamelRouteOperationJBangTask(RouteOperation.resume, route.parentIntegration.label as string, route.label as string).executeAndWait();
+				await deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Started');
+				deploymentsProvider.refresh();
+				await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_RESUME_COMMAND_ID);
+			}),
+		);
+		this.context.subscriptions.push(
+			vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_SUSPEND_COMMAND_ID, async (route: ChildItem) => {
+				await new CamelRouteOperationJBangTask(RouteOperation.suspend, route.parentIntegration.label as string, route.label as string).executeAndWait();
+				await deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Suspended');
+				deploymentsProvider.refresh();
+				await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_SUSPEND_COMMAND_ID);
 			}),
 		);
 	}

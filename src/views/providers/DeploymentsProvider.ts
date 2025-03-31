@@ -100,7 +100,11 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 			const parentItem = element as ParentItem;
 			const key = new PortFileKey(parentItem.port, parentItem.description as string); // description stores a file name
 			const data = this.localhostData.get(key.toString());
-			return data?.routes.map((route) => new ChildItem(route.routeId, TreeItemCollapsibleState.None, this.CONTEXT_ROUTE_LOCALHOST_ITEM, route)) || [];
+			return (
+				data?.routes.map(
+					(route) => new ChildItem(parentItem, route.routeId, TreeItemCollapsibleState.None, this.CONTEXT_ROUTE_LOCALHOST_ITEM, route),
+				) || []
+			);
 		}
 
 		return [];
@@ -201,6 +205,35 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 			throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 		}
 		return await response.json();
+	}
+
+	public async waitUntilRouteHasState(
+		port: number,
+		routeId: string,
+		expectedState: 'Started' | 'Suspended' | 'Stopped',
+		timeoutMs: number = 10_000,
+		intervalMs: number = 250,
+	): Promise<boolean> {
+		const start = Date.now();
+		while (Date.now() - start < timeoutMs) {
+			try {
+				const data = await this.fetchFromConsole(port);
+				const routes = data?.route?.routes ?? [];
+
+				const targetRoute = routes.find((route: any) => route.routeId === routeId);
+				if (targetRoute?.state === expectedState) {
+					return true;
+				}
+			} catch (err) {
+				// ignore fetch failures (e.g., server not ready)
+			}
+			await new Promise((resolve) => setTimeout(resolve, intervalMs));
+		}
+
+		KaotoOutputChannel.logWarning(
+			`[DeploymentsProvider] Timeout: route "${routeId}" on port ${port} did not reach state "${expectedState}" within ${timeoutMs}ms.`,
+		);
+		return false;
 	}
 }
 

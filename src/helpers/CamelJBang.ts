@@ -102,6 +102,10 @@ export class CamelJBang {
 		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'stop', name]);
 	}
 
+	public route(operation: RouteOperation, integration: string, routeId: string): ShellExecution {
+		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'cmd', `${operation}-route`, integration, `--id=${routeId}`]);
+	}
+
 	private getKubernetesRunArguments(): string[] {
 		const kubernetesRunArgs = workspace.getConfiguration().get('kaoto.camelJBang.KubernetesRunArguments') as string[];
 		if (kubernetesRunArgs) {

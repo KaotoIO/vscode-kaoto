@@ -201,6 +201,30 @@
         "title": "Follow Logs",
         "category": "Kaoto",
         "icon": "$(terminal)"
+      },
+      {
+        "command": "kaoto.deployments.route.start",
+        "title": "Start",
+        "category": "Kaoto",
+        "icon": "$(debug-start)"
+      },
+      {
+        "command": "kaoto.deployments.route.resume",
+        "title": "Resume",
+        "category": "Kaoto",
+        "icon": "$(debug-continue)"
+      },
+      {
+        "command": "kaoto.deployments.route.suspend",
+        "title": "Suspend",
+        "category": "Kaoto",
+        "icon": "$(debug-pause)"
+      },
+      {
+        "command": "kaoto.deployments.route.stop",
+        "title": "Stop",
+        "category": "Kaoto",
+        "icon": "$(debug-stop)"
       }
     ],
     "keybindings": {
@@ -276,6 +300,22 @@
         {
           "command": "kaoto.deployments.logs",
           "when": "false"
+        },
+        {
+          "command": "kaoto.deployments.route.start",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.deployments.route.resume",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.deployments.route.suspend",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.deployments.route.stop",
+          "when": "false"
         }
       ],
       "editor/title": [
@@ -349,6 +389,26 @@
           "command": "kaoto.deployments.logs",
           "group": "inline@2",
           "when": "view == kaoto.deployments && viewItem == parent-localhost"
+        },
+        {
+          "command": "kaoto.deployments.route.start",
+          "group": "inline@1",
+          "when": "view == kaoto.deployments && viewItem =~ /^.*startEnabled.*$/"
+        },
+        {
+          "command": "kaoto.deployments.route.resume",
+          "group": "inline@2",
+          "when": "view == kaoto.deployments && viewItem =~ /^.*resumeEnabled.*$/"
+        },
+        {
+          "command": "kaoto.deployments.route.suspend",
+          "group": "inline@3",
+          "when": "view == kaoto.deployments && viewItem =~ /^.*suspendEnabled.*$/"
+        },
+        {
+          "command": "kaoto.deployments.route.stop",
+          "group": "inline@4",
+          "when": "view == kaoto.deployments && viewItem =~ /^.*stopEnabled.*$/"
         }
       ]
     },
