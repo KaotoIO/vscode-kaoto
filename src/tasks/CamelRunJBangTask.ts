@@ -20,7 +20,7 @@ import { basename, dirname } from 'path';
 
 export class CamelRunJBangTask extends CamelJBangTask {
 	private constructor(shellExecution: ShellExecution, filePath: string, port?: number) {
-		super(TaskScope.Workspace, `Running - ${basename(filePath)}`, shellExecution, undefined, undefined, port);
+		super(TaskScope.Workspace, `Running - ${basename(filePath)}::${port}`, shellExecution, undefined, undefined, port);
 
 		this.isBackground = true;
 	}

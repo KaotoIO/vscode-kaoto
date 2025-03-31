@@ -35,7 +35,7 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 
 	private interval: number;
 	private autoRefreshHandle?: NodeJS.Timeout;
-	private localhostData = new Map<string, Route[]>();
+	private localhostData = new Map<string, { associatedFile: string; routes: Route[] }>();
 
 	constructor(private readonly portManager: PortManager) {
 		this.interval = this.getRefreshInterval();
@@ -83,20 +83,24 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 		}
 
 		if (element.contextValue === this.CONTEXT_LOCALHOST_ITEM) {
-			return Array.from(this.localhostData.entries()).map(
-				([file, routes]) =>
-					new ParentItem(
-						this.getDisplayName(file),
-						routes.length ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.None,
-						this.CONTEXT_INTEGRATION_LOCALHOST_ITEM,
-						file,
-					),
-			);
+			return Array.from(this.localhostData.entries()).map(([key, data]) => {
+				const k = PortFileKey.fromString(key);
+				return new ParentItem(
+					this.getDisplayName(k.file),
+					data.routes.length ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.None,
+					this.CONTEXT_INTEGRATION_LOCALHOST_ITEM,
+					k.port,
+					basename(k.file),
+					data.associatedFile,
+				);
+			});
 		}
 
 		if (element.contextValue === this.CONTEXT_INTEGRATION_LOCALHOST_ITEM) {
-			const routes = this.localhostData.get(element.description as string) || [];
-			return routes.map((route) => new ChildItem(route.routeId, TreeItemCollapsibleState.None, this.CONTEXT_ROUTE_LOCALHOST_ITEM, route));
+			const parentItem = element as ParentItem;
+			const key = new PortFileKey(parentItem.port, parentItem.description as string); // description stores a file name
+			const data = this.localhostData.get(key.toString());
+			return data?.routes.map((route) => new ChildItem(route.routeId, TreeItemCollapsibleState.None, this.CONTEXT_ROUTE_LOCALHOST_ITEM, route)) || [];
 		}
 
 		return [];
@@ -152,8 +156,8 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 		return fileName.replace(/(\.camel\.yaml|\.camel\.xml|\.pipe\.yaml|-pipe\.yaml)$/, '');
 	}
 
-	private async fetchLocalhostRoutes(): Promise<Map<string, Route[]>> {
-		const deployments = new Map<string, Route[]>();
+	private async fetchLocalhostRoutes(): Promise<Map<string, { associatedFile: string; routes: Route[] }>> {
+		const deployments = new Map<string, { associatedFile: string; routes: Route[] }>();
 		const ports = [...this.portManager.getUsedPorts()].sort((a, b) => b - a);
 
 		const fetchTasks = ports.map(async (port) => {
@@ -171,8 +175,13 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 
 				for (const r of data.route.routes) {
 					const route = new Route(r.routeId, r.source, r.from, r.remote, r.state, r.uptime, r.statistics);
-					const key = basename(route.associatedFile);
-					(deployments.get(key) ?? deployments.set(key, []).get(key)!).push(route);
+					const file = basename(route.associatedFile);
+
+					const keyStr = new PortFileKey(port, file).toString();
+					if (!deployments.has(keyStr)) {
+						deployments.set(keyStr, { associatedFile: route.associatedFile, routes: [] });
+					}
+					deployments.get(keyStr)!.routes.push(route);
 				}
 			} catch (err) {
 				KaotoOutputChannel.logError(`[DeploymentsProvider] Port ${port} fetch error:`, err);
@@ -192,5 +201,21 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 			throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 		}
 		return await response.json();
+	}
+}
+
+export class PortFileKey {
+	constructor(
+		public readonly port: number,
+		public readonly file: string,
+	) {}
+
+	toString(): string {
+		return `${this.port}::${this.file}`;
+	}
+
+	static fromString(key: string): PortFileKey {
+		const [portStr, ...fileParts] = key.split('::');
+		return new PortFileKey(Number(portStr), fileParts.join('::'));
 	}
 }
