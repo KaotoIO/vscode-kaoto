@@ -16,10 +16,18 @@
 import { ThemeIcon, TreeItem, TreeItemCollapsibleState } from 'vscode';
 
 export class ParentItem extends TreeItem {
-	constructor(label: string, state: TreeItemCollapsibleState, contextValue: string, description?: string) {
+	private readonly _port: number;
+
+	constructor(label: string, state: TreeItemCollapsibleState, contextValue: string, port: number, description?: string, tooltip?: string) {
 		super(label, state);
 		this.iconPath = ThemeIcon.File;
 		this.contextValue = contextValue;
 		this.description = description;
+		this.tooltip = tooltip;
+		this._port = port;
+	}
+
+	public get port(): number {
+		return this._port;
 	}
 }
