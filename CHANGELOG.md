@@ -23,6 +23,9 @@
 - Add `Deployments` view into Kaoto view container which displays all local running integrations
 - Add `Stop` and `Follow Logs` action buttons into Deployments view
 - Add `Start/Stop/Suspend/Resume` action button on `route` level within Deployments view
+- Support for Dark theme
+  - The Kaoto editor must closed/reopened to have theme applied
+  - The High Contrast Dark Theme is not supported
 
 # 2.4.0
 
