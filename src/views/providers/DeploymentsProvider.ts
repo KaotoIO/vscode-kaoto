@@ -47,11 +47,15 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 			}
 		});
 
-		tasks.onDidStartTaskProcess((e) => {
+		tasks.onDidStartTaskProcess(async (e) => {
 			const def = e.execution.task.definition as CamelJBangTaskDefinition;
 			if (def.type === 'camel-jbang' && def.port) {
 				console.log(`[DeploymentsProvider] Task started on port ${def.port}`);
-				this.refresh();
+				const ready = await this.waitForIntegrationReady(def.port);
+				if (ready) {
+					console.log(`[DeploymentsProvider] Camel integration running on port ${def.port}`);
+					this.refresh();
+				}
 			}
 		});
 		tasks.onDidEndTaskProcess((e) => {
@@ -233,6 +237,24 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 		KaotoOutputChannel.logWarning(
 			`[DeploymentsProvider] Timeout: route "${routeId}" on port ${port} did not reach state "${expectedState}" within ${timeoutMs}ms.`,
 		);
+		return false;
+	}
+
+	private async waitForIntegrationReady(port: number, maxWaitMs = 120_000): Promise<boolean> {
+		const start = Date.now();
+		while (Date.now() - start < maxWaitMs) {
+			try {
+				const json = await this.fetchFromConsole(port);
+				if (json?.route?.routes?.length > 0) {
+					console.log(`[DeploymentsProvider] Integration ready on port ${port}`);
+					return true;
+				}
+			} catch {
+				// ignore until available
+			}
+			await new Promise((r) => setTimeout(r, 500));
+		}
+		KaotoOutputChannel.logWarning(`[DeploymentsProvider] Timeout waiting for Camel integration on port ${port}`);
 		return false;
 	}
 }
