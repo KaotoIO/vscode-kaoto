@@ -7193,13 +7193,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonc-parser@npm:^3.0.0":
-  version: 3.3.1
-  resolution: "jsonc-parser@npm:3.3.1"
-  checksum: 10/9b0dc391f20b47378f843ef1e877e73ec652a5bdc3c5fa1f36af0f119a55091d147a86c1ee86a232296f55c929bba174538c2bf0312610e0817a22de131cc3f4
-  languageName: node
-  linkType: hard
-
 "jsonc-parser@npm:^3.2.0":
   version: 3.2.1
   resolution: "jsonc-parser@npm:3.2.1"
@@ -8678,63 +8671,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-languageserver-types@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "monaco-languageserver-types@npm:0.4.0"
-  dependencies:
-    monaco-types: "npm:^0.1.0"
-    vscode-languageserver-protocol: "npm:^3.0.0"
-    vscode-uri: "npm:^3.0.0"
-  checksum: 10/758740ac3b2ad9ada481cf5d23b1e5a2d229b416307a2de59a73bf76b27ddac211aceba6d11e40cb7d65e4f9b52666201aca42d6bccc1c88c50642c96385a8a2
-  languageName: node
-  linkType: hard
-
-"monaco-marker-data-provider@npm:^1.0.0":
-  version: 1.2.3
-  resolution: "monaco-marker-data-provider@npm:1.2.3"
-  dependencies:
-    monaco-types: "npm:^0.1.0"
-  checksum: 10/43a54b0421012401f89411b13a109477fa074d83dec5f78551d348b4e9824138e786fa10bcd24bfe1c75a2af83c68c55e34c6a0e1336f392ac0db2c08206501a
-  languageName: node
-  linkType: hard
-
-"monaco-types@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "monaco-types@npm:0.1.0"
-  checksum: 10/aebfb3896f0340468f5a8b987009ecaeb105f0f01d91092c6a5a0d08cc155f30840693c4333afe9aaf1f63e21f36fa33fd5630f1e8cdf22d251930ba2a242d5e
-  languageName: node
-  linkType: hard
-
-"monaco-worker-manager@npm:^2.0.0":
-  version: 2.0.1
-  resolution: "monaco-worker-manager@npm:2.0.1"
-  peerDependencies:
-    monaco-editor: ">=0.30.0"
-  checksum: 10/3b12a0bb83354a9b2bf576b6cba7b2e4bfc2233b988fdc1de7f9fb3f6ec2709a1d9178d458aa43e31c424e55d4b555c0223d434fb98dabf2443417cc1cfb7d66
-  languageName: node
-  linkType: hard
-
-"monaco-yaml@npm:5.2.3":
-  version: 5.2.3
-  resolution: "monaco-yaml@npm:5.2.3"
-  dependencies:
-    jsonc-parser: "npm:^3.0.0"
-    monaco-languageserver-types: "npm:^0.4.0"
-    monaco-marker-data-provider: "npm:^1.0.0"
-    monaco-types: "npm:^0.1.0"
-    monaco-worker-manager: "npm:^2.0.0"
-    path-browserify: "npm:^1.0.0"
-    prettier: "npm:^2.0.0"
-    vscode-languageserver-textdocument: "npm:^1.0.0"
-    vscode-languageserver-types: "npm:^3.0.0"
-    vscode-uri: "npm:^3.0.0"
-    yaml: "npm:^2.0.0"
-  peerDependencies:
-    monaco-editor: ">=0.36"
-  checksum: 10/1745cc241c14de1b7dbccc4b6d60b1dce0e9862220cb119a6b242d05ad2d0e6399a5c7b5d128edd5290e9f45ab77692c3245b22f4f693f849846a79ea40789ee
-  languageName: node
-  linkType: hard
-
 "morgan@npm:^1.6.1":
   version: 1.10.0
   resolution: "morgan@npm:1.10.0"
@@ -9350,7 +9286,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-browserify@npm:^1.0.0, path-browserify@npm:^1.0.1":
+"path-browserify@npm:^1.0.1":
   version: 1.0.1
   resolution: "path-browserify@npm:1.0.1"
   checksum: 10/7e7368a5207e7c6b9051ef045711d0dc3c2b6203e96057e408e6e74d09f383061010d2be95cb8593fe6258a767c3e9fc6b2bfc7ce8d48ae8c3d9f6994cca9ad8
@@ -9677,15 +9613,6 @@ __metadata:
   bin:
     prettier: bin/prettier.cjs
   checksum: 10/7050c08f674d9e49fbd9a4c008291d0715471f64e94cc5e4b01729affce221dfc6875c8de7e66b728c64abc9352eefb7eaae071b5f79d30081be207b53774b78
-  languageName: node
-  linkType: hard
-
-"prettier@npm:^2.0.0":
-  version: 2.8.8
-  resolution: "prettier@npm:2.8.8"
-  bin:
-    prettier: bin-prettier.js
-  checksum: 10/00cdb6ab0281f98306cd1847425c24cbaaa48a5ff03633945ab4c701901b8e96ad558eb0777364ffc312f437af9b5a07d0f45346266e8245beaf6247b9c62b24
   languageName: node
   linkType: hard
 
@@ -12016,13 +11943,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vscode-jsonrpc@npm:8.2.0":
-  version: 8.2.0
-  resolution: "vscode-jsonrpc@npm:8.2.0"
-  checksum: 10/6d57c3aed591d0bc89d1c226061d265b04de528582bef183f5998cac5de78a736887e5238fe48b9f6a14ec32f05d8fda71599f92862ac5dacc7f26bf7399b532
-  languageName: node
-  linkType: hard
-
 "vscode-kaoto@workspace:.":
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
@@ -12068,8 +11988,6 @@ __metadata:
     get-port-please: "npm:^3.1.2"
     mocha: "npm:^11.1.0"
     mocha-jenkins-reporter: "npm:^0.4.8"
-    monaco-editor: "npm:^0.50.0"
-    monaco-yaml: "npm:5.2.3"
     node-fetch: "npm:2"
     npm-link-shared: "npm:^0.5.6"
     os-browserify: "npm:^0.3.0"
@@ -12097,37 +12015,6 @@ __metadata:
     yaml: "npm:^2.7.1"
   languageName: unknown
   linkType: soft
-
-"vscode-languageserver-protocol@npm:^3.0.0":
-  version: 3.17.5
-  resolution: "vscode-languageserver-protocol@npm:3.17.5"
-  dependencies:
-    vscode-jsonrpc: "npm:8.2.0"
-    vscode-languageserver-types: "npm:3.17.5"
-  checksum: 10/aeb9c190184c365fa6b835e5aa7574c86cb3ecb2789386bcff76a09b22bc8b8e0d5da47c28193a9c73cfb32c10a12a91191779280324a38efb401e3ef7bad294
-  languageName: node
-  linkType: hard
-
-"vscode-languageserver-textdocument@npm:^1.0.0":
-  version: 1.0.12
-  resolution: "vscode-languageserver-textdocument@npm:1.0.12"
-  checksum: 10/2bc0fde952d40f35a31179623d1491b0fafdee156aaf58557f40f5d394a25fc84826763cdde55fa6ce2ed9cd35a931355ad6dd7fe5db82e7f21e5d865f0af8c6
-  languageName: node
-  linkType: hard
-
-"vscode-languageserver-types@npm:3.17.5, vscode-languageserver-types@npm:^3.0.0":
-  version: 3.17.5
-  resolution: "vscode-languageserver-types@npm:3.17.5"
-  checksum: 10/900d0b81df5bef8d90933e75be089142f6989cc70fdb2d5a3a5f11fa20feb396aaea23ccffc8fbcc83a2f0e1b13c6ee48ff8151f236cbd6e61a4f856efac1a58
-  languageName: node
-  linkType: hard
-
-"vscode-uri@npm:^3.0.0":
-  version: 3.0.8
-  resolution: "vscode-uri@npm:3.0.8"
-  checksum: 10/e882d6b679e0d053cbc042893c0951a135d899a192b62cd07f0a8924f11ae722067a8d6b1b5b147034becf57faf9fff9fb543b17b749fd0f17db1f54f783f07c
-  languageName: node
-  linkType: hard
 
 "vscode-uri@npm:^3.1.0":
   version: 3.1.0
