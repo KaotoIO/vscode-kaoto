@@ -559,9 +559,10 @@
               "type": "string"
             },
             "additionalProperties": false,
-            "markdownDescription": "User defined arguments to be applied at every deploy (See [Camel JBang Kubernetes](https://camel.apache.org/manual/camel-jbang-kubernetes.html)). In case of spaces, the values needs to be enclosed with quotes.\n\n**Note**: Excluding `--camel-version` which is already being set in `#kaoto.camelVersion#`.",
+            "markdownDescription": "User defined arguments to be applied at every deploy (See [Camel JBang Kubernetes](https://camel.apache.org/manual/camel-jbang-kubernetes.html)). In case of spaces, the values needs to be enclosed with quotes.\n\n**Note**: Excluding `--camel-version` which is already being set in `#kaoto.camelVersion#`.\n\nBeware that `--disable-auto`, which is provided by default, requires Camel 4.11+.",
             "default": [
               "--cluster-type=openshift",
+              "--disable-auto",
               "--dev"
             ],
             "order": 3
