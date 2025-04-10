@@ -662,7 +662,7 @@
     "ts-loader": "9.4.4",
     "tsconfig-paths-webpack-plugin": "^4.2.0",
     "typescript": "^5.8.3",
-    "vscode-extension-tester": "^8.13.0",
+    "vscode-extension-tester": "^8.14.0",
     "web-worker": "^1.5.0",
     "webpack": "5.99.5",
     "webpack-cli": "6.0.1",
