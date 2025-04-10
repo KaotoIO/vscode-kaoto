@@ -5,6 +5,8 @@ import { checkEmptyCanvasLoaded, checkTopologyLoaded, openAndSwitchToKaotoFrame,
 import { waitUntil } from 'async-wait-until';
 import * as fs from 'fs-extra';
 
+const DATA_TEST_ID_DATAMAPPERSTEP_2_5 = 'custom-node__route.from.steps.0.step:kaoto-datamapper';
+
 describe('Kaoto basic development flow', function () {
 	this.timeout(90_000);
 
@@ -164,7 +166,9 @@ async function addXsdForSource(driver: WebDriver, kaotoWebview: WebView) {
 
 async function openDataMapperEditor(driver: WebDriver) {
 	const kaotoNode = await driver.findElement(
-		By.css('g[data-testid^="custom-node__kaoto-datamapper"],g[data-testid="custom-node__route.from.steps.0.kaoto-datamapper"]'),
+		By.css(
+			`g[data-testid^="custom-node__kaoto-datamapper"],g[data-testid="custom-node__route.from.steps.0.kaoto-datamapper"],g[data-testid="${DATA_TEST_ID_DATAMAPPERSTEP_2_5}"]`,
+		),
 	);
 	await kaotoNode.click();
 	await driver.wait(
@@ -178,7 +182,9 @@ async function openDataMapperEditor(driver: WebDriver) {
 async function deleteDataMapperStep(driver: WebDriver, workspaceFolder: string) {
 	await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__kaoto-datamapper', 'kaoto-datamapper');
 	const kaotoNodeConfigured = await driver.findElement(
-		By.css('g[data-testid^="custom-node__kaoto-datamapper"],g[data-testid="custom-node__route.from.steps.0.kaoto-datamapper"]'),
+		By.css(
+			`g[data-testid^="custom-node__kaoto-datamapper"],g[data-testid="custom-node__route.from.steps.0.kaoto-datamapper"],g[data-testid="${DATA_TEST_ID_DATAMAPPERSTEP_2_5}"]`,
+		),
 	);
 
 	await driver.actions().contextClick(kaotoNodeConfigured).perform();
