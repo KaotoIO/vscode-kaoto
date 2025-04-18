@@ -3,7 +3,7 @@
 - `Breaking:` Remove legacy support for Kaoto v1 file patterns (`*.kaoto.yaml`, `*.kaoto.yml`)
 - `Breaking:` Bump minimal VS Code version from 1.74.0 to 1.95.0
 - Potential breakage: when using a Camel Jbang version strictly prior to 4.11, the parameter `--disable-auto` must be removed from the setting `Kubernetes Run Parameters`
-- Upgrade to Kaoto 2.5.0-M4
+- Upgrade to Kaoto 2.5.0-M6
 - Add Kaoto view container with initial Help & Feedback view
 - Improve toggle source code (open/close camel file in a side textual editor) using one button
 - Add Integrations view into Kaoto view container
@@ -23,6 +23,9 @@
 - Add `Deployments` view into Kaoto view container which displays all local running integrations
 - Add `Stop` and `Follow Logs` action buttons into Deployments view
 - Add `Start/Stop/Suspend/Resume` action button on `route` level within Deployments view
+- Support for Dark theme
+  - The Kaoto editor must closed/reopened to have theme applied
+  - The High Contrast Dark Theme is not supported
 
 # 2.4.0
 
