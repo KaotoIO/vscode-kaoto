@@ -3,7 +3,7 @@
 - `Breaking:` Remove legacy support for Kaoto v1 file patterns (`*.kaoto.yaml`, `*.kaoto.yml`)
 - `Breaking:` Bump minimal VS Code version from 1.74.0 to 1.95.0
 - Potential breakage: when using a Camel Jbang version strictly prior to 4.11, the parameter `--disable-auto` must be removed from the setting `Kubernetes Run Parameters`
-- Upgrade to Kaoto 2.5.0-M7
+- Upgrade to Kaoto 2.5.0-M8
 - Add Kaoto view container with initial Help & Feedback view
 - Improve toggle source code (open/close camel file in a side textual editor) using one button
 - Add Integrations view into Kaoto view container
