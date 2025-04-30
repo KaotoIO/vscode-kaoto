@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://marketplace.visualstudio.com/items?itemName=redhat.vscode-kaoto"><img src="https://img.shields.io/visual-studio-marketplace/v/redhat.vscode-kaoto?style=for-the-badge&color=yellow" alt="Marketplace Version"/></a>
-  <a href="https://github.com/KaotoIO/kaoto/releases"><img alt="Kaoto UI version" src="https://img.shields.io/badge/Kaoto_UI-2.5.0--M8-yellow?style=for-the-badge&logo=npm"></a>
+  <a href="https://github.com/KaotoIO/kaoto/releases"><img alt="Kaoto UI version" src="https://img.shields.io/badge/Kaoto_UI-2.5.0-yellow?style=for-the-badge&logo=npm"></a>
   <img src="https://img.shields.io/badge/VS%20Code-1.95+-yellow?style=for-the-badge" alt="Visual Studio Code Support"/>
   <br/>
   <a href="https://github.com/KaotoIO/vscode-kaoto/blob/main/LICENSE"><img src="https://img.shields.io/github/license/KaotoIO/vscode-kaoto?color=yellow&style=for-the-badge&logo=apache" alt="License"/></a>
