@@ -1203,6 +1203,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@redhat-developer/vscode-extension-proposals@npm:^0.0.23":
+  version: 0.0.23
+  resolution: "@redhat-developer/vscode-extension-proposals@npm:0.0.23"
+  checksum: 10/9c69b8ffc6ab6746ef58c82648b5d86f9174ae78c6042a2aacc958729e11fdfbbd65f840fb24b3b620232698b9d89a54feea7c454707fed5e69f9e9f63f63437
+  languageName: node
+  linkType: hard
+
 "@redhat-developer/vscode-redhat-telemetry@npm:^0.9.1":
   version: 0.9.1
   resolution: "@redhat-developer/vscode-redhat-telemetry@npm:0.9.1"
@@ -12730,6 +12737,7 @@ __metadata:
     "@patternfly/react-icons": "npm:6.2.2"
     "@patternfly/react-table": "npm:6.2.2"
     "@patternfly/react-topology": "npm:6.2.0"
+    "@redhat-developer/vscode-extension-proposals": "npm:^0.0.23"
     "@redhat-developer/vscode-redhat-telemetry": "npm:^0.9.1"
     "@stylistic/eslint-plugin": "npm:^4.2.0"
     "@types/chai": "npm:^4.3.20"
