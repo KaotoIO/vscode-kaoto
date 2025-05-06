@@ -1,5 +1,7 @@
 # 2.6.0
 
+- add recommended extensions pop up notification after first installation
+
 # 2.5.0
 
 - `Breaking:` Remove legacy support for Kaoto v1 file patterns (`*.kaoto.yaml`, `*.kaoto.yml`)

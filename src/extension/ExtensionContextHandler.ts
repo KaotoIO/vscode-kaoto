@@ -52,6 +52,21 @@ export class ExtensionContextHandler {
 		this.context = context;
 	}
 
+	public async showRecommendedExtensions() {
+		const recommendedExtensions = 'redhat.vscode-xml redhat.vscode-yaml';
+		if (!this.context.globalState.get('kaoto.recommendedExtensionsShown')) {
+			const selection = await vscode.window.showInformationMessage(
+				`Would you like to install [YAML](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml) and [XML](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-xml) extensions for better experience?`,
+				'Show Recommendations',
+				'No',
+			);
+			if (selection === 'Show Recommendations') {
+				vscode.commands.executeCommand('workbench.extensions.search', recommendedExtensions);
+			}
+			this.context.globalState.update('kaoto.recommendedExtensionsShown', true);
+		}
+	}
+
 	public isWorkspaceVirtual(): boolean | undefined {
 		return vscode.workspace.workspaceFolders?.every((f) => f.uri.scheme !== 'file');
 	}
@@ -73,6 +88,7 @@ export class ExtensionContextHandler {
 		}
 		return true;
 	}
+
 	public async checkCamelJbangTrustedSource() {
 		const camelTrustedSource = await verifyCamelJBangTrustedSource();
 		if (!camelTrustedSource) {
