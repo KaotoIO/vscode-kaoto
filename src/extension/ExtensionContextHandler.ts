@@ -38,6 +38,7 @@ import { CamelStopJBangTask } from '../tasks/CamelStopJBangTask';
 import { ChildItem } from '../views/deploymentTreeItems/ChildItem';
 import { CamelRouteOperationJBangTask } from '../tasks/CamelRouteOperationJBangTask';
 import { RouteOperation } from '../helpers/CamelJBang';
+import { RecommendationCore } from '@redhat-developer/vscode-extension-proposals';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -50,6 +51,25 @@ export class ExtensionContextHandler {
 	) {
 		this.kieEditorStore = kieEditorStore;
 		this.context = context;
+	}
+
+	public async showRecommendedExtensions() {
+		const recommendService = RecommendationCore.getService(this.context);
+		if (recommendService) {
+			const xml = recommendService.create(
+				'redhat.vscode-xml',
+				'XML Language Support by Red Hat',
+				'Provides support for creating and editing XML documents.',
+				true,
+			);
+			const yaml = recommendService.create(
+				'redhat.vscode-yaml',
+				'YAML Language Support by Red Hat',
+				'Provides comprehensive YAML Language support with built-in Kubernetes syntax support.',
+				true,
+			);
+			await recommendService.register([xml, yaml]);
+		}
 	}
 
 	public isWorkspaceVirtual(): boolean | undefined {
@@ -73,6 +93,7 @@ export class ExtensionContextHandler {
 		}
 		return true;
 	}
+
 	public async checkCamelJbangTrustedSource() {
 		const camelTrustedSource = await verifyCamelJBangTrustedSource();
 		if (!camelTrustedSource) {

@@ -1,6 +1,7 @@
 # 2.6.0
 
 - Upgrade to Kaoto 2.6.0-M1
+- add recommended extensions pop up notification after first installation
 
 # 2.5.0
 
