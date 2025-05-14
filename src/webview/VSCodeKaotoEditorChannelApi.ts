@@ -2,17 +2,18 @@ import { KaotoEditorChannelApi } from '@kaoto/kaoto';
 import { ColorScheme, ISettingsModel, NodeLabelType, NodeToolbarTrigger, SettingsModel } from '@kaoto/kaoto/models';
 import { BackendProxy } from '@kie-tools-core/backend/dist/api';
 import { I18n } from '@kie-tools-core/i18n/dist/core';
-import { NotificationsChannelApi } from '@kie-tools-core/notifications/dist/api';
 import { DefaultVsCodeKieEditorChannelApiImpl } from '@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl';
 import { VsCodeI18n } from '@kie-tools-core/vscode-extension/dist/i18n';
+import { VsCodeNotificationsChannelApiImpl } from '@kie-tools-core/vscode-extension/dist/notifications/VsCodeNotificationsChannelApiImpl';
 import { VsCodeKieEditorController } from '@kie-tools-core/vscode-extension/dist/VsCodeKieEditorController';
 import { VsCodeKieEditorCustomDocument } from '@kie-tools-core/vscode-extension/dist/VsCodeKieEditorCustomDocument';
+import { VsCodeWorkspaceChannelApiImpl } from '@kie-tools-core/vscode-extension/dist/workspace/VsCodeWorkspaceChannelApiImpl';
 import { JavaCodeCompletionApi } from '@kie-tools-core/vscode-java-code-completion/dist/api';
-import { ResourceContentService, WorkspaceChannelApi } from '@kie-tools-core/workspace/dist/api';
+import { ResourceContentService } from '@kie-tools-core/workspace/dist/api';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
+import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 	private readonly currentEditedDocument: vscode.TextDocument | VsCodeKieEditorCustomDocument;
@@ -20,9 +21,9 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 	constructor(
 		editor: VsCodeKieEditorController,
 		resourceContentService: ResourceContentService,
-		workspaceApi: WorkspaceChannelApi,
+		workspaceApi: VsCodeWorkspaceChannelApiImpl,
 		backendProxy: BackendProxy,
-		notificationsApi: NotificationsChannelApi,
+		notificationsApi: VsCodeNotificationsChannelApiImpl,
 		javaCodeCompletionApi: JavaCodeCompletionApi,
 		viewType: string,
 		i18n: I18n<VsCodeI18n>,

@@ -568,6 +568,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kie-tools-core/backend@npm:10.0.0, @kie-tools-core/backend@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@kie-tools-core/backend@npm:10.0.0"
+  dependencies:
+    "@kie-tools-core/i18n": "npm:10.0.0"
+    "@kie-tools-core/notifications": "npm:10.0.0"
+    "@kie-tools-core/workspace": "npm:10.0.0"
+    axios: "npm:^1.6.8"
+    fast-xml-parser: "npm:^4.3.1"
+    portfinder: "npm:^1.0.32"
+    semver: "npm:^7.5.4"
+    sinon: "npm:^11.1.1"
+  checksum: 10/79e38abbb9a68746e95477ffde1688a048f10bb779ecf716728f3d40a450553c9a21c047f07c0efbee78ee79aa0bdabdf2ed50ce9d6e8e9186c31c82652bc1f4
+  languageName: node
+  linkType: hard
+
 "@kie-tools-core/editor@npm:0.32.0":
   version: 0.32.0
   resolution: "@kie-tools-core/editor@npm:0.32.0"
@@ -591,6 +607,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kie-tools-core/editor@npm:10.0.0, @kie-tools-core/editor@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@kie-tools-core/editor@npm:10.0.0"
+  dependencies:
+    "@kie-tools-core/backend": "npm:10.0.0"
+    "@kie-tools-core/envelope": "npm:10.0.0"
+    "@kie-tools-core/envelope-bus": "npm:10.0.0"
+    "@kie-tools-core/i18n": "npm:10.0.0"
+    "@kie-tools-core/keyboard-shortcuts": "npm:10.0.0"
+    "@kie-tools-core/notifications": "npm:10.0.0"
+    "@kie-tools-core/operating-system": "npm:10.0.0"
+    "@kie-tools-core/patternfly-base": "npm:10.0.0"
+    "@kie-tools-core/workspace": "npm:10.0.0"
+    "@patternfly/react-core": "npm:^4.276.6"
+    "@patternfly/react-icons": "npm:^4.93.6"
+    csstype: "npm:^3.0.11"
+    minimatch: "npm:^3.0.5"
+    react: "npm:^17.0.2"
+    react-dom: "npm:^17.0.2"
+  checksum: 10/a17f99f537dfb5408cbc4e2672f8435246552d0945809a5daa43eef19502a4d187563630598c2e2d028339d7cacd9136a3b4a032fef55ab18aa1a1f10b9ef180
+  languageName: node
+  linkType: hard
+
 "@kie-tools-core/envelope-bus@npm:0.32.0":
   version: 0.32.0
   resolution: "@kie-tools-core/envelope-bus@npm:0.32.0"
@@ -598,6 +637,16 @@ __metadata:
     react: "npm:^17.0.2"
     react-dom: "npm:^17.0.2"
   checksum: 10/021e9c02c945e3c7702611aa5a6ba0139204cd2ba88021b2cc080e278c1f067ac8e791c97514593bed30c3ce8b293c683efbba2e2e3b6a540b50aeebadad4f80
+  languageName: node
+  linkType: hard
+
+"@kie-tools-core/envelope-bus@npm:10.0.0":
+  version: 10.0.0
+  resolution: "@kie-tools-core/envelope-bus@npm:10.0.0"
+  dependencies:
+    react: "npm:^17.0.2"
+    react-dom: "npm:^17.0.2"
+  checksum: 10/3b152757d1c990ab85cba78ce4b63ebe22c5c6220cbe6d4a5c9e0eafe44f89dd7a9e5f21e555b520ee47bb12536d799ebfbd38284890c26a62504e7b3684ef43
   languageName: node
   linkType: hard
 
@@ -613,6 +662,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kie-tools-core/envelope@npm:10.0.0":
+  version: 10.0.0
+  resolution: "@kie-tools-core/envelope@npm:10.0.0"
+  dependencies:
+    "@kie-tools-core/envelope-bus": "npm:10.0.0"
+    csstype: "npm:^3.0.11"
+    react: "npm:^17.0.2"
+    react-dom: "npm:^17.0.2"
+  checksum: 10/de6e4f5173dbdf220595f72fef192c131d91ac7258e5c0f1a20c3ab8f5f9eac9ac6196b8ec16e83bdb2d107ee9054f445b3628a1e2ed1ebd57e90ae47d8267d1
+  languageName: node
+  linkType: hard
+
 "@kie-tools-core/i18n@npm:0.32.0":
   version: 0.32.0
   resolution: "@kie-tools-core/i18n@npm:0.32.0"
@@ -620,6 +681,16 @@ __metadata:
     react: "npm:^17.0.2"
     react-dom: "npm:^17.0.2"
   checksum: 10/4e04707950735e70392f512994de67744f9364a0c29832a85937ad12942833d029e284e123854fd072162e20a8e9746ac65dd77b8808dd01cf07640ae966ebb8
+  languageName: node
+  linkType: hard
+
+"@kie-tools-core/i18n@npm:10.0.0, @kie-tools-core/i18n@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@kie-tools-core/i18n@npm:10.0.0"
+  dependencies:
+    react: "npm:^17.0.2"
+    react-dom: "npm:^17.0.2"
+  checksum: 10/54964ee26047ab9b9a6719fe7a2fcc7d2449a8861d7026f7ee9b0c505962e69c1ac8021cae9c984b6734f852da8ddc4f52e65e1fa78e7aee24067059467f76ed
   languageName: node
   linkType: hard
 
@@ -634,6 +705,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kie-tools-core/keyboard-shortcuts@npm:10.0.0":
+  version: 10.0.0
+  resolution: "@kie-tools-core/keyboard-shortcuts@npm:10.0.0"
+  dependencies:
+    "@kie-tools-core/envelope-bus": "npm:10.0.0"
+    "@kie-tools-core/operating-system": "npm:10.0.0"
+    react: "npm:^17.0.2"
+  checksum: 10/4399642c1dc54399c40a1ba5af0301d15dd99a4482885281f821b4d7328dc0b2d902bcd5009f8231b79165215087c5598165221b5f12f128baa8c88140d10d63
+  languageName: node
+  linkType: hard
+
 "@kie-tools-core/notifications@npm:0.32.0":
   version: 0.32.0
   resolution: "@kie-tools-core/notifications@npm:0.32.0"
@@ -644,10 +726,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kie-tools-core/notifications@npm:10.0.0":
+  version: 10.0.0
+  resolution: "@kie-tools-core/notifications@npm:10.0.0"
+  dependencies:
+    "@kie-tools-core/i18n": "npm:10.0.0"
+    "@kie-tools-core/workspace": "npm:10.0.0"
+  checksum: 10/925acb957b86360f7dbab42675b808b783cb1788168a320904ceea3221388a747af2db5852f8f13f54d603fea52e38bf11639d8a73b75d28a64977af38a362cc
+  languageName: node
+  linkType: hard
+
 "@kie-tools-core/operating-system@npm:0.32.0":
   version: 0.32.0
   resolution: "@kie-tools-core/operating-system@npm:0.32.0"
   checksum: 10/b9e0bbc1374ea1c9159ec5d03648b55eaa6542c8fbb33ebb4d7168546364619cc25d0a83bb72848a75a054b95677406c25b3124dc4ce6ab1ce0a3e1e62860402
+  languageName: node
+  linkType: hard
+
+"@kie-tools-core/operating-system@npm:10.0.0":
+  version: 10.0.0
+  resolution: "@kie-tools-core/operating-system@npm:10.0.0"
+  checksum: 10/0115802801de4fbf1994efe1902468da4e30612ecfd92c5403bca852f4bd4d746ae37c5ee849a3f248dbc83b93815cacd4344157077d8a904deb4e1051c8fbe4
   languageName: node
   linkType: hard
 
@@ -658,28 +757,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kie-tools-core/vscode-extension@npm:0.32.0":
-  version: 0.32.0
-  resolution: "@kie-tools-core/vscode-extension@npm:0.32.0"
-  dependencies:
-    "@kie-tools-core/backend": "npm:0.32.0"
-    "@kie-tools-core/editor": "npm:0.32.0"
-    "@kie-tools-core/envelope-bus": "npm:0.32.0"
-    "@kie-tools-core/i18n": "npm:0.32.0"
-    "@kie-tools-core/keyboard-shortcuts": "npm:0.32.0"
-    "@kie-tools-core/notifications": "npm:0.32.0"
-    "@kie-tools-core/vscode-java-code-completion": "npm:0.32.0"
-    "@kie-tools-core/workspace": "npm:0.32.0"
-    "@types/vscode": "npm:1.67.0"
-    minimatch: "npm:^3.0.5"
-  checksum: 10/6d10ded4ede928e78b4af16f1abbf6dcc7ad658da0b77695da7a8a0a0e35d3c199fe98f61fd2e74884aa24f60c5088a2f8ac9c0848b1d39ee9bb42e7e4b85348
+"@kie-tools-core/patternfly-base@npm:10.0.0":
+  version: 10.0.0
+  resolution: "@kie-tools-core/patternfly-base@npm:10.0.0"
+  checksum: 10/9759c356bd5af574bda5c5ec18d0f4e504e6bb3082a651dd353428aff18164d9d0870adc1495804dbfa837c562979a64dd8ce591011b957d08be1420ceb04e87
   languageName: node
   linkType: hard
 
-"@kie-tools-core/vscode-java-code-completion@npm:0.32.0":
-  version: 0.32.0
-  resolution: "@kie-tools-core/vscode-java-code-completion@npm:0.32.0"
-  checksum: 10/f12d339030d07ffca72b76b3305ded5aa5dac51ebd0cede07bd79377c45d1a56a41d8a87af8680e8be897101adc9278991139e9db262ed3a1e7e17dad9004849
+"@kie-tools-core/vscode-extension@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@kie-tools-core/vscode-extension@npm:10.0.0"
+  dependencies:
+    "@kie-tools-core/backend": "npm:10.0.0"
+    "@kie-tools-core/editor": "npm:10.0.0"
+    "@kie-tools-core/envelope-bus": "npm:10.0.0"
+    "@kie-tools-core/i18n": "npm:10.0.0"
+    "@kie-tools-core/keyboard-shortcuts": "npm:10.0.0"
+    "@kie-tools-core/notifications": "npm:10.0.0"
+    "@kie-tools-core/vscode-java-code-completion": "npm:10.0.0"
+    "@kie-tools-core/workspace": "npm:10.0.0"
+    "@types/vscode": "npm:1.67.0"
+    isomorphic-git: "npm:^1.11.1"
+    minimatch: "npm:^3.0.5"
+  checksum: 10/dd87b3978ff43e7c24eb4458d6dd3ece03d8b62a6437a60edab7622df95ef6d0bb6645976295b75b14f8db58035ffdccdc8a1972a88f47f5d0936b2b17709b4c
+  languageName: node
+  linkType: hard
+
+"@kie-tools-core/vscode-java-code-completion@npm:10.0.0":
+  version: 10.0.0
+  resolution: "@kie-tools-core/vscode-java-code-completion@npm:10.0.0"
+  checksum: 10/0815bccd36e9eec1284f34fc97c87602bed949d82d84fbaa2c50c29ed45e53fc698056528883997f17d632c115072d03d40a679ab2a4184c5e215ec8e48013c8
   languageName: node
   linkType: hard
 
@@ -689,6 +796,15 @@ __metadata:
   dependencies:
     "@kie-tools-core/operating-system": "npm:0.32.0"
   checksum: 10/5fabfb03ad62fd3a768da7ab79b64b701bf183782defdeed0bb86b1d36a969bc82533c05ba051f8c713a3ace5bd6eb67e65e5d517e1eabf57b9c4306af858f96
+  languageName: node
+  linkType: hard
+
+"@kie-tools-core/workspace@npm:10.0.0":
+  version: 10.0.0
+  resolution: "@kie-tools-core/workspace@npm:10.0.0"
+  dependencies:
+    "@kie-tools-core/operating-system": "npm:10.0.0"
+  checksum: 10/4b4db2acb0839894ae25b6ce3390789353f6cccb0b57bd43dabe53276b44bae99a9a09eaee43a423d6cda8d0434a79cbfd17bd9bb78c8324a6613038af239087
   languageName: node
   linkType: hard
 
@@ -2935,6 +3051,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"async-lock@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "async-lock@npm:1.4.1"
+  checksum: 10/80d55ac95f920e880a865968b799963014f6d987dd790dd08173fae6e1af509d8cd0ab45a25daaca82e3ef8e7c939f5d128cd1facfcc5c647da8ac2409e20ef9
+  languageName: node
+  linkType: hard
+
 "async-wait-until@npm:^2.0.27":
   version: 2.0.27
   resolution: "async-wait-until@npm:2.0.27"
@@ -2997,6 +3120,17 @@ __metadata:
     follow-redirects: "npm:^1.14.9"
     form-data: "npm:^4.0.0"
   checksum: 10/2efaf18dd0805f7bc772882bc86f004abd92d51007b54c5081f74db0d08ce3593e2c010261896d25a14318eeaa2e966fd825e34f810e8a3339dc64b9d177cf70
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.6.8":
+  version: 1.9.0
+  resolution: "axios@npm:1.9.0"
+  dependencies:
+    follow-redirects: "npm:^1.15.6"
+    form-data: "npm:^4.0.0"
+    proxy-from-env: "npm:^1.1.0"
+  checksum: 10/a2f90bba56820883879f32a237e2b9ff25c250365dcafd41cec41b3406a3df334a148f90010182dfdadb4b41dc59f6f0b3e8898ff41b666d1157b5f3f4523497
   languageName: node
   linkType: hard
 
@@ -3667,6 +3801,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"clean-git-ref@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "clean-git-ref@npm:2.0.1"
+  checksum: 10/b25f585ed47040ea5d699d40a2bb84d1f35afd651f3fcc05fb077224358ffd3d7509fc9edbfc4570f1fc732c987e03ac7d8ec31524ac503ac35c53cb1f5e3bf9
+  languageName: node
+  linkType: hard
+
 "clean-stack@npm:^2.0.0":
   version: 2.2.0
   resolution: "clean-stack@npm:2.2.0"
@@ -3951,6 +4092,15 @@ __metadata:
   version: 3.6.0
   resolution: "countries-and-timezones@npm:3.6.0"
   checksum: 10/4cbea29a877cfddbd16fccc4a95cba63a76e535d49923c729343672238c9bcb9433d9f23467f8d734e8e8d4cef9d67daad9baad04c266c2697438b322d01de27
+  languageName: node
+  linkType: hard
+
+"crc-32@npm:^1.2.0":
+  version: 1.2.2
+  resolution: "crc-32@npm:1.2.2"
+  bin:
+    crc32: bin/crc32.njs
+  checksum: 10/824f696a5baaf617809aa9cd033313c8f94f12d15ebffa69f10202480396be44aef9831d900ab291638a8022ed91c360696dd5b1ba691eb3f34e60be8835b7c3
   languageName: node
   linkType: hard
 
@@ -4662,6 +4812,13 @@ __metadata:
   dependencies:
     dequal: "npm:^2.0.0"
   checksum: 10/3cc5f903d02d279d6dc4aa71ab6ed9898b9f4d1f861cc5421ce7357893c21b9520de78afb203c92bd650a6977ad0ca98195453a0707a39958cf5fea3b0a8ddd8
+  languageName: node
+  linkType: hard
+
+"diff3@npm:0.0.3":
+  version: 0.0.3
+  resolution: "diff3@npm:0.0.3"
+  checksum: 10/9fb9983052e35209be1912c6999ee4aa1887365666ea28d5aba364ffe8514e0a745a4408a3702b5c5943e717571dcc892073b8f3b48fed5814e2c7fc1883f74e
   languageName: node
   linkType: hard
 
@@ -5715,17 +5872,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.14.9":
-  version: 1.15.6
-  resolution: "follow-redirects@npm:1.15.6"
-  peerDependenciesMeta:
-    debug:
-      optional: true
-  checksum: 10/70c7612c4cab18e546e36b991bbf8009a1a41cf85354afe04b113d1117569abf760269409cb3eb842d9f7b03d62826687086b081c566ea7b1e6613cf29030bf7
-  languageName: node
-  linkType: hard
-
-"follow-redirects@npm:^1.15.6":
+"follow-redirects@npm:^1.14.9, follow-redirects@npm:^1.15.6":
   version: 1.15.9
   resolution: "follow-redirects@npm:1.15.9"
   peerDependenciesMeta:
@@ -6566,7 +6713,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ignore@npm:^5.2.0, ignore@npm:^5.3.1":
+"ignore@npm:^5.1.4, ignore@npm:^5.2.0, ignore@npm:^5.3.1":
   version: 5.3.2
   resolution: "ignore@npm:5.3.2"
   checksum: 10/cceb6a457000f8f6a50e1196429750d782afce5680dd878aa4221bd79972d68b3a55b4b1458fc682be978f4d3c6a249046aa0880637367216444ab7b014cfc98
@@ -7188,6 +7335,28 @@ __metadata:
   version: 3.0.1
   resolution: "isobject@npm:3.0.1"
   checksum: 10/db85c4c970ce30693676487cca0e61da2ca34e8d4967c2e1309143ff910c207133a969f9e4ddb2dc6aba670aabce4e0e307146c310350b298e74a31f7d464703
+  languageName: node
+  linkType: hard
+
+"isomorphic-git@npm:^1.11.1":
+  version: 1.30.1
+  resolution: "isomorphic-git@npm:1.30.1"
+  dependencies:
+    async-lock: "npm:^1.4.1"
+    clean-git-ref: "npm:^2.0.1"
+    crc-32: "npm:^1.2.0"
+    diff3: "npm:0.0.3"
+    ignore: "npm:^5.1.4"
+    minimisted: "npm:^2.0.0"
+    pako: "npm:^1.0.10"
+    path-browserify: "npm:^1.0.1"
+    pify: "npm:^4.0.1"
+    readable-stream: "npm:^3.4.0"
+    sha.js: "npm:^2.4.9"
+    simple-get: "npm:^4.0.1"
+  bin:
+    isogit: cli.cjs
+  checksum: 10/1764c800b92b31f055db9226cc46f5e59f38f4c210837ac6f5444582ad386a19f54a076b6ed2bbc27e0f4f65c0fd2861adb0b51d4bc04780958a041c89ffe672
   languageName: node
   linkType: hard
 
@@ -8610,10 +8779,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimist@npm:^1.1.1, minimist@npm:^1.2.0, minimist@npm:^1.2.3, minimist@npm:^1.2.6, minimist@npm:^1.2.8":
+"minimist@npm:^1.1.1, minimist@npm:^1.2.0, minimist@npm:^1.2.3, minimist@npm:^1.2.5, minimist@npm:^1.2.6, minimist@npm:^1.2.8":
   version: 1.2.8
   resolution: "minimist@npm:1.2.8"
   checksum: 10/908491b6cc15a6c440ba5b22780a0ba89b9810e1aea684e253e43c4e3b8d56ec1dcdd7ea96dde119c29df59c936cde16062159eae4225c691e19c70b432b6e6f
+  languageName: node
+  linkType: hard
+
+"minimisted@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "minimisted@npm:2.0.1"
+  dependencies:
+    minimist: "npm:^1.2.5"
+  checksum: 10/f8c81346b1f535c0be173f4937991586ec86e55b7c94790000d1cba436053ed6a536d290321194b45512a8fa0e30678fd10c759e82ce5388c2dbe4f990b4a9ec
   languageName: node
   linkType: hard
 
@@ -9414,17 +9592,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pako@npm:^1.0.10, pako@npm:~1.0.2":
+  version: 1.0.11
+  resolution: "pako@npm:1.0.11"
+  checksum: 10/1ad07210e894472685564c4d39a08717e84c2a68a70d3c1d9e657d32394ef1670e22972a433cbfe48976cb98b154ba06855dcd3fcfba77f60f1777634bec48c0
+  languageName: node
+  linkType: hard
+
 "pako@npm:~0.2.0":
   version: 0.2.9
   resolution: "pako@npm:0.2.9"
   checksum: 10/627c6842e90af0b3a9ee47345bd66485a589aff9514266f4fa9318557ad819c46fedf97510f2cef9b6224c57913777966a05cb46caf6a9b31177a5401a06fe15
-  languageName: node
-  linkType: hard
-
-"pako@npm:~1.0.2":
-  version: 1.0.11
-  resolution: "pako@npm:1.0.11"
-  checksum: 10/1ad07210e894472685564c4d39a08717e84c2a68a70d3c1d9e657d32394ef1670e22972a433cbfe48976cb98b154ba06855dcd3fcfba77f60f1777634bec48c0
   languageName: node
   linkType: hard
 
@@ -9637,6 +9815,13 @@ __metadata:
   version: 4.0.2
   resolution: "picomatch@npm:4.0.2"
   checksum: 10/ce617b8da36797d09c0baacb96ca8a44460452c89362d7cb8f70ca46b4158ba8bc3606912de7c818eb4a939f7f9015cef3c766ec8a0c6bfc725fdc078e39c717
+  languageName: node
+  linkType: hard
+
+"pify@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "pify@npm:4.0.1"
+  checksum: 10/8b97cbf9dc6d4c1320cc238a2db0fc67547f9dc77011729ff353faf34f1936ea1a4d7f3c63b2f4980b253be77bcc72ea1e9e76ee3fd53cce2aafb6a8854d07ec
   languageName: node
   linkType: hard
 
@@ -10823,6 +11008,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sha.js@npm:^2.4.9":
+  version: 2.4.11
+  resolution: "sha.js@npm:2.4.11"
+  dependencies:
+    inherits: "npm:^2.0.1"
+    safe-buffer: "npm:^5.0.1"
+  bin:
+    sha.js: ./bin.js
+  checksum: 10/d833bfa3e0a67579a6ce6e1bc95571f05246e0a441dd8c76e3057972f2a3e098465687a4369b07e83a0375a88703577f71b5b2e966809e67ebc340dbedb478c7
+  languageName: node
+  linkType: hard
+
 "shallow-clone@npm:^3.0.0":
   version: 3.0.1
   resolution: "shallow-clone@npm:3.0.1"
@@ -10929,7 +11126,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"simple-get@npm:^4.0.0":
+"simple-get@npm:^4.0.0, simple-get@npm:^4.0.1":
   version: 4.0.1
   resolution: "simple-get@npm:4.0.1"
   dependencies:
@@ -12244,10 +12441,10 @@ __metadata:
   resolution: "vscode-kaoto@workspace:."
   dependencies:
     "@kaoto/kaoto": "npm:2.5.0"
-    "@kie-tools-core/backend": "npm:0.32.0"
-    "@kie-tools-core/editor": "npm:0.32.0"
-    "@kie-tools-core/i18n": "npm:0.32.0"
-    "@kie-tools-core/vscode-extension": "npm:0.32.0"
+    "@kie-tools-core/backend": "npm:^10.0.0"
+    "@kie-tools-core/editor": "npm:^10.0.0"
+    "@kie-tools-core/i18n": "npm:^10.0.0"
+    "@kie-tools-core/vscode-extension": "npm:^10.0.0"
     "@patternfly/patternfly": "npm:6.1.0"
     "@patternfly/react-code-editor": "npm:6.1.0"
     "@patternfly/react-core": "npm:6.1.0"
