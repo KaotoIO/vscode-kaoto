@@ -34,7 +34,7 @@
     "test:it:clean": "rimraf ./test-resources && rimraf ./out && rimraf *.vsix"
   },
   "dependencies": {
-    "@kaoto/kaoto": "2.6.0-M1",
+    "@kaoto/kaoto": "2.6.0-M2",
     "@kie-tools-core/backend": "10.0.0",
     "@kie-tools-core/editor": "10.0.0",
     "@kie-tools-core/i18n": "10.0.0",

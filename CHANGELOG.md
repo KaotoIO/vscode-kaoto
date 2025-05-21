@@ -1,6 +1,6 @@
 # 2.6.0
 
-- Upgrade to Kaoto 2.6.0-M1
+- Upgrade to Kaoto 2.6.0-M2
 
 # 2.5.0
 
