@@ -1,5 +1,4 @@
 {
   "git.openRepositoryInParentFolders": "never",
-  "redhat.telemetry.enabled": false,
-  "extensions.ignoreRecommendations": true
+  "redhat.telemetry.enabled": false
 }
