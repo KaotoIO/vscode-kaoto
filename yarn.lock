@@ -2680,9 +2680,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/vsce@npm:^3.4.1":
-  version: 3.4.1
-  resolution: "@vscode/vsce@npm:3.4.1"
+"@vscode/vsce@npm:^3.4.2":
+  version: 3.4.2
+  resolution: "@vscode/vsce@npm:3.4.2"
   dependencies:
     "@azure/identity": "npm:^4.1.0"
     "@secretlint/node": "npm:^9.3.2"
@@ -2719,7 +2719,7 @@ __metadata:
       optional: true
   bin:
     vsce: vsce
-  checksum: 10/db51d45d39313e8cf8bca6ad41dac161e5a901d10851b2c4f99642c4077bc297b3b006089f64ed5e45b4bc68619a513a1d3e94e079e6bcd663c3b31be400cf72
+  checksum: 10/f58fcb28c022141ef2483227b926afd07c28fa87d26248d6268f99b4e1f77208d204b5375ec6f81e8f4793b8dc6260f28e1963c8360ebe328d8c23faea99a6c6
   languageName: node
   linkType: hard
 
@@ -12751,7 +12751,7 @@ __metadata:
     "@vscode/test-cli": "npm:^0.0.10"
     "@vscode/test-electron": "npm:^2.5.2"
     "@vscode/test-web": "npm:^0.0.69"
-    "@vscode/vsce": "npm:^3.4.1"
+    "@vscode/vsce": "npm:^3.4.2"
     async-wait-until: "npm:^2.0.27"
     buffer: "npm:^6.0.3"
     chai: "npm:^4.3.10"
