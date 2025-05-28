@@ -631,7 +631,7 @@
     "@types/wait-on": "^5.3.4",
     "@typescript-eslint/eslint-plugin": "^8.33.0",
     "@typescript-eslint/parser": "^8.33.0",
-    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-cli": "^0.0.11",
     "@vscode/test-electron": "^2.5.2",
     "@vscode/test-web": "^0.0.69",
     "@vscode/vsce": "^3.4.2",
