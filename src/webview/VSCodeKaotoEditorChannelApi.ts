@@ -4,16 +4,16 @@ import { BackendProxy } from '@kie-tools-core/backend/dist/api';
 import { I18n } from '@kie-tools-core/i18n/dist/core';
 import { DefaultVsCodeKieEditorChannelApiImpl } from '@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl';
 import { VsCodeI18n } from '@kie-tools-core/vscode-extension/dist/i18n';
+import { VsCodeNotificationsChannelApiImpl } from '@kie-tools-core/vscode-extension/dist/notifications/VsCodeNotificationsChannelApiImpl';
 import { VsCodeKieEditorController } from '@kie-tools-core/vscode-extension/dist/VsCodeKieEditorController';
 import { VsCodeKieEditorCustomDocument } from '@kie-tools-core/vscode-extension/dist/VsCodeKieEditorCustomDocument';
+import { VsCodeWorkspaceChannelApiImpl } from '@kie-tools-core/vscode-extension/dist/workspace/VsCodeWorkspaceChannelApiImpl';
 import { JavaCodeCompletionApi } from '@kie-tools-core/vscode-java-code-completion/dist/api';
 import { ResourceContentService } from '@kie-tools-core/workspace/dist/api';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
-import { VsCodeWorkspaceChannelApiImpl } from '@kie-tools-core/vscode-extension/dist/workspace/VsCodeWorkspaceChannelApiImpl';
-import { VsCodeNotificationsChannelApiImpl } from '@kie-tools-core/vscode-extension/dist/notifications/VsCodeNotificationsChannelApiImpl';
+import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 	private readonly currentEditedDocument: vscode.TextDocument | VsCodeKieEditorCustomDocument;
@@ -40,7 +40,8 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		const catalogUrl = await vscode.workspace.getConfiguration('kaoto').get<Promise<string | null>>('catalog.url');
 		const nodeLabel = await vscode.workspace.getConfiguration('kaoto').get<Promise<NodeLabelType | null>>('nodeLabel');
 		const nodeToolbarTrigger = await vscode.workspace.getConfiguration('kaoto').get<Promise<NodeToolbarTrigger | null>>('nodeToolbarTrigger');
-		const colorScheme = this.getColorSchemeFromVSCode(vscode.window.activeColorTheme);
+		const colorSchemaSetting = await vscode.workspace.getConfiguration('kaoto').get<Promise<ColorScheme | null>>('colorScheme');
+		const colorScheme = this.getColorSchemeFromVSCode(colorSchemaSetting, vscode.window.activeColorTheme);
 		const enableDragAndDrop = await vscode.workspace
 			.getConfiguration('kaoto')
 			.get<Promise<ISettingsModel['experimentalFeatures']['enableDragAndDrop'] | null>>('enableDragAndDrop');
@@ -209,16 +210,22 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		}
 	}
 
-	private getColorSchemeFromVSCode(activeColorTheme: vscode.ColorTheme): ColorScheme {
-		switch (activeColorTheme.kind) {
-			case vscode.ColorThemeKind.Dark:
-			case vscode.ColorThemeKind.HighContrast:
-				return ColorScheme.Dark;
-			case vscode.ColorThemeKind.Light:
-			case vscode.ColorThemeKind.HighContrastLight:
-				return ColorScheme.Light;
-			default:
-				return ColorScheme.Light;
+	private getColorSchemeFromVSCode(colorSchemaSetting: ColorScheme | null | undefined, activeColorTheme: vscode.ColorTheme): ColorScheme {
+		if (colorSchemaSetting === ColorScheme.Light || colorSchemaSetting === ColorScheme.Dark) {
+			return colorSchemaSetting;
 		}
+
+		if (colorSchemaSetting === ColorScheme.Auto) {
+			switch (activeColorTheme.kind) {
+				case vscode.ColorThemeKind.Dark:
+				case vscode.ColorThemeKind.HighContrast:
+					return ColorScheme.Dark;
+				case vscode.ColorThemeKind.Light:
+				case vscode.ColorThemeKind.HighContrastLight:
+					return ColorScheme.Light;
+			}
+		}
+
+		return ColorScheme.Light;
 	}
 }
