@@ -504,7 +504,7 @@
           "kaoto.colorScheme": {
             "type": "string",
             "markdownDescription": "Choose the color scheme for the UI. Can be either `auto`, `light`, or `dark`",
-            "default": "ligth",
+            "default": "light",
             "enum": [
               "auto",
               "light",
