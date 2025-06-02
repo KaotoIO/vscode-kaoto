@@ -40,8 +40,8 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		const catalogUrl = await vscode.workspace.getConfiguration('kaoto').get<Promise<string | null>>('catalog.url');
 		const nodeLabel = await vscode.workspace.getConfiguration('kaoto').get<Promise<NodeLabelType | null>>('nodeLabel');
 		const nodeToolbarTrigger = await vscode.workspace.getConfiguration('kaoto').get<Promise<NodeToolbarTrigger | null>>('nodeToolbarTrigger');
-		const colorSchemaSetting = await vscode.workspace.getConfiguration('kaoto').get<Promise<ColorScheme | null>>('colorScheme');
-		const colorScheme = this.getColorSchemeFromVSCode(colorSchemaSetting, vscode.window.activeColorTheme);
+		const colorThemeSetting = await vscode.workspace.getConfiguration('kaoto').get<Promise<ColorScheme | null>>('colorTheme');
+		const colorTheme = this.getColorSchemeFromVSCode(colorThemeSetting, vscode.window.activeColorTheme);
 		const enableDragAndDrop = await vscode.workspace
 			.getConfiguration('kaoto')
 			.get<Promise<ISettingsModel['experimentalFeatures']['enableDragAndDrop'] | null>>('enableDragAndDrop');
@@ -50,7 +50,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 			catalogUrl: catalogUrl ?? '',
 			nodeLabel: nodeLabel ?? NodeLabelType.Description,
 			nodeToolbarTrigger: nodeToolbarTrigger ?? NodeToolbarTrigger.onHover,
-			colorScheme,
+			colorScheme: colorTheme,
 			experimentalFeatures: {
 				enableDragAndDrop: enableDragAndDrop ?? false,
 			},

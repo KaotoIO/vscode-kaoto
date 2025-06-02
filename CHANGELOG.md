@@ -1,5 +1,8 @@
 # 2.7.0
 
+- Support for switching themes independently of VS Code theme
+  - The Kaoto editor must closed/reopened to have theme applied
+
 # 2.6.0
 
 - Upgrade to Kaoto 2.6.0

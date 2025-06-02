@@ -501,10 +501,10 @@
               "onSelection"
             ]
           },
-          "kaoto.colorScheme": {
+          "kaoto.colorTheme": {
             "type": "string",
-            "markdownDescription": "Choose the color scheme for the UI. Can be either `auto`, `light`, or `dark`",
-            "default": "light",
+            "markdownDescription": "Choose the color theme for the UI. `auto` will follow VS Code theme, `light` and `dark` will set that theme regardless of VS Code theme. It requires to reopen the Kaoto editors to be effective.",
+            "default": "auto",
             "enum": [
               "auto",
               "light",
