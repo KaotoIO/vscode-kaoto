@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import { ProgressLocation, window } from 'vscode';
-import { exec, execSync } from 'child_process';
-import { promisify } from 'util';
+import { exec, execSync, ExecSyncOptions } from 'child_process';
 import { normalize } from 'path';
+import { promisify } from 'util';
+import { ProgressLocation, window } from 'vscode';
+import { Runtime } from '../models';
 
 /**
  * Utilizes constants, methods, ... used in both, desktop or web extension context
@@ -57,7 +58,28 @@ export async function verifyCamelKubernetesPluginIsInstalled(): Promise<boolean>
 	return output.includes('kubernetes');
 }
 
-async function runJBangCommandWithStatusBar(args: string, msg: string): Promise<string> {
+export async function getRuntimeInfo(): Promise<Runtime> {
+	const output = await runJBangCommandWithStatusBar('camel@apache/camel dependency runtime --json', 'Checking Project runtime...');
+
+	let runtime: Runtime = Runtime.NONE;
+
+	if (output.includes('camel-quarkus')) {
+		runtime = Runtime.QUARKUS;
+		// {"runtime":"camel-quarkus","camelVersion":"4.10.2","camelQuarkusVersion":"3.20.0","quarkusVersion":"3.23.0"}
+	} else if (output.includes('camel-spring-boot')) {
+		runtime = Runtime.SPRING_BOOT;
+		// {"runtime":"camel-spring-boot","camelVersion":"4.8.0.redhat-00022","springBootVersion":"3.3.6"}
+	}
+
+	return runtime;
+}
+
+async function runJBangCommandWithStatusBar(args: string, msg: string, options: ExecSyncOptions = {}): Promise<string> {
+	const resolvedOptions: ExecSyncOptions = {
+		stdio: 'pipe',
+		...options,
+	};
+
 	let output = '';
 	await window.withProgress(
 		{
@@ -67,7 +89,7 @@ async function runJBangCommandWithStatusBar(args: string, msg: string): Promise<
 		},
 		async (progress) => {
 			progress.report({ increment: 0 });
-			output = execSync(`jbang ${args}`, { stdio: 'pipe' }).toString();
+			output = execSync(`jbang ${args}`, resolvedOptions).toString();
 			progress.report({ increment: 100 });
 		},
 	);

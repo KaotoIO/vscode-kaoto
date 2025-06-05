@@ -22,7 +22,7 @@ import { Integration } from '../views/integrationTreeItems/Integration';
 import { NewCamelRouteCommand } from '../commands/NewCamelRouteCommand';
 import { NewCamelKameletCommand } from '../commands/NewCamelKameletCommand';
 import { NewCamelPipeCommand } from '../commands/NewCamelPipeCommand';
-import { verifyCamelJBangTrustedSource, verifyCamelKubernetesPluginIsInstalled, verifyJBangExists } from '../helpers/helpers';
+import { getRuntimeInfo, verifyCamelJBangTrustedSource, verifyCamelKubernetesPluginIsInstalled, verifyJBangExists } from '../helpers/helpers';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { NewCamelFileCommand } from '../commands/NewCamelFileCommand';
 import { confirmFileDeleteDialog } from '../helpers/modals';
@@ -39,6 +39,7 @@ import { ChildItem } from '../views/deploymentTreeItems/ChildItem';
 import { CamelRouteOperationJBangTask } from '../tasks/CamelRouteOperationJBangTask';
 import { RouteOperation } from '../helpers/CamelJBang';
 import { RecommendationCore } from '@redhat-developer/vscode-extension-proposals';
+import { Runtime } from '../models';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -178,6 +179,14 @@ export class ExtensionContextHandler {
 		this.registerDeploymentsIntegrationCommands();
 		// register Stop/Start/Resume/Suspend route level buttons
 		this.registerDeploymentsRouteCommands(deploymentsProvider);
+	}
+
+	public async getRuntimeInfo(): Promise<Runtime> {
+		const jbangExec = await getRuntimeInfo();
+
+		// Store the runtime in the context for later use
+
+		return jbangExec;
 	}
 
 	private registerIntegrationsItemsContextMenu() {
