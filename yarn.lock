@@ -2542,9 +2542,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/test-web@npm:^0.0.69":
-  version: 0.0.69
-  resolution: "@vscode/test-web@npm:0.0.69"
+"@vscode/test-web@npm:^0.0.70":
+  version: 0.0.70
+  resolution: "@vscode/test-web@npm:0.0.70"
   dependencies:
     "@koa/cors": "npm:^5.0.0"
     "@koa/router": "npm:^13.1.0"
@@ -2558,12 +2558,12 @@ __metadata:
     koa-static: "npm:^5.0.0"
     minimist: "npm:^1.2.8"
     playwright: "npm:^1.52.0"
-    tar-fs: "npm:^3.0.8"
-    tinyglobby: "npm:0.2.13"
+    tar-fs: "npm:^3.0.9"
+    tinyglobby: "npm:0.2.14"
     vscode-uri: "npm:^3.1.0"
   bin:
     vscode-test-web: out/server/index.js
-  checksum: 10/77d2133bf79e2b254d533de8ae2ad4b31d5459de005841c5d162b7e153292ff3f41a3907a4ffd4e15f1470f33590d087e6021b904ca7c1e71e79eb39dcaeb353
+  checksum: 10/1ee23436e209702524136b1379f01821ef374b85608e97a584ce05b48851498b69954b53dacfcda89724b775ab2e12ad1897dd9b03efe2a8cc24cdbdb33ecfa8
   languageName: node
   linkType: hard
 
@@ -11858,9 +11858,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar-fs@npm:^3.0.8":
-  version: 3.0.8
-  resolution: "tar-fs@npm:3.0.8"
+"tar-fs@npm:^3.0.9":
+  version: 3.0.9
+  resolution: "tar-fs@npm:3.0.9"
   dependencies:
     bare-fs: "npm:^4.0.1"
     bare-path: "npm:^3.0.0"
@@ -11871,7 +11871,7 @@ __metadata:
       optional: true
     bare-path:
       optional: true
-  checksum: 10/fdcd1c66dc5e2cad5544ffe7eab9a470b419290b22300c344688df51bf06127963da07a1e3ae23cae80851cd9f60149e80b38e56485dd7a14aea701241ac2f81
+  checksum: 10/00e194ef36ced339000099c3cb5205fcd9636a531158d73e0fc1ca056fbcf8dcf39a398cbc71f030bbf938d4f477f47e2913c6e37e9c007bad31e0768a120590
   languageName: node
   linkType: hard
 
@@ -12040,13 +12040,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tinyglobby@npm:0.2.13":
-  version: 0.2.13
-  resolution: "tinyglobby@npm:0.2.13"
+"tinyglobby@npm:0.2.14":
+  version: 0.2.14
+  resolution: "tinyglobby@npm:0.2.14"
   dependencies:
     fdir: "npm:^6.4.4"
     picomatch: "npm:^4.0.2"
-  checksum: 10/b04557ee58ad2be5f2d2cbb4b441476436c92bb45ba2e1fc464d686b793392b305ed0bcb8b877429e9b5036bdd46770c161a08384c0720b6682b7cd6ac80e403
+  checksum: 10/3d306d319718b7cc9d79fb3f29d8655237aa6a1f280860a217f93417039d0614891aee6fc47c5db315f4fcc6ac8d55eb8e23e2de73b2c51a431b42456d9e5764
   languageName: node
   linkType: hard
 
@@ -12766,7 +12766,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:^8.34.0"
     "@vscode/test-cli": "npm:^0.0.11"
     "@vscode/test-electron": "npm:^2.5.2"
-    "@vscode/test-web": "npm:^0.0.69"
+    "@vscode/test-web": "npm:^0.0.70"
     "@vscode/vsce": "npm:^3.5.0"
     async-wait-until: "npm:^2.0.27"
     buffer: "npm:^6.0.3"
