@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { RelativePattern, ShellExecution, ShellExecutionOptions, Uri, workspace } from 'vscode';
+import { RelativePattern, ShellExecution, ShellExecutionOptions, Uri, workspace, window } from 'vscode';
 import { arePathsEqual } from './helpers';
 import { dirname } from 'path';
 
@@ -23,6 +23,8 @@ export enum RouteOperation {
 	suspend = 'suspend',
 	resume = 'resume',
 }
+
+const isWindows: boolean = process.platform.startsWith('win');
 
 /**
  * Camel JBang class which allows shell execution of different JBang CLI commands
@@ -54,12 +56,27 @@ export class CamelJBang {
 		// omitting the option (using default '.') works as expected.
 		const directoryArg = arePathsEqual(dirname(filePath), outputPath) ? '' : `'--directory=${outputPath}'`;
 
-		return new ShellExecution(
-			this.jbang,
-			[...this.defaultJbangArgs, 'export', `'${filePath}'`, `--runtime=${runtime}`, `--gav=${gav}`, directoryArg].filter(function (arg) {
-				return arg; // remove ALL empty values ("", null, undefined and 0)
-			}),
-		);
+		if (this.camelJBangVersion.startsWith('4.12') && isWindows) {
+			window.showInformationMessage(
+				'The created project do not have the Maven wrapper because Camel JBang 4.12 is used on Windows. If you want the Maven wrapper either: call `mvn wrapper:wrapper` on the created project, recreate the project using a different Camel Version or using a non-Windows OS.',
+			);
+			return new ShellExecution(
+				this.jbang,
+				[...this.defaultJbangArgs, 'export', `'${filePath}'`, `--runtime=${runtime}`, `--gav=${gav}`, '--maven-wrapper=false', directoryArg].filter(
+					function (arg) {
+						return arg; // remove ALL empty values ("", null, undefined and 0)
+					},
+				),
+			);
+		} else {
+			return new ShellExecution(
+				this.jbang,
+				[...this.defaultJbangArgs, 'export', `'${filePath}'`, `--runtime=${runtime}`, `--gav=${gav}`, directoryArg].filter(function (arg) {
+					return arg; // remove ALL empty values ("", null, undefined and 0)
+				}),
+			);
+		}
+
 	}
 
 	public async run(filePath: string, cwd?: string, port?: number): Promise<ShellExecution> {
