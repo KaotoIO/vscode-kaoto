@@ -5423,12 +5423,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-chai-friendly@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "eslint-plugin-chai-friendly@npm:1.0.1"
+"eslint-plugin-chai-friendly@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "eslint-plugin-chai-friendly@npm:1.1.0"
   peerDependencies:
     eslint: ">=3.0.0"
-  checksum: 10/459c0162b606d290bc6b10caa7bd7b67a3ce3d37d98ee1b9b91646842553d7282887858efd20cb6a6b8cbaa42746e83258244a32bce0e1d038ebe5559e747730
+  checksum: 10/2c3ff01e7a58222a5fc42eeed9a04d9ef319198455fa6f2dfd1dbff5f68624cbe4e5ae510fb9406b6a1097e962d1dd4e60d69ce877a115c3f1bbe596adfb3fa7
   languageName: node
   linkType: hard
 
@@ -12732,7 +12732,7 @@ __metadata:
     eslint: "npm:^9.28.0"
     eslint-config-prettier: "npm:^10.1.5"
     eslint-define-config: "npm:^2.1.0"
-    eslint-plugin-chai-friendly: "npm:^1.0.1"
+    eslint-plugin-chai-friendly: "npm:^1.1.0"
     eslint-plugin-import: "npm:^2.31.0"
     eslint-plugin-prettier: "npm:^5.4.1"
     fs-extra: "npm:^11.3.0"
