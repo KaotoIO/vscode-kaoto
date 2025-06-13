@@ -32,7 +32,8 @@ describe('Extension', function () {
 
 		notificationCenter = await new Workbench().openNotificationsCenter();
 		await notificationCenter.getDriver().wait(async () => {
-			return (await notificationCenter.getNotifications(NotificationType.Info)).length > 0;
+			// expect to have at least two notifications, in fact would better to check both are already available
+			return (await notificationCenter.getNotifications(NotificationType.Info)).length > 1;
 		});
 	});
 
