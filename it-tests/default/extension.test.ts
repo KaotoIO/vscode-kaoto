@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Notification, NotificationsCenter, NotificationType, Workbench } from 'vscode-extension-tester';
+import { NotificationsCenter, NotificationType, Workbench } from 'vscode-extension-tester';
 import { openResourcesAndWaitForActivation } from '../Util';
 import { join } from 'path';
 import { expect } from 'chai';
+import { waitUntil } from 'async-wait-until';
 
 describe('Extension', function () {
 	this.timeout(90_000);
@@ -24,7 +25,6 @@ describe('Extension', function () {
 	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars');
 
 	let notificationCenter: NotificationsCenter;
-	let notifications: Notification[];
 
 	before(async function () {
 		this.timeout(60_000);
@@ -32,21 +32,44 @@ describe('Extension', function () {
 
 		notificationCenter = await new Workbench().openNotificationsCenter();
 		await notificationCenter.getDriver().wait(async () => {
-			return (await notificationCenter.getNotifications(NotificationType.Info)).length > 0;
+			// expect to have at least two notifications, in fact would better to check both are already available
+			return (await notificationCenter.getNotifications(NotificationType.Info)).length > 1;
 		});
 	});
 
 	it(`Check 'XML' extension recommendation exists`, async function () {
-		notifications = await notificationCenter.getNotifications(NotificationType.Info);
+		await notificationAvailable(notificationCenter, 'XML Language Support by Red Hat');
+		const notifications = await notificationCenter.getNotifications(NotificationType.Info);
 		const xml = notifications.find(async (n) => (await n.getText()).includes('XML Language Support by Red Hat'));
 		expect(xml).to.not.be.undefined;
-		await xml?.takeAction('Never'); // click 'Never' to avoid interruption with other tests
+		try {
+			await xml?.takeAction('Never'); // click 'Never' to avoid interruption with other tests
+		} catch {
+			const notifications = await notificationCenter.getNotifications(NotificationType.Info);
+			const xml = notifications.find(async (n) => (await n.getText()).includes('XML Language Support by Red Hat'));
+			await xml?.takeAction('Never');
+		}
 	});
 
 	it(`Check 'YAML' extension recommendation exists`, async function () {
-		notifications = await notificationCenter.getNotifications(NotificationType.Info);
+		await notificationAvailable(notificationCenter, 'YAML Language Support by Red Hat');
+		const notifications = await notificationCenter.getNotifications(NotificationType.Info);
 		const yaml = notifications.find(async (n) => (await n.getText()).includes('YAML Language Support by Red Hat'));
 		expect(yaml).to.not.be.undefined;
-		await yaml?.takeAction('Never'); // click 'Never' to avoid interruption with other tests
+		try {
+			await yaml?.takeAction('Never'); // click 'Never' to avoid interruption with other tests
+		} catch {
+			const notifications = await notificationCenter.getNotifications(NotificationType.Info);
+			const yaml = notifications.find(async (n) => (await n.getText()).includes('YAML Language Support by Red Hat'));
+			expect(yaml).to.not.be.undefined;
+			await yaml?.takeAction('Never');
+		}
 	});
 });
+async function notificationAvailable(notificationCenter: NotificationsCenter, notificationText: string) {
+	await waitUntil(async () => {
+		const notifications = await notificationCenter.getNotifications(NotificationType.Info);
+		const notificationWithText = notifications.find(async (n) => (await n.getText()).includes(notificationText));
+		return notificationWithText !== undefined;
+	});
+}
