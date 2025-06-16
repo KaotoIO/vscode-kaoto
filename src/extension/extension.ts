@@ -21,10 +21,10 @@ import * as KogitoVsCode from '@kie-tools-core/vscode-extension/dist';
 import { getRedHatService, TelemetryService } from '@redhat-developer/vscode-redhat-telemetry';
 import * as vscode from 'vscode';
 import { KAOTO_FILE_PATH_GLOB } from '../helpers/helpers';
+import { PortManager } from '../helpers/PortManager';
 import { VSCodeKaotoChannelApiProducer } from './../webview/VSCodeKaotoChannelApiProducer';
 import { ExtensionContextHandler } from './ExtensionContextHandler';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
-import { PortManager } from '../helpers/PortManager';
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -103,6 +103,13 @@ export async function activate(context: vscode.ExtensionContext) {
 	 */
 	if (jbang) {
 		await contextHandler.checkCamelJbangTrustedSource();
+	}
+
+	/*
+	 * check Project runtime
+	 */
+	if (jbang) {
+		await contextHandler.getRuntimeInfo();
 	}
 
 	/*
