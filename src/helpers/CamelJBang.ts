@@ -19,6 +19,7 @@ import { dirname, join } from 'path';
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
+import { compareVersions } from 'compare-versions';
 
 export enum RouteOperation {
 	start = 'start',
@@ -129,7 +130,14 @@ export class CamelJBang {
 		const folderOfpomXml = this.findFolderOfPomXml(integrationFilePath);
 		if (folderOfpomXml !== undefined) {
 			try {
-				return execSync(`jbang '-Dcamel.jbang.version=${this.camelJBangVersion}' camel@apache/camel dependency runtime --json`, {
+				let camelJbangVersionToUse: string;
+				if (compareVersions(this.camelJBangVersion, '4.12')) {
+					camelJbangVersionToUse = this.camelJBangVersion;
+				} else {
+					const defaultValue = workspace.getConfiguration().inspect('kaoto.camelJBang.Version')?.defaultValue as string;
+					camelJbangVersionToUse = defaultValue ?? '4.12.0';
+				}
+				return execSync(`jbang '-Dcamel.jbang.version=${camelJbangVersionToUse}' camel@apache/camel dependency runtime --json`, {
 					stdio: 'pipe',
 					cwd: folderOfpomXml,
 				}).toString();
