@@ -15,7 +15,12 @@
  */
 import { RelativePattern, ShellExecution, ShellExecutionOptions, Uri, workspace, window } from 'vscode';
 import { arePathsEqual } from './helpers';
-import { dirname } from 'path';
+import { dirname, join } from 'path';
+import { execSync } from 'child_process';
+import * as fs from 'fs';
+import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
+import { compareVersions } from 'compare-versions';
+import { RuntimeMavenInformation } from '../tasks/RuntimeMavenInformation';
 
 export enum RouteOperation {
 	start = 'start',
@@ -120,6 +125,46 @@ export class CamelJBang {
 
 	public route(operation: RouteOperation, integration: string, routeId: string): ShellExecution {
 		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'cmd', `${operation}-route`, integration, `--id=${routeId}`]);
+	}
+
+	public async getRuntimeInfoFromMavenContext(integrationFilePath: string): Promise<RuntimeMavenInformation | undefined> {
+		const folderOfpomXml = this.findFolderOfPomXml(integrationFilePath);
+		if (folderOfpomXml !== undefined) {
+			try {
+				let camelJbangVersionToUse: string;
+				if (compareVersions(this.camelJBangVersion, '4.13')) {
+					camelJbangVersionToUse = this.camelJBangVersion;
+				} else {
+					const defaultValue = workspace.getConfiguration().inspect('kaoto.camelJBang.Version')?.defaultValue as string;
+					camelJbangVersionToUse = defaultValue ?? '4.13.0';
+				}
+				const response: string = execSync(
+					`jbang '-Dcamel.jbang.version=${camelJbangVersionToUse}' camel@apache/camel dependency runtime --json pom.xml`,
+					{
+						stdio: 'pipe',
+						cwd: folderOfpomXml,
+					},
+				).toString();
+				return JSON.parse(response) as RuntimeMavenInformation;
+			} catch (ex) {
+				KaotoOutputChannel.logError('Error while trying to retrieve the runtime information from Maven context', ex);
+				return undefined;
+			}
+		} else {
+			return undefined;
+		}
+	}
+
+	private findFolderOfPomXml(currentFile: string): string | undefined {
+		const parentFolder = dirname(currentFile);
+		if (parentFolder !== undefined && parentFolder !== currentFile) {
+			if (fs.existsSync(join(parentFolder, 'pom.xml'))) {
+				return parentFolder;
+			} else {
+				return this.findFolderOfPomXml(parentFolder);
+			}
+		}
+		return undefined;
 	}
 
 	private getKubernetesRunArguments(): string[] {
