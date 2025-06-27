@@ -17,8 +17,16 @@
 import { assert } from 'chai';
 import { CamelJBang } from '../../helpers/CamelJBang';
 import * as vscode from 'vscode';
+import * as os from 'os';
 
 suite('CamelJbang tests', function () {
+	this.beforeAll(function () {
+		if (os.platform() === 'win32') {
+			// Skipped on Windows due to https://github.com/microsoft/vscode-test/issues/298
+			this.skip();
+		}
+	});
+
 	test('Can retrieve version from Maven context', async () => {
 		const files = await vscode.workspace.findFiles('camel-maven-quarkus-project/src/main/resources/camel/my-camel-quarkus-route.yaml');
 		assert(files.length === 1, 'For the test, we expect to have a single file in the camel quarkus project');
