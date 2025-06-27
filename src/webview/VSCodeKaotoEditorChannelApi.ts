@@ -15,6 +15,7 @@ import * as vscode from 'vscode';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
 import { getSuggestions } from '../helpers/SuggestionRegistry';
+import { CamelJBang } from '../helpers/CamelJBang';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 	private readonly currentEditedDocument: vscode.TextDocument | VsCodeKieEditorCustomDocument;
@@ -193,6 +194,36 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		context: { propertyName: string; inputValue: string | number; cursorPosition?: number | null },
 	): Promise<{ value: string; description?: string; group?: string }[]> {
 		return await getSuggestions(topic, word, context);
+	}
+
+	async getRuntimeInfoFromMavenContext(): Promise<
+		| {
+				runtime: string;
+				camelVersion: string;
+		  }
+		| {
+				runtime: string;
+				camelVersion: string;
+				/* Quarkus specific*/
+				camelQuarkusVersion?: string;
+				quarkusVersion?: string;
+				quarkusBomGroupId?: string;
+				quarkusBomArtifactId?: string;
+				camelQuarkusBomGroupId?: string;
+				camelQuarkusBomArtifactId?: string;
+		  }
+		| {
+				runtime: string;
+				camelVersion: string;
+				/* Spring Boot specific*/
+				camelSpringBootBomArtifactId?: string;
+				camelSpringBootBomGroupId?: string;
+				camelSpringBootVersion?: string;
+				springBootVersion?: string;
+		  }
+		| undefined
+	> {
+		return new CamelJBang().getRuntimeInfoFromMavenContext(this.currentEditedDocument.uri.fsPath);
 	}
 
 	private async findExistingKaotoMetadataFile(fileUri: vscode.Uri): Promise<vscode.Uri | undefined> {
