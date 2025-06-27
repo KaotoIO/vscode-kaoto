@@ -15,7 +15,10 @@
  */
 import { RelativePattern, ShellExecution, ShellExecutionOptions, Uri, workspace, window } from 'vscode';
 import { arePathsEqual } from './helpers';
-import { dirname } from 'path';
+import { dirname, join } from 'path';
+import { execSync } from 'child_process';
+import * as fs from 'fs';
+import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 
 export enum RouteOperation {
 	start = 'start',
@@ -76,7 +79,6 @@ export class CamelJBang {
 				}),
 			);
 		}
-
 	}
 
 	public async run(filePath: string, cwd?: string, port?: number): Promise<ShellExecution> {
@@ -121,6 +123,35 @@ export class CamelJBang {
 
 	public route(operation: RouteOperation, integration: string, routeId: string): ShellExecution {
 		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'cmd', `${operation}-route`, integration, `--id=${routeId}`]);
+	}
+
+	public async getRuntimeInfoFromMavenContext(integrationFilePath: string): Promise<string | undefined> {
+		const folderOfpomXml = this.findFolderOfPomXml(integrationFilePath);
+		if (folderOfpomXml !== undefined) {
+			try {
+				return execSync(`jbang '-Dcamel.jbang.version=${this.camelJBangVersion}' camel@apache/camel dependency runtime --json`, {
+					stdio: 'pipe',
+					cwd: folderOfpomXml,
+				}).toString();
+			} catch (ex) {
+				KaotoOutputChannel.logError('Error while trying to retrieve the runtime information from Maven context', ex);
+				return undefined;
+			}
+		} else {
+			return undefined;
+		}
+	}
+
+	private findFolderOfPomXml(currentFile: string): string | undefined {
+		const parentFolder = dirname(currentFile);
+		if (parentFolder !== undefined && parentFolder !== currentFile) {
+			if (fs.existsSync(join(parentFolder, 'pom.xml'))) {
+				return parentFolder;
+			} else {
+				return this.findFolderOfPomXml(parentFolder);
+			}
+		}
+		return undefined;
 	}
 
 	private getKubernetesRunArguments(): string[] {

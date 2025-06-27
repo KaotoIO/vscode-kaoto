@@ -14,6 +14,7 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
+import { CamelJBang } from '../helpers/CamelJBang';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 	private readonly currentEditedDocument: vscode.TextDocument | VsCodeKieEditorCustomDocument;
@@ -184,6 +185,10 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 			KaotoOutputChannel.logError(errorMessage, ex);
 			return undefined;
 		}
+	}
+
+	async getRuntimeInfoFromMavenContext(): Promise<string | undefined> {
+		return new CamelJBang().getRuntimeInfoFromMavenContext(this.currentEditedDocument.uri.fsPath);
 	}
 
 	private async findExistingKaotoMetadataFile(fileUri: vscode.Uri): Promise<vscode.Uri | undefined> {
