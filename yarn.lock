@@ -1168,12 +1168,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/browser-chromium@npm:^1.52.0":
-  version: 1.52.0
-  resolution: "@playwright/browser-chromium@npm:1.52.0"
+"@playwright/browser-chromium@npm:^1.53.1":
+  version: 1.53.2
+  resolution: "@playwright/browser-chromium@npm:1.53.2"
   dependencies:
-    playwright-core: "npm:1.52.0"
-  checksum: 10/4f4b1cc129745756e37d425ec09e819f8c4b727e2fa3ff7feb6e8fdd4d314120b54115e106f9f57b4ae84922f1e5516839eb57f312152ddd2b5bcb53a44fa5ac
+    playwright-core: "npm:1.53.2"
+  checksum: 10/1a2fdb7cae552b314ba2f3bf044b038846cb2e99f5bcc3799522eae736968dd1c95d26905588d3c8e015ee3627e29f9fa407178feeee20e0ac8115752a1f8b49
   languageName: node
   linkType: hard
 
@@ -2668,13 +2668,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/test-web@npm:^0.0.70":
-  version: 0.0.70
-  resolution: "@vscode/test-web@npm:0.0.70"
+"@vscode/test-web@npm:^0.0.71":
+  version: 0.0.71
+  resolution: "@vscode/test-web@npm:0.0.71"
   dependencies:
     "@koa/cors": "npm:^5.0.0"
     "@koa/router": "npm:^13.1.0"
-    "@playwright/browser-chromium": "npm:^1.52.0"
+    "@playwright/browser-chromium": "npm:^1.53.1"
     gunzip-maybe: "npm:^1.4.2"
     http-proxy-agent: "npm:^7.0.2"
     https-proxy-agent: "npm:^7.0.6"
@@ -2683,13 +2683,13 @@ __metadata:
     koa-mount: "npm:^4.2.0"
     koa-static: "npm:^5.0.0"
     minimist: "npm:^1.2.8"
-    playwright: "npm:^1.52.0"
-    tar-fs: "npm:^3.0.9"
+    playwright: "npm:^1.53.1"
+    tar-fs: "npm:^3.1.0"
     tinyglobby: "npm:0.2.14"
     vscode-uri: "npm:^3.1.0"
   bin:
     vscode-test-web: out/server/index.js
-  checksum: 10/1ee23436e209702524136b1379f01821ef374b85608e97a584ce05b48851498b69954b53dacfcda89724b775ab2e12ad1897dd9b03efe2a8cc24cdbdb33ecfa8
+  checksum: 10/f2a8e4a58c2e126eea680ddd7444ed8874926ca8479fc73d5b684de3a78666173b864ba2d8709b61e5f18cad0d821f36380dfe0379065da8aeba27bab0ca4f6d
   languageName: node
   linkType: hard
 
@@ -10272,27 +10272,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.52.0":
-  version: 1.52.0
-  resolution: "playwright-core@npm:1.52.0"
+"playwright-core@npm:1.53.2":
+  version: 1.53.2
+  resolution: "playwright-core@npm:1.53.2"
   bin:
     playwright-core: cli.js
-  checksum: 10/42e13f5f98dc25ebc95525fb338a215b9097b2ba39d41e99972a190bf75d79979f163f5bc07b1ca06847ee07acb2c9b487d070fab67e9cd55e33310fc05aca3c
+  checksum: 10/575c37b66aa62e1300d8b42d4b021c9304a35266ea47b6f0c36b429c40674082700b7172ee3641de7451cd2a4c736c42e0e39fd5f6a7ba4c81a6eefd8c104efd
   languageName: node
   linkType: hard
 
-"playwright@npm:^1.52.0":
-  version: 1.52.0
-  resolution: "playwright@npm:1.52.0"
+"playwright@npm:^1.53.1":
+  version: 1.53.2
+  resolution: "playwright@npm:1.53.2"
   dependencies:
     fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.52.0"
+    playwright-core: "npm:1.53.2"
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 10/214175446089000c2ac997b925063b95f7d86d129c5d7c74caa5ddcb05bcad598dfd569d2133a10dc82d288bf67e7858877dcd099274b0b928b9c63db7d6ecec
+  checksum: 10/1c860c52a77f32793d7b1b5f5b15da9b809b8a09a82e5c89f79442fe9708ff6314b6ee6d13aa0961a6c9fddc9209f0a109ac524bdf586e0df52b641e96fa759d
   languageName: node
   linkType: hard
 
@@ -12132,9 +12132,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar-fs@npm:^3.0.9":
-  version: 3.0.9
-  resolution: "tar-fs@npm:3.0.9"
+"tar-fs@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "tar-fs@npm:3.1.0"
   dependencies:
     bare-fs: "npm:^4.0.1"
     bare-path: "npm:^3.0.0"
@@ -12145,7 +12145,7 @@ __metadata:
       optional: true
     bare-path:
       optional: true
-  checksum: 10/00e194ef36ced339000099c3cb5205fcd9636a531158d73e0fc1ca056fbcf8dcf39a398cbc71f030bbf938d4f477f47e2913c6e37e9c007bad31e0768a120590
+  checksum: 10/272054aa93adf66f3febac1ab666c2e1ae80fb7d9b7483efa9e9216aca6f7900dfecb9ef04e83f179251f95a965f960d760c42ebbb1e04580a182da997af98da
   languageName: node
   linkType: hard
 
@@ -13033,7 +13033,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:^8.35.1"
     "@vscode/test-cli": "npm:^0.0.11"
     "@vscode/test-electron": "npm:^2.5.2"
-    "@vscode/test-web": "npm:^0.0.70"
+    "@vscode/test-web": "npm:^0.0.71"
     "@vscode/vsce": "npm:^3.6.0"
     async-wait-until: "npm:^2.0.27"
     buffer: "npm:^6.0.3"
