@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 import { RelativePattern, ShellExecution, ShellExecutionOptions, Uri, workspace, window } from 'vscode';
-import { arePathsEqual } from './helpers';
-import { dirname, join } from 'path';
+import { arePathsEqual, findFolderOfPomXml } from './helpers';
+import { dirname } from 'path';
 import { execSync } from 'child_process';
-import * as fs from 'fs';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { compareVersions } from 'compare-versions';
 
@@ -127,7 +126,7 @@ export class CamelJBang {
 	}
 
 	public async getRuntimeInfoFromMavenContext(integrationFilePath: string): Promise<string | undefined> {
-		const folderOfpomXml = this.findFolderOfPomXml(integrationFilePath);
+		const folderOfpomXml = findFolderOfPomXml(integrationFilePath);
 		if (folderOfpomXml !== undefined) {
 			try {
 				let camelJbangVersionToUse: string;
@@ -148,18 +147,6 @@ export class CamelJBang {
 		} else {
 			return undefined;
 		}
-	}
-
-	private findFolderOfPomXml(currentFile: string): string | undefined {
-		const parentFolder = dirname(currentFile);
-		if (parentFolder !== undefined && parentFolder !== currentFile) {
-			if (fs.existsSync(join(parentFolder, 'pom.xml'))) {
-				return parentFolder;
-			} else {
-				return this.findFolderOfPomXml(parentFolder);
-			}
-		}
-		return undefined;
 	}
 
 	private getKubernetesRunArguments(): string[] {
