@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 import { RelativePattern, ShellExecution, ShellExecutionOptions, Uri, workspace, window } from 'vscode';
-import { arePathsEqual } from './helpers';
+import { arePathsEqual, findFolderOfPomXml } from './helpers';
 import { dirname } from 'path';
+import { execSync } from 'child_process';
+import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
+import { compareVersions } from 'compare-versions';
 
 export enum RouteOperation {
 	start = 'start',
@@ -76,7 +79,6 @@ export class CamelJBang {
 				}),
 			);
 		}
-
 	}
 
 	public async run(filePath: string, cwd?: string, port?: number): Promise<ShellExecution> {
@@ -121,6 +123,30 @@ export class CamelJBang {
 
 	public route(operation: RouteOperation, integration: string, routeId: string): ShellExecution {
 		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'cmd', `${operation}-route`, integration, `--id=${routeId}`]);
+	}
+
+	public async getRuntimeInfoFromMavenContext(integrationFilePath: string): Promise<string | undefined> {
+		const folderOfpomXml = findFolderOfPomXml(integrationFilePath);
+		if (folderOfpomXml !== undefined) {
+			try {
+				let camelJbangVersionToUse: string;
+				if (compareVersions(this.camelJBangVersion, '4.12')) {
+					camelJbangVersionToUse = this.camelJBangVersion;
+				} else {
+					const defaultValue = workspace.getConfiguration().inspect('kaoto.camelJBang.Version')?.defaultValue as string;
+					camelJbangVersionToUse = defaultValue ?? '4.12.0';
+				}
+				return execSync(`jbang '-Dcamel.jbang.version=${camelJbangVersionToUse}' camel@apache/camel dependency runtime --json`, {
+					stdio: 'pipe',
+					cwd: folderOfpomXml,
+				}).toString();
+			} catch (ex) {
+				KaotoOutputChannel.logError('Error while trying to retrieve the runtime information from Maven context', ex);
+				return undefined;
+			}
+		} else {
+			return undefined;
+		}
 	}
 
 	private getKubernetesRunArguments(): string[] {
