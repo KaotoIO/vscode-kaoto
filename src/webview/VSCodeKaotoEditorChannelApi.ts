@@ -14,6 +14,7 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
+import { getSuggestions } from '../helpers/SuggestionRegistry';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 	private readonly currentEditedDocument: vscode.TextDocument | VsCodeKieEditorCustomDocument;
@@ -184,6 +185,14 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 			KaotoOutputChannel.logError(errorMessage, ex);
 			return undefined;
 		}
+	}
+
+	async getSuggestions(
+		topic: string,
+		word: string,
+		context: { propertyName: string; inputValue: string | number; cursorPosition?: number | null },
+	): Promise<{ value: string; description?: string; group?: string }[]> {
+		return await getSuggestions(topic, word, context);
 	}
 
 	private async findExistingKaotoMetadataFile(fileUri: vscode.Uri): Promise<vscode.Uri | undefined> {
