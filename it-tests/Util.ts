@@ -166,25 +166,28 @@ export async function closeEditor(title: string, save?: boolean) {
 }
 
 export async function openResourcesAndWaitForActivation(path: string, timeout: number = 150_000, interval: number = 1_000): Promise<void> {
-	await VSBrowser.instance.openResources(path);
-	await VSBrowser.instance.waitForWorkbench();
-	await VSBrowser.instance.driver.wait(
-		async function () {
-			return await extensionIsActivated('Kaoto');
-		},
-		timeout,
-		`The Kaoto extension was not activated after ${timeout} sec.`,
-		interval,
-	);
+	await VSBrowser.instance.openResources(path, async () => {
+		await VSBrowser.instance.driver.sleep(interval);
+		await VSBrowser.instance.driver.wait(
+			async function () {
+				return await extensionIsActivated('Kaoto');
+			},
+			timeout,
+			`The Kaoto extension was not activated after ${timeout} sec.`,
+			interval,
+		);
+	});
 }
 
 async function extensionIsActivated(displayName: string): Promise<boolean> {
 	try {
-		const extensionsView = await (await new ActivityBar().getViewControl('Extensions'))?.openView();
+		const extensionsControl = await new ActivityBar().getViewControl('Extensions');
+		const extensionsView = await extensionsControl?.openView();
 		const marketplace = (await extensionsView?.getContent().getSection('Installed')) as ExtensionsViewSection;
 		const item = (await marketplace.findItem(`@installed ${displayName}`)) as ExtensionsViewItem;
 		const activationTime = await item.findElement(By.className('activationTime'));
 		if (activationTime) {
+			await extensionsControl?.closeView();
 			return true;
 		} else {
 			return false;

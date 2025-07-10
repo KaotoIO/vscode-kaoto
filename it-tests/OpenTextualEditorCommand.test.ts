@@ -28,7 +28,7 @@ describe('Toggle Source Code', function () {
 		} else {
 			actionTitle += ' (Ctrl+K V)';
 		}
-		await (await editorView.getAction(actionTitle))?.click();
+		await clickEditorAction(editorView, actionTitle);
 		const groupsNum = await waitForEditorGroupsLength(2);
 		expect(groupsNum).to.equal(2);
 
@@ -37,12 +37,31 @@ describe('Toggle Source Code', function () {
 	});
 
 	it('close text editor', async function () {
-		await (await editorView.getAction('Close Source Code', 1))?.click();
+		await editorView.openEditor(CAMEL_FILE, 1); // re-activate editor
+		await clickEditorAction(editorView, 'Close Source Code', 1);
+
 		const groupsNum = await waitForEditorGroupsLength(1);
 		expect(groupsNum).to.equal(1);
 	});
 
+	async function clickEditorAction(editorView: EditorView, actionLabel: string, groupIndex?: number) {
+		await editorView.getDriver().wait(async () => {
+			try {
+				const action = await editorView.getAction(actionLabel, groupIndex);
+				if (action !== undefined) {
+					await action.click();
+					return true;
+				} else {
+					return false;
+				}
+			} catch {
+				return false;
+			}
+		});
+	}
+
 	async function waitForEditorGroupsLength(length: number, timeout: number = 5_000): Promise<number> {
+		await editorView.openEditor(CAMEL_FILE); // re-activate editor
 		await editorView.getDriver().wait(
 			async () => {
 				const currentLength = (await editorView.getEditorGroups()).length;
