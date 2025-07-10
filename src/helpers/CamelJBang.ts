@@ -76,7 +76,6 @@ export class CamelJBang {
 				}),
 			);
 		}
-
 	}
 
 	public async run(filePath: string, cwd?: string, port?: number): Promise<ShellExecution> {
