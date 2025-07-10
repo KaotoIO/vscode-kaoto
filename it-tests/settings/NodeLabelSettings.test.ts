@@ -27,11 +27,15 @@ describe('User Settings', function () {
 
 		// provide the Node Label using Settings UI editor
 		const settings = await new Workbench().openSettings();
-		const textSetting = await driver.wait(async () => {
-			return (await settings.findSetting('Node Label', 'Kaoto')) as ComboSetting;
-		});
+		const textSetting = await driver.wait(
+			async () => {
+				return (await settings.findSetting('Node Label', 'Kaoto')) as ComboSetting;
+			},
+			5_000,
+			'Cannot find setting Kaoto > Node Label',
+		);
 		await textSetting.setValue('id');
-		await driver.sleep(1_000); // stabilize tests which are sometimes failing on macOS CI
+		await driver.sleep(1_500); // stabilize tests which are sometimes failing on macOS CI
 		await closeEditor('Settings', true);
 
 		// close sidebar

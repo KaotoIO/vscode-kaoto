@@ -107,8 +107,9 @@ describe('User Settings', function () {
 
 			// collapse catalog dropdown
 			await dropdown.click();
+			await driver.sleep(500); // time to reflect changes in DOM
 			try {
-				await driver.wait(until.elementLocated(locators.RuntimeSelectorItems.list), 5_000);
+				await driver.wait(until.elementLocated(locators.RuntimeSelectorItems.list), 2_500);
 				throw new Error('Dropdown was not closed!');
 			} catch (error) {
 				if (error instanceof Error && error.name !== 'TimeoutError') {

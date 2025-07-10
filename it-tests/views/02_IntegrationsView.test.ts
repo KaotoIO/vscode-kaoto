@@ -37,6 +37,7 @@ describe('Integrations View', function () {
 		kaotoView = await kaotoViewContainer?.openView();
 		deploymentsSection = await kaotoView?.getContent().getSection('Deployments');
 		await deploymentsSection?.collapse();
+		await (await kaotoView?.getContent().getSection('Help & Feedback'))?.collapse();
 		integrationsSection = await kaotoView?.getContent().getSection('Integrations');
 
 		items = (await integrationsSection?.getVisibleItems()) as TreeItem[];

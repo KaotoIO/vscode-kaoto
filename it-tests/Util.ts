@@ -47,7 +47,7 @@ export async function waitUntilTerminalHasText(driver: WebDriver, textArray: str
 			}
 		},
 		timeout,
-		undefined,
+		`Failed while waiting on terminal to has text: ${textArray}`,
 		interval,
 	);
 }
@@ -121,12 +121,12 @@ export async function switchToKaotoFrame(driver: WebDriver, checkNotDirty: boole
 	return { kaotoWebview, kaotoEditor };
 }
 
-export async function checkEmptyCanvasLoaded(driver: WebDriver) {
-	await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='visualization-empty-state']")));
+export async function checkEmptyCanvasLoaded(driver: WebDriver, timeout: number = 10_000) {
+	await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='visualization-empty-state']")), timeout, 'Empty Kaoto Canvas was not loaded properly');
 }
 
 export async function checkTopologyLoaded(driver: WebDriver, timeout: number = 10_000) {
-	await driver.wait(until.elementLocated(By.xpath("//div[@data-test-id='topology']")), timeout);
+	await driver.wait(until.elementLocated(By.xpath("//div[@data-test-id='topology']")), timeout, 'Kaoto topology was not loaded properly');
 }
 
 // Enforce same default storage setup as ExTester - see https://github.com/redhat-developer/vscode-extension-tester/wiki/Test-Setup#useful-env-variables
@@ -165,26 +165,51 @@ export async function closeEditor(title: string, save?: boolean) {
 	}
 }
 
-export async function openResourcesAndWaitForActivation(path: string, timeout: number = 150_000, interval: number = 1_000): Promise<void> {
-	await VSBrowser.instance.openResources(path);
-	await VSBrowser.instance.waitForWorkbench();
-	await VSBrowser.instance.driver.wait(
-		async function () {
-			return await extensionIsActivated('Kaoto');
-		},
-		timeout,
-		`The Kaoto extension was not activated after ${timeout} sec.`,
-		interval,
-	);
+export async function openResourcesAndWaitForActivation(path: string, timeout: number = 150_000, interval: number = 2_500): Promise<void> {
+	await VSBrowser.instance.openResources(path, async () => {
+		try {
+			await collapseMcpServersAndRecommendedView();
+		} catch (error) {
+			if (error instanceof Error) {
+				if (
+					!error.message.includes(`No section with title 'MCP Servers' found`) &&
+					!error.message.includes(`No section with title 'Recommended' found`)
+				) {
+					throw Error(error.message);
+				}
+			}
+		}
+		await VSBrowser.instance.driver.wait(
+			async function () {
+				await VSBrowser.instance.driver.sleep(interval);
+				return await extensionIsActivated('Kaoto');
+			},
+			timeout,
+			`The Kaoto extension was not activated after ${timeout} sec.`,
+			interval,
+		);
+	});
+}
+
+async function collapseMcpServersAndRecommendedView(): Promise<void> {
+	const extensionsControl = await new ActivityBar().getViewControl('Extensions');
+	const extensionsView = await extensionsControl?.openView();
+	const mcp = (await extensionsView?.getContent().getSection('MCP Servers')) as ExtensionsViewSection;
+	await mcp.collapse();
+	const recommended = (await extensionsView?.getContent().getSection('Recommended')) as ExtensionsViewSection;
+	await recommended.collapse();
+	await extensionsControl?.closeView();
 }
 
 async function extensionIsActivated(displayName: string): Promise<boolean> {
 	try {
-		const extensionsView = await (await new ActivityBar().getViewControl('Extensions'))?.openView();
+		const extensionsControl = await new ActivityBar().getViewControl('Extensions');
+		const extensionsView = await extensionsControl?.openView();
 		const marketplace = (await extensionsView?.getContent().getSection('Installed')) as ExtensionsViewSection;
 		const item = (await marketplace.findItem(`@installed ${displayName}`)) as ExtensionsViewItem;
 		const activationTime = await item.findElement(By.className('activationTime'));
 		if (activationTime) {
+			await extensionsControl?.closeView();
 			return true;
 		} else {
 			return false;
