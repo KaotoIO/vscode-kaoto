@@ -15,11 +15,11 @@
  */
 import { expect } from 'chai';
 import { join } from 'path';
-import { ActivityBar, SideBarView, ViewControl, ViewItem, ViewSection } from 'vscode-extension-tester';
+import { ActivityBar, SideBarView, ViewControl, ViewItem, ViewSection, before } from 'vscode-extension-tester';
 import { openResourcesAndWaitForActivation } from '../Util';
 
 describe('Kaoto View Container', function () {
-	this.timeout(30_000);
+	this.timeout(180_000); // 30s + a default timeout for openResourcesAndWaitForActivation()
 
 	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars/kaoto-view');
 
