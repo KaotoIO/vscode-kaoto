@@ -100,7 +100,6 @@ If you'd like to test latest Kaoto and not rely on a released version, follow th
 
 - In `kaoto` local clone folder:
   - `yarn`
-  - `yarn workspace @kaoto/camel-catalog run build`
   - `yarn workspace @kaoto/kaoto run build:lib`
 - Open VS Code on `vscode-kaoto` local clone folder
 - `yarn`
