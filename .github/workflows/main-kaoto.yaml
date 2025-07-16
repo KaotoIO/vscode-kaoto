@@ -74,10 +74,15 @@ jobs:
         working-directory: vscode-kaoto
         run: xvfb-run -a yarn test:unit
       - name: Run UI Tests
-        working-directory: vscode-kaoto
-        run: |
-          eval $(minikube -p minikube docker-env)
-          xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          retry_wait_seconds: 30
+          max_attempts: 2
+          command: |
+            eval $(minikube -p minikube docker-env)
+            cd vscode-kaoto
+            xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
       - name: Archive vsix
         uses: actions/upload-artifact@v4
         with:

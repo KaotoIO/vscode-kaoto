@@ -32,12 +32,6 @@ describe('Contextual menu opening', function () {
 	});
 
 	it('Open Camel file with name my.yaml with right-click and check Kaoto UI is loading', async function () {
-		if (process.platform === 'darwin') {
-			// Contextual Menu is not implemented On MacOS in VS Code Extension tester
-			// See https://github.com/redhat-developer/vscode-extension-tester/issues/409#issuecomment-1209710394
-			this.skip();
-		}
-
 		const control: ViewControl | undefined = await new ActivityBar().getViewControl('Explorer');
 		if (control === undefined) {
 			assert.fail('Not found the Explorer view');

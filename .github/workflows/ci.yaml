@@ -73,18 +73,34 @@ jobs:
         run: yarn test:unit
         if: ${{ matrix.os != 'ubuntu-latest' }}
       - name: Run UI Tests on Linux
-        run: |
-          eval $(minikube -p minikube docker-env)
-          xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
+        uses: nick-fields/retry@v3
         if: ${{ matrix.os == 'ubuntu-latest' }}
+        with:
+          timeout_minutes: 10
+          retry_wait_seconds: 30
+          max_attempts: 2
+          command: |
+            eval $(minikube -p minikube docker-env)
+            xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
       - name: Run UI Tests on macOS
-        run: yarn run test:it:with-prebuilt-vsix
+        uses: nick-fields/retry@v3
         if: matrix.os == 'macos-latest'
+        with:
+          timeout_minutes: 10
+          retry_wait_seconds: 60
+          max_attempts: 2
+          command: yarn run test:it:with-prebuilt-vsix
+          on_retry_command: rm -rf "${RUNNER_TEMP}/extest-code"
       - name: Run UI Tests on windows
+        uses: nick-fields/retry@v3
         if: matrix.os == 'windows-latest'
-        run: |
-          Set-DisplayResolution -Width 1920 -Height 1080 -Force
-          yarn run test:it:with-prebuilt-vsix
+        with:
+          timeout_minutes: 10
+          retry_wait_seconds: 30
+          max_attempts: 2
+          command: |
+            Set-DisplayResolution -Width 1920 -Height 1080 -Force
+            yarn run test:it:with-prebuilt-vsix
       - name: Generate SBOM
         if: matrix.os == 'ubuntu-latest'
         run: |
