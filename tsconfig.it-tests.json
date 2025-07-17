@@ -6,7 +6,6 @@
     "target": "ES2023",
     "lib": ["ES2023"],
     "strict": true,
-    "noUnusedLocals": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
