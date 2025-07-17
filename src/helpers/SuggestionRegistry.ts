@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 
+import { findAllApplicationPropertiesFiles, parseMultipleApplicationPropertiesFiles } from './ApplicationPropertiesFinder';
+import { Uri } from 'vscode';
+
 export type Suggestion = {
 	value: string;
 	description?: string;
@@ -27,7 +30,7 @@ export type SuggestionContext = {
 	cursorPosition?: number | null;
 };
 
-export type SuggestionProviderFunction = (word: string, context: SuggestionContext) => Suggestion[] | Promise<Suggestion[]>;
+export type SuggestionProviderFunction = (word: string, context: SuggestionContext, fsPath?: string) => Suggestion[] | Promise<Suggestion[]>;
 
 const suggestionRegistry = new Map<string, SuggestionProviderFunction>();
 
@@ -43,43 +46,72 @@ export function registerSuggestionProvider(topic: string, providerFn: Suggestion
  * @param topic The topic for which suggestions are being requested (e.g., "env", "properties", "kubernetes", "beans", etc.)
  * @param word The current word or input value for which suggestions are being requested
  * @param context Additional context for the suggestions, such as the property name and current input value.
+ * @param fsPath A string file system path to a current active opened Kaoto editor file
  * @returns A promise that resolves to an array of suggestions, each containing a value, optional description, and optional group.
  */
-export async function getSuggestions(topic: string, word: string, context: SuggestionContext): Promise<Suggestion[]> {
+export async function getSuggestions(topic: string, word: string, context: SuggestionContext, fsPath?: string): Promise<Suggestion[]> {
 	const suggestionProvider = suggestionRegistry.get(topic);
 	if (!suggestionProvider) {
 		return [];
 	}
-	const result = suggestionProvider(word ?? '', context);
+	const result = suggestionProvider(word ?? '', context, fsPath);
 	return Promise.resolve(result);
 }
 
-const provideEnvSuggestions: SuggestionProviderFunction = (word, _context) => {
+export function filterSuggestionsByWord(suggestions: Suggestion[], word: string): Suggestion[] {
 	const lowerWord = word.toLowerCase();
-	return Object.keys(process.env)
-		.map((envVar) => {
-			if (envVar.startsWith(word)) {
-				return { envVar, rank: 0 }; // Exact case-sensitive prefix match
+
+	return suggestions
+		.map((s) => {
+			const value = s.value;
+			if (value.startsWith(word)) {
+				return { suggestion: s, rank: 0 };
 			}
-			if (envVar.toLowerCase().startsWith(lowerWord)) {
-				return { envVar, rank: 1 }; // Case-insensitive prefix match
+			if (value.toLowerCase().startsWith(lowerWord)) {
+				return { suggestion: s, rank: 1 };
 			}
-			if (envVar.includes(word)) {
-				return { envVar, rank: 2 }; // Case-sensitive substring match
+			if (value.includes(word)) {
+				return { suggestion: s, rank: 2 };
 			}
-			if (envVar.toLowerCase().includes(lowerWord)) {
-				return { envVar, rank: 3 }; // Case-insensitive substring match
+			if (value.toLowerCase().includes(lowerWord)) {
+				return { suggestion: s, rank: 3 };
 			}
 			return null;
 		})
-		.filter((x): x is { envVar: string; rank: number } => x !== null)
-		.sort((a, b) => a.rank - b.rank || a.envVar.localeCompare(b.envVar))
-		.map(({ envVar }) => ({
-			value: envVar,
-		}));
+		.filter((x): x is { suggestion: Suggestion; rank: number } => x !== null)
+		.sort((a, b) => a.rank - b.rank || a.suggestion.value.localeCompare(b.suggestion.value))
+		.map(({ suggestion }) => suggestion);
+}
+
+const provideEnvSuggestions: SuggestionProviderFunction = (word, _context) => {
+	const allEnvSuggestions = Object.keys(process.env).map((envVar) => ({
+		value: envVar,
+	}));
+	return filterSuggestionsByWord(allEnvSuggestions, word);
+};
+
+const provideApplicationPropertiesSuggestions: SuggestionProviderFunction = async (word, _context, fsPath) => {
+	if (!fsPath) {
+		return [];
+	}
+
+	const fileUri = Uri.file(fsPath);
+	const propFiles = await findAllApplicationPropertiesFiles(fileUri);
+
+	if (propFiles.length === 0) {
+		return [];
+	}
+
+	const allPropertiesSuggestions = await parseMultipleApplicationPropertiesFiles(propFiles);
+	return filterSuggestionsByWord(allPropertiesSuggestions, word);
 };
 
 /**
  * Register 'env' suggestion provider
  */
 registerSuggestionProvider('env', provideEnvSuggestions);
+
+/**
+ * Register 'application.properties' suggestion provider
+ */
+registerSuggestionProvider('properties', provideApplicationPropertiesSuggestions);
