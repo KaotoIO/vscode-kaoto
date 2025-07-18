@@ -7,7 +7,7 @@ describe('User Settings', function () {
 	this.timeout(240_000);
 
 	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars');
-	const CATALOG_URL = 'https://raw.githubusercontent.com/KaotoIO/catalogs/main/catalogs/index.json';
+	const CATALOG_URL = 'https://raw.githubusercontent.com/KaotoIO/camel-catalog/refs/heads/main/catalog/index.json';
 	const CATALOG_SETTINGS_ID = 'kaoto.catalog.url';
 
 	let driver: WebDriver;
