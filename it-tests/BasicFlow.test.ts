@@ -158,7 +158,10 @@ async function addXsdForSource(driver: WebDriver, kaotoWebview: WebView) {
 	await kaotoWebview.switchToFrame();
 
 	await driver.wait(
-		until.elementLocated(By.xpath('//div[starts-with(@data-testid, "node-source-field-shiporder-")]')),
+		until.elementLocated(
+			// Kaoto 2.6- using -field-, Kaoto 2.7+ using -fx-
+			By.xpath('//div[starts-with(@data-testid, "node-source-field-shiporder-")] | //div[starts-with(@data-testid, "node-source-fx-shiporder-")]'),
+		),
 		5000,
 		'Root of the imported xsd is not displayed in the UI',
 	);
