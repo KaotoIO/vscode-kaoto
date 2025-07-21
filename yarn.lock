@@ -1635,19 +1635,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stylistic/eslint-plugin@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "@stylistic/eslint-plugin@npm:5.1.0"
+"@stylistic/eslint-plugin@npm:^5.2.1":
+  version: 5.2.1
+  resolution: "@stylistic/eslint-plugin@npm:5.2.1"
   dependencies:
     "@eslint-community/eslint-utils": "npm:^4.7.0"
-    "@typescript-eslint/types": "npm:^8.34.1"
+    "@typescript-eslint/types": "npm:^8.37.0"
     eslint-visitor-keys: "npm:^4.2.1"
     espree: "npm:^10.4.0"
     estraverse: "npm:^5.3.0"
-    picomatch: "npm:^4.0.2"
+    picomatch: "npm:^4.0.3"
   peerDependencies:
     eslint: ">=9.0.0"
-  checksum: 10/d113da854ee7bcb0e5f920da5034527aceb0cec9af1a4e37bbd3d6ec426f98ef5781e46b3fe5412695007930cb594e0c3af0c2a405a1723a65ca2fed23d85179
+  checksum: 10/cb867acabe337ecba472e4fbec62ed447ddff0f82217fc262cc10167fe79a3f43e6d6e6edf04f1ffdfd2f1295a2c70d61d6f959678c1071fcd66792b6cdab0db
   languageName: node
   linkType: hard
 
@@ -2510,13 +2510,6 @@ __metadata:
   version: 8.37.0
   resolution: "@typescript-eslint/types@npm:8.37.0"
   checksum: 10/ac09dee069ed011dc90ec6ece4756f763da44b2275dbb2832984f4ce41e020348a658c4beb1d9f5daa755f2ebb641908e7046ebeaa767dab0e9e38bcec192b70
-  languageName: node
-  linkType: hard
-
-"@typescript-eslint/types@npm:^8.34.1":
-  version: 8.34.1
-  resolution: "@typescript-eslint/types@npm:8.34.1"
-  checksum: 10/09cb344af38e1e0f8e60968ff6038e8b27a453dea22be433b531e2b50b45448b8646f11249279d47e153f0a5299f8f621a84e81db8bcf5421bd90c94caae6416
   languageName: node
   linkType: hard
 
@@ -5661,14 +5654,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:^10.1.5":
-  version: 10.1.5
-  resolution: "eslint-config-prettier@npm:10.1.5"
+"eslint-config-prettier@npm:^10.1.8":
+  version: 10.1.8
+  resolution: "eslint-config-prettier@npm:10.1.8"
   peerDependencies:
     eslint: ">=7.0.0"
   bin:
     eslint-config-prettier: bin/cli.js
-  checksum: 10/bc192e703e595c886c33703ebb9a8381a18179ce2ec14a24f671cb675a96b8ba1b4a862c5763680e1c918131007759afb3c874788c7d61706740147ae77f249a
+  checksum: 10/03f8e6ea1a6a9b8f9eeaf7c8c52a96499ec4b275b9ded33331a6cc738ed1d56de734097dbd0091f136f0e84bc197388bd8ec22a52a4658105883f8c8b7d8921a
   languageName: node
   linkType: hard
 
@@ -5740,9 +5733,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:^5.5.1":
-  version: 5.5.1
-  resolution: "eslint-plugin-prettier@npm:5.5.1"
+"eslint-plugin-prettier@npm:^5.5.3":
+  version: 5.5.3
+  resolution: "eslint-plugin-prettier@npm:5.5.3"
   dependencies:
     prettier-linter-helpers: "npm:^1.0.0"
     synckit: "npm:^0.11.7"
@@ -5756,7 +5749,7 @@ __metadata:
       optional: true
     eslint-config-prettier:
       optional: true
-  checksum: 10/4d750c70d97d6ef50776bc0a27eeececaac64792fb50713213c69231ed475aa9822a3d177870300fee537d3e24d0dc8eed1528929cab2d20f6e7ec37484648a3
+  checksum: 10/0cdb838997440284145ed1e3cfa1502adffa0e92f893c4100cf2af32dff85fa8f1e86c1547c5462ad8126ee89906a9cb6180b87c4f1ad6000e4b04542938eb3c
   languageName: node
   linkType: hard
 
@@ -10282,6 +10275,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"picomatch@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "picomatch@npm:4.0.3"
+  checksum: 10/57b99055f40b16798f2802916d9c17e9744e620a0db136554af01d19598b96e45e2f00014c91d1b8b13874b80caa8c295b3d589a3f72373ec4aaf54baa5962d5
+  languageName: node
+  linkType: hard
+
 "pify@npm:^4.0.1":
   version: 4.0.1
   resolution: "pify@npm:4.0.1"
@@ -13048,7 +13048,7 @@ __metadata:
     "@patternfly/react-topology": "npm:6.2.0"
     "@redhat-developer/vscode-extension-proposals": "npm:^0.0.23"
     "@redhat-developer/vscode-redhat-telemetry": "npm:^0.9.1"
-    "@stylistic/eslint-plugin": "npm:^5.1.0"
+    "@stylistic/eslint-plugin": "npm:^5.2.1"
     "@types/chai": "npm:^4.3.20"
     "@types/fs-extra": "npm:^11.0.4"
     "@types/mocha": "npm:^10.0.10"
@@ -13069,11 +13069,11 @@ __metadata:
     copy-webpack-plugin: "npm:^13.0.0"
     css-loader: "npm:6.8.1"
     eslint: "npm:^9.31.0"
-    eslint-config-prettier: "npm:^10.1.5"
+    eslint-config-prettier: "npm:^10.1.8"
     eslint-define-config: "npm:^2.1.0"
     eslint-plugin-chai-friendly: "npm:^1.1.0"
     eslint-plugin-import: "npm:^2.32.0"
-    eslint-plugin-prettier: "npm:^5.5.1"
+    eslint-plugin-prettier: "npm:^5.5.3"
     fs-extra: "npm:^11.3.0"
     get-port-please: "npm:^3.2.0"
     mocha: "npm:^11.7.1"

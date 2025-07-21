@@ -633,7 +633,7 @@
     }
   },
   "devDependencies": {
-    "@stylistic/eslint-plugin": "^5.1.0",
+    "@stylistic/eslint-plugin": "^5.2.1",
     "@types/chai": "^4.3.20",
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.10",
@@ -653,11 +653,11 @@
     "copy-webpack-plugin": "^13.0.0",
     "css-loader": "6.8.1",
     "eslint": "^9.31.0",
-    "eslint-config-prettier": "^10.1.5",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-define-config": "^2.1.0",
     "eslint-plugin-chai-friendly": "^1.1.0",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-prettier": "^5.5.1",
+    "eslint-plugin-prettier": "^5.5.3",
     "fs-extra": "^11.3.0",
     "mocha": "^11.7.1",
     "mocha-jenkins-reporter": "^0.4.8",
