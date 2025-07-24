@@ -634,7 +634,7 @@
   },
   "devDependencies": {
     "@stylistic/eslint-plugin": "^5.2.2",
-    "@types/chai": "^4.3.20",
+    "@types/chai": "^5.2.2",
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.10",
     "@types/react": "18.3.1",
@@ -648,7 +648,7 @@
     "@vscode/vsce": "^3.6.0",
     "async-wait-until": "^2.0.27",
     "buffer": "^6.0.3",
-    "chai": "^4.3.10",
+    "chai": "^5.2.1",
     "constants-browserify": "^1.0.0",
     "copy-webpack-plugin": "^13.0.0",
     "css-loader": "6.8.1",
