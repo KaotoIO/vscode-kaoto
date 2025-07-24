@@ -65,7 +65,7 @@ describe('Integrations View', function () {
 		expect(newFileButton).to.not.be.undefined;
 	});
 
-	(process.platform === 'darwin' ? describe.skip : describe)(`Click 'New File...' button`, function () {
+	describe(`Click 'New File...' button`, function () {
 		const CAMEL_ROUTE_YAML_FILE: string = 'newSample.camel.yaml';
 		const CAMEL_ROUTE_XML_FILE: string = 'newSample.camel.xml';
 		const KAMELET_FILE: string = 'newKam-sink.kamelet.yaml';
