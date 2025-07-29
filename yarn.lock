@@ -1218,19 +1218,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redhat-developer/locators@npm:^1.14.2":
-  version: 1.14.2
-  resolution: "@redhat-developer/locators@npm:1.14.2"
+"@redhat-developer/locators@npm:^1.15.0":
+  version: 1.15.0
+  resolution: "@redhat-developer/locators@npm:1.15.0"
   peerDependencies:
     "@redhat-developer/page-objects": ">=1.0.0"
     selenium-webdriver: ">=4.6.1"
-  checksum: 10/34df22d9b3d03b1161c92983e500718b0ff5b7bb7b5abbd3eed6eaa23578af1275c679e7ab0b5fa34228299f5a06f7e149e62094f29211243fb6f404932495c8
+  checksum: 10/a1b4707d25e4589d33e5a4e173f9a48b984438cda2cd200541ac397e0f1ca9aabe36a713e2a754f857804f47bd70aa29e04173d52c3933b2a15ef95d13a0404d
   languageName: node
   linkType: hard
 
-"@redhat-developer/page-objects@npm:^1.14.2":
-  version: 1.14.2
-  resolution: "@redhat-developer/page-objects@npm:1.14.2"
+"@redhat-developer/page-objects@npm:^1.15.0":
+  version: 1.15.0
+  resolution: "@redhat-developer/page-objects@npm:1.15.0"
   dependencies:
     clipboardy: "npm:^4.0.0"
     clone-deep: "npm:^4.0.1"
@@ -1240,7 +1240,7 @@ __metadata:
   peerDependencies:
     selenium-webdriver: ">=4.6.1"
     typescript: ">=4.6.2"
-  checksum: 10/cee85b37475f37ebf6abf4351747f9db4068014d9a645f1631d9dc81ad031b101428d21fae30c0f3466a0c195f496f49a9956e7d93ad0fce4476a17cfe5d8bef
+  checksum: 10/9823bc7f74b7b8e1a472070c2fa78997833029204f08f98a1828d252ae0b1d1cb1ca4a0e2c8e536fce924c0cbdd208f3f45629b8d5455eebeddc3e63cb435f7a
   languageName: node
   linkType: hard
 
@@ -12809,12 +12809,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vscode-extension-tester@npm:^8.16.2":
-  version: 8.16.2
-  resolution: "vscode-extension-tester@npm:8.16.2"
+"vscode-extension-tester@npm:^8.17.0":
+  version: 8.17.0
+  resolution: "vscode-extension-tester@npm:8.17.0"
   dependencies:
-    "@redhat-developer/locators": "npm:^1.14.2"
-    "@redhat-developer/page-objects": "npm:^1.14.2"
+    "@redhat-developer/locators": "npm:^1.15.0"
+    "@redhat-developer/page-objects": "npm:^1.15.0"
     "@types/selenium-webdriver": "npm:^4.1.28"
     "@vscode/vsce": "npm:^3.6.0"
     c8: "npm:^10.1.3"
@@ -12835,7 +12835,7 @@ __metadata:
     typescript: ">=4.6.2"
   bin:
     extest: out/cli.js
-  checksum: 10/769d43a5f2d1fa559bf102df0e91e851c3d6b89af978b04a625cbfeff62ed67214244f25d45e1c690ecf84705d0c674f49f5de7c4e780cd6ddaaea81f9857d81
+  checksum: 10/2c0052a351adcfb90f23e59d932fffacddefc31f60295978c82c6828f3c65f9ad4cec3fb4dd23d68bb993dd87001f23f5214c8a545afe00bd9763330626059dd
   languageName: node
   linkType: hard
 
@@ -12903,7 +12903,7 @@ __metadata:
     tsconfig-paths-webpack-plugin: "npm:^4.2.0"
     typescript: "npm:^5.8.3"
     valid-filename: "npm:4.0.0"
-    vscode-extension-tester: "npm:^8.16.2"
+    vscode-extension-tester: "npm:^8.17.0"
     wait-on: "npm:^8.0.3"
     web-worker: "npm:^1.5.0"
     webpack: "npm:5.100.2"
