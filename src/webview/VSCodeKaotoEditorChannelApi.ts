@@ -193,7 +193,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		word: string,
 		context: { propertyName: string; inputValue: string | number; cursorPosition?: number | null },
 	): Promise<{ value: string; description?: string; group?: string }[]> {
-		return await getSuggestions(topic, word, context);
+		return await getSuggestions(topic, word, context, this.currentEditedDocument.uri.fsPath);
 	}
 
 	async getRuntimeInfoFromMavenContext(): Promise<

@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import path from 'path';
 import { expect } from 'chai';
-import { getSuggestions } from '../../helpers/SuggestionRegistry';
+import { filterSuggestionsByWord, getSuggestions, Suggestion } from '../../helpers/SuggestionRegistry';
 
 suite('Channel API', () => {
 	suite('get Suggestions for OS environment variables', function () {
@@ -100,6 +101,150 @@ suite('Channel API', () => {
 			const values = suggestions.map((s) => s.value);
 
 			expect(values.indexOf('MyPath')).to.be.lessThan(values.indexOf('FooMyPath'));
+		});
+	});
+
+	suite('filterSuggestionsByWord()', () => {
+		const allSuggestions: Suggestion[] = [
+			{ value: 'camel.main.name', description: 'MyCoolCamel', group: 'application.properties' },
+			{ value: 'camel.jbang.health', description: 'true', group: 'application-dev.properties' },
+			{ value: 'camel.route-controller.enabled', description: 'true', group: 'application.properties' },
+			{ value: 'quarkus.camel.runtime-catalog.components', description: 'false', group: 'application-dev.properties' },
+			{ value: 'quarkus.native.resources.includes', description: 'mysimple.txt', group: 'application.properties' },
+			{ value: 'camel.quarkus-test.dummy', description: 'true', group: 'application-prod.properties' },
+		];
+
+		test('should return exact prefix match first (case-sensitive)', () => {
+			const results = filterSuggestionsByWord(allSuggestions, 'camel.main');
+			expect(results.length).to.be.greaterThan(0);
+			expect(results[0].value).to.equal('camel.main.name');
+		});
+
+		test('should return case-insensitive prefix matches next', () => {
+			const results = filterSuggestionsByWord(allSuggestions, 'CAMEL.JBANG');
+			expect(results.length).to.be.greaterThan(0);
+			expect(results[0].value).to.equal('camel.jbang.health');
+		});
+
+		test('should return substring matches (case-sensitive)', () => {
+			const results = filterSuggestionsByWord(allSuggestions, 'route-controller');
+			expect(results[0].value).to.equal('camel.route-controller.enabled');
+		});
+
+		test('should return substring matches (case-insensitive)', () => {
+			const results = filterSuggestionsByWord(allSuggestions, 'components');
+			expect(results[0].value).to.equal('quarkus.camel.runtime-catalog.components');
+		});
+
+		test('should return empty array if no match', () => {
+			const results = filterSuggestionsByWord(allSuggestions, 'unmatched');
+			expect(results).to.deep.equal([]);
+		});
+
+		test('should sort matches by rank and then alphabetically', () => {
+			const results = filterSuggestionsByWord(allSuggestions, 'camel');
+			const values = results.map((s) => s.value);
+			expect(values).to.deep.equal([
+				'camel.jbang.health',
+				'camel.main.name',
+				'camel.quarkus-test.dummy',
+				'camel.route-controller.enabled',
+				'quarkus.camel.runtime-catalog.components',
+			]);
+		});
+	});
+
+	suite('get Suggestions for application*.properties files', function () {
+		let standaloneFile: string;
+		let mavenFile: string;
+		let mavenTestFile: string;
+
+		setup(async () => {
+			standaloneFile = path.resolve(__dirname, '../../../../test Fixture with speci@l chars', 'suggestions', 'route.camel.yaml');
+			mavenFile = path.resolve(
+				__dirname,
+				'../../../../test Fixture with speci@l chars',
+				'camel-maven-main-project',
+				'src/main/resources/camel',
+				'my-camel-main-route.camel.yaml',
+			);
+			mavenTestFile = path.resolve(
+				__dirname,
+				'../../../../test Fixture with speci@l chars',
+				'camel-maven-main-project',
+				'src/test/resources',
+				'test.camel.yaml',
+			);
+		});
+
+		teardown(() => {});
+
+		test('should get properties from all .properties files', async () => {
+			const suggestions = await getSuggestions('properties', '', { propertyName: 'Property', inputValue: '' }, standaloneFile);
+			expect(suggestions.length).is.greaterThan(20);
+
+			const groups = suggestions.map((s) => s.group);
+			expect(groups).to.include.members(['application.properties', 'application-dev.properties', 'application-prod.properties']);
+		});
+
+		test(`should get all properties for 'Quarkus' word with their values, in right order, from all .properties files`, async () => {
+			const suggestions = await getSuggestions('properties', 'Quarkus', { propertyName: 'Property', inputValue: '' }, standaloneFile);
+			expect(suggestions.length).to.equal(3);
+
+			const values = suggestions.map((s) => s.value);
+			expect(values.indexOf('quarkus.camel.runtime-catalog.components')).to.be.lessThan(values.indexOf('quarkus.native.resources.includes'));
+			expect(values.indexOf('quarkus.native.resources.includes')).to.be.lessThan(values.indexOf('camel.quarkus-test.dummy'));
+
+			const descriptions = suggestions.map((s) => s.description);
+			expect(descriptions.at(0)).to.equals('false');
+			expect(descriptions.at(1)).to.equals('mysimple.txt');
+			expect(descriptions.at(2)).to.equals('true');
+
+			const groups = suggestions.map((s) => s.group);
+			expect(groups).to.deep.include.members(['application-dev.properties', 'application.properties', 'application-prod.properties']);
+		});
+
+		test('should get properties for maven structure project file', async () => {
+			const suggestions = await getSuggestions('properties', '', { propertyName: 'Property', inputValue: '' }, mavenFile);
+			expect(suggestions.length).to.equal(1);
+			expect(suggestions[0].value).equals('camel.main.basePackageScan');
+			expect(suggestions[0].description).equals('org.example.project.mycamelmainroute');
+			expect(suggestions[0].group).equals('application.properties');
+		});
+
+		test('should get properties for maven structure project TEST file', async () => {
+			const suggestions = await getSuggestions('properties', '', { propertyName: 'Property', inputValue: '' }, mavenTestFile);
+			expect(suggestions.length).to.equal(1);
+			expect(suggestions[0].value).equals('test');
+			expect(suggestions[0].description).equals('This is a test file');
+			expect(suggestions[0].group).equals('application-dev.properties');
+		});
+
+		test(`should return exact prefix matches before substring matches`, async () => {
+			const suggestions = await getSuggestions('properties', 'camel.route', { propertyName: 'Property', inputValue: '' }, standaloneFile);
+			expect(suggestions.length).to.be.greaterThan(0);
+
+			// top suggestion should be exact prefix
+			expect(suggestions[0].value.startsWith('camel.route')).to.be.true;
+		});
+
+		test(`should return case-insensitive prefix matches`, async () => {
+			const suggestions = await getSuggestions('properties', 'CAMEL.MAIN', { propertyName: 'Property', inputValue: '' }, standaloneFile);
+			expect(suggestions.length).to.be.greaterThan(0);
+
+			const values = suggestions.map((s) => s.value.toLowerCase());
+			expect(values.some((v) => v.startsWith('camel.main'))).to.be.true;
+		});
+
+		test(`should return substring matches when no prefix matches`, async () => {
+			const suggestions = await getSuggestions('properties', 'includes', { propertyName: 'Property', inputValue: '' }, standaloneFile);
+			expect(suggestions.length).to.equal(1);
+			expect(suggestions[0].value).to.equal('quarkus.native.resources.includes');
+		});
+
+		test(`should return empty array when no match is found`, async () => {
+			const suggestions = await getSuggestions('properties', 'foobar', { propertyName: 'Property', inputValue: '' }, standaloneFile);
+			expect(suggestions.length).to.equal(0);
 		});
 	});
 });

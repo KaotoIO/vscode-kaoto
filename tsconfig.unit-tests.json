@@ -4,7 +4,6 @@
     "module": "CommonJS",
     "moduleResolution": "Node",
     "strict": true,
-    "noUnusedLocals": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
