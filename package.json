@@ -53,7 +53,7 @@
     "react-dom": "18.3.1",
     "react-monaco-editor": "0.56.2",
     "valid-filename": "4.0.0",
-    "wait-on": "^8.0.3",
+    "wait-on": "^8.0.4",
     "yaml": "^2.8.0"
   },
   "icon": "icon.png",
