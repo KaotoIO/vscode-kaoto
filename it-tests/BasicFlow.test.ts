@@ -151,11 +151,19 @@ async function addXsdForSource(driver: WebDriver, kaotoWebview: WebView) {
 	);
 	await (await driver.findElement(By.css('button[data-testid="attach-schema-sourceBody-Body-button"]'))).click();
 
+	await waitForXsdAttachModal(driver);
+	const schemaButton = await driver.findElement(By.xpath("//button[@data-testid='attach-schema-modal-btn-file']"));
+	await schemaButton.click();
+
 	await kaotoWebview.switchBack();
 	const xsdInputbox = await InputBox.create(10000);
 	await xsdInputbox.setText('shiporder.xsd');
 	await xsdInputbox.confirm();
 	await kaotoWebview.switchToFrame();
+
+	await waitForXsdAttachModal(driver);
+	const attachButton = await driver.findElement(By.xpath("//button[@data-testid='attach-schema-modal-btn-attach']"));
+	await attachButton.click();
 
 	await driver.wait(
 		until.elementLocated(
@@ -165,6 +173,10 @@ async function addXsdForSource(driver: WebDriver, kaotoWebview: WebView) {
 		5000,
 		'Root of the imported xsd is not displayed in the UI',
 	);
+}
+
+async function waitForXsdAttachModal(driver: WebDriver, timeout: number = 3_000): Promise<void> {
+	await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='attach-schema-modal']")), timeout, 'Cannot find XSD schema modal dialog');
 }
 
 async function openDataMapperEditor(driver: WebDriver) {
