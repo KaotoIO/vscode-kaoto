@@ -735,14 +735,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@koa/router@npm:^13.1.0":
-  version: 13.1.0
-  resolution: "@koa/router@npm:13.1.0"
+"@koa/router@npm:^14.0.0":
+  version: 14.0.0
+  resolution: "@koa/router@npm:14.0.0"
   dependencies:
+    debug: "npm:^4.4.1"
     http-errors: "npm:^2.0.0"
     koa-compose: "npm:^4.1.0"
-    path-to-regexp: "npm:^6.3.0"
-  checksum: 10/b5de0745b266dd8cda5873ace9594ca4b020ef6fe0e94e1de81f11a7498d0fcc106c8d972513ad52493b196b5e111ed1d07b318cf4ca4156b85a99ea5d3a3f98
+    path-to-regexp: "npm:^8.2.0"
+  checksum: 10/f5f9bedd4c163ad376bcf9626ebb13f35febc44c1f81545ee5efaceb67324e3caf476f9d2a966b4590cac41ab9994b1bcb11f050afbdccd6343f27f31758ff68
   languageName: node
   linkType: hard
 
@@ -1184,12 +1185,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/browser-chromium@npm:^1.53.1":
-  version: 1.53.2
-  resolution: "@playwright/browser-chromium@npm:1.53.2"
+"@playwright/browser-chromium@npm:^1.54.2":
+  version: 1.54.2
+  resolution: "@playwright/browser-chromium@npm:1.54.2"
   dependencies:
-    playwright-core: "npm:1.53.2"
-  checksum: 10/1a2fdb7cae552b314ba2f3bf044b038846cb2e99f5bcc3799522eae736968dd1c95d26905588d3c8e015ee3627e29f9fa407178feeee20e0ac8115752a1f8b49
+    playwright-core: "npm:1.54.2"
+  checksum: 10/45153f8c30d09424b8bfed32fd9818759d77530d6b232194118adf3e0485d6dbb79d1ae86743e25375797cf85bb10e12f13eb4e31e2643e72f721ad47e7be4a8
   languageName: node
   linkType: hard
 
@@ -2678,28 +2679,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/test-web@npm:^0.0.71":
-  version: 0.0.71
-  resolution: "@vscode/test-web@npm:0.0.71"
+"@vscode/test-web@npm:^0.0.72":
+  version: 0.0.72
+  resolution: "@vscode/test-web@npm:0.0.72"
   dependencies:
     "@koa/cors": "npm:^5.0.0"
-    "@koa/router": "npm:^13.1.0"
-    "@playwright/browser-chromium": "npm:^1.53.1"
+    "@koa/router": "npm:^14.0.0"
+    "@playwright/browser-chromium": "npm:^1.54.2"
     gunzip-maybe: "npm:^1.4.2"
     http-proxy-agent: "npm:^7.0.2"
     https-proxy-agent: "npm:^7.0.6"
-    koa: "npm:^3.0.0"
+    koa: "npm:^3.0.1"
     koa-morgan: "npm:^1.0.1"
     koa-mount: "npm:^4.2.0"
     koa-static: "npm:^5.0.0"
     minimist: "npm:^1.2.8"
-    playwright: "npm:^1.53.1"
+    playwright: "npm:^1.54.2"
     tar-fs: "npm:^3.1.0"
     tinyglobby: "npm:0.2.14"
     vscode-uri: "npm:^3.1.0"
   bin:
     vscode-test-web: out/server/index.js
-  checksum: 10/f2a8e4a58c2e126eea680ddd7444ed8874926ca8479fc73d5b684de3a78666173b864ba2d8709b61e5f18cad0d821f36380dfe0379065da8aeba27bab0ca4f6d
+  checksum: 10/045a2800c1892c2ae4d660b36683a050d2c2627af248817a23b2adfce2ad4efeb5c4ee5bb49dcf23c66be495997886c8d9f3b4987d94cc748d5be8afe723f6e0
   languageName: node
   linkType: hard
 
@@ -3100,7 +3101,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"accepts@npm:^1.3.5":
+"accepts@npm:^1.3.8":
   version: 1.3.8
   resolution: "accepts@npm:1.3.8"
   dependencies:
@@ -3856,16 +3857,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cache-content-type@npm:^1.0.0":
-  version: 1.0.1
-  resolution: "cache-content-type@npm:1.0.1"
-  dependencies:
-    mime-types: "npm:^2.1.18"
-    ylru: "npm:^1.2.0"
-  checksum: 10/18db4d59452669ccbfd7146a1510a37eb28e9eccf18ca7a4eb603dff2edc5cccdca7498fc3042a2978f76f11151fba486eb9eb69d9afa3fb124957870aef4fd3
-  languageName: node
-  linkType: hard
-
 "cacheable-lookup@npm:^7.0.0":
   version: 7.0.0
   resolution: "cacheable-lookup@npm:7.0.0"
@@ -4340,7 +4331,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"content-disposition@npm:~0.5.2":
+"content-disposition@npm:~0.5.4":
   version: 0.5.4
   resolution: "content-disposition@npm:0.5.4"
   dependencies:
@@ -4349,7 +4340,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"content-type@npm:^1.0.4, content-type@npm:^1.0.5":
+"content-type@npm:^1.0.5":
   version: 1.0.5
   resolution: "content-type@npm:1.0.5"
   checksum: 10/585847d98dc7fb8035c02ae2cb76c7a9bd7b25f84c447e5ed55c45c2175e83617c8813871b4ee22f368126af6b2b167df655829007b21aa10302873ea9c62662
@@ -5109,7 +5100,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"destroy@npm:^1.0.4":
+"destroy@npm:^1.2.0":
   version: 1.2.0
   resolution: "destroy@npm:1.2.0"
   checksum: 10/0acb300b7478a08b92d810ab229d5afe0d2f4399272045ab22affa0d99dbaf12637659411530a6fcd597a9bdac718fc94373a61a95b4651bbc7b83684a565e38
@@ -6950,7 +6941,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-assert@npm:^1.3.0":
+"http-assert@npm:^1.5.0":
   version: 1.5.0
   resolution: "http-assert@npm:1.5.0"
   dependencies:
@@ -8129,30 +8120,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"koa@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "koa@npm:3.0.0"
+"koa@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "koa@npm:3.0.1"
   dependencies:
-    accepts: "npm:^1.3.5"
-    cache-content-type: "npm:^1.0.0"
-    content-disposition: "npm:~0.5.2"
-    content-type: "npm:^1.0.4"
+    accepts: "npm:^1.3.8"
+    content-disposition: "npm:~0.5.4"
+    content-type: "npm:^1.0.5"
     cookies: "npm:~0.9.1"
-    debug: "npm:^4.3.2"
     delegates: "npm:^1.0.0"
-    destroy: "npm:^1.0.4"
+    destroy: "npm:^1.2.0"
     encodeurl: "npm:^2.0.0"
     escape-html: "npm:^1.0.3"
     fresh: "npm:~0.5.2"
-    http-assert: "npm:^1.3.0"
+    http-assert: "npm:^1.5.0"
     http-errors: "npm:^2.0.0"
     koa-compose: "npm:^4.1.0"
-    on-finished: "npm:^2.3.0"
-    parseurl: "npm:^1.3.2"
+    mime-types: "npm:^3.0.1"
+    on-finished: "npm:^2.4.1"
+    parseurl: "npm:^1.3.3"
     statuses: "npm:^2.0.1"
     type-is: "npm:^2.0.1"
     vary: "npm:^1.1.2"
-  checksum: 10/212c84c40a0e6c9455751efc6cece53b8fe1e0f69dba36ba8c6261988a93f9ebce6b4e84427a201fbc98159f31dc1e496e5e6c70e58d7738c817763700366a5e
+  checksum: 10/0e56f77f7192c10be6a3f5c4b248ec10b9b223e6894065a431df3c5c425db439fcc28ead29e7145087974550b51538790aafee6aeb5b0e26a32307d02a52bd41
   languageName: node
   linkType: hard
 
@@ -9088,7 +9078,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mime-types@npm:^2.1.12, mime-types@npm:^2.1.18, mime-types@npm:^2.1.27, mime-types@npm:~2.1.34":
+"mime-types@npm:^2.1.12, mime-types@npm:^2.1.27, mime-types@npm:~2.1.34":
   version: 2.1.35
   resolution: "mime-types@npm:2.1.35"
   dependencies:
@@ -9097,7 +9087,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mime-types@npm:^3.0.0":
+"mime-types@npm:^3.0.0, mime-types@npm:^3.0.1":
   version: 3.0.1
   resolution: "mime-types@npm:3.0.1"
   dependencies:
@@ -9792,7 +9782,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"on-finished@npm:^2.3.0":
+"on-finished@npm:^2.4.1":
   version: 2.4.1
   resolution: "on-finished@npm:2.4.1"
   dependencies:
@@ -10108,7 +10098,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parseurl@npm:^1.3.2":
+"parseurl@npm:^1.3.3":
   version: 1.3.3
   resolution: "parseurl@npm:1.3.3"
   checksum: 10/407cee8e0a3a4c5cd472559bca8b6a45b82c124e9a4703302326e9ab60fc1081442ada4e02628efef1eb16197ddc7f8822f5a91fd7d7c86b51f530aedb17dfa2
@@ -10201,10 +10191,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-to-regexp@npm:^6.3.0":
-  version: 6.3.0
-  resolution: "path-to-regexp@npm:6.3.0"
-  checksum: 10/6822f686f01556d99538b350722ef761541ec0ce95ca40ce4c29e20a5b492fe8361961f57993c71b2418de12e604478dcf7c430de34b2c31a688363a7a944d9c
+"path-to-regexp@npm:^8.2.0":
+  version: 8.2.0
+  resolution: "path-to-regexp@npm:8.2.0"
+  checksum: 10/23378276a172b8ba5f5fb824475d1818ca5ccee7bbdb4674701616470f23a14e536c1db11da9c9e6d82b82c556a817bbf4eee6e41b9ed20090ef9427cbb38e13
   languageName: node
   linkType: hard
 
@@ -10291,27 +10281,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.53.2":
-  version: 1.53.2
-  resolution: "playwright-core@npm:1.53.2"
+"playwright-core@npm:1.54.2":
+  version: 1.54.2
+  resolution: "playwright-core@npm:1.54.2"
   bin:
     playwright-core: cli.js
-  checksum: 10/575c37b66aa62e1300d8b42d4b021c9304a35266ea47b6f0c36b429c40674082700b7172ee3641de7451cd2a4c736c42e0e39fd5f6a7ba4c81a6eefd8c104efd
+  checksum: 10/8eb8b37d7b02c2394f85567c5703464ee7c85929e1de7118946548a0277cacd41a6f247b8f7eb50c921433346f785356eff8132a9d3c6c2dcf3402c6a83e4f18
   languageName: node
   linkType: hard
 
-"playwright@npm:^1.53.1":
-  version: 1.53.2
-  resolution: "playwright@npm:1.53.2"
+"playwright@npm:^1.54.2":
+  version: 1.54.2
+  resolution: "playwright@npm:1.54.2"
   dependencies:
     fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.53.2"
+    playwright-core: "npm:1.54.2"
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 10/1c860c52a77f32793d7b1b5f5b15da9b809b8a09a82e5c89f79442fe9708ff6314b6ee6d13aa0961a6c9fddc9209f0a109ac524bdf586e0df52b641e96fa759d
+  checksum: 10/3f4fedc1e2290b6da6960eedf0d78b9097251848b499b0627186ca85e94178fe6be1590c4926246ff4dad5729fc80ab63fee6554fe736d29c0a1808ec483467f
   languageName: node
   linkType: hard
 
@@ -13052,7 +13042,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:^8.39.1"
     "@vscode/test-cli": "npm:^0.0.11"
     "@vscode/test-electron": "npm:^2.5.2"
-    "@vscode/test-web": "npm:^0.0.71"
+    "@vscode/test-web": "npm:^0.0.72"
     "@vscode/vsce": "npm:^3.6.0"
     async-wait-until: "npm:^2.0.27"
     buffer: "npm:^6.0.3"
@@ -13567,13 +13557,6 @@ __metadata:
   dependencies:
     buffer-crc32: "npm:~0.2.3"
   checksum: 10/498ea4c6bca26130608c44db166e2f63b3437b94b7ad020ca0c161268d29517e8517146e91e51b78da100ad62feadc1a1a85aaa94aab0b2dc29b355ec75bc8f0
-  languageName: node
-  linkType: hard
-
-"ylru@npm:^1.2.0":
-  version: 1.4.0
-  resolution: "ylru@npm:1.4.0"
-  checksum: 10/5437f8eb2fb5dd515845c657dde3cecaa9f6bd4c6386d2a5212d3fafe02189c7d8ebfdfc84940a7811607cb3524eb362ce95d3180d355cd5deb610aa8c82c9bc
   languageName: node
   linkType: hard
 
