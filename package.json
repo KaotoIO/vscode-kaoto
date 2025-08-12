@@ -54,7 +54,7 @@
     "react-monaco-editor": "0.56.2",
     "valid-filename": "4.0.0",
     "wait-on": "^8.0.4",
-    "yaml": "^2.8.0"
+    "yaml": "^2.8.1"
   },
   "icon": "icon.png",
   "main": "./dist/extension/extension.js",
