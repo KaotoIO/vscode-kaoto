@@ -33,7 +33,7 @@ import {
 	VSBrowser,
 	WebDriver,
 } from 'vscode-extension-tester';
-import { getTreeItem } from './Util';
+import { getTreeItem, openResourcesAndWaitForActivation } from './Util';
 
 /**
  * This test needs to be always executed as last in suite
@@ -50,8 +50,7 @@ describe('Integrations View', function () {
 
 	before(async function () {
 		driver = VSBrowser.instance.driver;
-		await VSBrowser.instance.openResources(WORKSPACE_FOLDER);
-		await VSBrowser.instance.waitForWorkbench();
+		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
 
 		kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
 		kaotoView = await kaotoViewContainer?.openView();
@@ -64,8 +63,7 @@ describe('Integrations View', function () {
 	});
 
 	it(`'Export' button is available`, async function () {
-		const item = await getTreeItem(driver, integrationsSection, 'kam1.kamelet.yaml');
-		const exportButton = await item?.getActionButton('Export');
+		const exportButton = await getItemExportButton('kam1.kamelet.yaml');
 		expect(exportButton).to.not.be.undefined;
 	});
 
@@ -77,8 +75,7 @@ describe('Integrations View', function () {
 
 		before(async function () {
 			fs.mkdirSync(PROJECT_OUTPUT_DIR, { recursive: true });
-			const item = await getTreeItem(driver, integrationsSection, 'sample1.camel.yaml');
-			exportButton = await item?.getActionButton('Export');
+			exportButton = await getItemExportButton('sample1.camel.yaml');
 			await exportButton?.click();
 		});
 
@@ -140,4 +137,26 @@ describe('Integrations View', function () {
 			);
 		}
 	});
+
+	async function getItemExportButton(treeItemLabel: string): Promise<ViewItemAction | undefined> {
+		let exportButton: ViewItemAction | undefined = undefined;
+		await driver.wait(
+			async () => {
+				try {
+					const item = await getTreeItem(driver, integrationsSection, treeItemLabel);
+					exportButton = await item?.getActionButton('Export');
+					if (exportButton !== undefined) {
+						return true;
+					} else {
+						return false;
+					}
+				} catch (error) {
+					return false;
+				}
+			},
+			5_000,
+			`Cannot get 'Export' action button for a '${treeItemLabel}'`,
+		);
+		return exportButton;
+	}
 });
