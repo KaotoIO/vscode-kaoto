@@ -28,7 +28,7 @@ import {
 	VSBrowser,
 	WebDriver,
 } from 'vscode-extension-tester';
-import { getTreeItem, killTerminal, waitUntilTerminalHasText } from '../Util';
+import { getTreeItem, killTerminal, openResourcesAndWaitForActivation, waitUntilTerminalHasText } from '../Util';
 
 describe('Deployments View', function () {
 	this.timeout(600_000); // 10 minutes
@@ -43,11 +43,11 @@ describe('Deployments View', function () {
 
 	before(async function () {
 		driver = VSBrowser.instance.driver;
-		await VSBrowser.instance.openResources(WORKSPACE_FOLDER);
-		await VSBrowser.instance.waitForWorkbench();
+		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER, false);
 
 		kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
 		kaotoView = await kaotoViewContainer?.openView();
+		await (await kaotoView?.getContent().getSection('Help & Feedback'))?.collapse();
 		deploymentsSection = await kaotoView?.getContent().getSection('Deployments');
 		integrationsSection = await kaotoView?.getContent().getSection('Integrations');
 	});
@@ -55,6 +55,7 @@ describe('Deployments View', function () {
 	after(async function () {
 		await kaotoViewContainer?.closeView();
 		await new EditorView().closeAllEditors();
+		await killTerminal();
 		await killTerminal();
 	});
 

@@ -1,8 +1,7 @@
-import { EditorView, TextEditor } from 'vscode-extension-tester';
+import { EditorView, TextEditor, VSBrowser } from 'vscode-extension-tester';
 import { expect } from 'chai';
 import * as path from 'path';
 import * as os from 'os';
-import { openResourcesAndWaitForActivation } from './Util';
 
 describe('Toggle Source Code', function () {
 	this.timeout(30_000);
@@ -12,23 +11,35 @@ describe('Toggle Source Code', function () {
 
 	let editorView: EditorView;
 
-	before(async function () {
-		await openResourcesAndWaitForActivation(path.join(WORKSPACE_FOLDER, CAMEL_FILE));
+	let actionTitle = 'Open Source Code';
+	if (os.platform() === 'darwin') {
+		actionTitle += ' (⌘K V)';
+	} else {
+		actionTitle += ' (Ctrl+K V)';
+	}
+
+	beforeEach(async function () {
+		await VSBrowser.instance.openResources(path.join(WORKSPACE_FOLDER, CAMEL_FILE), async (timeout: number = 5_000, interval: number = 1_000) => {
+			await VSBrowser.instance.driver.sleep(interval);
+			await VSBrowser.instance.driver.wait(
+				async () => {
+					const editor = await new EditorView().getActiveTab();
+					return (await editor?.getTitle()) === CAMEL_FILE;
+				},
+				timeout,
+				`Cannot open file '${CAMEL_FILE}' in ${timeout}ms`,
+				interval,
+			);
+		});
 		editorView = new EditorView();
+		await clickEditorAction(editorView, actionTitle);
 	});
 
-	after(async function () {
+	afterEach(async function () {
 		await editorView.closeAllEditors();
 	});
 
 	it('open text editor to the side', async function () {
-		let actionTitle = 'Open Source Code';
-		if (os.platform() === 'darwin') {
-			actionTitle += ' (⌘K V)';
-		} else {
-			actionTitle += ' (Ctrl+K V)';
-		}
-		await (await editorView.getAction(actionTitle))?.click();
 		const groupsNum = await waitForEditorGroupsLength(2);
 		expect(groupsNum).to.equal(2);
 
@@ -37,20 +48,58 @@ describe('Toggle Source Code', function () {
 	});
 
 	it('close text editor', async function () {
-		await (await editorView.getAction('Close Source Code', 1))?.click();
+		await waitForEditorGroupsLength(2);
+		await editorView.openEditor(CAMEL_FILE, 1); // re-activate editor
+		await clickEditorAction(editorView, 'Close Source Code', 1);
+
 		const groupsNum = await waitForEditorGroupsLength(1);
 		expect(groupsNum).to.equal(1);
 	});
 
 	async function waitForEditorGroupsLength(length: number, timeout: number = 5_000): Promise<number> {
-		await editorView.getDriver().wait(
+		// Re-fetch EditorView and swallow transient stale element errors while VS Code re-renders groups
+		const driver = editorView.getDriver();
+		await driver.wait(
 			async () => {
-				const currentLength = (await editorView.getEditorGroups()).length;
-				return currentLength === length;
+				try {
+					const view = new EditorView();
+					const currentLength = (await view.getEditorGroups()).length;
+					return currentLength === length;
+				} catch (err) {
+					return false;
+				}
 			},
 			timeout,
 			`The editor group length (expected: ${length}) was not satisfied.`,
 		);
-		return (await editorView.getEditorGroups()).length;
+		return (await new EditorView().getEditorGroups()).length;
+	}
+
+	async function clickEditorAction(
+		editorView: EditorView,
+		actionLabel: string,
+		groupIndex?: number,
+		timeout: number = 5_000,
+		interval: number = 1_500,
+	): Promise<void> {
+		await editorView.getDriver().sleep(interval);
+		await editorView.getDriver().wait(
+			async () => {
+				try {
+					const action = await editorView.getAction(actionLabel, groupIndex);
+					if (action !== undefined) {
+						await action.click();
+						return true;
+					} else {
+						return false;
+					}
+				} catch {
+					return false;
+				}
+			},
+			timeout,
+			`Cannot click on editor action button in ${timeout}ms`,
+			interval,
+		);
 	}
 });

@@ -36,26 +36,31 @@ import {
 import { getTreeItem, openResourcesAndWaitForActivation, switchToKaotoFrame } from '../Util';
 
 describe('Integrations View', function () {
-	this.timeout(180_000);
+	this.timeout(240_000);
 
-	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars/kaoto-view');
+	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars', 'kaoto-view');
 
 	let driver: WebDriver;
 	let kaotoViewContainer: ViewControl | undefined;
 	let kaotoView: SideBarView | undefined;
 	let integrationsSection: ViewSection | undefined;
+	let deploymentsSection: ViewSection | undefined;
 	let newFileButton: ViewPanelActionDropdown | undefined;
 
 	before(async function () {
 		driver = VSBrowser.instance.driver;
-		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
+		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER, false);
 
 		kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
 		kaotoView = await kaotoViewContainer?.openView();
+		await (await kaotoView?.getContent().getSection('Help & Feedback'))?.collapse();
+		deploymentsSection = await kaotoView?.getContent().getSection('Deployments');
+		await deploymentsSection?.collapse();
 		integrationsSection = await kaotoView?.getContent().getSection('Integrations');
 	});
 
 	after(async function () {
+		await deploymentsSection?.expand();
 		await kaotoViewContainer?.closeView();
 		await new EditorView().closeAllEditors();
 	});
@@ -65,7 +70,7 @@ describe('Integrations View', function () {
 		expect(newFileButton).to.not.be.undefined;
 	});
 
-	(process.platform === 'darwin' ? describe.skip : describe)(`Click 'New File...' button`, function () {
+	describe(`Click 'New File...' button`, function () {
 		const CAMEL_ROUTE_YAML_FILE: string = 'newSample.camel.yaml';
 		const CAMEL_ROUTE_XML_FILE: string = 'newSample.camel.xml';
 		const KAMELET_FILE: string = 'newKam-sink.kamelet.yaml';
@@ -131,7 +136,7 @@ describe('Integrations View', function () {
 			input = await InputBox.create(30_000);
 			await input.setText(join(WORKSPACE_FOLDER, 'kamelets'));
 			await input.confirm();
-			await input.confirm(); // from some reason when using setText for a path pick input it needs to be confirmed twice (see https://github.com/redhat-developer/vscode-extension-tester/issues/1778)
+			await handleInputPathSelection();
 
 			input = await InputBox.create(30_000);
 			await input.setText('sink');
@@ -155,7 +160,7 @@ describe('Integrations View', function () {
 			input = await InputBox.create(10_000);
 			await input.setText(join(WORKSPACE_FOLDER, 'pipes', 'others'));
 			await input.confirm();
-			await input.confirm(); // from some reason when using setText for a path pick input it needs to be confirmed twice (see https://github.com/redhat-developer/vscode-extension-tester/issues/1778)
+			await handleInputPathSelection();
 
 			input = await InputBox.create(10_000);
 			await input.setText('newPipe');
@@ -167,6 +172,17 @@ describe('Integrations View', function () {
 
 			await switchToKaotoAndCheckIntegrationType(PIPE_FILE, 'Pipe', 'timer-source');
 		});
+
+		async function handleInputPathSelection(): Promise<void> {
+			const nextButton = await input.findElement(By.className('monaco-button'));
+			if (nextButton && (await nextButton.getText()) === 'Select') {
+				/**
+				 * when the provided path is not exactly formatted to the OS specificities, there is first a `Select` button and then a `Confirm`
+				 * see also see https://github.com/redhat-developer/vscode-extension-tester/issues/1778
+				 */
+				await input.confirm();
+			}
+		}
 
 		async function checkStepWithNodeLabelPresent(nodeLabel: string, timeout: number = 10_000) {
 			await driver.wait(

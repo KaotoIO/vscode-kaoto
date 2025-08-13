@@ -1,5 +1,5 @@
 import { ActivityBar, after, By, ComboSetting, VSBrowser, WebDriver, WebView, Workbench } from 'vscode-extension-tester';
-import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame, openResourcesAndWaitForActivation, resetUserSettings } from '../Util';
+import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame, resetUserSettings } from '../Util';
 import { join } from 'path';
 import { expect } from 'chai';
 
@@ -23,7 +23,6 @@ describe('User Settings', function () {
 	before(async function () {
 		this.timeout(60_000);
 		driver = VSBrowser.instance.driver;
-		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
 
 		// provide the Node Label using Settings UI editor
 		const settings = await new Workbench().openSettings();
