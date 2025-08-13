@@ -180,11 +180,13 @@ export async function openResourcesAndWaitForActivation(path: string, timeout: n
 
 async function extensionIsActivated(displayName: string): Promise<boolean> {
 	try {
-		const extensionsView = await (await new ActivityBar().getViewControl('Extensions'))?.openView();
+		const extensionControl = await new ActivityBar().getViewControl('Extensions');
+		const extensionsView = await extensionControl?.openView();
 		const marketplace = (await extensionsView?.getContent().getSection('Installed')) as ExtensionsViewSection;
 		const item = (await marketplace.findItem(`@installed ${displayName}`)) as ExtensionsViewItem;
 		const activationTime = await item.findElement(By.className('activationTime'));
 		if (activationTime) {
+			await extensionControl?.closeView();
 			return true;
 		} else {
 			return false;
