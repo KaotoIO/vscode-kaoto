@@ -21,7 +21,7 @@ import { openResourcesAndWaitForActivation } from '../Util';
 describe('Kaoto View Container', function () {
 	this.timeout(30_000);
 
-	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars/kaoto-view');
+	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars', 'kaoto-view');
 
 	let kaotoViewContainer: ViewControl | undefined;
 	let kaotoView: SideBarView | undefined;
@@ -30,11 +30,13 @@ describe('Kaoto View Container', function () {
 	let deploymentsSection: ViewSection | undefined;
 
 	before(async function () {
-		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
+		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER, false);
 	});
 
 	after(async function () {
 		await helpFeedbackSection?.collapse();
+		await integrationsSection?.expand();
+		await deploymentsSection?.expand();
 		await kaotoViewContainer?.closeView();
 	});
 
@@ -52,6 +54,28 @@ describe('Kaoto View Container', function () {
 		expect(kaotoView).to.not.be.undefined;
 	});
 
+	describe('Integrations view', function () {
+		after(async function () {
+			await integrationsSection?.collapse();
+		});
+
+		it('is present', async function () {
+			integrationsSection = await kaotoView?.getContent().getSection('Integrations');
+			expect(integrationsSection).to.not.be.undefined;
+		});
+	});
+
+	describe('Deployments view', function () {
+		after(async function () {
+			await deploymentsSection?.collapse();
+		});
+
+		it('is present', async function () {
+			deploymentsSection = await kaotoView?.getContent().getSection('Deployments');
+			expect(deploymentsSection).to.not.be.undefined;
+		});
+	});
+
 	describe('Help & Feedback view', function () {
 		it('is present', async function () {
 			helpFeedbackSection = await kaotoView?.getContent().getSection('Help & Feedback');
@@ -62,20 +86,6 @@ describe('Kaoto View Container', function () {
 			const items = (await helpFeedbackSection?.getVisibleItems()) as ViewItem[];
 			const labels = await Promise.all(items.map((item) => item.getText()));
 			expect(labels).to.not.be.empty;
-		});
-	});
-
-	describe('Integrations view', function () {
-		it('is present', async function () {
-			integrationsSection = await kaotoView?.getContent().getSection('Integrations');
-			expect(integrationsSection).to.not.be.undefined;
-		});
-	});
-
-	describe('Deployments view', function () {
-		it('is present', async function () {
-			deploymentsSection = await kaotoView?.getContent().getSection('Deployments');
-			expect(deploymentsSection).to.not.be.undefined;
 		});
 	});
 });

@@ -1,5 +1,5 @@
 import { ActivityBar, after, By, Key, TextSetting, until, VSBrowser, WebDriver, WebElement, WebView, Workbench } from 'vscode-extension-tester';
-import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame, openResourcesAndWaitForActivation, resetUserSettings } from '../Util';
+import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame, resetUserSettings } from '../Util';
 import { join } from 'path';
 import { expect } from 'chai';
 
@@ -43,7 +43,6 @@ describe('User Settings', function () {
 	before(async function () {
 		this.timeout(60_000);
 		driver = VSBrowser.instance.driver;
-		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
 
 		// provide the Catalog URL using Settings UI editor
 		const settings = await new Workbench().openSettings();
@@ -107,6 +106,7 @@ describe('User Settings', function () {
 
 			// collapse catalog dropdown
 			await dropdown.click();
+			await driver.sleep(500); // time to reflect changes in DOM
 			try {
 				await driver.wait(until.elementLocated(locators.RuntimeSelectorItems.list), 5_000);
 				throw new Error('Dropdown was not closed!');

@@ -16,7 +16,7 @@ describe('Kaoto basic development flow', function () {
 	let globalKaotoWebView: WebView;
 
 	before(async function () {
-		await openResourcesAndWaitForActivation(workspaceFolder);
+		await openResourcesAndWaitForActivation(workspaceFolder, false);
 		const logger = logging.getLogger('webdriver');
 		logger.setLevel(logging.Level.DEBUG);
 		fs.copySync(path.join(workspaceFolder, 'empty.camel.yaml'), path.join(workspaceFolder, 'empty_copy.camel.yaml'));

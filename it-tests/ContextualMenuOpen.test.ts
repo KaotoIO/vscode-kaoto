@@ -24,6 +24,7 @@ describe('Contextual menu opening', function () {
 	before(async function () {
 		this.timeout(60_000);
 		driver = VSBrowser.instance.driver;
+		await openResourcesAndWaitForActivation(workspaceFolder, false);
 	});
 
 	afterEach(async function () {
@@ -32,12 +33,6 @@ describe('Contextual menu opening', function () {
 	});
 
 	it('Open Camel file with name my.yaml with right-click and check Kaoto UI is loading', async function () {
-		if (process.platform === 'darwin') {
-			// Contextual Menu is not implemented On MacOS in VS Code Extension tester
-			// See https://github.com/redhat-developer/vscode-extension-tester/issues/409#issuecomment-1209710394
-			this.skip();
-		}
-
 		const control: ViewControl | undefined = await new ActivityBar().getViewControl('Explorer');
 		if (control === undefined) {
 			assert.fail('Not found the Explorer view');
@@ -60,8 +55,20 @@ describe('Contextual menu opening', function () {
 	});
 
 	it('Open Camel file with name my.yaml opens with text editor by default', async function () {
-		const filePath = path.join(workspaceFolder, 'my.yaml');
-		await openResourcesAndWaitForActivation(filePath);
+		const fileName = 'my.yaml';
+		const filePath = path.join(workspaceFolder, fileName);
+		await VSBrowser.instance.openResources(filePath, async (timeout: number = 5_000, interval: number = 1_000) => {
+			await driver.sleep(interval);
+			await driver.wait(
+				async () => {
+					const editor = await new EditorView().getActiveTab();
+					return (await editor?.getTitle()) === fileName;
+				},
+				timeout,
+				`Cannot open file '${fileName}' in ${timeout}ms`,
+				interval,
+			);
+		});
 		const editor = new TextEditor();
 		expect(await editor.getTextAtLine(1)).contains('- route:');
 		await editor.save();
