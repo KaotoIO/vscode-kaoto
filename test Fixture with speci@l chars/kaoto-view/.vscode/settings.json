@@ -1,4 +1,6 @@
 {
   "git.openRepositoryInParentFolders": "never",
-  "redhat.telemetry.enabled": false
+  "redhat.telemetry.enabled": false,
+  "workbench.secondarySideBar.defaultVisibility": "hidden",
+  "window.zoomLevel": -1.5
 }

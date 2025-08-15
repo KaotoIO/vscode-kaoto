@@ -21,26 +21,42 @@ import { checkTopologyLoaded, openResourcesAndWaitForActivation, switchToKaotoFr
 describe('Integrations View', function () {
 	this.timeout(60_000);
 
-	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars/kaoto-view');
+	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars', 'kaoto-view');
 
 	let kaotoViewContainer: ViewControl | undefined;
 	let kaotoView: SideBarView | undefined;
 	let integrationsSection: ViewSection | undefined;
 	let deploymentsSection: ViewSection | undefined;
-	let items: TreeItem[];
+	let items: TreeItem[] | undefined;
 	let labels: string[];
 
 	before(async function () {
-		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
+		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER, false);
 
 		kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
 		kaotoView = await kaotoViewContainer?.openView();
+		await (await kaotoView?.getContent().getSection('Help & Feedback'))?.collapse();
 		deploymentsSection = await kaotoView?.getContent().getSection('Deployments');
 		await deploymentsSection?.collapse();
 		integrationsSection = await kaotoView?.getContent().getSection('Integrations');
 
-		items = (await integrationsSection?.getVisibleItems()) as TreeItem[];
-		labels = await Promise.all(items.map((item) => item.getLabel()));
+		items = await integrationsSection?.getDriver().wait(
+			async () => {
+				const items = await integrationsSection?.getVisibleItems();
+				if (items && items?.length > 0) {
+					return items as TreeItem[];
+				} else {
+					return undefined;
+				}
+			},
+			5_000,
+			'Integrations section items were not loaded properly',
+			500,
+		);
+
+		if (items) {
+			labels = await Promise.all(items.map((item) => item.getLabel()));
+		}
 	});
 
 	after(async function () {
