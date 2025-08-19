@@ -676,7 +676,7 @@
     "typescript": "^5.9.2",
     "vscode-extension-tester": "^8.15.0",
     "web-worker": "^1.5.0",
-    "webpack": "5.101.2",
+    "webpack": "5.101.3",
     "webpack-cli": "6.0.1",
     "webpack-merge": "6.0.1",
     "webpack-permissions-plugin": "^1.0.10"
