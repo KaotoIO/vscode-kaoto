@@ -16,6 +16,7 @@ import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
 import { getSuggestions } from '../helpers/SuggestionRegistry';
 import { CamelJBang } from '../helpers/CamelJBang';
+import { CatalogKind } from '@kaoto/kaoto/testing';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 	private readonly currentEditedDocument: vscode.TextDocument | VsCodeKieEditorCustomDocument;
@@ -224,6 +225,10 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		| undefined
 	> {
 		return new CamelJBang().getRuntimeInfoFromMavenContext(this.currentEditedDocument.uri.fsPath);
+	}
+
+	async onStepAdded(stepType: CatalogKind, stepName: string): Promise<void> {
+		KaotoOutputChannel.logInfo(`Step ${stepName} of type ${stepType} was added`);
 	}
 
 	private async findExistingKaotoMetadataFile(fileUri: vscode.Uri): Promise<vscode.Uri | undefined> {
