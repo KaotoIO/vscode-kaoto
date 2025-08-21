@@ -519,7 +519,7 @@
         "properties": {
           "kaoto.enableDragAndDrop": {
             "type": "boolean",
-            "default": false,
+            "default": true,
             "markdownDescription": "Control whether to enable drag and drop feature. It requires to reopen the Kaoto editors to be effective.",
             "tags": [
               "experimental"
