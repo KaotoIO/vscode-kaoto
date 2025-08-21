@@ -31,10 +31,10 @@ jobs:
           distribution: "temurin"
           java-version: "21"
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v3.6.0
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
       - name: Start Minikube
-        uses: medyagh/setup-minikube@latest
+        uses: medyagh/setup-minikube@v0.0.20
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
         with:
           driver: docker
