@@ -19,7 +19,7 @@ import { dirname, join } from 'path';
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
-import { compareVersions } from 'compare-versions';
+import { satisfies } from 'compare-versions';
 import { RuntimeMavenInformation } from '../tasks/RuntimeMavenInformation';
 
 export enum RouteOperation {
@@ -88,6 +88,10 @@ export class CamelJBang {
 			cwd: cwd,
 		};
 		const runArgs = await this.getRunArguments(filePath);
+		// Camel JBang 4.14+ uses the management port instead of the regular port.
+		// From Camel docs:
+		// --management-port=<managementPort> To use a dedicated port for HTTP management. Default: -1
+		const portArg = satisfies(this.camelJBangVersion, '>=4.14') ? `--management-port=${port ?? -1}` : `--port=${port ?? 8080}`;
 		return new ShellExecution(
 			this.jbang,
 			[
@@ -95,7 +99,7 @@ export class CamelJBang {
 				'run',
 				`'${filePath}'`,
 				'--console',
-				`--port=${port ?? 8080}`,
+				portArg,
 				...runArgs,
 				this.getCamelVersion(),
 				this.getRedHatMavenRepository(),
@@ -132,7 +136,8 @@ export class CamelJBang {
 		if (folderOfpomXml !== undefined) {
 			try {
 				let camelJbangVersionToUse: string;
-				if (compareVersions(this.camelJBangVersion, '4.13')) {
+				// This ensures versions lower than 4.13 fall back; 4.13 or newer use the configured version.
+				if (satisfies(this.camelJBangVersion, '>=4.13')) {
 					camelJbangVersionToUse = this.camelJBangVersion;
 				} else {
 					const defaultValue = workspace.getConfiguration().inspect('kaoto.camelJBang.Version')?.defaultValue as string;
