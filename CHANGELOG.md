@@ -7,6 +7,7 @@
 - Upgrade default Camel JBang version from 4.11.0 to 4.14.0
   - Note that due to regression [CAMEL-22131](https://issues.apache.org/jira/browse/CAMEL-22131) in Camel JBang 4.12, the project creation on Windows doesn't include the Maven wrapper with 4.12.x Camel Jbang version.
 - Drag-and-Drop functionality on Kaoto canvas now enabled by default
+- Update Camel dependencies in pom.xml for Maven projects automatically on editor save when step into Kaoto canvas is added or replaced
 
 # 2.6.0
 
