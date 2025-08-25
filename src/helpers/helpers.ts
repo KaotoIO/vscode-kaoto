@@ -17,7 +17,8 @@
 import { ProgressLocation, window } from 'vscode';
 import { exec, execSync } from 'child_process';
 import { promisify } from 'util';
-import { normalize } from 'path';
+import { dirname, join, normalize } from 'path';
+import fs from 'fs';
 
 /**
  * Utilizes constants, methods, ... used in both, desktop or web extension context
@@ -102,4 +103,22 @@ export function arePathsEqual(path1: string, path2: string): boolean {
 
 	// on Linux (and other case-sensitive systems), compare as-is
 	return normalizedPath1 === normalizedPath2;
+}
+
+/**
+ * Find the folder containing the pom.xml file for a given file.
+ *
+ * @param currentFile string representing the file to find the pom.xml folder for
+ * @returns the folder containing the pom.xml file or undefined if not found
+ */
+export function findFolderOfPomXml(currentFile: string): string | undefined {
+	const parentFolder = dirname(currentFile);
+	if (parentFolder !== undefined && parentFolder !== currentFile) {
+		if (fs.existsSync(join(parentFolder, 'pom.xml'))) {
+			return parentFolder;
+		} else {
+			return findFolderOfPomXml(parentFolder);
+		}
+	}
+	return undefined;
 }

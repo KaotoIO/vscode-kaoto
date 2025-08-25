@@ -13,6 +13,7 @@ import { ResourceContentService } from '@kie-tools-core/workspace/dist/api';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
+import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
 import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
 import { getSuggestions } from '../helpers/SuggestionRegistry';
 import { CamelJBang } from '../helpers/CamelJBang';
@@ -32,6 +33,12 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 	) {
 		super(editor, resourceContentService, workspaceApi, backendProxy, notificationsApi, javaCodeCompletionApi, viewType, i18n);
 		this.currentEditedDocument = editor.document.document;
+
+		// Dispose watcher when the webview/editor is closed
+		editor.setupPanelOnDidDispose();
+		editor.panel.onDidDispose(() => {
+			StepsOnSaveManager.instance.disposeFor(this.currentEditedDocument.uri);
+		});
 	}
 
 	async getCatalogURL(): Promise<string | undefined> {
@@ -227,7 +234,16 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 	}
 
 	async onStepUpdated(action: StepUpdateAction, stepType: CatalogKind, stepName: string): Promise<void> {
-		KaotoOutputChannel.logInfo(`Step ${stepName} of type ${stepType} was ${action}`);
+		KaotoOutputChannel.logInfo(`Step ${stepName} of type ${stepType} - Action: ${action}`);
+		const docUri = this.currentEditedDocument.uri;
+		switch (action) {
+			case StepUpdateAction.Add:
+			case StepUpdateAction.Replace:
+				StepsOnSaveManager.instance.markStepsAdded(docUri); // mark that steps have been added or replaced in the Kaoto UI to trigger the update of the Camel dependencies in pom.xml on save
+				break;
+			default:
+				break;
+		}
 	}
 
 	private async findExistingKaotoMetadataFile(fileUri: vscode.Uri): Promise<vscode.Uri | undefined> {
