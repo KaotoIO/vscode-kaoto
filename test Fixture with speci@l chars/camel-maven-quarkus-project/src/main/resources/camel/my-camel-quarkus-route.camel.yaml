@@ -1,4 +1,5 @@
 - route:
+    id: my-camel-quarkus-route
     from:
       uri: timer:yaml
       parameters:
