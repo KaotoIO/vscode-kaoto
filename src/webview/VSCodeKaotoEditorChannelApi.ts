@@ -1,4 +1,4 @@
-import { KaotoEditorChannelApi } from '@kaoto/kaoto';
+import { CatalogKind, KaotoEditorChannelApi, StepUpdateAction } from '@kaoto/kaoto';
 import { ColorScheme, ISettingsModel, NodeLabelType, NodeToolbarTrigger, SettingsModel } from '@kaoto/kaoto/models';
 import { BackendProxy } from '@kie-tools-core/backend/dist/api';
 import { I18n } from '@kie-tools-core/i18n/dist/core';
@@ -16,7 +16,6 @@ import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
 import { getSuggestions } from '../helpers/SuggestionRegistry';
 import { CamelJBang } from '../helpers/CamelJBang';
-import { CatalogKind } from '@kaoto/kaoto/testing';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 	private readonly currentEditedDocument: vscode.TextDocument | VsCodeKieEditorCustomDocument;
@@ -227,8 +226,8 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		return new CamelJBang().getRuntimeInfoFromMavenContext(this.currentEditedDocument.uri.fsPath);
 	}
 
-	async onStepAdded(stepType: CatalogKind, stepName: string): Promise<void> {
-		KaotoOutputChannel.logInfo(`Step ${stepName} of type ${stepType} was added`);
+	async onStepUpdated(action: StepUpdateAction, stepType: CatalogKind, stepName: string): Promise<void> {
+		KaotoOutputChannel.logInfo(`Step ${stepName} of type ${stepType} was ${action}`);
 	}
 
 	private async findExistingKaotoMetadataFile(fileUri: vscode.Uri): Promise<vscode.Uri | undefined> {
