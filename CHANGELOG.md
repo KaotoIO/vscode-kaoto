@@ -6,6 +6,7 @@
   - The Kaoto editor must closed/reopened to have theme applied
 - Upgrade default Camel JBang version from 4.11.0 to 4.14.0
   - Note that due to regression [CAMEL-22131](https://issues.apache.org/jira/browse/CAMEL-22131) in Camel JBang 4.12, the project creation on Windows doesn't include the Maven wrapper with 4.12.x Camel Jbang version.
+- Drag-and-Drop functionality on Kaoto canvas now enabled by default
 
 # 2.6.0
 
