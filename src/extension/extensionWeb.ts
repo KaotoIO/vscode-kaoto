@@ -69,6 +69,11 @@ export async function activate(context: vscode.ExtensionContext) {
 	contextHandler.registerIntegrationsView();
 
 	/*
+	 * register 'Tests' view provider
+	 */
+	contextHandler.registerTestsView();
+
+	/*
 	 * register 'Help & Feedback' view provider
 	 */
 	contextHandler.registerHelpAndFeedbackView();

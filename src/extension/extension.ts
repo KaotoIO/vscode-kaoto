@@ -80,9 +80,16 @@ export async function activate(context: vscode.ExtensionContext) {
 	contextHandler.registerOpenWithKaoto();
 
 	/*
-	 * register 'Integrations' view provider
+	 * register all views (Integrations, Deployments, Tests, Help & Feedback) first to avoid race conditions
 	 */
+	contextHandler.registerHelpAndFeedbackView();
 	contextHandler.registerIntegrationsView();
+	contextHandler.registerDeploymentsView(portManager);
+	contextHandler.registerTestsView();
+
+	/*
+	 * register commands for 'Integrations' view
+	 */
 	await contextHandler.hideIntegrationsViewButtonsForMavenProjects();
 	contextHandler.registerNewCamelFilesCommands();
 	contextHandler.registerNewCamelProjectCommands();
@@ -91,14 +98,10 @@ export async function activate(context: vscode.ExtensionContext) {
 	contextHandler.registerRunSourceDirCommands(portManager);
 
 	/*
-	 * register 'Deployments' view provider
+	 * register commands for 'Deployments' view
 	 */
-	contextHandler.registerDeploymentsView(portManager);
-
-	/*
-	 * register 'Help & Feedback' view provider
-	 */
-	contextHandler.registerHelpAndFeedbackView();
+	contextHandler.registerDeploymentsIntegrationCommands(); // Stop and Logs view item action buttons
+	contextHandler.registerDeploymentsRouteCommands(); // Stop/Start/Resume/Suspend route level buttons
 
 	/*
 	 * send extension startup event into Red Hat Telemetry
@@ -121,14 +124,15 @@ export async function activate(context: vscode.ExtensionContext) {
 	const jbang = await contextHandler.checkJbangOnPath();
 
 	/*
-	 * check Apache Camel Trusted Source is configured
+	 * check JBang Trusted Sources and plugins are configured
 	 */
 	if (jbang) {
-		await contextHandler.checkCamelJbangTrustedSource();
-		await contextHandler.checkCamelJBangKubernetesPlugin();
+		await contextHandler.checkJBangTrustedSources();
+		await contextHandler.checkCamelJBangPlugins();
 	}
 
 	KaotoOutputChannel.logInfo('Kaoto extension is successfully setup.');
+	console.log('Kaoto extension is successfully setup.');
 }
 
 export async function deactivate() {

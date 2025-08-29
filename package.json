@@ -426,6 +426,24 @@
         "command": "kaoto.redo",
         "title": "Redo",
         "category": "Kaoto"
+      },
+      {
+        "command": "kaoto.tests.refresh",
+        "title": "Refresh",
+        "category": "Kaoto",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "kaoto.tests.showSource",
+        "title": "Show Source",
+        "category": "Kaoto",
+        "icon": "$(code)"
+      },
+      {
+        "command": "kaoto.tests.delete",
+        "title": "Delete",
+        "category": "Kaoto",
+        "icon": "$(trash)"
       }
     ],
     "keybindings": [
@@ -569,6 +587,14 @@
         {
           "command": "kaoto.redo",
           "when": "false"
+        },
+        {
+          "command": "kaoto.tests.showSource",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.tests.delete",
+          "when": "false"
         }
       ],
       "editor/title": [
@@ -620,6 +646,11 @@
           "command": "kaoto.deployments.refresh",
           "group": "navigation",
           "when": "view == kaoto.deployments"
+        },
+        {
+          "command": "kaoto.tests.refresh",
+          "group": "navigation",
+          "when": "view == kaoto.tests"
         }
       ],
       "view/item/context": [
@@ -692,6 +723,16 @@
           "command": "kaoto.deployments.route.stop",
           "group": "inline@4",
           "when": "view == kaoto.deployments && viewItem =~ /^.*stopEnabled.*$/"
+        },
+        {
+          "command": "kaoto.tests.showSource",
+          "when": "view == kaoto.tests && viewItem =~ /^citrus-test-file/ || viewItem == jbang-properties-file",
+          "group": "navigation@1"
+        },
+        {
+          "command": "kaoto.tests.delete",
+          "when": "view == kaoto.tests && (viewItem =~ /^citrus-test-file/ || viewItem == test-folder || viewItem == jbang-properties-file || viewItem =~ /^test-folder-maven/)",
+          "group": "navigation@2"
         }
       ]
     },
@@ -710,6 +751,11 @@
       },
       {
         "view": "kaoto.integrations",
+        "contents": "You have not yet added a folder to the workspace.\n[Open Folder](command:vscode.openFolder)",
+        "when": "workspaceFolderCount == 0"
+      },
+      {
+        "view": "kaoto.tests",
         "contents": "You have not yet added a folder to the workspace.\n[Open Folder](command:vscode.openFolder)",
         "when": "workspaceFolderCount == 0"
       }
@@ -971,7 +1017,14 @@
           "contextualTitle": "Kaoto",
           "icon": "icons/kaoto.png",
           "initialSize": 2,
-          "when": "!virtualWorkspace && kaoto.jbangAvailable"
+          "when": "!virtualWorkspace"
+        },
+        {
+          "id": "kaoto.tests",
+          "name": "Tests",
+          "contextualTitle": "Kaoto",
+          "icon": "icons/kaoto.png",
+          "initialSize": 2
         },
         {
           "id": "kaoto.help",

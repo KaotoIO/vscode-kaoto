@@ -143,6 +143,7 @@ Learn more about Kaoto and how to use it effectively:
 - **Camel Route files**: `*.camel.yaml`, `*.camel.xml`
 - **Kamelet files**: `*.kamelet.yaml`
 - **Pipe files**: `*.pipe.yaml`
+- **Citrus Test files**: `*.test.yaml`, `*.citrus.yaml`
 
 ## Feedback
 
