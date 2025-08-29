@@ -29,7 +29,7 @@ suite('CamelJbang tests', function () {
 	});
 
 	test('Can retrieve runtime information from Maven context for Quarkus project', async () => {
-		const files = await vscode.workspace.findFiles('camel-maven-quarkus-project/src/main/resources/camel/my-camel-quarkus-route.yaml');
+		const files = await vscode.workspace.findFiles('camel-maven-quarkus-project/src/main/resources/camel/my-camel-quarkus-route.camel.yaml');
 		assert(files.length === 1, 'For the test, we expect to have a single file in the camel quarkus project');
 		const runtimeInfo = await new CamelJBang().getRuntimeInfoFromMavenContext(files[0].fsPath);
 		const expected: RuntimeMavenInformation = {

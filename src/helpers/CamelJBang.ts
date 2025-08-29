@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 import { RelativePattern, ShellExecution, ShellExecutionOptions, Uri, workspace, window } from 'vscode';
-import { arePathsEqual } from './helpers';
-import { dirname, join } from 'path';
+import { arePathsEqual, findFolderOfPomXml } from './helpers';
+import { dirname } from 'path';
 import { execSync } from 'child_process';
-import * as fs from 'fs';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { satisfies } from 'compare-versions';
 import { RuntimeMavenInformation } from '../tasks/RuntimeMavenInformation';
@@ -83,6 +82,13 @@ export class CamelJBang {
 		}
 	}
 
+	public async dependencyUpdate(pomPath: string, routePath: string, cwd?: string): Promise<ShellExecution> {
+		const shellExecOptions: ShellExecutionOptions = {
+			cwd: cwd,
+		};
+		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'dependency', 'update', `'${pomPath}'`, `'${routePath}'`], shellExecOptions);
+	}
+
 	public async run(filePath: string, cwd?: string, port?: number): Promise<ShellExecution> {
 		const shellExecOptions: ShellExecutionOptions = {
 			cwd: cwd,
@@ -132,7 +138,7 @@ export class CamelJBang {
 	}
 
 	public async getRuntimeInfoFromMavenContext(integrationFilePath: string): Promise<RuntimeMavenInformation | undefined> {
-		const folderOfpomXml = this.findFolderOfPomXml(integrationFilePath);
+		const folderOfpomXml = findFolderOfPomXml(integrationFilePath);
 		if (folderOfpomXml !== undefined) {
 			try {
 				let camelJbangVersionToUse: string;
@@ -158,18 +164,6 @@ export class CamelJBang {
 		} else {
 			return undefined;
 		}
-	}
-
-	private findFolderOfPomXml(currentFile: string): string | undefined {
-		const parentFolder = dirname(currentFile);
-		if (parentFolder !== undefined && parentFolder !== currentFile) {
-			if (fs.existsSync(join(parentFolder, 'pom.xml'))) {
-				return parentFolder;
-			} else {
-				return this.findFolderOfPomXml(parentFolder);
-			}
-		}
-		return undefined;
 	}
 
 	private getKubernetesRunArguments(): string[] {
