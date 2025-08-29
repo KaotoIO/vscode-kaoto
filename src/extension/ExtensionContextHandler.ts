@@ -16,21 +16,27 @@
 import * as vscode from 'vscode';
 import path from 'path';
 import * as KogitoVsCode from '@kie-tools-core/vscode-extension/dist';
-import { execSync } from 'child_process';
 import { HelpFeedbackProvider } from '../views/providers/HelpFeedbackProvider';
 import { IntegrationsProvider } from '../views/providers/IntegrationsProvider';
 import { Integration } from '../views/integrationTreeItems/Integration';
 import { NewCamelRouteCommand } from '../commands/NewCamelRouteCommand';
 import { NewCamelKameletCommand } from '../commands/NewCamelKameletCommand';
 import { NewCamelPipeCommand } from '../commands/NewCamelPipeCommand';
-import { findFolderOfPomXml, verifyCamelJBangTrustedSource, verifyCamelKubernetesPluginIsInstalled, verifyJBangExists } from '../helpers/helpers';
+import {
+	CAMEL_TRUSTED_SOURCE_URL,
+	CITRUS_TRUSTED_SOURCE_URL,
+	findFolderOfPomXml,
+	runJBangCommandWithStatusBar,
+	verifyJBangExists,
+	verifyJBangTrustedSources,
+	verifyCamelPluginsAreInstalled,
+} from '../helpers/helpers';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { NewCamelFileCommand } from '../commands/NewCamelFileCommand';
 import { confirmFileDeleteDialog } from '../helpers/modals';
 import { TelemetryEvent, TelemetryService } from '@redhat-developer/vscode-redhat-telemetry';
 import { NewCamelProjectCommand } from '../commands/NewCamelProjectCommand';
 import { CamelRunJBangTask } from '../tasks/CamelRunJBangTask';
-import { CamelAddPluginJBangTask } from '../tasks/CamelAddPluginJBangTask';
 import { CamelKubernetesRunJBangTask } from '../tasks/CamelKubernetesRunJBangTask';
 import { DeploymentsProvider } from '../views/providers/DeploymentsProvider';
 import { PortManager } from '../helpers/PortManager';
@@ -45,10 +51,15 @@ import { satisfies } from 'compare-versions';
 import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
 import { CamelRunSourceDirJBangTask } from '../tasks/CamelRunSourceDirJBangTask';
 import { Folder } from '../views/integrationTreeItems/Folder';
+import { TestsProvider } from '../views/providers/TestsProvider';
+import { AbstractFolderTreeProvider } from 'src/views/providers/AbstractFolderTreeProvider';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
 	protected context: vscode.ExtensionContext;
+
+	protected testsProvider: TestsProvider;
+	protected deploymentsProvider: DeploymentsProvider;
 
 	constructor(
 		context: vscode.ExtensionContext,
@@ -120,20 +131,37 @@ export class ExtensionContextHandler {
 		return true;
 	}
 
-	public async checkCamelJbangTrustedSource() {
-		const camelTrustedSource = await verifyCamelJBangTrustedSource();
-		if (!camelTrustedSource) {
-			const camelTrustUrl: string = 'https://github.com/apache/camel/';
-			execSync(`jbang trust add ${camelTrustUrl}`, { stdio: ['pipe', 'pipe', process.stderr] });
-			KaotoOutputChannel.logInfo('Apache Camel Trusted Source was added into JBang configuration.');
+	public async checkJBangTrustedSources() {
+		const camelTrustedSources = await verifyJBangTrustedSources([CAMEL_TRUSTED_SOURCE_URL, CITRUS_TRUSTED_SOURCE_URL]);
+		const camelTrustedSourcesToAdd = camelTrustedSources.filter((source) => !source.exists).map((source) => source.url);
+		if (camelTrustedSourcesToAdd.length > 0) {
+			const output = await runJBangCommandWithStatusBar(
+				`trust add ${camelTrustedSourcesToAdd.join(' ')}`,
+				`Adding [${camelTrustedSourcesToAdd.join(', ')}] into JBang configuration Trusted Sources...`,
+			);
+			if (output.stderr.length > 0 && output.stderr.toLowerCase().includes('error')) {
+				const errorMessage = `Failed to add [${camelTrustedSourcesToAdd.join(', ')}] into JBang configuration Trusted Sources: ${output.stderr}`;
+				KaotoOutputChannel.logError(errorMessage);
+				vscode.window.showWarningMessage(errorMessage);
+			} else {
+				KaotoOutputChannel.logInfo(`[${camelTrustedSourcesToAdd.join(', ')}] were added into JBang configuration Trusted Sources.`);
+			}
 		}
 	}
 
-	public async checkCamelJBangKubernetesPlugin() {
-		const camelKubernetesPluginInstalled = await verifyCamelKubernetesPluginIsInstalled();
-		if (!camelKubernetesPluginInstalled) {
-			await new CamelAddPluginJBangTask('kubernetes').executeAndWait();
-			KaotoOutputChannel.logInfo('Apache Camel JBang Kubernetes plugin was installed.');
+	public async checkCamelJBangPlugins() {
+		const camelPlugins = await verifyCamelPluginsAreInstalled(['kubernetes', 'test']);
+		const camelPluginsToInstall = camelPlugins.filter((plugin) => !plugin.installed).map((plugin) => plugin.plugin);
+		if (camelPluginsToInstall.length > 0) {
+			for (const plugin of camelPluginsToInstall) {
+				const output = await runJBangCommandWithStatusBar(`camel@apache/camel plugin add ${plugin}`, `Adding Apache Camel JBang ${plugin} plugin...`);
+				if (output.stderr.length > 0 && output.stderr.toLowerCase().includes('error')) {
+					KaotoOutputChannel.logError(`Failed to add Apache Camel JBang ${plugin} plugin: ${output.stderr}`);
+					vscode.window.showWarningMessage(`Failed to add Apache Camel JBang ${plugin} plugin: ${output.stderr}`);
+				} else {
+					KaotoOutputChannel.logInfo(`Apache Camel JBang ${plugin} plugin was installed.`);
+				}
+			}
 		}
 	}
 
@@ -211,38 +239,54 @@ export class ExtensionContextHandler {
 		};
 		const refreshCommand = vscode.commands.registerCommand('kaoto.integrations.refresh', () => integrationsProvider.refresh());
 		this.context.subscriptions.push(integrationsTreeView, dispose, refreshCommand);
+
 		this.registerIntegrationsItemsContextMenu(integrationsProvider);
 	}
 
-	public registerDeploymentsView(portManager: PortManager) {
-		const deploymentsProvider = new DeploymentsProvider(portManager);
-		this.context.subscriptions.push(vscode.commands.registerCommand('kaoto.deployments.refresh', () => deploymentsProvider.refresh()));
-		this.context.subscriptions.push({
-			dispose: () => deploymentsProvider.dispose(),
-		});
-
-		const deploymentsTreeView = vscode.window.createTreeView('kaoto.deployments', {
-			treeDataProvider: deploymentsProvider,
+	public registerTestsView() {
+		this.testsProvider = new TestsProvider();
+		const testsTreeView = vscode.window.createTreeView('kaoto.tests', {
+			treeDataProvider: this.testsProvider,
 			showCollapseAll: true,
 		});
-		this.context.subscriptions.push(deploymentsTreeView);
+		const dispose = {
+			dispose: () => this.testsProvider.dispose(),
+		};
 
-		// stop auto-refresh when a view is not visible
-		this.context.subscriptions.push(
-			deploymentsTreeView.onDidChangeVisibility((event) => {
-				if (event.visible) {
-					deploymentsProvider.refresh();
-				} else {
-					console.warn('[DeploymentsProvider] Auto-refresh stopped');
-					deploymentsProvider.dispose();
-				}
-			}),
-		);
+		const refreshOnVisibilityChange = testsTreeView.onDidChangeVisibility((event) => {
+			if (event.visible) {
+				this.testsProvider.refresh();
+			}
+		});
+		const refreshCommand = vscode.commands.registerCommand('kaoto.tests.refresh', () => this.testsProvider.refresh());
+		this.context.subscriptions.push(testsTreeView, dispose, refreshCommand, refreshOnVisibilityChange);
 
-		// register Stop and Logs view item action buttons
-		this.registerDeploymentsIntegrationCommands();
-		// register Stop/Start/Resume/Suspend route level buttons
-		this.registerDeploymentsRouteCommands(deploymentsProvider);
+		this.registerViewItemContextMenu(this.testsProvider);
+	}
+
+	public registerDeploymentsView(portManager: PortManager) {
+		this.deploymentsProvider = new DeploymentsProvider(portManager);
+
+		const deploymentsTreeView = vscode.window.createTreeView('kaoto.deployments', {
+			treeDataProvider: this.deploymentsProvider,
+			showCollapseAll: true,
+		});
+
+		const deploymentsRefreshCommand = vscode.commands.registerCommand('kaoto.deployments.refresh', () => this.deploymentsProvider.refresh());
+		const deploymentsDispose = {
+			dispose: () => this.deploymentsProvider.dispose(),
+		};
+
+		const refreshVisibilityChange = deploymentsTreeView.onDidChangeVisibility((event) => {
+			if (event.visible) {
+				this.deploymentsProvider.refresh();
+			} else {
+				console.warn('[DeploymentsProvider] Auto-refresh stopped');
+				this.deploymentsProvider.dispose();
+			}
+		});
+
+		this.context.subscriptions.push(deploymentsTreeView, deploymentsDispose, deploymentsRefreshCommand, refreshVisibilityChange);
 	}
 
 	private registerIntegrationsItemsContextMenu(provider: IntegrationsProvider) {
@@ -281,6 +325,34 @@ export class ExtensionContextHandler {
 		});
 
 		this.context.subscriptions.push(showSourceCommand, deleteCommand, updateDependenciesCommand);
+	}
+
+	private registerViewItemContextMenu(provider: AbstractFolderTreeProvider<any>) {
+		// register show source menu button
+		const showSourceCommand = vscode.commands.registerCommand(provider.VIEW_ITEM_SHOW_SOURCE_COMMAND_ID, async (item: vscode.TreeItem) => {
+			if (!item.resourceUri) {
+				return;
+			}
+			await vscode.window.showTextDocument(item.resourceUri);
+			await this.sendCommandTrackingEvent(provider.VIEW_ITEM_SHOW_SOURCE_COMMAND_ID);
+		});
+
+		// register delete menu button
+		const deleteCommand = vscode.commands.registerCommand(provider.VIEW_ITEM_DELETE_COMMAND_ID, async (item: vscode.TreeItem) => {
+			if (!item.resourceUri) {
+				return;
+			}
+			const confirmation = await confirmFileDeleteDialog(item.resourceUri.fsPath);
+			if (confirmation) {
+				await vscode.workspace.fs.delete(item.resourceUri, { recursive: true });
+				// ensure tree refresh (folder deletions may not trigger file-pattern watcher)
+				provider.refresh();
+				KaotoOutputChannel.logInfo(`Item '${item.resourceUri.fsPath}' was deleted.`);
+			}
+			await this.sendCommandTrackingEvent(provider.VIEW_ITEM_DELETE_COMMAND_ID);
+		});
+
+		this.context.subscriptions.push(showSourceCommand, deleteCommand);
 	}
 
 	private async updateCamelDependencies(docPath: string): Promise<void> {
@@ -443,44 +515,38 @@ export class ExtensionContextHandler {
 		);
 	}
 
-	public registerDeploymentsRouteCommands(deploymentsProvider: DeploymentsProvider) {
+	public registerDeploymentsRouteCommands() {
 		const DEPLOYMENTS_ROUTE_START_COMMAND_ID: string = 'kaoto.deployments.route.start';
 		const DEPLOYMENTS_ROUTE_STOP_COMMAND_ID: string = 'kaoto.deployments.route.stop';
 		const DEPLOYMENTS_ROUTE_RESUME_COMMAND_ID: string = 'kaoto.deployments.route.resume';
 		const DEPLOYMENTS_ROUTE_SUSPEND_COMMAND_ID: string = 'kaoto.deployments.route.suspend';
 
-		this.context.subscriptions.push(
-			vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_START_COMMAND_ID, async (route: ChildItem) => {
-				await new CamelRouteOperationJBangTask(RouteOperation.start, route.parentIntegration.label as string, route.label as string).executeAndWait();
-				await deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Started');
-				deploymentsProvider.refresh();
-				await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_START_COMMAND_ID);
-			}),
-		);
-		this.context.subscriptions.push(
-			vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_STOP_COMMAND_ID, async (route: ChildItem) => {
-				await new CamelRouteOperationJBangTask(RouteOperation.stop, route.parentIntegration.label as string, route.label as string).executeAndWait();
-				await deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Stopped');
-				deploymentsProvider.refresh();
-				await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_STOP_COMMAND_ID);
-			}),
-		);
-		this.context.subscriptions.push(
-			vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_RESUME_COMMAND_ID, async (route: ChildItem) => {
-				await new CamelRouteOperationJBangTask(RouteOperation.resume, route.parentIntegration.label as string, route.label as string).executeAndWait();
-				await deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Started');
-				deploymentsProvider.refresh();
-				await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_RESUME_COMMAND_ID);
-			}),
-		);
-		this.context.subscriptions.push(
-			vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_SUSPEND_COMMAND_ID, async (route: ChildItem) => {
-				await new CamelRouteOperationJBangTask(RouteOperation.suspend, route.parentIntegration.label as string, route.label as string).executeAndWait();
-				await deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Suspended');
-				deploymentsProvider.refresh();
-				await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_SUSPEND_COMMAND_ID);
-			}),
-		);
+		const startCommand = vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_START_COMMAND_ID, async (route: ChildItem) => {
+			await new CamelRouteOperationJBangTask(RouteOperation.start, route.parentIntegration.label as string, route.label as string).executeAndWait();
+			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Started');
+			this.deploymentsProvider.refresh();
+			await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_START_COMMAND_ID);
+		});
+		const stopCommand = vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_STOP_COMMAND_ID, async (route: ChildItem) => {
+			await new CamelRouteOperationJBangTask(RouteOperation.stop, route.parentIntegration.label as string, route.label as string).executeAndWait();
+			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Stopped');
+			this.deploymentsProvider.refresh();
+			await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_STOP_COMMAND_ID);
+		});
+		const resumeCommand = vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_RESUME_COMMAND_ID, async (route: ChildItem) => {
+			await new CamelRouteOperationJBangTask(RouteOperation.resume, route.parentIntegration.label as string, route.label as string).executeAndWait();
+			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Started');
+			this.deploymentsProvider.refresh();
+			await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_RESUME_COMMAND_ID);
+		});
+		const suspendCommand = vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_SUSPEND_COMMAND_ID, async (route: ChildItem) => {
+			await new CamelRouteOperationJBangTask(RouteOperation.suspend, route.parentIntegration.label as string, route.label as string).executeAndWait();
+			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Suspended');
+			this.deploymentsProvider.refresh();
+			await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_SUSPEND_COMMAND_ID);
+		});
+
+		this.context.subscriptions.push(startCommand, stopCommand, resumeCommand, suspendCommand);
 	}
 
 	public async hideIntegrationsViewButtonsForMavenProjects() {

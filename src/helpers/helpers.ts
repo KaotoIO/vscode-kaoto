@@ -15,7 +15,7 @@
  */
 
 import { ProgressLocation, window, workspace, WorkspaceFolder } from 'vscode';
-import { exec, execSync } from 'child_process';
+import { exec } from 'child_process';
 import { promisify } from 'util';
 import * as path from 'path';
 import fs from 'fs';
@@ -44,41 +44,29 @@ export const KAOTO_LOCAL_KAMELET_DIRECTORIES_SETTING_ID: string = 'kaoto.localKa
 
 export const KAOTO_INTEGRATIONS_FILES_REGEXP_SETTING_ID: string = 'kaoto.integrations.files.regexp';
 
+export const CAMEL_TRUSTED_SOURCE_URL: string = 'https://github.com/apache/camel/';
+
+export const CITRUS_TRUSTED_SOURCE_URL: string = 'https://github.com/citrusframework/citrus/';
+
 export async function verifyJBangExists(): Promise<boolean> {
+	return await runJBangCommandWithStatusBar(`version`, `Checking JBang executable on PATH...`).then((output) => !output.stderr.includes('command not found')); // JBang exists
+}
+
+export async function verifyCamelPluginsAreInstalled(plugins: string[]): Promise<{ plugin: string; installed: boolean }[]> {
+	return await runJBangCommandWithStatusBar(`camel@apache/camel plugin get`, `Checking Camel JBang plugins...`).then((output) => {
+		return plugins.map((plugin) => ({ plugin, installed: output.stdout.includes(plugin) }));
+	});
+}
+
+export async function verifyJBangTrustedSources(urls: string[]): Promise<{ url: string; exists: boolean }[]> {
+	return await runJBangCommandWithStatusBar(`trust list`, `Checking JBang Trusted Sources...`).then((output) => {
+		return urls.map((url) => ({ url, exists: output.stdout.includes(url) }));
+	});
+}
+
+export async function runJBangCommandWithStatusBar(args: string, msg: string): Promise<{ stdout: string; stderr: string }> {
 	const execPromise = promisify(exec);
-	return await window.withProgress<boolean>(
-		{
-			location: ProgressLocation.Window,
-			cancellable: false,
-			title: 'Kaoto: Checking JBang executable on PATH...',
-		},
-		async (progress) => {
-			progress.report({ increment: 0 });
-			try {
-				const { stdout } = await execPromise('jbang --version');
-				progress.report({ increment: 100 });
-				return !stdout.includes('not found'); // JBang exists
-			} catch (error) {
-				progress.report({ increment: 100 });
-				return false; // JBang not found
-			}
-		},
-	);
-}
-
-export async function verifyCamelJBangTrustedSource(): Promise<boolean> {
-	const output = await runJBangCommandWithStatusBar('trust list', 'Checking Apache Camel Trusted Source is a part of JBang configuration...');
-	return output.includes('https://github.com/apache/camel/');
-}
-
-export async function verifyCamelKubernetesPluginIsInstalled(): Promise<boolean> {
-	const output = await runJBangCommandWithStatusBar('camel@apache/camel plugin get', 'Checking Camel JBang Kubernetes plugin...');
-	return output.includes('kubernetes');
-}
-
-async function runJBangCommandWithStatusBar(args: string, msg: string): Promise<string> {
-	let output = '';
-	await window.withProgress(
+	return await window.withProgress(
 		{
 			location: ProgressLocation.Window,
 			cancellable: false,
@@ -86,11 +74,15 @@ async function runJBangCommandWithStatusBar(args: string, msg: string): Promise<
 		},
 		async (progress) => {
 			progress.report({ increment: 0 });
-			output = execSync(`jbang ${args}`, { stdio: 'pipe' }).toString();
-			progress.report({ increment: 100 });
+			try {
+				const { stdout, stderr } = await execPromise(`jbang ${args}`);
+				progress.report({ increment: 100 });
+				return { stdout, stderr };
+			} catch (error) {
+				return { stdout: '', stderr: error instanceof Error ? error.message : String(error) };
+			}
 		},
 	);
-	return output;
 }
 
 /**
