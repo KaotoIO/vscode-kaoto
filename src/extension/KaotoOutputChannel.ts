@@ -35,6 +35,10 @@ export class KaotoOutputChannel {
 	}
 
 	public static logError(message: string, error?: any): void {
+		if (error === undefined || error === null) {
+			this.logMessage('ERROR', message);
+			return;
+		}
 		const errorMsg = error instanceof Error ? error.message : String(error);
 		this.logMessage('ERROR', `${message}\n${errorMsg}`);
 	}
