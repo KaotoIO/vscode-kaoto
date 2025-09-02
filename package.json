@@ -654,7 +654,7 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.4",
     "fs-extra": "^11.3.1",
-    "mocha": "^11.7.1",
+    "mocha": "^11.7.2",
     "mocha-jenkins-reporter": "^0.4.8",
     "node-fetch": "2",
     "npm-link-shared": "^0.5.6",
