@@ -1,6 +1,6 @@
 # 2.7.0
 
-- Upgrade to Kaoto 2.7.0-RC3
+- Upgrade to Kaoto 2.7.0
   - /!\ BREAKING CHANGE: if using a specific Kaoto Catalog, it must be regenerated with newer Kaoto otherwise the editor won't open.
 - Support for switching themes independently of VS Code theme
   - The Kaoto editor must closed/reopened to have theme applied
