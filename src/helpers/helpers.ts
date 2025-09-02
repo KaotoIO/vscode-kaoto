@@ -25,6 +25,16 @@ import { normalize } from 'path';
 
 export const KAOTO_FILE_PATH_GLOB: string = '**/*.{yml,yaml,xml}';
 
+export const KAOTO_CAMEL_JBANG_VERSION_SETTING_ID: string = 'kaoto.camelJbang.version';
+
+export const KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID: string = 'kaoto.camelJbang.runArguments';
+
+export const KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID: string = 'kaoto.camelJbang.redHatMavenRepository';
+
+export const KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID: string = 'kaoto.camelJbang.redHatMavenRepository.global';
+
+export const KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID: string = 'kaoto.camelJbang.kubernetesRunArguments';
+
 export async function verifyJBangExists(): Promise<boolean> {
 	const execPromise = promisify(exec);
 	return await window.withProgress<boolean>(

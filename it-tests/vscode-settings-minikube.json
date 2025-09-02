@@ -1,5 +1,5 @@
 {
-  "kaoto.camelJBang.KubernetesRunArguments": [
+  "kaoto.camelJbang.kubernetesRunArguments": [
     "--cluster-type=minikube",
     "--dev",
     "--verbose",
