@@ -9,6 +9,8 @@
 - Drag-and-Drop functionality on Kaoto canvas now enabled by default
 - **BREAKING CHANGE**: Camel JBang user settings have now different IDs, so for those who are using local workspace VS Code settings they need to be updated to new values
 - Update Camel dependencies in pom.xml for Maven projects automatically on editor save when step into Kaoto canvas is added or replaced
+  - can be disabled via UI setting (enabled by default)
+  - allowed only for Camel JBang 4.14+
 
 # 2.6.0
 

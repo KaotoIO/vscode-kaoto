@@ -2,7 +2,8 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { CamelJBang } from './CamelJBang';
-import { findFolderOfPomXml } from './helpers';
+import { findFolderOfPomXml, KAOTO_CAMEL_JBANG_VERSION_SETTING_ID } from './helpers';
+import { satisfies } from 'compare-versions';
 
 export class StepsOnSaveManager {
 	private static _instance: StepsOnSaveManager | undefined;
@@ -73,6 +74,13 @@ export class StepsOnSaveManager {
 			return; // standalone project
 		}
 		const pomPath = path.join(pomFolder, 'pom.xml');
+
+		const camelJBangVersion = vscode.workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_VERSION_SETTING_ID) as string;
+		if (satisfies(camelJBangVersion, '<4.14')) {
+			KaotoOutputChannel.logWarning('Camel JBang version is <4.14. Skipping update on save for Camel dependencies in pom.xml.');
+			vscode.window.setStatusBarMessage('Camel JBang version is <4.14. Skipping update on save for Camel dependencies in pom.xml.', 5_000);
+			return; // skip update on save for Camel JBang <4.14
+		}
 
 		const updateOnSave = vscode.workspace.getConfiguration().get('kaoto.maven.dependenciesUpdate.onSave');
 		if (!updateOnSave) {
