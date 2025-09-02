@@ -74,6 +74,11 @@ export class StepsOnSaveManager {
 		}
 		const pomPath = path.join(pomFolder, 'pom.xml');
 
+		const updateOnSave = vscode.workspace.getConfiguration().get('kaoto.maven.dependenciesUpdate.onSave');
+		if (!updateOnSave) {
+			return;
+		}
+
 		KaotoOutputChannel.logInfo('Detected added steps on save. Updating Camel dependencies...');
 		try {
 			const exitCode = await vscode.window.withProgress(
