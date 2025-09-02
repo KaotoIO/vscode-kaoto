@@ -575,6 +575,16 @@
             "order": 3
           }
         }
+      },
+      {
+        "title": "Maven Projects",
+        "properties": {
+          "kaoto.maven.dependenciesUpdate.onSave": {
+            "type": "boolean",
+            "default": true,
+            "markdownDescription": "Enable automatic update of Camel dependencies in pom.xml on save."
+          }
+        }
       }
     ],
     "customEditors": [
