@@ -11045,9 +11045,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass@npm:^1.91.0":
-  version: 1.91.0
-  resolution: "sass@npm:1.91.0"
+"sass@npm:^1.92.0":
+  version: 1.92.0
+  resolution: "sass@npm:1.92.0"
   dependencies:
     "@parcel/watcher": "npm:^2.4.1"
     chokidar: "npm:^4.0.0"
@@ -11058,7 +11058,7 @@ __metadata:
       optional: true
   bin:
     sass: sass.js
-  checksum: 10/b28751b6e49fa53ac75267119cef33e6f88dcd91173c1f7d61243bb828a5e1793276752562c0bfdd1a7e2d2d7728ddf75f54654d28da8c3cbd3ce94bd051e63e
+  checksum: 10/dedc6e7a591ad6d1733564422c569a19e14e5b446c4ee59fea8f71fd496b1f65e67641004ac584e6ec73f5595d2446b3a262799eb3e42b84d901b0b11f108642
   languageName: node
   linkType: hard
 
@@ -12853,7 +12853,7 @@ __metadata:
     react-dom: "npm:18.3.1"
     react-monaco-editor: "npm:0.56.2"
     rimraf: "npm:^6.0.1"
-    sass: "npm:^1.91.0"
+    sass: "npm:^1.92.0"
     sass-loader: "npm:^16.0.4"
     source-map-loader: "npm:4.0.1"
     style-loader: "npm:3.3.3"
