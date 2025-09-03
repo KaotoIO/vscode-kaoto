@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 import { RelativePattern, ShellExecution, ShellExecutionOptions, Uri, workspace, window } from 'vscode';
-import { arePathsEqual } from './helpers';
+import {
+	arePathsEqual,
+	KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID,
+	KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID,
+	KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID,
+	KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID,
+	KAOTO_CAMEL_JBANG_VERSION_SETTING_ID,
+} from './helpers';
 import { dirname, join } from 'path';
 import { execSync } from 'child_process';
 import * as fs from 'fs';
@@ -39,7 +46,7 @@ export class CamelJBang {
 	private readonly defaultJbangArgs: string[];
 
 	constructor(private readonly jbang: string = 'jbang') {
-		this.camelJBangVersion = workspace.getConfiguration().get('kaoto.camelJBang.Version') as string;
+		this.camelJBangVersion = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_VERSION_SETTING_ID) as string;
 		this.defaultJbangArgs = [`'-Dcamel.jbang.version=${this.camelJBangVersion}'`, 'camel@apache/camel'];
 	}
 
@@ -140,7 +147,7 @@ export class CamelJBang {
 				if (satisfies(this.camelJBangVersion, '>=4.13')) {
 					camelJbangVersionToUse = this.camelJBangVersion;
 				} else {
-					const defaultValue = workspace.getConfiguration().inspect('kaoto.camelJBang.Version')?.defaultValue as string;
+					const defaultValue = workspace.getConfiguration().inspect(KAOTO_CAMEL_JBANG_VERSION_SETTING_ID)?.defaultValue as string;
 					camelJbangVersionToUse = defaultValue ?? '4.13.0';
 				}
 				const response: string = execSync(
@@ -173,7 +180,7 @@ export class CamelJBang {
 	}
 
 	private getKubernetesRunArguments(): string[] {
-		const kubernetesRunArgs = workspace.getConfiguration().get('kaoto.camelJBang.KubernetesRunArguments') as string[];
+		const kubernetesRunArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID) as string[];
 		if (kubernetesRunArgs) {
 			return kubernetesRunArgs;
 		} else {
@@ -182,7 +189,7 @@ export class CamelJBang {
 	}
 
 	private async getRunArguments(filePath: string): Promise<string[]> {
-		const runArgs = workspace.getConfiguration().get('kaoto.camelJBang.RunArguments') as string[];
+		const runArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID) as string[];
 		if (runArgs) {
 			return await this.handleMissingXslFiles(filePath, runArgs);
 		} else {
@@ -201,7 +208,7 @@ export class CamelJBang {
 
 	private getRedHatMavenRepository(): string {
 		if (this.getCamelVersion().includes('redhat')) {
-			const url = workspace.getConfiguration().get('kaoto.camelJBang.redHatMavenRepository') as string;
+			const url = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID) as string;
 			const reposPlaceholder = this.getCamelGlobalRepos();
 			return url ? `--repos=${reposPlaceholder}${url}` : '';
 		} else {
@@ -210,7 +217,7 @@ export class CamelJBang {
 	}
 
 	private getCamelGlobalRepos(): string {
-		const globalRepos = workspace.getConfiguration().get('kaoto.camelJBang.redHatMavenRepository.global') as boolean;
+		const globalRepos = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID) as boolean;
 		if (globalRepos) {
 			return '#repos,';
 		} else {
