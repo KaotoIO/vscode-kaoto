@@ -65,6 +65,11 @@ export async function activate(context: vscode.ExtensionContext) {
 	const contextHandler = new ExtensionContextHandler(context, kieEditorStore, telemetryService);
 
 	/*
+	 * register undo/redo blank commands
+	 */
+	contextHandler.registerUndoRedoCommands();
+
+	/*
 	 * register commands for a toggle source code (open/close camel file in a side textual editor)
 	 */
 	await contextHandler.registerToggleSourceCode();
