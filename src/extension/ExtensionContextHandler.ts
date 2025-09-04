@@ -53,6 +53,26 @@ export class ExtensionContextHandler {
 		this.context = context;
 	}
 
+	/**
+	 * a workaround which is temporarily disabling shortcuts for undo/redo in Kaoto Editor
+	 * Related issues:
+	 * - https://github.com/KaotoIO/kaoto/issues/2521
+	 * - https://github.com/KaotoIO/kaoto/issues/2524
+	 * - https://github.com/KaotoIO/kaoto/issues/2525
+	 */
+	public registerUndoRedoCommands() {
+		this.context.subscriptions.push(
+			vscode.commands.registerCommand('kaoto.undo', async () => {
+				// do nothing
+			}),
+		);
+		this.context.subscriptions.push(
+			vscode.commands.registerCommand('kaoto.redo', async () => {
+				// do nothing
+			}),
+		);
+	}
+
 	public async showRecommendedExtensions() {
 		const recommendService = RecommendationCore.getService(this.context);
 		if (recommendService) {

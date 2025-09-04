@@ -225,14 +225,44 @@
         "title": "Stop",
         "category": "Kaoto",
         "icon": "$(debug-stop)"
+      },
+      {
+        "command": "kaoto.undo",
+        "title": "Undo",
+        "category": "Kaoto"
+      },
+      {
+        "command": "kaoto.redo",
+        "title": "Redo",
+        "category": "Kaoto"
       }
     ],
-    "keybindings": {
-      "command": "kaoto.open.source",
-      "key": "ctrl+k v",
-      "mac": "cmd+k v",
-      "when": "activeCustomEditorId == webviewEditorsKaoto"
-    },
+    "keybindings": [
+      {
+        "command": "kaoto.open.source",
+        "key": "ctrl+k v",
+        "mac": "cmd+k v",
+        "when": "activeCustomEditorId == webviewEditorsKaoto"
+      },
+      {
+        "command": "kaoto.undo",
+        "key": "ctrl+z",
+        "mac": "cmd+z",
+        "when": "activeCustomEditorId == webviewEditorsKaoto"
+      },
+      {
+        "command": "kaoto.redo",
+        "key": "ctrl+shift+z",
+        "mac": "cmd+shift+z",
+        "when": "activeCustomEditorId == webviewEditorsKaoto"
+      },
+      {
+        "command": "kaoto.redo",
+        "key": "ctrl+y",
+        "mac": "cmd+shift+z",
+        "when": "activeCustomEditorId == webviewEditorsKaoto"
+      }
+    ],
     "menus": {
       "kaoto.new.file": [
         {
@@ -315,6 +345,14 @@
         },
         {
           "command": "kaoto.deployments.route.stop",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.undo",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.redo",
           "when": "false"
         }
       ],
