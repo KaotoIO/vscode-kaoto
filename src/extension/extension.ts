@@ -120,6 +120,11 @@ export async function activate(context: vscode.ExtensionContext) {
 	 */
 	await contextHandler.showRecommendedExtensions();
 
+	/*
+	 * Show What's New on first start for this version
+	 */
+	await contextHandler.showWhatsNewIfNeeded();
+
 	KaotoOutputChannel.logInfo('Kaoto extension is successfully setup.');
 }
 
