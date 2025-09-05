@@ -1,5 +1,7 @@
 # 2.8.0
 
+- show `What's New` release page after each extension upgrade (only for first startup)
+
 # 2.7.0
 
 - Upgrade to Kaoto 2.7.1
