@@ -1,4 +1,4 @@
-import { CatalogKind, KaotoEditorChannelApi, StepUpdateAction } from '@kaoto/kaoto';
+import { CatalogKind, KaotoEditorChannelApi, RuntimeMavenInformation, StepUpdateAction } from '@kaoto/kaoto';
 import { ColorScheme, ISettingsModel, NodeLabelType, NodeToolbarTrigger, SettingsModel } from '@kaoto/kaoto/models';
 import { BackendProxy } from '@kie-tools-core/backend/dist/api';
 import { I18n } from '@kie-tools-core/i18n/dist/core';
@@ -203,33 +203,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		return await getSuggestions(topic, word, context, this.currentEditedDocument.uri.fsPath);
 	}
 
-	async getRuntimeInfoFromMavenContext(): Promise<
-		| {
-				runtime: string;
-				camelVersion: string;
-		  }
-		| {
-				runtime: string;
-				camelVersion: string;
-				/* Quarkus specific*/
-				camelQuarkusVersion?: string;
-				quarkusVersion?: string;
-				quarkusBomGroupId?: string;
-				quarkusBomArtifactId?: string;
-				camelQuarkusBomGroupId?: string;
-				camelQuarkusBomArtifactId?: string;
-		  }
-		| {
-				runtime: string;
-				camelVersion: string;
-				/* Spring Boot specific*/
-				camelSpringBootBomArtifactId?: string;
-				camelSpringBootBomGroupId?: string;
-				camelSpringBootVersion?: string;
-				springBootVersion?: string;
-		  }
-		| undefined
-	> {
+	async getRuntimeInfoFromMavenContext(): Promise<RuntimeMavenInformation | undefined> {
 		return new CamelJBang().getRuntimeInfoFromMavenContext(this.currentEditedDocument.uri.fsPath);
 	}
 
