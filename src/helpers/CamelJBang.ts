@@ -27,7 +27,7 @@ import { dirname } from 'path';
 import { execSync, execFile } from 'child_process';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { satisfies } from 'compare-versions';
-import { RuntimeMavenInformation } from '../tasks/RuntimeMavenInformation';
+import { RuntimeMavenInformation } from '@kaoto/kaoto';
 
 export enum RouteOperation {
 	start = 'start',
