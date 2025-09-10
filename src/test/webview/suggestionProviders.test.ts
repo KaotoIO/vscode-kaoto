@@ -16,7 +16,8 @@
  */
 import path from 'path';
 import { expect } from 'chai';
-import { filterSuggestionsByWord, getSuggestions, Suggestion } from '../../helpers/SuggestionRegistry';
+import { filterSuggestionsByWord, getSuggestions } from '../../helpers/SuggestionRegistry';
+import { Suggestion } from '@kaoto/kaoto';
 
 suite('Channel API', () => {
 	suite('get Suggestions for OS environment variables', function () {
