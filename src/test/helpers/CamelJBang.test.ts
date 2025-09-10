@@ -18,7 +18,7 @@ import { assert } from 'chai';
 import { CamelJBang } from '../../helpers/CamelJBang';
 import * as vscode from 'vscode';
 import * as os from 'os';
-import { RuntimeMavenInformation } from '../../tasks/RuntimeMavenInformation';
+import { RuntimeMavenInformation } from '@kaoto/kaoto';
 
 suite('CamelJbang tests', function () {
 	this.beforeAll(function () {
