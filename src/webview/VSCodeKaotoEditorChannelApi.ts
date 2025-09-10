@@ -1,4 +1,4 @@
-import { CatalogKind, KaotoEditorChannelApi, RuntimeMavenInformation, StepUpdateAction } from '@kaoto/kaoto';
+import { CatalogKind, KaotoEditorChannelApi, RuntimeMavenInformation, StepUpdateAction, Suggestion, SuggestionRequestContext } from '@kaoto/kaoto';
 import { ColorScheme, ISettingsModel, NodeLabelType, NodeToolbarTrigger, SettingsModel } from '@kaoto/kaoto/models';
 import { BackendProxy } from '@kie-tools-core/backend/dist/api';
 import { I18n } from '@kie-tools-core/i18n/dist/core';
@@ -195,11 +195,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		}
 	}
 
-	async getSuggestions(
-		topic: string,
-		word: string,
-		context: { propertyName: string; inputValue: string | number; cursorPosition?: number | null },
-	): Promise<{ value: string; description?: string; group?: string }[]> {
+	async getSuggestions(topic: string, word: string, context: SuggestionRequestContext): Promise<Suggestion[]> {
 		return await getSuggestions(topic, word, context, this.currentEditedDocument.uri.fsPath);
 	}
 

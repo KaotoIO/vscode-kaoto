@@ -17,20 +17,9 @@
 
 import { findAllApplicationPropertiesFiles, parseMultipleApplicationPropertiesFiles } from './ApplicationPropertiesFinder';
 import { Uri } from 'vscode';
+import { Suggestion, SuggestionRequestContext } from '@kaoto/kaoto';
 
-export type Suggestion = {
-	value: string;
-	description?: string;
-	group?: string;
-};
-
-export type SuggestionContext = {
-	propertyName: string;
-	inputValue: string | number;
-	cursorPosition?: number | null;
-};
-
-export type SuggestionProviderFunction = (word: string, context: SuggestionContext, fsPath?: string) => Suggestion[] | Promise<Suggestion[]>;
+export type SuggestionProviderFunction = (word: string, context: SuggestionRequestContext, fsPath?: string) => Suggestion[] | Promise<Suggestion[]>;
 
 const suggestionRegistry = new Map<string, SuggestionProviderFunction>();
 
@@ -49,7 +38,7 @@ export function registerSuggestionProvider(topic: string, providerFn: Suggestion
  * @param fsPath A string file system path to a current active opened Kaoto editor file
  * @returns A promise that resolves to an array of suggestions, each containing a value, optional description, and optional group.
  */
-export async function getSuggestions(topic: string, word: string, context: SuggestionContext, fsPath?: string): Promise<Suggestion[]> {
+export async function getSuggestions(topic: string, word: string, context: SuggestionRequestContext, fsPath?: string): Promise<Suggestion[]> {
 	const suggestionProvider = suggestionRegistry.get(topic);
 	if (!suggestionProvider) {
 		return [];
