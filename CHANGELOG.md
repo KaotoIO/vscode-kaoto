@@ -1,5 +1,7 @@
 # 2.8.0
 
+- Use Node 22 instead of Node 20, minimal version of VS Code is now 1.101
+
 # 2.7.0
 
 - Upgrade to Kaoto 2.7.1
