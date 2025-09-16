@@ -12878,7 +12878,7 @@ __metadata:
     typescript: "npm:^5.9.2"
     valid-filename: "npm:4.0.0"
     vscode-extension-tester: "npm:^8.17.0"
-    wait-on: "npm:^8.0.5"
+    wait-on: "npm:^9.0.0"
     web-worker: "npm:^1.5.0"
     webpack: "npm:5.101.3"
     webpack-cli: "npm:6.0.1"
@@ -12895,9 +12895,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wait-on@npm:^8.0.5":
-  version: 8.0.5
-  resolution: "wait-on@npm:8.0.5"
+"wait-on@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "wait-on@npm:9.0.0"
   dependencies:
     axios: "npm:^1.12.1"
     joi: "npm:^18.0.1"
@@ -12906,7 +12906,7 @@ __metadata:
     rxjs: "npm:^7.8.2"
   bin:
     wait-on: bin/wait-on
-  checksum: 10/edfee086741a8630d583cb7799c7ef701d27c162cf3fea5aa7670f53a05cac572951a7070b624cff7d123f15c975e0ceceee37fc230fa68fb0b9e7a0b71ae467
+  checksum: 10/bbdaceb2843d140f23c6e25cf6dfdffcbb8c8ab2781a19cadc4b65c53762901dd183ad61621790cf60598e868bbce338d5c523b1019ce18e156afa598fd7c2b2
   languageName: node
   linkType: hard
 
