@@ -681,6 +681,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.10",
     "@types/react": "18.3.1",
+    "@types/react-dom": "18.3.1",
     "@types/vscode": "^1.100.0",
     "@types/wait-on": "^5.3.4",
     "@typescript-eslint/eslint-plugin": "^8.45.0",
