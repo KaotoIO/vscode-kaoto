@@ -1,6 +1,7 @@
 # 2.8.0
 
 - Use Node 22 instead of Node 20
+- show `What's New` release page after each extension upgrade (only for first startup)
 
 # 2.7.0
 
