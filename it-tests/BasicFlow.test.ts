@@ -16,7 +16,13 @@
 import { By, EditorView, until, VSBrowser, WebDriver, WebView, logging, InputBox } from 'vscode-extension-tester';
 import { assert } from 'chai';
 import * as path from 'path';
-import { checkEmptyCanvasLoaded, checkTopologyLoaded, openAndSwitchToKaotoFrame, openResourcesAndWaitForActivation } from './Util';
+import {
+	checkEmptyCanvasLoaded,
+	checkTopologyLoaded,
+	openAndSwitchToKaotoFrame,
+	openResourcesAndWaitForActivation,
+	workaroundToRedrawContextualMenu,
+} from './Util';
 import { waitUntil } from 'async-wait-until';
 import * as fs from 'fs-extra';
 
@@ -109,7 +115,7 @@ describe('Kaoto basic development flow', function () {
 		globalKaotoWebView = kaotoWebview;
 		await checkEmptyCanvasLoaded(driver);
 		await createNewRoute(driver);
-		await addDatamapperStep(driver);
+		await addDatamapperStep(driver, kaotoWebview);
 		await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__kaoto-datamapper', 'kaoto-datamapper');
 
 		await openDataMapperEditor(driver);
@@ -125,7 +131,7 @@ describe('Kaoto basic development flow', function () {
 		const xslFiles = files.filter((file) => file.endsWith('.xsl'));
 		assert.isTrue(xslFiles.length === 1, `Expected one xsl file created, found ${xslFiles.length}`);
 
-		await deleteDataMapperStep(driver, workspaceFolder);
+		await deleteDataMapperStep(driver, workspaceFolder, kaotoWebview);
 
 		await kaotoWebview.switchBack();
 		assert.isTrue(await kaotoEditor.isDirty(), 'The Kaoto editor should be dirty after adding a DataMapper step.');
@@ -209,7 +215,7 @@ async function openDataMapperEditor(driver: WebDriver) {
 	await (await driver.findElement(By.css('button[title="Click to launch the Kaoto DataMapper editor"]'))).click();
 }
 
-async function deleteDataMapperStep(driver: WebDriver, workspaceFolder: string) {
+async function deleteDataMapperStep(driver: WebDriver, workspaceFolder: string, kaotoWebview: WebView) {
 	await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__kaoto-datamapper', 'kaoto-datamapper');
 	const kaotoNodeConfigured = await driver.findElement(
 		By.css(
@@ -218,6 +224,8 @@ async function deleteDataMapperStep(driver: WebDriver, workspaceFolder: string) 
 	);
 
 	await driver.actions().contextClick(kaotoNodeConfigured).perform();
+
+	await workaroundToRedrawContextualMenu(kaotoWebview);
 
 	await driver.wait(until.elementLocated(By.className('pf-topology-context-menu__c-dropdown__menu')));
 	await (await driver.findElement(By.xpath("//*[@data-testid='context-menu-item-delete']"))).click();
@@ -251,7 +259,7 @@ async function addAMQPStep(driver: WebDriver) {
 	await (await driver.findElement(By.xpath("//div[@data-testid='tile-header-amqp']"))).click();
 }
 
-async function addDatamapperStep(driver: WebDriver) {
+async function addDatamapperStep(driver: WebDriver, kaotoWebview: WebView) {
 	await driver.wait(
 		until.elementLocated(By.css('g[data-testid^="custom-node__log"],g[data-testid="custom-node__route.from.steps.0.log"]')),
 		5000,
@@ -260,6 +268,8 @@ async function addDatamapperStep(driver: WebDriver) {
 
 	const canvasNode = await driver.findElement(By.css('g[data-testid^="custom-node__log"],g[data-testid="custom-node__route.from.steps.0.log"]'));
 	await driver.actions().contextClick(canvasNode).perform();
+
+	await workaroundToRedrawContextualMenu(kaotoWebview);
 
 	await driver.wait(until.elementLocated(By.className('pf-topology-context-menu__c-dropdown__menu')));
 	await (await driver.findElement(By.xpath("//*[@data-testid='context-menu-item-replace']"))).click();

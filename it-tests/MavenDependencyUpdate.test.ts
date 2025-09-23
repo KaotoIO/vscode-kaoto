@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as path from 'path';
-import { checkTopologyLoaded, openAndSwitchToKaotoFrame, openResourcesAndWaitForActivation } from './Util';
+import { checkTopologyLoaded, openAndSwitchToKaotoFrame, openResourcesAndWaitForActivation, workaroundToRedrawContextualMenu } from './Util';
 import { By, EditorView, until, VSBrowser, WebDriver, Workbench, NotificationType, WebView } from 'vscode-extension-tester';
 import { assert } from 'chai';
 import * as fs from 'fs';
@@ -157,6 +157,8 @@ describe('Maven dependency update pom.xml on save test', function () {
 		// right click on SQL component node
 		const sqlComponent = await driver.findElement(By.css('g[data-nodelabel="sql"]'));
 		await driver.actions().contextClick(sqlComponent).perform();
+
+		await workaroundToRedrawContextualMenu(kaotoWebview);
 
 		// click Delete button
 		const deleteButton = await driver.findElement(By.css('li[data-testid="context-menu-item-delete"]'));
