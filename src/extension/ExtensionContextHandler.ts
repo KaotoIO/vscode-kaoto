@@ -39,6 +39,8 @@ import { ChildItem } from '../views/deploymentTreeItems/ChildItem';
 import { CamelRouteOperationJBangTask } from '../tasks/CamelRouteOperationJBangTask';
 import { RouteOperation } from '../helpers/CamelJBang';
 import { RecommendationCore } from '@redhat-developer/vscode-extension-proposals';
+import { WhatsNewPanel } from './WhatsNewPanel';
+import { satisfies } from 'compare-versions';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -120,6 +122,26 @@ export class ExtensionContextHandler {
 			const camelTrustUrl: string = 'https://github.com/apache/camel/';
 			execSync(`jbang trust add ${camelTrustUrl}`, { stdio: ['pipe', 'pipe', process.stderr] });
 			KaotoOutputChannel.logInfo('Apache Camel Trusted Source was added into JBang configuration.');
+		}
+	}
+
+	public async showWhatsNewIfNeeded() {
+		try {
+			const extension = vscode.extensions.getExtension('redhat.vscode-kaoto');
+			const currentVersion: string | undefined = extension?.packageJSON?.version as string | undefined;
+			if (!currentVersion) {
+				return;
+			}
+			const storageKey = 'kaoto.lastWhatsNewShownVersion';
+			const lastShown = this.context.globalState.get<string>(storageKey);
+			// Only show What's New if lastShown is undefined (first install) or lastShown < currentVersion (upgrade)
+			if (lastShown && satisfies(lastShown, `>=${currentVersion}`)) {
+				return;
+			}
+			await WhatsNewPanel.show(this.context, currentVersion);
+			await this.context.globalState.update(storageKey, currentVersion);
+		} catch (err) {
+			KaotoOutputChannel.logWarning(`Unable to show What's New: ${String(err)}`);
 		}
 	}
 
