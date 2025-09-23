@@ -108,10 +108,14 @@ describe('Maven dependency update pom.xml on save test', function () {
 	) {
 		await driver.wait(
 			async () => {
-				const notificationsCenter = await new Workbench().openNotificationsCenter();
-				const notifications = await notificationsCenter.getNotifications(NotificationType.Info);
-				const messages = await Promise.all(notifications.map(async (notification) => await notification.getMessage()));
-				return shouldContain ? messages.some((msg) => msg === message) : !messages.some((msg) => msg === message); // if shouldContain is true, we wait for the message to be present, otherwise we wait for the message to be absent
+				try {
+					const notificationsCenter = await new Workbench().openNotificationsCenter();
+					const notifications = await notificationsCenter.getNotifications(NotificationType.Info);
+					const messages = await Promise.all(notifications.map(async (notification) => await notification.getMessage()));
+					return shouldContain ? messages.some((msg) => msg === message) : !messages.some((msg) => msg === message); // if shouldContain is true, we wait for the message to be present, otherwise we wait for the message to be absent
+				} catch {
+					return false;
+				}
 			},
 			timeout,
 			errorMessage,
