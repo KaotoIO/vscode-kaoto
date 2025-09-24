@@ -1,5 +1,6 @@
 # 2.8.0
 
+- Allow to update Maven dependencies on not fully configured route
 - Use Node 22 instead of Node 20
 - show `What's New` release page after each extension upgrade (only for first startup)
 
