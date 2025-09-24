@@ -96,7 +96,16 @@ export class CamelJBang {
 	 */
 	public async dependencyUpdate(pomPath: string, routePath: string, cwd?: string): Promise<number> {
 		return await new Promise<number>((resolve) => {
-			const args: string[] = [`-Dcamel.jbang.version=${this.camelJBangVersion}`, 'camel@apache/camel', 'dependency', 'update', pomPath, routePath];
+			const args: string[] = [
+				`-Dcamel.jbang.version=${this.camelJBangVersion}`,
+				'camel@apache/camel',
+				'dependency',
+				'update',
+				pomPath,
+				routePath,
+				'--lazy-bean',
+				'--ignore-loading-error',
+			];
 			KaotoOutputChannel.logInfo(`Camel Dependency Update: jbang ${args.join(' ')}`);
 			execFile(this.jbang, args, { cwd, maxBuffer: 50 * 1024 * 1024 }, (error, stdout, stderr) => {
 				if (stdout) {
