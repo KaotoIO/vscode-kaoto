@@ -170,6 +170,11 @@ describe('Maven dependency update pom.xml on save test', function () {
 
 		// save editor
 		await kaotoWebview.switchBack();
-		await new Workbench().executeCommand('File: Save');
+		try {
+			await new Workbench().executeCommand('File: Save');
+		} catch {
+			// Sometimes there is an ElementNotInteractableError: element not interactable
+			await new Workbench().executeCommand('File: Save');
+		}
 	}
 });
