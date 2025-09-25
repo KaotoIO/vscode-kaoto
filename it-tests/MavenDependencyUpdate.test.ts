@@ -15,7 +15,7 @@
  */
 import * as path from 'path';
 import { checkTopologyLoaded, openAndSwitchToKaotoFrame, openResourcesAndWaitForActivation } from './Util';
-import { By, EditorView, until, VSBrowser, WebDriver, Workbench, NotificationType, WebView } from 'vscode-extension-tester';
+import { By, EditorView, until, VSBrowser, WebDriver, Workbench, NotificationType, WebView, ActivityBar } from 'vscode-extension-tester';
 import { assert } from 'chai';
 import * as fs from 'fs';
 
@@ -108,10 +108,14 @@ describe('Maven dependency update pom.xml on save test', function () {
 	) {
 		await driver.wait(
 			async () => {
-				const notificationsCenter = await new Workbench().openNotificationsCenter();
-				const notifications = await notificationsCenter.getNotifications(NotificationType.Info);
-				const messages = await Promise.all(notifications.map(async (notification) => await notification.getMessage()));
-				return shouldContain ? messages.some((msg) => msg === message) : !messages.some((msg) => msg === message); // if shouldContain is true, we wait for the message to be present, otherwise we wait for the message to be absent
+				try {
+					const notificationsCenter = await new Workbench().openNotificationsCenter();
+					const notifications = await notificationsCenter.getNotifications(NotificationType.Info);
+					const messages = await Promise.all(notifications.map(async (notification) => await notification.getMessage()));
+					return shouldContain ? messages.some((msg) => msg === message) : !messages.some((msg) => msg === message); // if shouldContain is true, we wait for the message to be present, otherwise we wait for the message to be absent
+				} catch {
+					return false;
+				}
 			},
 			timeout,
 			errorMessage,
@@ -158,12 +162,22 @@ describe('Maven dependency update pom.xml on save test', function () {
 		const sqlComponent = await driver.findElement(By.css('g[data-nodelabel="sql"]'));
 		await driver.actions().contextClick(sqlComponent).perform();
 
+		// workaround to force a redraw and have contextual menu correctly visible
+		await kaotoWebview.switchBack();
+		await (await new ActivityBar().getViewControl('Explorer'))?.openView();
+		await kaotoWebview.switchToFrame();
+
 		// click Delete button
 		const deleteButton = await driver.findElement(By.css('li[data-testid="context-menu-item-delete"]'));
 		await deleteButton.click();
 
 		// save editor
 		await kaotoWebview.switchBack();
-		await new Workbench().executeCommand('File: Save');
+		try {
+			await new Workbench().executeCommand('File: Save');
+		} catch {
+			// Sometimes there is an ElementNotInteractableError: element not interactable
+			await new Workbench().executeCommand('File: Save');
+		}
 	}
 });
