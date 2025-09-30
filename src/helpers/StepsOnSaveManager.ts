@@ -87,6 +87,22 @@ export class StepsOnSaveManager {
 			return;
 		}
 
+		// Check if affected pom.xml is open and dirty in any editor
+		const pomDoc = vscode.workspace.textDocuments.find((doc) => doc.fileName === pomPath);
+		if (pomDoc?.isDirty) {
+			const selection = await vscode.window.showWarningMessage(
+				'The pom.xml file has unsaved changes. Please save it before updating Camel dependencies.',
+				'Save and Continue',
+				'Cancel',
+			);
+			if (selection === 'Save and Continue') {
+				await pomDoc.save();
+			} else {
+				KaotoOutputChannel.logInfo('Camel dependencies update cancelled because pom.xml was not saved.');
+				return;
+			}
+		}
+
 		KaotoOutputChannel.logInfo('Detected added steps on save. Updating Camel dependencies...');
 		try {
 			const exitCode = await vscode.window.withProgress(
