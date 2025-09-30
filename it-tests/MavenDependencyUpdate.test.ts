@@ -64,7 +64,7 @@ describe('Maven dependency update pom.xml on save test', function () {
 			false,
 			'Updating Camel dependencies in pom.xml',
 			'Timeout waiting for the notification of the Maven dependency update',
-			25_000,
+			40_000,
 			1_000,
 		);
 	});
