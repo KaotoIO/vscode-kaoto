@@ -176,6 +176,13 @@
         "icon": "$(trash)"
       },
       {
+        "command": "kaoto.integrations.updateDependencies",
+        "title": "Update Camel Dependencies in pom.xml of Maven project",
+        "shortTitle": "Update Camel Dependencies",
+        "category": "Kaoto",
+        "icon": "$(sync)"
+      },
+      {
         "command": "kaoto.integrations.run",
         "title": "Run",
         "category": "Kaoto",
@@ -324,6 +331,10 @@
           "when": "false"
         },
         {
+          "command": "kaoto.integrations.updateDependencies",
+          "when": "false"
+        },
+        {
           "command": "kaoto.deployments.stop",
           "when": "false"
         },
@@ -402,6 +413,11 @@
           "command": "kaoto.integrations.delete",
           "when": "view == kaoto.integrations && viewItem == integration",
           "group": "navigation@2"
+        },
+        {
+          "command": "kaoto.integrations.updateDependencies",
+          "when": "view == kaoto.integrations && viewItem == integration && !virtualWorkspace && kaoto.jbangAvailable",
+          "group": "navigation@3"
         },
         {
           "command": "kaoto.integrations.run",

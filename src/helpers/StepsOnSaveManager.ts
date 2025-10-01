@@ -35,6 +35,46 @@ export class StepsOnSaveManager {
 		}
 	}
 
+	public async updateDependencies(docPath: string, pomPath: string, message?: string): Promise<void> {
+		const camelJBangVersion = vscode.workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_VERSION_SETTING_ID) as string;
+		if (satisfies(camelJBangVersion, '<4.14')) {
+			KaotoOutputChannel.logWarning('Camel JBang version is <4.14. Skipping update on save for Camel dependencies in pom.xml.');
+			vscode.window.setStatusBarMessage('Camel JBang version is <4.14. Skipping update on save for Camel dependencies in pom.xml.', 5_000);
+			return; // skip update on save for Camel JBang <4.14
+		}
+
+		KaotoOutputChannel.logInfo(message ?? 'Updating Camel dependencies...');
+		try {
+			const exitCode = await vscode.window.withProgress(
+				{
+					location: vscode.ProgressLocation.Notification,
+					title: 'Updating Camel dependencies in pom.xml',
+					cancellable: false,
+				},
+				async () => {
+					const jbang = new CamelJBang();
+					return await jbang.dependencyUpdate(pomPath, docPath, path.dirname(pomPath));
+				},
+			);
+			if (exitCode === 0) {
+				this.hasStepsByDocPath.set(docPath, false);
+				KaotoOutputChannel.logInfo('Camel dependencies update completed successfully.');
+				vscode.window.setStatusBarMessage(`Camel dependencies in '${pomPath}' successfully updated.`, 5_000);
+			} else {
+				const selection = await vscode.window.showWarningMessage(
+					'Camel dependencies could not be updated. Fix errors in your route and save again to retry.',
+					'Show Errors...',
+				);
+				if (selection === 'Show Errors...') {
+					KaotoOutputChannel.getInstance().show();
+				}
+			}
+		} catch (error) {
+			KaotoOutputChannel.logError('Error updating Camel dependencies in pom.xml', error);
+			await vscode.window.showErrorMessage('Camel dependencies could not be updated due to an unexpected error. Fix errors and save again to retry.');
+		}
+	}
+
 	private ensureWatcher(docUri: vscode.Uri): void {
 		const docPath = docUri.fsPath;
 		if (this.watcherByDocPath.has(docPath)) {
@@ -75,13 +115,6 @@ export class StepsOnSaveManager {
 		}
 		const pomPath = path.join(pomFolder, 'pom.xml');
 
-		const camelJBangVersion = vscode.workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_VERSION_SETTING_ID) as string;
-		if (satisfies(camelJBangVersion, '<4.14')) {
-			KaotoOutputChannel.logWarning('Camel JBang version is <4.14. Skipping update on save for Camel dependencies in pom.xml.');
-			vscode.window.setStatusBarMessage('Camel JBang version is <4.14. Skipping update on save for Camel dependencies in pom.xml.', 5_000);
-			return; // skip update on save for Camel JBang <4.14
-		}
-
 		const updateOnSave = vscode.workspace.getConfiguration().get('kaoto.maven.dependenciesUpdate.onSave');
 		if (!updateOnSave) {
 			return;
@@ -103,35 +136,6 @@ export class StepsOnSaveManager {
 			}
 		}
 
-		KaotoOutputChannel.logInfo('Detected added steps on save. Updating Camel dependencies...');
-		try {
-			const exitCode = await vscode.window.withProgress(
-				{
-					location: vscode.ProgressLocation.Notification,
-					title: 'Updating Camel dependencies in pom.xml',
-					cancellable: false,
-				},
-				async () => {
-					const jbang = new CamelJBang();
-					return await jbang.dependencyUpdate(pomPath, docPath, path.dirname(pomPath));
-				},
-			);
-			if (exitCode === 0) {
-				this.hasStepsByDocPath.set(docPath, false);
-				KaotoOutputChannel.logInfo('Camel dependencies update completed successfully.');
-				vscode.window.setStatusBarMessage(`Camel dependencies in '${pomPath}' successfully updated.`, 5_000);
-			} else {
-				const selection = await vscode.window.showWarningMessage(
-					'Camel dependencies could not be updated. Fix errors in your route and save again to retry.',
-					'Show Errors...',
-				);
-				if (selection === 'Show Errors...') {
-					KaotoOutputChannel.getInstance().show();
-				}
-			}
-		} catch (error) {
-			KaotoOutputChannel.logError('Error updating Camel dependencies in pom.xml', error);
-			await vscode.window.showErrorMessage('Camel dependencies could not be updated due to an unexpected error. Fix errors and save again to retry.');
-		}
+		await this.updateDependencies(docPath, pomPath, 'Detected added steps on save. Updating Camel dependencies...');
 	}
 }

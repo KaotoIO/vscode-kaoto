@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import * as vscode from 'vscode';
+import path from 'path';
 import * as KogitoVsCode from '@kie-tools-core/vscode-extension/dist';
 import { execSync } from 'child_process';
 import { HelpFeedbackProvider } from '../views/providers/HelpFeedbackProvider';
@@ -22,7 +23,7 @@ import { Integration } from '../views/integrationTreeItems/Integration';
 import { NewCamelRouteCommand } from '../commands/NewCamelRouteCommand';
 import { NewCamelKameletCommand } from '../commands/NewCamelKameletCommand';
 import { NewCamelPipeCommand } from '../commands/NewCamelPipeCommand';
-import { verifyCamelJBangTrustedSource, verifyCamelKubernetesPluginIsInstalled, verifyJBangExists } from '../helpers/helpers';
+import { findFolderOfPomXml, verifyCamelJBangTrustedSource, verifyCamelKubernetesPluginIsInstalled, verifyJBangExists } from '../helpers/helpers';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { NewCamelFileCommand } from '../commands/NewCamelFileCommand';
 import { confirmFileDeleteDialog } from '../helpers/modals';
@@ -41,6 +42,7 @@ import { RouteOperation } from '../helpers/CamelJBang';
 import { RecommendationCore } from '@redhat-developer/vscode-extension-proposals';
 import { WhatsNewPanel } from './WhatsNewPanel';
 import { satisfies } from 'compare-versions';
+import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -225,25 +227,41 @@ export class ExtensionContextHandler {
 	private registerIntegrationsItemsContextMenu() {
 		const INTEGRATIONS_SHOW_SOURCE_COMMAND_ID: string = 'kaoto.integrations.showSource';
 		const INTEGRATIONS_DELETE_COMMAND_ID: string = 'kaoto.integrations.delete';
+		const INTEGRATIONS_UPDATE_DEPENDENCIES_COMMAND_ID: string = 'kaoto.integrations.updateDependencies';
 
 		// register show source menu button
-		this.context.subscriptions.push(
-			vscode.commands.registerCommand(INTEGRATIONS_SHOW_SOURCE_COMMAND_ID, async (integration: Integration) => {
-				await vscode.window.showTextDocument(integration.filepath);
-				await this.sendCommandTrackingEvent(INTEGRATIONS_SHOW_SOURCE_COMMAND_ID);
-			}),
-		);
+		const showSourceCommand = vscode.commands.registerCommand(INTEGRATIONS_SHOW_SOURCE_COMMAND_ID, async (integration: Integration) => {
+			await vscode.window.showTextDocument(integration.filepath);
+			await this.sendCommandTrackingEvent(INTEGRATIONS_SHOW_SOURCE_COMMAND_ID);
+		});
+
 		// register delete menu button
-		this.context.subscriptions.push(
-			vscode.commands.registerCommand(INTEGRATIONS_DELETE_COMMAND_ID, async (integration: Integration) => {
-				const confirmation = await confirmFileDeleteDialog(integration.filename);
-				if (confirmation) {
-					await vscode.workspace.fs.delete(integration.filepath);
-					KaotoOutputChannel.logInfo(`File '${integration.filepath}' was deleted.`);
-				}
-				await this.sendCommandTrackingEvent(INTEGRATIONS_DELETE_COMMAND_ID);
-			}),
-		);
+		const deleteCommand = vscode.commands.registerCommand(INTEGRATIONS_DELETE_COMMAND_ID, async (integration: Integration) => {
+			const confirmation = await confirmFileDeleteDialog(integration.filename);
+			if (confirmation) {
+				await vscode.workspace.fs.delete(integration.filepath);
+				KaotoOutputChannel.logInfo(`File '${integration.filepath}' was deleted.`);
+			}
+			await this.sendCommandTrackingEvent(INTEGRATIONS_DELETE_COMMAND_ID);
+		});
+
+		// register update dependencies menu button
+		const updateDependenciesCommand = vscode.commands.registerCommand(INTEGRATIONS_UPDATE_DEPENDENCIES_COMMAND_ID, async (integration: Integration) => {
+			await this.updateCamelDependencies(integration.filepath.fsPath);
+			await this.sendCommandTrackingEvent(INTEGRATIONS_UPDATE_DEPENDENCIES_COMMAND_ID);
+		});
+
+		this.context.subscriptions.push(showSourceCommand, deleteCommand, updateDependenciesCommand);
+	}
+
+	private async updateCamelDependencies(docPath: string): Promise<void> {
+		const pomFolder = findFolderOfPomXml(docPath);
+		if (!pomFolder) {
+			return; // standalone project
+		}
+		const pomPath = path.join(pomFolder, 'pom.xml');
+
+		await StepsOnSaveManager.instance.updateDependencies(docPath, pomPath);
 	}
 
 	public registerNewCamelFilesCommands() {
