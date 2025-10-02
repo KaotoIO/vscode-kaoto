@@ -476,7 +476,7 @@
           "kaoto.catalog.url": {
             "type": "string",
             "default": null,
-            "markdownDescription": "URL to a Kaoto catalog. For instance `https://raw.githubusercontent.com/KaotoIO/camel-catalog/refs/heads/main/catalog/index.json `. Documentation to generate your own set of catalog is available [here](https://github.com/KaotoIO/kaoto/tree/main/packages/catalog-generator). It requires to reopen the Kaoto editors to be effective.",
+            "markdownDescription": "URL to a Kaoto catalog. For instance `https://raw.githubusercontent.com/KaotoIO/camel-catalog/refs/heads/main/catalog/index.json `. Documentation to generate your own set of catalog is available [here](https://kaoto.io/docs/manual/09_generatingcatalog/). It requires to reopen the Kaoto editors to be effective.",
             "scope": "window",
             "order": 0
           },

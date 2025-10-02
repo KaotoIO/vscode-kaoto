@@ -2,6 +2,7 @@
 
 - Allow to update Maven dependencies on not fully configured route
 - Use Node 22 instead of Node 20
+- Fix link pointing to documentation to generate custom catalog
 - show `What's New` release page after each extension upgrade (only for first startup)
 
 # 2.7.0
