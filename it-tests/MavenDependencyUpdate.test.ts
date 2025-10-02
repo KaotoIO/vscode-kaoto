@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 import * as path from 'path';
-import { checkTopologyLoaded, openAndSwitchToKaotoFrame, openResourcesAndWaitForActivation, workaroundToRedrawContextualMenu } from './Util';
-import { By, EditorView, until, VSBrowser, WebDriver, Workbench, NotificationType, WebView, TextEditor } from 'vscode-extension-tester';
+import {
+	checkTopologyLoaded,
+	getTreeItem,
+	openAndSwitchToKaotoFrame,
+	openResourcesAndWaitForActivation,
+	resetUserSettings,
+	setUserSettingsDirectly,
+	workaroundToRedrawContextualMenu,
+} from './Util';
+import { By, EditorView, until, VSBrowser, WebDriver, Workbench, NotificationType, WebView, ActivityBar, TextEditor } from 'vscode-extension-tester';
 import { assert } from 'chai';
 import * as fs from 'fs';
 
-describe('Maven dependency update pom.xml on save test', function () {
+describe('Maven dependency update pom.xml', function () {
 	this.timeout(180_000);
 
 	const workspaceFolder = path.join(__dirname, '../test Fixture with speci@l chars', 'camel-maven-quarkus-project');
@@ -48,13 +56,7 @@ describe('Maven dependency update pom.xml on save test', function () {
 		await pomEditor.typeTextAt(1, 20, ' ');
 	});
 
-	after(async function () {
-		await deleteSqlComponentStep();
-		await new EditorView().closeAllEditors();
-		removeSqlDependencyFromPomXml();
-	});
-
-	it('should invoke the update of the Maven dependencies when a step is added', async function () {
+	const addComponentAndSave = async () => {
 		kaotoWebview = (
 			await openAndSwitchToKaotoFrame(path.join(workspaceFolder, 'src/main/resources/camel'), 'my-camel-quarkus-route.camel.yaml', driver, true)
 		).kaotoWebview;
@@ -65,23 +67,16 @@ describe('Maven dependency update pom.xml on save test', function () {
 		// save editor
 		await kaotoWebview.switchBack();
 		await new Workbench().executeCommand('File: Save');
+	};
 
-		await waitForNotification(
-			true,
-			'The pom.xml file has unsaved changes. Please save it before updating Camel dependencies.',
-			'Timeout waiting for the notification of the unsaved changes in pom.xml',
-			5000,
-			100,
-			NotificationType.Warning,
-		);
+	const checkDependenciesInPomXml = (dependencies: string[]) => {
+		const pomXml = fs.readFileSync(path.join(workspaceFolder, 'pom.xml'), 'utf8');
+		for (const dependency of dependencies) {
+			assert.include(pomXml, `<artifactId>${dependency}</artifactId>`);
+		}
+	};
 
-		const notificationsCenter = await new Workbench().openNotificationsCenter();
-		const notifications = await notificationsCenter.getNotifications(NotificationType.Warning);
-		const camelDependenciesUpdateNotification = notifications.find(async (notification) =>
-			(await notification.getMessage()).includes('The pom.xml file has unsaved changes. Please save it before updating Camel dependencies.'),
-		);
-		await camelDependenciesUpdateNotification?.takeAction('Save and Continue');
-
+	const waitForNotifications = async () => {
 		// wait till the notification is shown
 		await waitForNotification(
 			true,
@@ -99,11 +94,77 @@ describe('Maven dependency update pom.xml on save test', function () {
 			40_000,
 			1_000,
 		);
+	};
+
+	describe('update on save test', function () {
+		after(async function () {
+			await deleteSqlComponentStep();
+			await new EditorView().closeAllEditors();
+			removeSqlDependencyFromPomXml();
+		});
+
+		it('should invoke the update of the Maven dependencies when a step is added', async function () {
+			await addComponentAndSave();
+
+			await waitForNotification(
+				true,
+				'The pom.xml file has unsaved changes. Please save it before updating Camel dependencies.',
+				'Timeout waiting for the notification of the unsaved changes in pom.xml',
+				5000,
+				100,
+				NotificationType.Warning,
+			);
+
+			const notificationsCenter = await new Workbench().openNotificationsCenter();
+			const notifications = await notificationsCenter.getNotifications(NotificationType.Warning);
+			const camelDependenciesUpdateNotification = notifications.find(async (notification) =>
+				(await notification.getMessage()).includes('The pom.xml file has unsaved changes. Please save it before updating Camel dependencies.'),
+			);
+			await camelDependenciesUpdateNotification?.takeAction('Save and Continue');
+
+			await waitForNotifications();
+		});
+
+		it('pom.xml should be updated with the new dependencies', async function () {
+			checkDependenciesInPomXml(['camel-quarkus-sql']);
+		});
 	});
 
-	it('pom.xml should be updated with the new dependencies', async function () {
-		const pomXml = fs.readFileSync(path.join(workspaceFolder, 'pom.xml'), 'utf8');
-		assert.include(pomXml, '<artifactId>camel-quarkus-sql</artifactId>');
+	describe('update manually test', function () {
+		before(async function () {
+			// disable auto update on save
+			setUserSettingsDirectly('kaoto.maven.dependenciesUpdate.onSave', 'false');
+		});
+
+		after(async function () {
+			await deleteSqlComponentStep();
+			await new EditorView().closeAllEditors();
+			removeSqlDependencyFromPomXml();
+			resetUserSettings('kaoto.maven.dependenciesUpdate.onSave');
+		});
+
+		it('should update the Maven dependencies when the context menu is invoked', async function () {
+			await addComponentAndSave();
+
+			// invoke the context menu dependencies update
+			const kaotoController = await new ActivityBar().getViewControl('Kaoto');
+			const kaotoView = await kaotoController?.openView();
+			const integrationsSection = await kaotoView?.getContent().getSection('Integrations');
+
+			// click Update Camel Dependencies button
+			const item = await getTreeItem(driver, integrationsSection, 'my-camel-quarkus-route.camel.yaml');
+			const updateDependenciesButton = await item?.getActionButton('Update Camel Dependencies');
+			await updateDependenciesButton?.click();
+
+			// close Kaoto view
+			await kaotoController?.closeView();
+
+			await waitForNotifications();
+		});
+
+		it('pom.xml should be updated with the new dependencies', async function () {
+			checkDependenciesInPomXml(['camel-quarkus-sql']);
+		});
 	});
 
 	/**
