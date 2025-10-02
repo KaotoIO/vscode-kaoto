@@ -15,7 +15,7 @@
  */
 import * as path from 'path';
 import { checkTopologyLoaded, openAndSwitchToKaotoFrame, openResourcesAndWaitForActivation, workaroundToRedrawContextualMenu } from './Util';
-import { By, EditorView, until, VSBrowser, WebDriver, Workbench, NotificationType, WebView } from 'vscode-extension-tester';
+import { By, EditorView, until, VSBrowser, WebDriver, Workbench, NotificationType, WebView, TextEditor } from 'vscode-extension-tester';
 import { assert } from 'chai';
 import * as fs from 'fs';
 
@@ -30,6 +30,22 @@ describe('Maven dependency update pom.xml on save test', function () {
 	before(async function () {
 		driver = VSBrowser.instance.driver;
 		await openResourcesAndWaitForActivation(workspaceFolder);
+
+		await new Workbench().openNotificationsCenter().then(async (notificationsCenter) => await notificationsCenter.clearAllNotifications());
+
+		// make pom.xml dirty
+		await VSBrowser.instance.openResources(path.join(workspaceFolder, 'pom.xml'), async () => {
+			await driver.wait(
+				async () => {
+					const editorTitles = await new EditorView().getOpenEditorTitles();
+					return editorTitles.includes('pom.xml');
+				},
+				5000,
+				'Pom.xml is not opened',
+			);
+		});
+		const pomEditor = (await new EditorView().openEditor('pom.xml')) as TextEditor;
+		await pomEditor.typeTextAt(1, 20, ' ');
 	});
 
 	after(async function () {
@@ -50,12 +66,28 @@ describe('Maven dependency update pom.xml on save test', function () {
 		await kaotoWebview.switchBack();
 		await new Workbench().executeCommand('File: Save');
 
+		await waitForNotification(
+			true,
+			'The pom.xml file has unsaved changes. Please save it before updating Camel dependencies.',
+			'Timeout waiting for the notification of the unsaved changes in pom.xml',
+			5000,
+			100,
+			NotificationType.Warning,
+		);
+
+		const notificationsCenter = await new Workbench().openNotificationsCenter();
+		const notifications = await notificationsCenter.getNotifications(NotificationType.Warning);
+		const camelDependenciesUpdateNotification = notifications.find(async (notification) =>
+			(await notification.getMessage()).includes('The pom.xml file has unsaved changes. Please save it before updating Camel dependencies.'),
+		);
+		await camelDependenciesUpdateNotification?.takeAction('Save and Continue');
+
 		// wait till the notification is shown
 		await waitForNotification(
 			true,
 			'Updating Camel dependencies in pom.xml',
 			'Timeout waiting for the notification of the Maven dependency update',
-			5_000,
+			5000,
 			100,
 		);
 
@@ -105,12 +137,13 @@ describe('Maven dependency update pom.xml on save test', function () {
 		errorMessage: string = 'Timeout waiting for the notification of the Maven dependency update',
 		timeout: number = 5_000,
 		interval: number = 500,
+		notificationType: NotificationType = NotificationType.Info,
 	) {
 		await driver.wait(
 			async () => {
 				try {
 					const notificationsCenter = await new Workbench().openNotificationsCenter();
-					const notifications = await notificationsCenter.getNotifications(NotificationType.Info);
+					const notifications = await notificationsCenter.getNotifications(notificationType);
 					const messages = await Promise.all(notifications.map(async (notification) => await notification.getMessage()));
 					return shouldContain ? messages.some((msg) => msg === message) : !messages.some((msg) => msg === message); // if shouldContain is true, we wait for the message to be present, otherwise we wait for the message to be absent
 				} catch {
