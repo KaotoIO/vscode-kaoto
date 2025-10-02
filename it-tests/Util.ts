@@ -265,3 +265,16 @@ export async function workaroundToRedrawContextualMenu(kaotoWebview: WebView) {
 	await explorerView?.closeView();
 	await kaotoWebview.switchToFrame();
 }
+
+/**
+ * Set user setting directly inside settings.json
+ *
+ * @param id ID of setting.
+ * @param value Value of setting.
+ */
+export function setUserSettingsDirectly(id: string, value: string): void {
+	const settingsPath = path.resolve(storageFolder, 'settings', 'User', 'settings.json');
+	const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
+	settings[id] = value;
+	fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 4), 'utf-8');
+}
