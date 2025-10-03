@@ -46,25 +46,29 @@ import {
  */
 export async function waitUntilTerminalHasText(driver: WebDriver, textArray: string[], interval = 2000, timeout = 60000): Promise<void> {
 	await driver.sleep(interval);
-	await driver.wait(
-		async function () {
-			try {
-				const terminal = await activateTerminalView();
-				const terminalText = await terminal.getText();
-				for await (const text of textArray) {
-					if (!terminalText.includes(text)) {
-						return false;
+	try {
+		await driver.wait(
+			async function () {
+				try {
+					const terminal = await activateTerminalView();
+					const terminalText = await terminal.getText();
+					for await (const text of textArray) {
+						if (!terminalText.includes(text)) {
+							return false;
+						}
 					}
+					return true;
+				} catch (err) {
+					return false;
 				}
-				return true;
-			} catch (err) {
-				return false;
-			}
-		},
-		timeout,
-		`Failed while waiting on terminal to has text: ${textArray}`,
-		interval,
-	);
+			},
+			timeout,
+			`Failed while waiting on terminal to has text: ${textArray}.`,
+			interval,
+		);
+	} catch {
+		throw new Error(`Failed while waiting on terminal to has text: ${textArray}.\n${await retrieveTextOfAllTerminals()}`);
+	}
 }
 
 /**
@@ -264,4 +268,23 @@ export async function workaroundToRedrawContextualMenu(kaotoWebview: WebView) {
 	await explorerView?.openView();
 	await explorerView?.closeView();
 	await kaotoWebview.switchToFrame();
+}
+
+async function retrieveTextOfAllTerminals(): Promise<string> {
+	let res: string = '';
+	try {
+		const terminal = await activateTerminalView();
+		const currentChannelName = await terminal.getCurrentChannel();
+		const channelNames = await terminal.getChannelNames();
+		for (let channelName in channelNames) {
+			res += channelName + '\n';
+			await terminal.selectChannel(channelName);
+			res += await terminal.getText();
+			res += '\n';
+		}
+		await terminal.selectChannel(currentChannelName);
+		return res;
+	} catch (ex) {
+		return `Wasn't able to retrieve text of all terminals due to ${ex}. But retrieved: ${res}`;
+	}
 }
