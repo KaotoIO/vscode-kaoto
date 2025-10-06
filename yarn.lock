@@ -1283,11 +1283,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redhat-developer/vscode-redhat-telemetry@npm:^0.9.1":
-  version: 0.9.1
-  resolution: "@redhat-developer/vscode-redhat-telemetry@npm:0.9.1"
+"@redhat-developer/vscode-redhat-telemetry@npm:^0.9.2":
+  version: 0.9.2
+  resolution: "@redhat-developer/vscode-redhat-telemetry@npm:0.9.2"
   dependencies:
-    "@segment/analytics-node": "npm:2.2.0"
+    "@segment/analytics-node": "npm:2.3.0"
     countries-and-timezones: "npm:^3.4.1"
     getos: "npm:^3.2.1"
     object-hash: "npm:^3.0.0"
@@ -1295,7 +1295,7 @@ __metadata:
     picomatch: "npm:^4.0.2"
     ua-parser-js: "npm:1.0.39"
     uuid: "npm:^11.0.3"
-  checksum: 10/4c5c7de0c15d8af36136550efb5b502ec74a51f38b281318dd25245c773920d8cda9f414ab7dcb2863f7ea3634379e6f90be14c52858ec2fe3769d44027f8779
+  checksum: 10/a288d90f4b0a88f18a824090a3c08aa99703de6cceb7b7c2cfedd2f7572573b2c228b337faa3565c583e77e763b449a76156e47c3071eec24bc906d44c7d79ed
   languageName: node
   linkType: hard
 
@@ -1446,15 +1446,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@segment/analytics-core@npm:1.8.0":
-  version: 1.8.0
-  resolution: "@segment/analytics-core@npm:1.8.0"
+"@segment/analytics-core@npm:1.8.2":
+  version: 1.8.2
+  resolution: "@segment/analytics-core@npm:1.8.2"
   dependencies:
     "@lukeed/uuid": "npm:^2.0.0"
     "@segment/analytics-generic-utils": "npm:1.2.0"
     dset: "npm:^3.1.4"
     tslib: "npm:^2.4.1"
-  checksum: 10/3115567abe753f31d7a792cd63774426ca7ee927160f0367acc4d1caf160da3fcd697d023d028cbbd4dfd52f04f7ee42d877af735c0ceb4e7d6fefd7f99c63b9
+  checksum: 10/2f32e4bffe74750d7a48c579e05e6286804730a3cb4399ffcc99706d4af474faeee60b4649c2de958746354f784dc9ee4f9d7a04c4846f7ea2d2be76d631b70a
   languageName: node
   linkType: hard
 
@@ -1467,18 +1467,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@segment/analytics-node@npm:2.2.0":
-  version: 2.2.0
-  resolution: "@segment/analytics-node@npm:2.2.0"
+"@segment/analytics-node@npm:2.3.0":
+  version: 2.3.0
+  resolution: "@segment/analytics-node@npm:2.3.0"
   dependencies:
     "@lukeed/uuid": "npm:^2.0.0"
-    "@segment/analytics-core": "npm:1.8.0"
+    "@segment/analytics-core": "npm:1.8.2"
     "@segment/analytics-generic-utils": "npm:1.2.0"
     buffer: "npm:^6.0.3"
     jose: "npm:^5.1.0"
     node-fetch: "npm:^2.6.7"
     tslib: "npm:^2.4.1"
-  checksum: 10/d47506dd506550a86d52167a7857c6d0d6c25e166831336b44e0a34d19f0c0c7426e914fe7b50cf991822c7a003c4b0effa004ef8b9e0251b0dd47671695348a
+  checksum: 10/4aaecf11fe6d6a2ac69ad4f19e6cb26faf35c6bf79122f64789485bc1b4d9ddd4d5f7503301c8578080de4477331062a94fbab0dec7124d5a1c51e46c831d300
   languageName: node
   linkType: hard
 
@@ -12828,7 +12828,7 @@ __metadata:
     "@patternfly/react-table": "npm:6.3.1"
     "@patternfly/react-topology": "npm:6.3.0"
     "@redhat-developer/vscode-extension-proposals": "npm:^0.0.23"
-    "@redhat-developer/vscode-redhat-telemetry": "npm:^0.9.1"
+    "@redhat-developer/vscode-redhat-telemetry": "npm:^0.9.2"
     "@stylistic/eslint-plugin": "npm:^5.4.0"
     "@types/chai": "npm:^4.3.20"
     "@types/fs-extra": "npm:^11.0.4"
