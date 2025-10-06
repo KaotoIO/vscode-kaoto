@@ -14,11 +14,23 @@ jobs:
     timeout-minutes: 30
 
     env:
-      CAMEL_JBANG_SNAPSHOT_VERSION: "4.15.0-SNAPSHOT"
       CODE_VERSION: max
       TEST_RESOURCES: test-resources
 
     steps:
+      - name: Get latest Camel JBang snapshot version
+        id: get_camel_jbang_snapshot
+        shell: bash
+        run: |
+          set -e
+          SNAPSHOT_METADATA_URL="https://repository.apache.org/content/groups/snapshots/org/apache/camel/camel-jbang-core/maven-metadata.xml"
+          VERSION=$(curl -s "$SNAPSHOT_METADATA_URL" | sed -n 's:.*<latest>\(.*\)</latest>.*:\1:p' | head -n 1)
+          if [ -z "$VERSION" ]; then
+            VERSION=$(curl -s "$SNAPSHOT_METADATA_URL" | sed -n 's:.*<version>\(.*\)</version>.*:\1:p' | head -n 1)
+          fi
+          echo "Latest Camel JBang snapshot version: $VERSION"
+          echo "CAMEL_JBANG_SNAPSHOT_VERSION=$VERSION" >> $GITHUB_ENV
+
       - uses: actions/checkout@v5
 
       - uses: actions/setup-node@v5
