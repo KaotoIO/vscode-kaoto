@@ -36,6 +36,8 @@ import {
 	WebView,
 } from 'vscode-extension-tester';
 
+export const CATALOG_VERSION_ID = 'kaoto.camelJbang.version';
+
 /**
  * Checks if the terminal view has the specified texts in the given textArray.
  * @param driver The WebDriver instance to use.
@@ -277,4 +279,16 @@ export function setUserSettingsDirectly(id: string, value: string): void {
 	const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
 	settings[id] = value;
 	fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 4), 'utf-8');
+}
+
+/**
+ * Read user setting from settings.json
+ *
+ * @param id ID of setting.
+ * @returns Value of setting.
+ */
+export function readUserSetting(id: string): string {
+	const settingsPath = path.resolve(storageFolder, 'settings', 'User', 'settings.json');
+	const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
+	return settings[id];
 }
