@@ -1,0 +1,120 @@
+on:
+  schedule:
+    - cron: "0 0 * * *" # every day at midnight
+
+name: Test with snapshot version of Camel JBang
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    timeout-minutes: 30
+
+    env:
+      CODE_VERSION: max
+      TEST_RESOURCES: test-resources
+
+    steps:
+      - name: Get latest Camel JBang snapshot version
+        id: get_camel_jbang_snapshot
+        shell: bash
+        run: |
+          set -e
+          SNAPSHOT_METADATA_URL="https://repository.apache.org/content/groups/snapshots/org/apache/camel/camel-jbang-core/maven-metadata.xml"
+          VERSION=$(curl -s "$SNAPSHOT_METADATA_URL" | sed -n 's:.*<latest>\(.*\)</latest>.*:\1:p' | head -n 1)
+          if [ -z "$VERSION" ]; then
+            VERSION=$(curl -s "$SNAPSHOT_METADATA_URL" | sed -n 's:.*<version>\(.*\)</version>.*:\1:p' | head -n 1)
+          fi
+          echo "Latest Camel JBang snapshot version: $VERSION"
+          echo "CAMEL_JBANG_SNAPSHOT_VERSION=$VERSION" >> $GITHUB_ENV
+
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: "yarn"
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: "temurin"
+          java-version: "21"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3.6.0
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+
+      - name: Start Minikube
+        uses: medyagh/setup-minikube@v0.0.20
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        with:
+          driver: docker
+          addons: registry,registry-aliases
+          container-runtime: docker
+          insecure-registry: "10.0.0.0/24"
+
+      - name: Set Minikube ENV
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        run: |
+          eval $(minikube -p minikube docker-env)
+          echo "INSTALL_REGISTRY=$(kubectl -n kube-system get service registry -o jsonpath='{.spec.clusterIP}')" >> $GITHUB_ENV
+          echo $INSTALL_REGISTRY
+
+      - name: Install JBang (ubuntu, macOS)
+        if: ${{ startsWith(matrix.os, 'ubuntu') }} || matrix.os == 'macos-latest'
+        run: |
+          curl -Ls https://sh.jbang.dev | bash -s - app setup
+          echo "$HOME/.jbang/bin" >> $GITHUB_PATH
+
+      - name: Install JBang (windows)
+        if: matrix.os == 'windows-latest'
+        run: choco install jbang
+
+      - name: yarn
+        run: yarn --network-timeout 1000000
+
+      - name: yarn build:dev
+        run: yarn build:dev
+
+      - name: yarn build:prod
+        run: yarn build:prod
+
+      - name: vsix package
+        run: yarn vsce package --no-dependencies --yarn
+
+      - name: Allow unprivileged user namespace (ubuntu)
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+      - name: Run UI Tests on Linux
+        run: |
+          eval $(minikube -p minikube docker-env)
+          xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+
+      - name: Run UI Tests on macOS
+        run: yarn run test:it:with-prebuilt-vsix
+        if: matrix.os == 'macos-latest'
+
+      - name: Run UI Tests on windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          Set-DisplayResolution -Width 1920 -Height 1080 -Force
+          yarn run test:it:with-prebuilt-vsix
+
+      - name: Store VS Code logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vscode-logs-${{ matrix.os }}
+          path: test-resources/settings/logs
+
+      - name: Store VS Code UI Tests screenshots on failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: ui-test-screenshots-${{ matrix.os }}
+          path: test-resources/screenshots
