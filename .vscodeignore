@@ -18,3 +18,6 @@ uitest-resources
 .idea
 .camel-jbang
 .camel-jbang-run
+*test*
+it-tests/**
+.github/**
