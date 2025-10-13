@@ -93,6 +93,146 @@
     }
   },
   "contributes": {
+    "walkthroughs": [
+      {
+        "id": "kaoto.walkthrough",
+        "title": "Kaoto first steps",
+        "description": "Let's start with Kaoto Integration Designer",
+        "icon": "icons/kaoto.png",
+        "steps": [
+          {
+            "id": "kaoto.walkthrough.step0",
+            "title": "Open Kaoto view",
+            "description": "Click the **Kaoto icon** in the Activity Bar to open the Kaoto view.\n\n[Open Kaoto View](command:workbench.view.extension.kaoto-view)",
+            "media": {
+              "image": "images/walkthrough/activity-bar.png",
+              "altText": "Kaoto Activity Bar icon"
+            },
+            "completionEvents": [
+              "onView:kaoto.integrations",
+              "onView:kaoto.deployments",
+              "onView:kaoto.help",
+              "onCommand:workbench.view.extension.kaoto-view"
+            ]
+          },
+          {
+            "id": "kaoto.walkthrough.step1",
+            "title": "Open workspace",
+            "description": "Open an existing workspace or create a new one.\n\n[Open Workspace](command:vscode.openFolder)",
+            "media": {
+              "image": "images/walkthrough/open-workspace.png",
+              "altText": "Open Workspace"
+            },
+            "when": "workspaceFolderCount == 0",
+            "completionEvents": [
+              "onWorkspaceOpen",
+              "onCommand:workbench.action.openWorkspace",
+              "onCommand:vscode.openFolder"
+            ]
+          },
+          {
+            "id": "kaoto.walkthrough.step2",
+            "title": "Create a new Camel Route",
+            "description": "Click the ``New File...`` button inside Integrations view to create a new Camel Route.\n\n[New Camel Route...](command:kaoto.new.camel.file)",
+            "media": {
+              "image": "images/walkthrough/new-camel-route.png",
+              "altText": "New Camel Route"
+            },
+            "completionEvents": [
+              "onCommand:kaoto.new.camel.file",
+              "onCommand:kaoto.camel.jbang.init.route",
+              "onCommand:kaoto.camel.jbang.init.kamelet.yaml",
+              "onCommand:kaoto.camel.jbang.init.pipe.yaml"
+            ]
+          },
+          {
+            "id": "kaoto.walkthrough.step3",
+            "title": "Run the Camel Route",
+            "description": "Click the ``Run`` button inside Integrations view to run the Camel Route.",
+            "media": {
+              "image": "images/walkthrough/run-camel-route.png",
+              "altText": "Run Camel Route"
+            },
+            "completionEvents": [
+              "onCommand:kaoto.integrations.run"
+            ]
+          },
+          {
+            "id": "kaoto.walkthrough.step4",
+            "title": "Pause the Camel Route",
+            "description": "Click the ``Pause`` button inside Deployments view to pause the Camel Route.",
+            "media": {
+              "image": "images/walkthrough/pause-camel-route.png",
+              "altText": "Pause Camel Route"
+            },
+            "completionEvents": [
+              "onCommand:kaoto.deployments.route.suspend"
+            ]
+          },
+          {
+            "id": "kaoto.walkthrough.step5",
+            "title": "Resume the Camel Route",
+            "description": "Click the ``Resume`` button inside Deployments view to resume the Camel Route.",
+            "media": {
+              "image": "images/walkthrough/resume-camel-route.png",
+              "altText": "Resume Camel Route"
+            },
+            "completionEvents": [
+              "onCommand:kaoto.deployments.route.resume"
+            ]
+          },
+          {
+            "id": "kaoto.walkthrough.step6",
+            "title": "Terminate the Camel Route",
+            "description": "Click the ``Terminate`` button inside Deployments view to terminate the Camel Route.",
+            "media": {
+              "image": "images/walkthrough/terminate-camel-route.png",
+              "altText": "Terminate Camel Route"
+            },
+            "completionEvents": [
+              "onCommand:kaoto.deployments.stop"
+            ]
+          },
+          {
+            "id": "kaoto.walkthrough.step7",
+            "title": "Show the Camel Route source code",
+            "description": "Click the ``Show Source`` button inside Integrations view or click the Source Code icon in the editor title to show the Camel Route source code.",
+            "media": {
+              "image": "images/walkthrough/show-source-code.png",
+              "altText": "Show Camel Route Source Code"
+            },
+            "completionEvents": [
+              "onCommand:kaoto.integrations.showSource",
+              "onCommand:kaoto.open.source"
+            ]
+          },
+          {
+            "id": "kaoto.walkthrough.step8",
+            "title": "Explore extension settings",
+            "description": "Explore extension settings to customize Kaoto behavior.\n\n[Open Kaoto Settings](command:workbench.action.openSettings?%5B%22@ext:redhat.vscode-kaoto%22%5D)",
+            "media": {
+              "image": "images/walkthrough/extension-settings.png",
+              "altText": "Explore Extension Settings"
+            },
+            "completionEvents": [
+              "onCommand:workbench.action.openSettings"
+            ]
+          },
+          {
+            "id": "kaoto.walkthrough.step9",
+            "title": "Check out the documentation",
+            "description": "Check out the documentation to learn more about Kaoto.\n\n[Open Documentation](https://kaoto.io/docs/manual/)",
+            "media": {
+              "image": "images/logo-kaoto.png",
+              "altText": "Check out the Documentation"
+            },
+            "completionEvents": [
+              "onLink:https://kaoto.io/docs/manual/"
+            ]
+          }
+        ]
+      }
+    ],
     "commands": [
       {
         "command": "kaoto.open",
