@@ -39,6 +39,7 @@ describe('User Settings', function () {
 			list: By.className('pf-v6-c-menu__list'),
 			listItem: By.className('pf-v6-c-menu__list-item'),
 			label: By.className('pf-v6-c-menu__item-text'),
+			submenu: By.className('runtime-selector__submenu'),
 		},
 		KaotoView: {
 			catalogButton: By.xpath(`//button[@id='topology-control-bar-catalog-button']`),
@@ -210,17 +211,23 @@ describe('User Settings', function () {
 		await catalogWindow.findElement(locators.KaotoView.catalog.closeButton).click();
 	}
 
-	async function expandCatalogDropdown(timeout: number = 5_000): Promise<WebElement> {
+	async function expandCatalogDropdown(timeout: number = 2500): Promise<WebElement> {
 		const dropdown = await driver.findElement(locators.CatalogDropDown.dropdown);
 		await dropdown.click();
 		await driver.wait(until.elementLocated(locators.RuntimeSelectorItems.list), timeout, 'Dropdown was not displayed properly!');
 		return dropdown;
 	}
 
-	async function getDropdownItemsText(item: string): Promise<string[]> {
+	async function getDropdownItemsText(item: string, timeout: number = 2500): Promise<string[]> {
 		// expand selected runtime list
 		const parentItem = await driver.findElement(locators.RuntimeSelector.selector(item));
-		await driver.actions().move({ origin: parentItem }).perform();
+		try {
+			await driver.actions().move({ origin: parentItem }).perform();
+			await driver.wait(until.elementLocated(locators.RuntimeSelectorItems.submenu), timeout, 'Runtime selector sub-menu was not displayed properly!');
+		} catch (error) {
+			await parentItem.click();
+			await driver.wait(until.elementLocated(locators.RuntimeSelectorItems.submenu), timeout, 'Runtime selector sub-menu was not displayed properly!');
+		}
 
 		// get all listed items
 		const items = await parentItem.findElement(locators.RuntimeSelectorItems.list).findElements(locators.RuntimeSelectorItems.listItem);
@@ -234,9 +241,15 @@ describe('User Settings', function () {
 		return labels;
 	}
 
-	async function selectDropdownItem(item: string, dropdown: WebElement) {
+	async function selectDropdownItem(item: string, dropdown: WebElement, timeout: number = 2500) {
 		const parentItem = await dropdown.findElement(locators.RuntimeSelector.selector(item));
-		await driver.actions().move({ origin: parentItem }).perform();
+		try {
+			await driver.actions().move({ origin: parentItem }).perform();
+			await driver.wait(until.elementLocated(locators.RuntimeSelectorItems.submenu), timeout, 'Runtime selector sub-menu was not displayed properly!');
+		} catch (error) {
+			await parentItem.click();
+			await driver.wait(until.elementLocated(locators.RuntimeSelectorItems.submenu), timeout, 'Runtime selector sub-menu was not displayed properly!');
+		}
 
 		// select first Camel Main catalog item
 		await parentItem.findElement(By.xpath(`//li[starts-with(@data-testid, 'runtime-selector-Camel Main')]`)).click();
