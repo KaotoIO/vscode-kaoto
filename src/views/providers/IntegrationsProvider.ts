@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 import { commands, Event, EventEmitter, FileSystemWatcher, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
-import { basename, join } from 'path';
+import { basename, join, relative, sep } from 'path';
 import { parse } from 'yaml';
 import { XMLParser } from 'fast-xml-parser';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
 import { Integration } from '../integrationTreeItems/Integration';
 import { Route } from '../integrationTreeItems/Route';
+import { Folder } from '../integrationTreeItems/Folder';
+import { File } from '../integrationTreeItems/File';
+import { KAOTO_INTEGRATIONS_FILES_REGEXP_SETTING_ID } from '../../helpers/helpers';
 
 type TreeItemType = TreeItem | undefined | null | void;
 
@@ -27,7 +30,8 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 	private readonly _onDidChangeTreeData: EventEmitter<TreeItemType> = new EventEmitter<TreeItemType>();
 	readonly onDidChangeTreeData: Event<TreeItemType> = this._onDidChangeTreeData.event;
 
-	private static readonly FILE_PATTERN = '{**/*.camel.yaml,**/*.camel.xml,**/*.kamelet.yaml,**/*-pipe.yaml,**/*.pipe.yaml}';
+	private static readonly FILE_PATTERN =
+		'{**/*.camel.yaml,**/*.camel.xml,**/*.kamelet.yaml,**/*-pipe.yaml,**/*.pipe.yaml,**/*application*.properties,**/*.xsl,**/pom.xml}';
 	private static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**,**/target/**}';
 	private readonly fileWatcher: FileSystemWatcher;
 
@@ -42,18 +46,108 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 		this._onDidChangeTreeData.fire();
 	}
 
-	getTreeItem(integration: Integration): TreeItem {
-		return integration;
+	getTreeItem(element: TreeItem): TreeItem {
+		return element;
 	}
 
-	async getChildren(integration?: Integration): Promise<TreeItem[]> {
-		if (integration) {
-			const routes = integration.type === 'route' ? await this.getRoutesInsideIntegrationFile(integration.dsl, integration.filepath) : [];
+	async getChildren(element?: TreeItem): Promise<TreeItem[]> {
+		if (element instanceof Integration) {
+			const routes = element.type === 'route' ? await this.getRoutesInsideIntegrationFile(element.dsl, element.filepath) : [];
 			return routes || [];
 		}
-		const integrations = await this.getIntegrationsAvailableInWorkspace();
-		this.setContext(integrations.length > 0);
-		return integrations;
+
+		const files = await workspace.findFiles(IntegrationsProvider.FILE_PATTERN, IntegrationsProvider.EXCLUDE_PATTERN);
+		this.setContext(files.length > 0);
+
+		if (!element) {
+			const wfs = workspace.workspaceFolders || [];
+			if (wfs.length === 1) {
+				return await this.buildChildrenForPath(files, wfs[0].uri.fsPath, false, true);
+			}
+			const folders = wfs
+				.filter((wf) => files.some((f) => f.fsPath.startsWith(wf.uri.fsPath + sep)))
+				.map(
+					(wf) =>
+						new Folder(
+							wf.name,
+							wf.uri,
+							undefined,
+							false,
+							files.some((f) => f.fsPath === join(wf.uri.fsPath, 'pom.xml')),
+						),
+				);
+			return folders;
+		}
+
+		if (element instanceof Folder) {
+			return await this.buildChildrenForPath(files, element.folderUri.fsPath, element.isUnderMavenRoot, false);
+		}
+
+		return [];
+	}
+
+	private async buildChildrenForPath(
+		files: readonly Uri[],
+		parentPath: string,
+		ancestorUnderMavenRoot: boolean,
+		parentIsWorkspaceRoot: boolean,
+	): Promise<TreeItem[]> {
+		const directFiles: Uri[] = [];
+		const subfolderNames = new Set<string>();
+
+		for (const file of files) {
+			if (!file.fsPath.startsWith(parentPath + sep)) {
+				continue;
+			}
+			const rel = relative(parentPath, file.fsPath);
+			const parts = rel.split(sep);
+			if (parts.length === 1) {
+				directFiles.push(file);
+			} else if (parts.length > 1) {
+				subfolderNames.add(parts[0]);
+			}
+		}
+
+		const hasPomXml = directFiles.some((f) => basename(f.fsPath) === 'pom.xml');
+		const underMavenRootForChildren = ancestorUnderMavenRoot || hasPomXml;
+
+		const subfolders = Array.from(subfolderNames.values())
+			.sort((a, b) => a.localeCompare(b))
+			.map((name) => {
+				const childPath = join(parentPath, name);
+				const isChildMavenRoot = files.some((f) => f.fsPath === join(childPath, 'pom.xml'));
+				return new Folder(name, Uri.file(childPath), undefined, underMavenRootForChildren, isChildMavenRoot);
+			});
+
+		const fileItems = await Promise.all(
+			directFiles
+				.sort((a, b) => a.fsPath.localeCompare(b.fsPath))
+				.map(async (file) => this.toTreeItemForFile(file, underMavenRootForChildren, parentIsWorkspaceRoot && !underMavenRootForChildren)),
+		);
+
+		const items: TreeItem[] = [...subfolders, ...fileItems];
+		items.sort((a, b) => {
+			const aHasChildren = a.collapsibleState !== TreeItemCollapsibleState.None ? 1 : 0;
+			const bHasChildren = b.collapsibleState !== TreeItemCollapsibleState.None ? 1 : 0;
+			if (aHasChildren !== bHasChildren) {
+				return bHasChildren - aHasChildren;
+			}
+			const aLabel = this.getItemLabel(a);
+			const bLabel = this.getItemLabel(b);
+			return aLabel.localeCompare(bLabel);
+		});
+
+		return items;
+	}
+
+	private getItemLabel(item: TreeItem): string {
+		if (typeof item.label === 'string') {
+			return item.label;
+		}
+		if (item.label && typeof (item.label as any).label === 'string') {
+			return (item.label as any).label;
+		}
+		return '';
 	}
 
 	private setContext(value: boolean): void {
@@ -93,22 +187,39 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 		}
 	}
 
-	private async getIntegrationsAvailableInWorkspace(): Promise<Integration[]> {
-		const integrationFiles = await workspace.findFiles(IntegrationsProvider.FILE_PATTERN, IntegrationsProvider.EXCLUDE_PATTERN);
-		const integrations = await Promise.all(
-			integrationFiles.map(async (file) => {
-				const filename = basename(file.fsPath);
-				const { dsl, type, name } = this.getFileType(filename);
-				const icon = this.getIcon(type);
-
-				// process routes only if it's a route integration
-				const routes = type === 'route' ? await this.getRoutesInsideIntegrationFile(dsl, file) : [];
-				const collapsibleState = routes.length > 0 ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.None;
-
-				return new Integration(name, filename, file, collapsibleState, type, dsl, icon);
-			}),
-		);
-		return Array.from(integrations.values()).sort((a, b) => a.filepath.fsPath.localeCompare(b.filepath.fsPath));
+	private async toTreeItemForFile(file: Uri, isUnderMavenRoot: boolean = false, isTopLevelWithinWorkspace: boolean = true): Promise<TreeItem> {
+		const filename = basename(file.fsPath);
+		// Treat Camel, Kamelet and Pipe files as Integration items; others as plain files
+		if (
+			filename.endsWith('.camel.yaml') ||
+			filename.endsWith('.camel.xml') ||
+			filename.endsWith('.kamelet.yaml') ||
+			filename.endsWith('.pipe.yaml') ||
+			filename.endsWith('-pipe.yaml')
+		) {
+			const { dsl, type, name } = this.getFileType(filename);
+			const icon = this.getIcon(type);
+			const description = this.getDescription(type);
+			let collapsibleState = TreeItemCollapsibleState.None;
+			if (type === 'route') {
+				const routes = await this.getRoutesInsideIntegrationFile(dsl, file);
+				collapsibleState = routes.length > 0 ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.None;
+			}
+			return new Integration(name, filename, file, collapsibleState, type, dsl, icon, description, isUnderMavenRoot, isTopLevelWithinWorkspace);
+		}
+		return new File(file, filename);
+	}
+	getDescription(type: string) {
+		switch (type) {
+			case 'kamelet':
+				return 'Kamelet';
+			case 'pipe':
+				return 'Pipe';
+			case 'route':
+				return 'Camel Route';
+			default:
+				return 'Unknown';
+		}
 	}
 
 	private async getRoutesInsideIntegrationFile(dsl: string, filePath: Uri): Promise<Route[]> {

@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { dirname, relative } from 'path';
-import { TreeItem, Uri, TreeItemCollapsibleState, IconPath, workspace } from 'vscode';
+import { TreeItem, Uri, TreeItemCollapsibleState, IconPath } from 'vscode';
 
 export class Integration extends TreeItem {
 	constructor(
@@ -25,22 +24,19 @@ export class Integration extends TreeItem {
 		public readonly type: string,
 		public readonly dsl: string,
 		public readonly icon: string | IconPath,
+		public readonly description: string,
+		public readonly isUnderMavenRoot: boolean = false,
+		public readonly isTopLevelWithinWorkspace: boolean = true,
 	) {
 		super(filename, collapsibleState);
 		this.iconPath = icon;
+		this.description = description;
 		this.tooltip = this.filepath.fsPath;
-		this.description = this.getDescription(filepath);
+
+		const toplevel = isTopLevelWithinWorkspace ? 'integration' : 'integration-standalone-child';
+		const mavenChild = isUnderMavenRoot ? 'integration-maven-child' : toplevel;
+		this.contextValue = mavenChild;
 	}
 
 	command = { command: 'kaoto.open', title: 'Open with Kaoto', arguments: [this.filepath] };
-
-	contextValue = 'integration';
-
-	private getDescription(filepath: Uri): string {
-		if (workspace.workspaceFolders && workspace.workspaceFolders.length > 1) {
-			return dirname(relative(dirname(workspace.getWorkspaceFolder(filepath)?.uri.fsPath as string), filepath.fsPath));
-		} else {
-			return dirname(relative(workspace.getWorkspaceFolder(filepath)?.uri.fsPath as string, filepath.fsPath));
-		}
-	}
 }
