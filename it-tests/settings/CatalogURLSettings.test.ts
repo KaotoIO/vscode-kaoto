@@ -118,6 +118,7 @@ describe('User Settings', function () {
 			// get all items available for selected runtime
 			let items = await getDropdownItemsText(runtime);
 			expect(items.length).is.greaterThan(1);
+			expect(items).to.satisfy((items: string[]) => items.every((item) => item.startsWith(`Camel ${runtime}`)));
 
 			// collapse catalog dropdown
 			await dropdown.click();
@@ -135,16 +136,6 @@ describe('User Settings', function () {
 
 	it(`Select 'redhat' catalog and check new components are available`, async function () {
 		this.timeout(90_000);
-
-		// expand dropdown
-		const dropdown = await expandCatalogDropdown();
-
-		// select Main > Camel Main *redhat*
-		const parentItem = await dropdown.findElement(locators.RuntimeSelector.selector('Main'));
-		await parentItem.click();
-
-		// it needs some time to start loading a new catalog
-		await driver.sleep(1_000);
 
 		// wait for reload of kaoto view
 		await checkTopologyLoaded(driver, 15_000);
@@ -182,6 +173,54 @@ describe('User Settings', function () {
 		await catalogWindow.findElement(locators.KaotoView.catalog.closeButton).click();
 	});
 
+	it(`Select 'community' catalog and check "Red Hat" components are not available`, async function () {
+		this.timeout(90_000);
+
+		// expand dropdown
+		const dropdown = await expandCatalogDropdown();
+
+		// select Main > Camel Main X.X.X
+		await selectDropdownItem('Main', dropdown);
+
+		// it needs some time to start loading a new catalog
+		await driver.sleep(1_000);
+
+		// wait for reload of kaoto view
+		await checkTopologyLoaded(driver, 15_000);
+
+		// click Open Catalog
+		const catalog = await driver.findElement(locators.KaotoView.catalogButton);
+		await catalog.click();
+
+		// wait catalog modal dialog is open
+		await driver.wait(until.elementLocated(locators.KaotoView.catalog.window), 15_000);
+		const catalogWindow = await driver.findElement(locators.KaotoView.catalog.window);
+
+		// switch to list view
+		await catalogWindow.findElement(locators.KaotoView.catalog.listButton).click();
+		await driver.wait(until.elementLocated(locators.KaotoView.catalog.list), 5_000);
+
+		// check first component contains 'Red Hat' flag
+		const listItem = await catalogWindow.findElement(locators.KaotoView.catalog.list).findElement(locators.KaotoView.catalog.listItem);
+		const provider = await listItem.findElement(locators.KaotoView.catalog.listItemProvider).getText();
+		expect(provider).to.not.be.equal('Red Hat');
+
+		// switch catalog window back to gallery view
+		try {
+			await catalogWindow.findElement(locators.KaotoView.catalog.galleryButton).click();
+			await driver.wait(until.elementLocated(locators.KaotoView.catalog.gallery), 5_000);
+		} catch (error) {
+			// it can happen that because of hover text for list view button
+			// the gallery view button is overlapped and it is not clickable at the moment
+			await driver.actions().sendKeys(Key.ENTER).perform(); // WORKAROUND
+			await catalogWindow.findElement(locators.KaotoView.catalog.galleryButton).click();
+			await driver.wait(until.elementLocated(locators.KaotoView.catalog.gallery), 5_000);
+		}
+
+		// close catalog view
+		await catalogWindow.findElement(locators.KaotoView.catalog.closeButton).click();
+	});
+
 	async function expandCatalogDropdown(timeout: number = 5_000): Promise<WebElement> {
 		const dropdown = await driver.findElement(locators.CatalogDropDown.dropdown);
 		await dropdown.click();
@@ -192,7 +231,7 @@ describe('User Settings', function () {
 	async function getDropdownItemsText(item: string): Promise<string[]> {
 		// expand selected runtime list
 		const parentItem = await driver.findElement(locators.RuntimeSelector.selector(item));
-		await parentItem.click();
+		await driver.actions().move({ origin: parentItem }).perform();
 
 		// get all listed items
 		const items = await parentItem.findElement(locators.RuntimeSelectorItems.list).findElements(locators.RuntimeSelectorItems.listItem);
@@ -204,5 +243,13 @@ describe('User Settings', function () {
 			labels.push(label);
 		}
 		return labels;
+	}
+
+	async function selectDropdownItem(item: string, dropdown: WebElement) {
+		const parentItem = await dropdown.findElement(locators.RuntimeSelector.selector(item));
+		await driver.actions().move({ origin: parentItem }).perform();
+
+		// select first Camel Main catalog item
+		await parentItem.findElement(By.xpath(`//li[starts-with(@data-testid, 'runtime-selector-Camel Main')]`)).click();
 	}
 });
