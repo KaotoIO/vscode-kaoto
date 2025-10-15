@@ -137,40 +137,14 @@ describe('User Settings', function () {
 	it(`Select 'redhat' catalog and check new components are available`, async function () {
 		this.timeout(90_000);
 
-		// wait for reload of kaoto view
-		await checkTopologyLoaded(driver, 15_000);
-
-		// click Open Catalog
-		const catalog = await driver.findElement(locators.KaotoView.catalogButton);
-		await catalog.click();
-
-		// wait catalog modal dialog is open
-		await driver.wait(until.elementLocated(locators.KaotoView.catalog.window), 15_000);
-		const catalogWindow = await driver.findElement(locators.KaotoView.catalog.window);
-
-		// switch to list view
-		await catalogWindow.findElement(locators.KaotoView.catalog.listButton).click();
-		await driver.wait(until.elementLocated(locators.KaotoView.catalog.list), 5_000);
+		const catalogWindow = await openCatalogInListView();
 
 		// check first component contains 'Red Hat' flag
-		const listItem = await catalogWindow.findElement(locators.KaotoView.catalog.list).findElement(locators.KaotoView.catalog.listItem);
-		const provider = await listItem.findElement(locators.KaotoView.catalog.listItemProvider).getText();
+		const provider = await getFirstCatalogItemProvider(catalogWindow);
 		expect(provider).to.be.equal('Red Hat');
 
 		// switch catalog window back to gallery view
-		try {
-			await catalogWindow.findElement(locators.KaotoView.catalog.galleryButton).click();
-			await driver.wait(until.elementLocated(locators.KaotoView.catalog.gallery), 5_000);
-		} catch (error) {
-			// it can happen that because of hover text for list view button
-			// the gallery view button is overlapped and it is not clickable at the moment
-			await driver.actions().sendKeys(Key.ENTER).perform(); // WORKAROUND
-			await catalogWindow.findElement(locators.KaotoView.catalog.galleryButton).click();
-			await driver.wait(until.elementLocated(locators.KaotoView.catalog.gallery), 5_000);
-		}
-
-		// close catalog view
-		await catalogWindow.findElement(locators.KaotoView.catalog.closeButton).click();
+		await switchBackCatalogToGalleryViewAndClose(catalogWindow);
 	});
 
 	it(`Select 'community' catalog and check "Red Hat" components are not available`, async function () {
@@ -188,6 +162,23 @@ describe('User Settings', function () {
 		// wait for reload of kaoto view
 		await checkTopologyLoaded(driver, 15_000);
 
+		const catalogWindow = await openCatalogInListView();
+
+		// check first component contains 'Red Hat' flag
+		const provider = await getFirstCatalogItemProvider(catalogWindow);
+		expect(provider).to.not.be.equal('Red Hat');
+
+		// switch catalog window back to gallery view
+		await switchBackCatalogToGalleryViewAndClose(catalogWindow);
+	});
+
+	async function getFirstCatalogItemProvider(catalogWindow: WebElement): Promise<string> {
+		const listItem = await catalogWindow.findElement(locators.KaotoView.catalog.list).findElement(locators.KaotoView.catalog.listItem);
+		const provider = await listItem.findElement(locators.KaotoView.catalog.listItemProvider).getText();
+		return provider;
+	}
+
+	async function openCatalogInListView(): Promise<WebElement> {
 		// click Open Catalog
 		const catalog = await driver.findElement(locators.KaotoView.catalogButton);
 		await catalog.click();
@@ -200,12 +191,10 @@ describe('User Settings', function () {
 		await catalogWindow.findElement(locators.KaotoView.catalog.listButton).click();
 		await driver.wait(until.elementLocated(locators.KaotoView.catalog.list), 5_000);
 
-		// check first component contains 'Red Hat' flag
-		const listItem = await catalogWindow.findElement(locators.KaotoView.catalog.list).findElement(locators.KaotoView.catalog.listItem);
-		const provider = await listItem.findElement(locators.KaotoView.catalog.listItemProvider).getText();
-		expect(provider).to.not.be.equal('Red Hat');
+		return catalogWindow;
+	}
 
-		// switch catalog window back to gallery view
+	async function switchBackCatalogToGalleryViewAndClose(catalogWindow: WebElement): Promise<void> {
 		try {
 			await catalogWindow.findElement(locators.KaotoView.catalog.galleryButton).click();
 			await driver.wait(until.elementLocated(locators.KaotoView.catalog.gallery), 5_000);
@@ -219,7 +208,7 @@ describe('User Settings', function () {
 
 		// close catalog view
 		await catalogWindow.findElement(locators.KaotoView.catalog.closeButton).click();
-	});
+	}
 
 	async function expandCatalogDropdown(timeout: number = 5_000): Promise<WebElement> {
 		const dropdown = await driver.findElement(locators.CatalogDropDown.dropdown);
