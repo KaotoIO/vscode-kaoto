@@ -1276,9 +1276,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redhat-developer/vscode-redhat-telemetry@npm:^0.10.0":
-  version: 0.10.0
-  resolution: "@redhat-developer/vscode-redhat-telemetry@npm:0.10.0"
+"@redhat-developer/vscode-redhat-telemetry@npm:^0.10.1":
+  version: 0.10.1
+  resolution: "@redhat-developer/vscode-redhat-telemetry@npm:0.10.1"
   dependencies:
     "@segment/analytics-node": "npm:2.3.0"
     countries-and-timezones: "npm:^3.4.1"
@@ -1288,7 +1288,7 @@ __metadata:
     picomatch: "npm:^4.0.2"
     ua-parser-js: "npm:1.0.39"
     uuid: "npm:^11.0.3"
-  checksum: 10/3e377af281cdc90d7679692c290006450a03ab8072f7b5616a646539e573bc4d842f6fbe1b16a6eb713b8615ef85f506ac96b51fd974f3134ba3f010827e5e69
+  checksum: 10/a569306986509fca0e2c7814deb1a327b6c79342a5ce9d6776eb23c5200d8648d6bf66b9631dbf9064c8bf69c8d3012c2c7ca05a3f7a6b5e692f25b40d7a3ea9
   languageName: node
   linkType: hard
 
@@ -12720,7 +12720,7 @@ __metadata:
     "@patternfly/react-table": "npm:6.3.1"
     "@patternfly/react-topology": "npm:6.3.0"
     "@redhat-developer/vscode-extension-proposals": "npm:^0.0.23"
-    "@redhat-developer/vscode-redhat-telemetry": "npm:^0.10.0"
+    "@redhat-developer/vscode-redhat-telemetry": "npm:^0.10.1"
     "@stylistic/eslint-plugin": "npm:^5.4.0"
     "@types/chai": "npm:^4.3.20"
     "@types/fs-extra": "npm:^11.0.4"
