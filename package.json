@@ -46,7 +46,7 @@
     "@patternfly/react-table": "6.3.1",
     "@patternfly/react-topology": "6.3.0",
     "@redhat-developer/vscode-extension-proposals": "^0.0.23",
-    "@redhat-developer/vscode-redhat-telemetry": "^0.10.0",
+    "@redhat-developer/vscode-redhat-telemetry": "^0.10.2",
     "compare-versions": "^6.1.1",
     "get-port-please": "^3.2.0",
     "react": "18.3.1",
