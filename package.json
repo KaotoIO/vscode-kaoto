@@ -692,7 +692,7 @@
     }
   },
   "devDependencies": {
-    "@stylistic/eslint-plugin": "^5.4.0",
+    "@stylistic/eslint-plugin": "^5.5.0",
     "@types/chai": "^4.3.20",
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.10",
@@ -700,8 +700,8 @@
     "@types/react-dom": "18.3.1",
     "@types/vscode": "^1.100.0",
     "@types/wait-on": "^5.3.4",
-    "@typescript-eslint/eslint-plugin": "^8.46.1",
-    "@typescript-eslint/parser": "^8.46.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.2",
+    "@typescript-eslint/parser": "^8.46.2",
     "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.5.2",
     "@vscode/test-web": "^0.0.74",
@@ -712,7 +712,7 @@
     "constants-browserify": "^1.0.0",
     "copy-webpack-plugin": "^13.0.1",
     "css-loader": "6.8.1",
-    "eslint": "^9.37.0",
+    "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-define-config": "^2.1.0",
     "eslint-plugin-chai-friendly": "^1.1.0",
