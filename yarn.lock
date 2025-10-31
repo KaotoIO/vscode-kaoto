@@ -190,6 +190,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@carbon/icon-helpers@npm:^10.68.0":
+  version: 10.68.0
+  resolution: "@carbon/icon-helpers@npm:10.68.0"
+  dependencies:
+    "@ibm/telemetry-js": "npm:^1.5.0"
+  checksum: 10/51fde0042e379ce6c7ff1f98db02a73031040cddea4f10282ee4eaf17da5442c01807f6a9bbcee8686defc561018489fb2d562c8eeb5e1fa45e0f9e72e45e603
+  languageName: node
+  linkType: hard
+
+"@carbon/icons-react@npm:^11.67.0":
+  version: 11.70.0
+  resolution: "@carbon/icons-react@npm:11.70.0"
+  dependencies:
+    "@carbon/icon-helpers": "npm:^10.68.0"
+    "@ibm/telemetry-js": "npm:^1.5.0"
+    prop-types: "npm:^15.8.1"
+  peerDependencies:
+    react: ">=16"
+  checksum: 10/44a69935f6b3697851434e263ce335514e779850c4b8d3f2446f6b2b34373da373c6b10cd9a7d0561d056047008dc39913988a7552842859ab2a98924a4703a3
+  languageName: node
+  linkType: hard
+
 "@chevrotain/cst-dts-gen@npm:10.5.0":
   version: 10.5.0
   resolution: "@chevrotain/cst-dts-gen@npm:10.5.0"
@@ -467,6 +489,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ibm/telemetry-js@npm:^1.5.0":
+  version: 1.10.2
+  resolution: "@ibm/telemetry-js@npm:1.10.2"
+  bin:
+    ibmtelemetry: dist/collect.js
+  checksum: 10/bc1802cf691b0bb9df8cc19c8f4ab03b8022b5a53df778a9e99c817f708c51a02f440ea395ceb3656f057c8aa6356d5271f54eb3af3bcbb5c0b536fea9af2e36
+  languageName: node
+  linkType: hard
+
 "@isaacs/balanced-match@npm:^4.0.1":
   version: 4.0.1
   resolution: "@isaacs/balanced-match@npm:4.0.1"
@@ -556,30 +587,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/forms@npm:^1.4.1":
-  version: 1.4.1
-  resolution: "@kaoto/forms@npm:1.4.1"
+"@kaoto/forms@npm:^1.5.6":
+  version: 1.5.6
+  resolution: "@kaoto/forms@npm:1.5.6"
   dependencies:
     ajv: "npm:^8.12.0"
     clsx: "npm:^2.1.0"
     lodash.clonedeep: "npm:^4.5.0"
     usehooks-ts: "npm:^3.0.0"
   peerDependencies:
-    "@patternfly/patternfly": ^6.2.0
-    "@patternfly/react-core": ^6.2.0
-    "@patternfly/react-icons": ^6.2.0
+    "@patternfly/patternfly": ^6.3.0
+    "@patternfly/react-core": 6.4.0
+    "@patternfly/react-icons": ^6.3.0
     react: ^18.2.0
     react-dom: ^18.2.0
-  checksum: 10/0772ac1040507abbb2a07b5b213a6681a9f09dec562c00a20d066dc9ff4a79bf390cd47627365c7bca9a79fe9bc3721bd67cecb9ec5766d4e7cc4a59e4d13869
+  checksum: 10/d106835b0be1d07c6dd0df5df7ef61e58f52e759dc5a867b6cd85526897372221ccced73f0e66b9b0b1a90b04797f2d9bd783b7e7fa7032e94447c09a469d6ec
   languageName: node
   linkType: hard
 
-"@kaoto/kaoto@npm:2.7.1":
-  version: 2.7.1
-  resolution: "@kaoto/kaoto@npm:2.7.1"
+"@kaoto/kaoto@npm:^2.8.0-RC1":
+  version: 2.8.0-RC1
+  resolution: "@kaoto/kaoto@npm:2.8.0-RC1"
   dependencies:
+    "@carbon/icons-react": "npm:^11.67.0"
     "@dnd-kit/core": "npm:^6.1.0"
-    "@kaoto/forms": "npm:^1.4.1"
+    "@kaoto/forms": "npm:^1.5.6"
     "@kie-tools-core/editor": "npm:^10.0.0"
     "@kie-tools-core/notifications": "npm:^10.0.0"
     "@visx/shape": "npm:^3.12.0"
@@ -605,17 +637,17 @@ __metadata:
     zustand: "npm:^4.3.9"
   peerDependencies:
     "@kaoto/camel-catalog": ^0.2.2
-    "@patternfly/patternfly": ^6.2.0
-    "@patternfly/react-code-editor": ^6.2.0
-    "@patternfly/react-core": ^6.2.0
-    "@patternfly/react-icons": ^6.2.0
-    "@patternfly/react-table": ^6.2.0
-    "@patternfly/react-topology": ^6.2.0
+    "@patternfly/patternfly": ^6.3.0
+    "@patternfly/react-code-editor": ^6.3.0
+    "@patternfly/react-core": 6.3.1
+    "@patternfly/react-icons": ^6.3.0
+    "@patternfly/react-table": ^6.3.0
+    "@patternfly/react-topology": ^6.3.0
     monaco-yaml: ^5.1.1
     react: ^18.2.0
     react-dom: ^18.2.0
     react-monaco-editor: ^0.56.0
-  checksum: 10/2de67c5b586ea487d829a9179ef3fb7f4e9065e5006ffc9ae87509275ab3986ae461685a3a59ec503f91072fcd45b153e1f4a068bf689f6bdc73ba92b1ddc675
+  checksum: 10/c444605512878977ab9a2248f3843705eaf09e06c420dfff378aa2b18e18327a69a582fa2423ca88932bdece598a3eaef0825c3d6e55ee11b5adf5166fc361b4
   languageName: node
   linkType: hard
 
@@ -12754,7 +12786,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto/kaoto": "npm:2.7.1"
+    "@kaoto/kaoto": "npm:^2.8.0-RC1"
     "@kie-tools-core/backend": "npm:10.0.0"
     "@kie-tools-core/editor": "npm:10.0.0"
     "@kie-tools-core/i18n": "npm:10.0.0"
