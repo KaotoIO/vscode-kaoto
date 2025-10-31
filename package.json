@@ -708,7 +708,7 @@
     "@vscode/vsce": "^3.6.2",
     "async-wait-until": "^2.0.31",
     "buffer": "^6.0.3",
-    "chai": "^4.3.10",
+    "chai": "^6.2.0",
     "constants-browserify": "^1.0.0",
     "copy-webpack-plugin": "^13.0.1",
     "css-loader": "6.8.1",
