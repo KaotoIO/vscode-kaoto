@@ -7,6 +7,7 @@
 - show `What's New` release page after each extension upgrade (only for first startup)
 - Upgrade default Camel JBang version from 4.14.0 to 4.15.0
 - Allow manual Camel dependencies update in pom.xml
+- Add `Kaoto first steps` extension walkthrough
 
 # 2.7.0
 
