@@ -30,12 +30,19 @@ export class WhatsNewPanel {
 
 			const htmlContent: string = (await vscode.commands.executeCommand('markdown.api.render', markdown)) as string;
 
-			const panel = vscode.window.createWebviewPanel('kaoto.whatsNew', `What's New in Kaoto ${folderVersion}`, {
-				viewColumn: vscode.ViewColumn.Active,
-				preserveFocus: false,
-			});
+			const panel = vscode.window.createWebviewPanel(
+				'kaoto.whatsNew',
+				`What's New in Kaoto ${folderVersion}`,
+				{
+					viewColumn: vscode.ViewColumn.Active,
+					preserveFocus: false,
+				},
+				{
+					localResourceRoots: [whatsNewFolder],
+				},
+			);
 
-			panel.webview.html = this.getHtmlForWebview(htmlContent, folderVersion);
+			panel.webview.html = this.getHtmlForWebview(panel.webview, htmlContent, folderVersion, whatsNewFolder);
 
 			panel.onDidDispose(() => {
 				if (WhatsNewPanel.currentPanel === panel) {
@@ -58,8 +65,10 @@ export class WhatsNewPanel {
 		return version;
 	}
 
-	private static getHtmlForWebview(htmlBody: string, folderVersion: string): string {
+	private static getHtmlForWebview(webview: vscode.Webview, htmlBody: string, folderVersion: string, whatsNewFolder: vscode.Uri): string {
 		const blogUrl = `https://kaoto.io/blog/kaoto-${folderVersion}-release/`;
+		const baseUri = webview.asWebviewUri(whatsNewFolder);
+		const baseHref = `${baseUri.toString().replace(/\/$/, '')}/`;
 
 		return [
 			'<!DOCTYPE html>',
@@ -67,6 +76,8 @@ export class WhatsNewPanel {
 			'<head>',
 			'<meta charset="UTF-8">',
 			`<meta name="viewport" content="width=device-width, initial-scale=1.0">`,
+			`<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webview.cspSource} https: data:; style-src 'unsafe-inline';">`,
+			`<base href="${baseHref}">`,
 			'<style>', // Minimal readable styling
 			'body { font-family: var(--vscode-font-family); padding: 0 1.2rem 2rem; color: var(--vscode-foreground); }',
 			'h1, h2, h3 { color: var(--vscode-foreground); }',
