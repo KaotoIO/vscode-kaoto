@@ -5,7 +5,7 @@
 - Use Node 22 instead of Node 20
 - Fix link pointing to documentation to generate custom catalog
 - show `What's New` release page after each extension upgrade (only for first startup)
-- Upgrade default Camel JBang version from 4.14.0 to 4.15.0
+- Upgrade default Camel JBang version from 4.14.0 to 4.16.0
 - Allow manual Camel dependencies update in pom.xml
 - Add `Kaoto first steps` extension walkthrough
 
