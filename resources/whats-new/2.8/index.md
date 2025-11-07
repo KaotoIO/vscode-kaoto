@@ -4,7 +4,7 @@ We are happy to announce that new version of extension was released!
 
 ## Key highlights of this release
 
-This release represents a major step forward in DataMapper maturity, with extensive XML Schema support improvements, better visual feedback, and numerous stability fixes. We’ve also enhanced the canvas experience with contextual menus and improved the forms system for better configuration management.
+This release represents a major step forward in DataMapper maturity, with extensive XML Schema support improvements, better visual feedback, and numerous stability fixes. We've also enhanced the canvas experience with contextual menus and improved the forms system for better configuration management.
 
 ### VS Code
 
@@ -104,10 +104,10 @@ Kaoto 2.8 brings improvements to XML Schema handling in the DataMapper:
 - **URI Serialization**: Improved component parameter handling in XML URI serialization when no syntax is present
 - **Route Ordering**: Fixed the order of Intercept* elements to ensure correct processing sequence
 
-### Camel Catalog versions
+### Camel Catalog Version
 
 This release includes:
 
-- Camel main: 4.15.0
-- Camel extensions for Quarkus: 3.27.0
+- Camel main: 4.16.0
+- Camel extensions for Quarkus: 3.29.0
 - Camel Spring-boot: 4.14.1
