@@ -18,6 +18,9 @@ updates:
       - dependency-name: "@types/react"
       - dependency-name: "*-browserify"
       - dependency-name: "*-loader"
+      # ignore Chai and @types/chai that latest versions are not working with ExTester at the moment
+      - dependency-name: "chai"
+      - dependency-name: "@types/chai"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
