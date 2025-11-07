@@ -34,7 +34,7 @@ jobs:
           distribution: "temurin"
           java-version: "21"
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.6.0
+        uses: docker/setup-qemu-action@v3.7.0
       - name: Start Minikube
         uses: medyagh/setup-minikube@v0.0.20
         with:
