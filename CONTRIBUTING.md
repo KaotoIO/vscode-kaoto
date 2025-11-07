@@ -167,7 +167,9 @@ It is launching UI tests. Beware that it can take several minutes to start. Stay
 
 ## How to provide a new release version on VS Code Marketplace
 
-- Check that the version in package.json has not been published yet
+### Pre-release tasks
+
+- Check that the version in `package.json` has not been published yet
   - If already published:
     - Update version in `package.json`
     - Push changes in a Pull Request
@@ -175,9 +177,12 @@ It is launching UI tests. Beware that it can take several minutes to start. Stay
 - Check that the version of VS Code extension aligns as much as possible with version of embedded Kaoto
 - Check `What's New` release page is up to date (`/resources/whats-new/<release-version>`)
 - Check build is working fine on [GitHub Actions](https://github.com/KaotoIO/vscode-kaoto/actions) and [Jenkins CI](https://jenkins-csb-fusetools-qe-master.dno.corp.redhat.com/view/VS%20Code%20-%20release/job/vscode/job/eng/job/vscode-kaoto-release/)
-- Check that someone listed as _submitter_ in Jenkinsfile is available
+- Check that someone listed as _submitter_ in [Jenkinsfile](https://github.com/KaotoIO/vscode-kaoto/blob/main/Jenkinsfile#L60) is available
+
+### Release tasks
+
 - Create a tag
-- Push the tag to vscode-kaoto repository
+- Push the tag to [vscode-kaoto](https://github.com/KaotoIO/vscode-kaoto) repository
 - Start build on [Jenkins CI](https://jenkins-csb-fusetools-qe-master.dno.corp.redhat.com/view/VS%20Code%20-%20release/job/vscode/job/eng/job/vscode-kaoto-release/) with _publishToMarketPlace_ and _publishToOVSX_ parameters checked
 - When the build hits the _Publish to Marketplace_ step, it will wait for an approval
 - It is possible to check that the produced vsix is valid by using the one pushed in [JBoss download area](https://download.jboss.org/jbosstools/vscode/snapshots/vscode-kaoto/)
@@ -185,7 +190,10 @@ It is launching UI tests. Beware that it can take several minutes to start. Stay
   - Ensure you are logged in
   - Go to the console log of the build and click `Proceed`
 - Wait few minutes and check that it has been published on [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-kaoto) and [Open VSX Marketplace](https://open-vsx.org/extension/redhat/vscode-kaoto)
-- Keep build forever on Jenkins CI for later reference and edit build information to indicate the version
+
+### Post-release tasks
+
+- Keep build forever on [Jenkins CI](https://jenkins-csb-fusetools-qe-master.dno.corp.redhat.com/view/VS%20Code%20-%20release/job/vscode/job/eng/job/vscode-kaoto-release/) for later reference and edit build information to indicate the version
 - Prepare next iteration:
   - Update version in `package.json`
   - Add new version section into `CHANGELOG.md`
