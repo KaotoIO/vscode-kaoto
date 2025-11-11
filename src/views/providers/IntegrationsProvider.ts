@@ -30,16 +30,37 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 	private readonly _onDidChangeTreeData: EventEmitter<TreeItemType> = new EventEmitter<TreeItemType>();
 	readonly onDidChangeTreeData: Event<TreeItemType> = this._onDidChangeTreeData.event;
 
-	private static readonly FILE_PATTERN =
-		'{**/*.camel.yaml,**/*.camel.xml,**/*.kamelet.yaml,**/*-pipe.yaml,**/*.pipe.yaml,**/*application*.properties,**/*.xsl,**/pom.xml}';
-	private static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**,**/target/**}';
-	private readonly fileWatcher: FileSystemWatcher;
+	private static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**,**/target/**,**/.mvn/**}';
+
+	private fileWatcher: FileSystemWatcher;
+	private filePattern: string;
 
 	constructor(readonly extensionUriPath: string) {
-		this.fileWatcher = workspace.createFileSystemWatcher(IntegrationsProvider.FILE_PATTERN);
+		this.filePattern = this.getFilePattern();
+		this.fileWatcher = workspace.createFileSystemWatcher(this.filePattern);
+
 		this.fileWatcher.onDidChange(this.refresh.bind(this));
 		this.fileWatcher.onDidCreate(this.refresh.bind(this));
 		this.fileWatcher.onDidDelete(this.refresh.bind(this));
+
+		workspace.onDidChangeConfiguration((event) => {
+			if (event.affectsConfiguration(KAOTO_INTEGRATIONS_FILES_REGEXP_SETTING_ID)) {
+				this.filePattern = this.getFilePattern();
+				this.fileWatcher.dispose();
+
+				this.fileWatcher = workspace.createFileSystemWatcher(this.filePattern);
+				this.fileWatcher.onDidChange(this.refresh.bind(this));
+				this.fileWatcher.onDidCreate(this.refresh.bind(this));
+				this.fileWatcher.onDidDelete(this.refresh.bind(this));
+
+				this.refresh();
+			}
+		});
+	}
+
+	private getFilePattern(): string {
+		const filesRegexp: string[] = workspace.getConfiguration().get(KAOTO_INTEGRATIONS_FILES_REGEXP_SETTING_ID) as string[];
+		return '{' + filesRegexp.map((r) => '**/' + r).join(',') + '}';
 	}
 
 	refresh(): void {
@@ -56,7 +77,7 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 			return routes || [];
 		}
 
-		const files = await workspace.findFiles(IntegrationsProvider.FILE_PATTERN, IntegrationsProvider.EXCLUDE_PATTERN);
+		const files = await workspace.findFiles(this.filePattern, IntegrationsProvider.EXCLUDE_PATTERN);
 		this.setContext(files.length > 0);
 
 		if (!element) {

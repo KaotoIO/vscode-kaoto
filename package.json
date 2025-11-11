@@ -662,6 +662,26 @@
             "scope": "window",
             "order": 2
           },
+          "kaoto.integrations.files.regexp": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "additionalProperties": false,
+            "default": [
+              "*.camel.yaml",
+              "*.camel.xml",
+              "*.kamelet.yaml",
+              "*.pipe.yaml",
+              "*-pipe.yaml",
+              "*.properties",
+              "*.xsl",
+              "pom.xml"
+            ],
+            "markdownDescription": "Regular expression to filter files to be displayed in `Kaoto > Integrations` view.",
+            "scope": "window",
+            "order": 3
+          },
           "redhat.telemetry.enabled": {
             "type": "boolean",
             "default": null,
@@ -670,7 +690,7 @@
               "telemetry"
             ],
             "scope": "window",
-            "order": 3
+            "order": 4
           }
         }
       },
