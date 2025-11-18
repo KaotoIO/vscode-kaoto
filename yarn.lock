@@ -1579,19 +1579,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stylistic/eslint-plugin@npm:^5.5.0":
-  version: 5.5.0
-  resolution: "@stylistic/eslint-plugin@npm:5.5.0"
+"@stylistic/eslint-plugin@npm:^5.6.0":
+  version: 5.6.0
+  resolution: "@stylistic/eslint-plugin@npm:5.6.0"
   dependencies:
     "@eslint-community/eslint-utils": "npm:^4.9.0"
-    "@typescript-eslint/types": "npm:^8.46.1"
+    "@typescript-eslint/types": "npm:^8.47.0"
     eslint-visitor-keys: "npm:^4.2.1"
     espree: "npm:^10.4.0"
     estraverse: "npm:^5.3.0"
     picomatch: "npm:^4.0.3"
   peerDependencies:
     eslint: ">=9.0.0"
-  checksum: 10/fdb894a30ad832acf0a2e53967d352c5254b5963755c3971453215c74eaed978cd5d2cd9e6625e5070966902cddb1e6946468aeb8e91e52532426230be9fe1d8
+  checksum: 10/1c6d56d88ddd38f683edc3e8ffa32d25552b9b9e3957ee17790fe2dc7bd6f631222aa0839c0a7f541fb1a45df0c196d15bf955c8234c5f4cb2196a9d3a1e2e2f
   languageName: node
   linkType: hard
 
@@ -2381,13 +2381,6 @@ __metadata:
   version: 8.47.0
   resolution: "@typescript-eslint/types@npm:8.47.0"
   checksum: 10/fc42416c01c512cfe1533bdf521925bca999adc68ffefa246e48552783f1fe9d22487d912611c5cb35fca481604aae3cab88279a53ce76c7cd7510b76775c078
-  languageName: node
-  linkType: hard
-
-"@typescript-eslint/types@npm:^8.46.1":
-  version: 8.46.1
-  resolution: "@typescript-eslint/types@npm:8.46.1"
-  checksum: 10/d162ddf6d77d8c9bdfca942da5de5fb4ba80efa740b14077482b5a71282f1d05e1b1dd393ae810eb2923ca9c845bd26b4a9d2dbf25d43dd5d9cb6e20c2a1db46
   languageName: node
   linkType: hard
 
@@ -12864,7 +12857,7 @@ __metadata:
     "@patternfly/react-topology": "npm:6.4.0"
     "@redhat-developer/vscode-extension-proposals": "npm:^0.0.23"
     "@redhat-developer/vscode-redhat-telemetry": "npm:^0.10.2"
-    "@stylistic/eslint-plugin": "npm:^5.5.0"
+    "@stylistic/eslint-plugin": "npm:^5.6.0"
     "@types/chai": "npm:^4.3.20"
     "@types/fs-extra": "npm:^11.0.4"
     "@types/mocha": "npm:^10.0.10"
