@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 import { expect } from 'chai';
-import { join, sep } from 'path';
+import { join } from 'path';
 import { ActivityBar, EditorView, SideBarView, TreeItem, ViewControl, ViewSection } from 'vscode-extension-tester';
-import { checkTopologyLoaded, openResourcesAndWaitForActivation, switchToKaotoFrame } from '../Util';
+import {
+	checkTopologyLoaded,
+	collapseItemsInsideIntegrationsView,
+	expandFolderItemsInIntegrationsView,
+	openResourcesAndWaitForActivation,
+	switchToKaotoFrame,
+} from '../Util';
 
 describe('Integrations View', function () {
 	this.timeout(60_000);
@@ -40,6 +46,9 @@ describe('Integrations View', function () {
 		await deploymentsSection?.collapse();
 		integrationsSection = await kaotoView?.getContent().getSection('Integrations');
 
+		// expand folders
+		await expandFolderItemsInIntegrationsView(integrationsSection, 'kamelets', 'pipes', 'others');
+
 		items = await integrationsSection?.getDriver().wait(
 			async () => {
 				const items = await integrationsSection?.getVisibleItems();
@@ -60,6 +69,7 @@ describe('Integrations View', function () {
 	});
 
 	after(async function () {
+		await collapseItemsInsideIntegrationsView(integrationsSection);
 		await deploymentsSection?.expand();
 		await kaotoViewContainer?.closeView();
 		await new EditorView().closeAllEditors();
@@ -99,17 +109,6 @@ describe('Integrations View', function () {
 		expect(kamelets).to.not.be.empty;
 		expect(kamelets.length).to.be.equal(1);
 		expect(kamelets).to.contain('kam1.kamelet.yaml');
-	});
-
-	it('items relative folder path is displayed', async function () {
-		const rootLevelFolder = (await integrationsSection?.findItem('sample1.camel.yaml')) as TreeItem;
-		expect(await rootLevelFolder.getDescription()).to.be.equal('.');
-
-		const firstLevelFolder = (await integrationsSection?.findItem('kam1.kamelet.yaml')) as TreeItem;
-		expect(await firstLevelFolder.getDescription()).to.be.equal('kamelets');
-
-		const secondLevelFolder = (await integrationsSection?.findItem('pipe2-pipe.yaml')) as TreeItem;
-		expect(await secondLevelFolder.getDescription()).to.be.equal(`pipes${sep}others`);
 	});
 
 	it('routes are parsed and displayed', async function () {

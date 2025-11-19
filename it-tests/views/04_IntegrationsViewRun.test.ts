@@ -16,7 +16,14 @@
 import { expect } from 'chai';
 import { join } from 'path';
 import { ActivityBar, after, before, EditorView, SideBarView, ViewControl, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
-import { getTreeItem, killTerminal, openResourcesAndWaitForActivation, waitUntilTerminalHasText } from '../Util';
+import {
+	collapseItemsInsideIntegrationsView,
+	expandFolderItemsInIntegrationsView,
+	getTreeItem,
+	killTerminal,
+	openResourcesAndWaitForActivation,
+	waitUntilTerminalHasText,
+} from '../Util';
 
 /**
  * Note:
@@ -50,9 +57,13 @@ describe('Integrations View', function () {
 			`'Collapse All' button was not found!`,
 		);
 		await collapseItems?.click();
+
+		// expand folders
+		await expandFolderItemsInIntegrationsView(integrationsSection, 'pipes', 'others');
 	});
 
 	after(async function () {
+		await collapseItemsInsideIntegrationsView(integrationsSection);
 		await kaotoViewContainer?.closeView();
 		await new EditorView().closeAllEditors();
 	});
