@@ -140,21 +140,21 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 				return new Folder(name, Uri.file(childPath), undefined, underMavenRootForChildren, isChildMavenRoot);
 			});
 
+		const sortedDirectFiles = directFiles.slice().sort((a, b) => a.fsPath.localeCompare(b.fsPath));
 		const fileItems = await Promise.all(
-			directFiles
-				.sort((a, b) => a.fsPath.localeCompare(b.fsPath))
-				.map(async (file) => this.toTreeItemForFile(file, underMavenRootForChildren, parentIsWorkspaceRoot && !underMavenRootForChildren)),
+			sortedDirectFiles.map(async (file) => this.toTreeItemForFile(file, underMavenRootForChildren, parentIsWorkspaceRoot && !underMavenRootForChildren)),
 		);
 
 		const items: TreeItem[] = [...subfolders, ...fileItems];
 		items.sort((a, b) => {
-			const aHasChildren = a.collapsibleState !== TreeItemCollapsibleState.None ? 1 : 0;
-			const bHasChildren = b.collapsibleState !== TreeItemCollapsibleState.None ? 1 : 0;
-			if (aHasChildren !== bHasChildren) {
-				return bHasChildren - aHasChildren;
+			// Folders first, then files/integrations, both alphabetically
+			const aIsFolder = a instanceof Folder;
+			const bIsFolder = b instanceof Folder;
+			if (aIsFolder !== bIsFolder) {
+				return aIsFolder ? -1 : 1;
 			}
-			const aLabel = this.getItemLabel(a);
-			const bLabel = this.getItemLabel(b);
+			const aLabel = this.getItemLabel(a).toLowerCase();
+			const bLabel = this.getItemLabel(b).toLowerCase();
 			return aLabel.localeCompare(bLabel);
 		});
 
