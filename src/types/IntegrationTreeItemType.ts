@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { IntegrationFileIcon } from '../../types/IntegrationTreeItemType';
-import { TreeItem, TreeItemCollapsibleState } from 'vscode';
+import { Uri } from 'vscode';
 
-export class Route extends TreeItem {
-	constructor(
-		public readonly name: string,
-		public readonly description: string,
-		public readonly icon: IntegrationFileIcon,
-	) {
-		super(name || '[missing route id]', TreeItemCollapsibleState.None);
-		this.description = description;
-		this.iconPath = icon;
-		this.contextValue = 'route';
-	}
-}
+export type IntegrationFileType = 'kamelet' | 'pipe' | 'route';
+
+export type IntegrationFileIconType = 'kamelet' | 'pipe' | 'route' | 'route-child';
+
+export type IntegrationFileIcon = {
+	light: Uri;
+	dark: Uri;
+};
+
+export type IntegrationFileDSL = 'yaml' | 'xml';
+
+export type IntegrationFile = {
+	dsl: IntegrationFileDSL;
+	type: IntegrationFileType;
+	name: string;
+	icon: IntegrationFileIcon;
+	description: string;
+};

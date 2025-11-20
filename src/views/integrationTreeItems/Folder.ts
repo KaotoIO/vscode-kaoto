@@ -16,6 +16,22 @@
 import { ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
 
 export class Folder extends TreeItem {
+	private static readonly CONTEXT_FOLDER = 'folder';
+	private static readonly CONTEXT_FOLDER_MAVEN_CHILD = 'folder-maven-child';
+	private static readonly CONTEXT_FOLDER_MAVEN_ROOT = 'folder-maven-root';
+
+	private static resolveContextValue(isUnderMavenRoot: boolean, isMavenRoot: boolean): string {
+		if (isMavenRoot) {
+			return Folder.CONTEXT_FOLDER_MAVEN_ROOT;
+		}
+		return isUnderMavenRoot ? Folder.CONTEXT_FOLDER_MAVEN_CHILD : Folder.CONTEXT_FOLDER;
+	}
+
+	private static resolveIcon(isMavenRoot: boolean): ThemeIcon {
+		const icon = isMavenRoot ? 'folder-library' : 'symbol-folder';
+		return new ThemeIcon(icon);
+	}
+
 	constructor(
 		public readonly labelName: string,
 		public readonly folderUri: Uri,
@@ -27,11 +43,9 @@ export class Folder extends TreeItem {
 		this.resourceUri = folderUri;
 		this.tooltip = tooltipText ?? folderUri.fsPath;
 
-		const folderIcon = this.isMavenRoot ? new ThemeIcon('folder-library') : new ThemeIcon('symbol-folder');
-		this.iconPath = folderIcon;
+		this.iconPath = Folder.resolveIcon(this.isMavenRoot);
 
-		const mavenChild = this.isUnderMavenRoot ? 'folder-maven-child' : 'folder';
-		this.contextValue = this.isMavenRoot ? 'folder-maven-root' : mavenChild;
 		this.description = this.isMavenRoot ? 'M' : undefined;
+		this.contextValue = Folder.resolveContextValue(this.isUnderMavenRoot, this.isMavenRoot);
 	}
 }

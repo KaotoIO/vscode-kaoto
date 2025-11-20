@@ -188,9 +188,12 @@ export class ExtensionContextHandler {
 			treeDataProvider: integrationsProvider,
 			showCollapseAll: true,
 		});
-		this.context.subscriptions.push(integrationsTreeView);
-		this.context.subscriptions.push(vscode.commands.registerCommand('kaoto.integrations.refresh', () => integrationsProvider.refresh()));
-		this.registerIntegrationsItemsContextMenu();
+		const dispose = {
+			dispose: () => integrationsProvider.dispose(),
+		};
+		const refreshCommand = vscode.commands.registerCommand('kaoto.integrations.refresh', () => integrationsProvider.refresh());
+		this.context.subscriptions.push(integrationsTreeView, dispose, refreshCommand);
+		this.registerIntegrationsItemsContextMenu(integrationsProvider);
 	}
 
 	public registerDeploymentsView(portManager: PortManager) {

@@ -16,15 +16,16 @@
 import { TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
 
 export class File extends TreeItem {
+	private static readonly CONTEXT_FILE: string = 'file';
+
 	constructor(
 		public readonly fileUri: Uri,
-		label: string,
+		displayLabel: string,
 	) {
-		super(label, TreeItemCollapsibleState.None);
+		super(displayLabel, TreeItemCollapsibleState.None);
 		this.resourceUri = fileUri;
 		this.tooltip = fileUri.fsPath;
 		this.command = { command: 'vscode.open', title: 'Open File', arguments: [fileUri] };
+		this.contextValue = File.CONTEXT_FILE;
 	}
-
-	contextValue = 'file';
 }

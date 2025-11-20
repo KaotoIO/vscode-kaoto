@@ -13,30 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TreeItem, Uri, TreeItemCollapsibleState, IconPath } from 'vscode';
+import { TreeItem, Uri, TreeItemCollapsibleState } from 'vscode';
+import { IntegrationFileDSL, IntegrationFileIcon, IntegrationFileType } from '../../types/IntegrationTreeItemType';
 
 export class Integration extends TreeItem {
+	private static readonly CONTEXT_INTEGRATION = 'integration';
+	private static readonly CONTEXT_INTEGRATION_STANDALONE_CHILD = 'integration-standalone-child';
+	private static readonly CONTEXT_INTEGRATION_MAVEN_CHILD = 'integration-maven-child';
+
+	private static resolveContextValue(isTopLevelWithinWorkspace: boolean, isUnderMavenRoot: boolean): string {
+		const topLevelContext = isTopLevelWithinWorkspace ? Integration.CONTEXT_INTEGRATION : Integration.CONTEXT_INTEGRATION_STANDALONE_CHILD;
+		return isUnderMavenRoot ? Integration.CONTEXT_INTEGRATION_MAVEN_CHILD : topLevelContext;
+	}
+
 	constructor(
 		public readonly name: string,
 		public readonly filename: string,
 		public readonly filepath: Uri,
 		public collapsibleState: TreeItemCollapsibleState,
-		public readonly type: string,
-		public readonly dsl: string,
-		public readonly icon: string | IconPath,
+		public readonly type: IntegrationFileType,
+		public readonly dsl: IntegrationFileDSL,
+		public readonly icon: IntegrationFileIcon,
 		public readonly description: string,
 		public readonly isUnderMavenRoot: boolean = false,
 		public readonly isTopLevelWithinWorkspace: boolean = true,
 	) {
 		super(filename, collapsibleState);
+		this.tooltip = this.filepath.fsPath;
+		this.resourceUri = this.filepath;
 		this.iconPath = icon;
 		this.description = description;
-		this.tooltip = this.filepath.fsPath;
 
-		const toplevel = isTopLevelWithinWorkspace ? 'integration' : 'integration-standalone-child';
-		const mavenChild = isUnderMavenRoot ? 'integration-maven-child' : toplevel;
-		this.contextValue = mavenChild;
+		this.contextValue = Integration.resolveContextValue(isTopLevelWithinWorkspace, isUnderMavenRoot);
+
+		this.command = { command: 'kaoto.open', title: 'Open with Kaoto', arguments: [this.filepath] };
 	}
-
-	command = { command: 'kaoto.open', title: 'Open with Kaoto', arguments: [this.filepath] };
 }
