@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { expect } from 'chai';
-import { join, sep } from 'path';
+import { join } from 'path';
 import fs from 'fs';
 import {
 	ActivityBar,
@@ -33,7 +33,13 @@ import {
 	VSBrowser,
 	WebDriver,
 } from 'vscode-extension-tester';
-import { getTreeItem, openResourcesAndWaitForActivation, switchToKaotoFrame } from '../Util';
+import {
+	collapseItemsInsideIntegrationsView,
+	expandFolderItemsInIntegrationsView,
+	getTreeItem,
+	openResourcesAndWaitForActivation,
+	switchToKaotoFrame,
+} from '../Util';
 
 describe('Integrations View', function () {
 	this.timeout(240_000);
@@ -57,9 +63,13 @@ describe('Integrations View', function () {
 		deploymentsSection = await kaotoView?.getContent().getSection('Deployments');
 		await deploymentsSection?.collapse();
 		integrationsSection = await kaotoView?.getContent().getSection('Integrations');
+
+		// expand folders
+		await expandFolderItemsInIntegrationsView(integrationsSection, 'kamelets', 'pipes', 'others');
 	});
 
 	after(async function () {
+		await collapseItemsInsideIntegrationsView(integrationsSection);
 		await deploymentsSection?.expand();
 		await kaotoViewContainer?.closeView();
 		await new EditorView().closeAllEditors();
@@ -123,7 +133,6 @@ describe('Integrations View', function () {
 
 				const newCamelRoute = await getTreeItem(driver, integrationsSection, dsl.fileName, 120_000);
 				expect(newCamelRoute).to.not.be.undefined;
-				expect(await newCamelRoute?.getDescription()).to.be.equal('.');
 
 				await switchToKaotoAndCheckIntegrationType(dsl.fileName, 'Camel Route', 'setBody');
 			});
@@ -148,7 +157,6 @@ describe('Integrations View', function () {
 
 			const newKamelet = await getTreeItem(driver, integrationsSection, KAMELET_FILE, 120_000);
 			expect(newKamelet).to.not.be.undefined;
-			expect(await newKamelet?.getDescription()).to.be.equal('kamelets');
 
 			await switchToKaotoAndCheckIntegrationType(KAMELET_FILE, 'Kamelet', 'kamelet:source');
 		});
@@ -168,7 +176,6 @@ describe('Integrations View', function () {
 
 			const newCamelRoute = await getTreeItem(driver, integrationsSection, PIPE_FILE, 120_000);
 			expect(newCamelRoute).to.not.be.undefined;
-			expect(await newCamelRoute?.getDescription()).to.be.equal(`pipes${sep}others`);
 
 			await switchToKaotoAndCheckIntegrationType(PIPE_FILE, 'Pipe', 'timer-source');
 		});

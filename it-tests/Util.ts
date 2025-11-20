@@ -292,3 +292,38 @@ export function readUserSetting(id: string): string {
 	const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
 	return settings[id];
 }
+
+/**
+ * Expand folder items in Integrations View
+ * @param integrationsSection The Integrations View section.
+ * @param folderNames The names of the folders to expand.
+ * @returns A Promise that resolves when the folders are expanded.
+ */
+export async function expandFolderItemsInIntegrationsView(integrationsSection: ViewSection | undefined, ...folderNames: string[]): Promise<void> {
+	for (const folderName of folderNames) {
+		const folderItem = await integrationsSection?.findItem(folderName);
+		await folderItem?.click();
+	}
+}
+
+/**
+ * Collapse items inside Integrations View
+ * @param integrationsSection The Integrations View section.
+ * @returns A Promise that resolves when the items are collapsed.
+ */
+export async function collapseItemsInsideIntegrationsView(integrationsSection: ViewSection | undefined): Promise<void> {
+	const driver = integrationsSection?.getDriver();
+	if (driver) {
+		await driver.actions().move({ origin: integrationsSection }).perform(); // move mouse to bring auto-hided buttons visible again
+		const collapseItems = await driver.wait(
+			async function () {
+				return await integrationsSection?.getAction('Collapse All');
+			},
+			5_000,
+			`'Collapse All' button was not found!`,
+		);
+		await collapseItems?.click();
+	} else {
+		throw new Error('Driver not found');
+	}
+}

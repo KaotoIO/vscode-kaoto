@@ -188,9 +188,12 @@ export class ExtensionContextHandler {
 			treeDataProvider: integrationsProvider,
 			showCollapseAll: true,
 		});
-		this.context.subscriptions.push(integrationsTreeView);
-		this.context.subscriptions.push(vscode.commands.registerCommand('kaoto.integrations.refresh', () => integrationsProvider.refresh()));
-		this.registerIntegrationsItemsContextMenu();
+		const dispose = {
+			dispose: () => integrationsProvider.dispose(),
+		};
+		const refreshCommand = vscode.commands.registerCommand('kaoto.integrations.refresh', () => integrationsProvider.refresh());
+		this.context.subscriptions.push(integrationsTreeView, dispose, refreshCommand);
+		this.registerIntegrationsItemsContextMenu(integrationsProvider);
 	}
 
 	public registerDeploymentsView(portManager: PortManager) {
@@ -224,23 +227,31 @@ export class ExtensionContextHandler {
 		this.registerDeploymentsRouteCommands(deploymentsProvider);
 	}
 
-	private registerIntegrationsItemsContextMenu() {
+	private registerIntegrationsItemsContextMenu(provider: IntegrationsProvider) {
 		const INTEGRATIONS_SHOW_SOURCE_COMMAND_ID: string = 'kaoto.integrations.showSource';
 		const INTEGRATIONS_DELETE_COMMAND_ID: string = 'kaoto.integrations.delete';
 		const INTEGRATIONS_UPDATE_DEPENDENCIES_COMMAND_ID: string = 'kaoto.integrations.updateDependencies';
 
 		// register show source menu button
-		const showSourceCommand = vscode.commands.registerCommand(INTEGRATIONS_SHOW_SOURCE_COMMAND_ID, async (integration: Integration) => {
-			await vscode.window.showTextDocument(integration.filepath);
+		const showSourceCommand = vscode.commands.registerCommand(INTEGRATIONS_SHOW_SOURCE_COMMAND_ID, async (item: vscode.TreeItem) => {
+			if (!item.resourceUri) {
+				return;
+			}
+			await vscode.window.showTextDocument(item.resourceUri);
 			await this.sendCommandTrackingEvent(INTEGRATIONS_SHOW_SOURCE_COMMAND_ID);
 		});
 
 		// register delete menu button
-		const deleteCommand = vscode.commands.registerCommand(INTEGRATIONS_DELETE_COMMAND_ID, async (integration: Integration) => {
-			const confirmation = await confirmFileDeleteDialog(integration.filename);
+		const deleteCommand = vscode.commands.registerCommand(INTEGRATIONS_DELETE_COMMAND_ID, async (item: vscode.TreeItem) => {
+			if (!item.resourceUri) {
+				return;
+			}
+			const confirmation = await confirmFileDeleteDialog(item.resourceUri.fsPath);
 			if (confirmation) {
-				await vscode.workspace.fs.delete(integration.filepath);
-				KaotoOutputChannel.logInfo(`File '${integration.filepath}' was deleted.`);
+				await vscode.workspace.fs.delete(item.resourceUri, { recursive: true });
+				// ensure tree refresh (folder deletions may not trigger file-pattern watcher)
+				provider.refresh();
+				KaotoOutputChannel.logInfo(`Item '${item.resourceUri.fsPath}' was deleted.`);
 			}
 			await this.sendCommandTrackingEvent(INTEGRATIONS_DELETE_COMMAND_ID);
 		});

@@ -317,8 +317,8 @@
       },
       {
         "command": "kaoto.integrations.updateDependencies",
-        "title": "Update Camel Dependencies in pom.xml of Maven project",
-        "shortTitle": "Update Camel Dependencies",
+        "title": "Update Camel Dependencies",
+        "shortTitle": "Update Dependencies",
         "category": "Kaoto",
         "icon": "$(sync)"
       },
@@ -546,32 +546,32 @@
       "view/item/context": [
         {
           "command": "kaoto.integrations.showSource",
-          "when": "view == kaoto.integrations && viewItem == integration",
+          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child || viewItem == integration-maven-child || viewItem == file)",
           "group": "navigation@1"
         },
         {
           "command": "kaoto.integrations.delete",
-          "when": "view == kaoto.integrations && viewItem == integration",
+          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child || viewItem == integration-maven-child || viewItem == file || viewItem == folder || viewItem == folder-maven-child || viewItem == folder-maven-root)",
           "group": "navigation@2"
         },
         {
           "command": "kaoto.integrations.updateDependencies",
-          "when": "view == kaoto.integrations && viewItem == integration && !virtualWorkspace && kaoto.jbangAvailable",
+          "when": "view == kaoto.integrations && viewItem == integration-maven-child && !virtualWorkspace && kaoto.jbangAvailable",
           "group": "navigation@3"
         },
         {
           "command": "kaoto.integrations.run",
-          "when": "view == kaoto.integrations && viewItem == integration && !virtualWorkspace && kaoto.jbangAvailable",
+          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child) && !virtualWorkspace && kaoto.jbangAvailable",
           "group": "inline@1"
         },
         {
           "command": "kaoto.integrations.kubernetes.run",
-          "when": "view == kaoto.integrations && viewItem == integration && !virtualWorkspace && kaoto.jbangAvailable",
+          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child) && !virtualWorkspace && kaoto.jbangAvailable",
           "group": "inline@2"
         },
         {
           "command": "kaoto.camel.jbang.export",
-          "when": "view == kaoto.integrations && viewItem == integration && !virtualWorkspace && kaoto.jbangAvailable",
+          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child) && !virtualWorkspace && kaoto.jbangAvailable",
           "group": "inline@3"
         },
         {
@@ -662,6 +662,26 @@
             "scope": "window",
             "order": 2
           },
+          "kaoto.integrations.files.regexp": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "additionalProperties": false,
+            "default": [
+              "*.camel.yaml",
+              "*.camel.xml",
+              "*.kamelet.yaml",
+              "*.pipe.yaml",
+              "*-pipe.yaml",
+              "*.properties",
+              "*.xsl",
+              "pom.xml"
+            ],
+            "markdownDescription": "Regular expression to filter files to be displayed in `Kaoto > Integrations` view.",
+            "scope": "window",
+            "order": 3
+          },
           "redhat.telemetry.enabled": {
             "type": "boolean",
             "default": null,
@@ -670,7 +690,7 @@
               "telemetry"
             ],
             "scope": "window",
-            "order": 3
+            "order": 4
           }
         }
       },

@@ -33,7 +33,7 @@ import {
 	VSBrowser,
 	WebDriver,
 } from 'vscode-extension-tester';
-import { getTreeItem, openResourcesAndWaitForActivation } from './Util';
+import { expandFolderItemsInIntegrationsView, getTreeItem, openResourcesAndWaitForActivation } from './Util';
 
 /**
  * This test needs to be always executed as last in suite
@@ -55,6 +55,8 @@ describe('Integrations View', function () {
 		kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
 		kaotoView = await kaotoViewContainer?.openView();
 		integrationsSection = await kaotoView?.getContent().getSection('Integrations');
+
+		await expandFolderItemsInIntegrationsView(integrationsSection, 'kamelets');
 	});
 
 	after(async function () {
@@ -123,6 +125,8 @@ describe('Integrations View', function () {
 		});
 
 		async function waitUntilNewCamelProjectHasCrucialFiles(): Promise<void> {
+			// expand folders
+			await expandFolderItemsInIntegrationsView(integrationsSection, 'src', 'main', 'resources', 'camel');
 			await driver.wait(
 				async function () {
 					const items = (await integrationsSection?.getVisibleItems()) as TreeItem[];

@@ -13,34 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { dirname, relative } from 'path';
-import { TreeItem, Uri, TreeItemCollapsibleState, IconPath, workspace } from 'vscode';
+import { TreeItem, Uri, TreeItemCollapsibleState } from 'vscode';
+import { IntegrationFileDSL, IntegrationFileIcon, IntegrationFileType } from '../../types/IntegrationTreeItemType';
 
 export class Integration extends TreeItem {
+	private static readonly CONTEXT_INTEGRATION = 'integration';
+	private static readonly CONTEXT_INTEGRATION_STANDALONE_CHILD = 'integration-standalone-child';
+	private static readonly CONTEXT_INTEGRATION_MAVEN_CHILD = 'integration-maven-child';
+
+	private static resolveContextValue(isTopLevelWithinWorkspace: boolean, isUnderMavenRoot: boolean): string {
+		const topLevelContext = isTopLevelWithinWorkspace ? Integration.CONTEXT_INTEGRATION : Integration.CONTEXT_INTEGRATION_STANDALONE_CHILD;
+		return isUnderMavenRoot ? Integration.CONTEXT_INTEGRATION_MAVEN_CHILD : topLevelContext;
+	}
+
 	constructor(
 		public readonly name: string,
 		public readonly filename: string,
 		public readonly filepath: Uri,
 		public collapsibleState: TreeItemCollapsibleState,
-		public readonly type: string,
-		public readonly dsl: string,
-		public readonly icon: string | IconPath,
+		public readonly type: IntegrationFileType,
+		public readonly dsl: IntegrationFileDSL,
+		public readonly icon: IntegrationFileIcon,
+		public readonly description: string,
+		public readonly isUnderMavenRoot: boolean = false,
+		public readonly isTopLevelWithinWorkspace: boolean = true,
 	) {
 		super(filename, collapsibleState);
-		this.iconPath = icon;
 		this.tooltip = this.filepath.fsPath;
-		this.description = this.getDescription(filepath);
-	}
+		this.resourceUri = this.filepath;
+		this.iconPath = icon;
+		this.description = description;
 
-	command = { command: 'kaoto.open', title: 'Open with Kaoto', arguments: [this.filepath] };
+		this.contextValue = Integration.resolveContextValue(isTopLevelWithinWorkspace, isUnderMavenRoot);
 
-	contextValue = 'integration';
-
-	private getDescription(filepath: Uri): string {
-		if (workspace.workspaceFolders && workspace.workspaceFolders.length > 1) {
-			return dirname(relative(dirname(workspace.getWorkspaceFolder(filepath)?.uri.fsPath as string), filepath.fsPath));
-		} else {
-			return dirname(relative(workspace.getWorkspaceFolder(filepath)?.uri.fsPath as string, filepath.fsPath));
-		}
+		this.command = { command: 'kaoto.open', title: 'Open with Kaoto', arguments: [this.filepath] };
 	}
 }

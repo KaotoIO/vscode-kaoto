@@ -13,18 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TreeItem, IconPath, TreeItemCollapsibleState } from 'vscode';
+import { IntegrationFileIcon } from '../../types/IntegrationTreeItemType';
+import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 
 export class Route extends TreeItem {
+	private static readonly CONTEXT_ROUTE: string = 'route';
+	private static readonly MISSING_ID_DESCRIPTION: string = '(missing id)';
+	private static readonly MISSING_ID_TOOLTIP: string = 'This route has no id.';
+
+	private static resolveDescription(name: string | undefined, providedDescription: string): string {
+		return name ? providedDescription : Route.MISSING_ID_DESCRIPTION;
+	}
+
 	constructor(
 		public readonly name: string,
 		public readonly description: string,
-		public readonly icon: string | IconPath,
+		public readonly icon: IntegrationFileIcon,
 	) {
-		super(name || '[missing route id]', TreeItemCollapsibleState.None);
-		this.description = description;
-		this.iconPath = icon;
-	}
+		super(name, TreeItemCollapsibleState.None);
 
-	contextValue = 'route';
+		this.description = Route.resolveDescription(name, description);
+		if (!name) {
+			this.tooltip = Route.MISSING_ID_TOOLTIP;
+		}
+
+		this.iconPath = icon;
+		this.contextValue = Route.CONTEXT_ROUTE;
+	}
 }

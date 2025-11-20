@@ -16,6 +16,7 @@
 import * as path from 'path';
 import {
 	checkTopologyLoaded,
+	expandFolderItemsInIntegrationsView,
 	getTreeItem,
 	openAndSwitchToKaotoFrame,
 	openResourcesAndWaitForActivation,
@@ -150,6 +151,9 @@ describe('Maven dependency update pom.xml', function () {
 			const kaotoController = await new ActivityBar().getViewControl('Kaoto');
 			const kaotoView = await kaotoController?.openView();
 			const integrationsSection = await kaotoView?.getContent().getSection('Integrations');
+
+			// expand folders
+			await expandFolderItemsInIntegrationsView(integrationsSection, 'src', 'main', 'resources', 'camel');
 
 			// click Update Camel Dependencies button
 			const item = await getTreeItem(driver, integrationsSection, 'my-camel-quarkus-route.camel.yaml');
