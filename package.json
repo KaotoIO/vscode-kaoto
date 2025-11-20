@@ -317,8 +317,8 @@
       },
       {
         "command": "kaoto.integrations.updateDependencies",
-        "title": "Update Camel Dependencies in pom.xml of Maven project",
-        "shortTitle": "Update Camel Dependencies",
+        "title": "Update Camel Dependencies",
+        "shortTitle": "Update Dependencies",
         "category": "Kaoto",
         "icon": "$(sync)"
       },
@@ -546,17 +546,17 @@
       "view/item/context": [
         {
           "command": "kaoto.integrations.showSource",
-          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child)",
+          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child || viewItem == integration-maven-child || viewItem == file)",
           "group": "navigation@1"
         },
         {
           "command": "kaoto.integrations.delete",
-          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child)",
+          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child || viewItem == integration-maven-child || viewItem == file || viewItem == folder || viewItem == folder-maven-child || viewItem == folder-maven-root)",
           "group": "navigation@2"
         },
         {
           "command": "kaoto.integrations.updateDependencies",
-          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child) && !virtualWorkspace && kaoto.jbangAvailable",
+          "when": "view == kaoto.integrations && viewItem == integration-maven-child && !virtualWorkspace && kaoto.jbangAvailable",
           "group": "navigation@3"
         },
         {
