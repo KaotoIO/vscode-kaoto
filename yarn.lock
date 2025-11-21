@@ -2549,9 +2549,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/test-web@npm:^0.0.75":
-  version: 0.0.75
-  resolution: "@vscode/test-web@npm:0.0.75"
+"@vscode/test-web@npm:^0.0.76":
+  version: 0.0.76
+  resolution: "@vscode/test-web@npm:0.0.76"
   dependencies:
     "@koa/cors": "npm:^5.0.0"
     "@koa/router": "npm:^14.0.0"
@@ -2570,7 +2570,7 @@ __metadata:
     vscode-uri: "npm:^3.1.0"
   bin:
     vscode-test-web: out/server/index.js
-  checksum: 10/943656dc8a34377247213e207072219a671c5fe440d5de13e5025773637f645069b30a17a6ad2b820c318ffbd8e18f38a5094dd49db3f135457f990fb8668ba7
+  checksum: 10/9e30513331bd169fe804cb2953cd568933c6b2a366e18e02f578b26633fdf33bc4ac81d58febcde62930bdd2c27408d149cff6c3299ca9d998060ae0b4f7cfac
   languageName: node
   linkType: hard
 
@@ -12889,7 +12889,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:^8.47.0"
     "@vscode/test-cli": "npm:^0.0.12"
     "@vscode/test-electron": "npm:^2.5.2"
-    "@vscode/test-web": "npm:^0.0.75"
+    "@vscode/test-web": "npm:^0.0.76"
     "@vscode/vsce": "npm:^3.7.0"
     async-wait-until: "npm:^2.0.31"
     buffer: "npm:^6.0.3"
