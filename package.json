@@ -332,8 +332,14 @@
         }
       },
       {
-        "command": "kaoto.integrations.run.all",
+        "command": "kaoto.integrations.run.workspace",
         "title": "Run: Workspace",
+        "category": "Kaoto",
+        "icon": "$(run-all)"
+      },
+      {
+        "command": "kaoto.integrations.run.all.workspaces",
+        "title": "Run: All Workspaces",
         "category": "Kaoto",
         "icon": "$(run-all)"
       },
@@ -471,7 +477,11 @@
           "when": "false"
         },
         {
-          "command": "kaoto.integrations.run.all",
+          "command": "kaoto.integrations.run.workspace",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.integrations.run.all.workspaces",
           "when": "false"
         },
         {
@@ -548,9 +558,14 @@
       ],
       "view/title": [
         {
-          "command": "kaoto.integrations.run.all",
+          "command": "kaoto.integrations.run.workspace",
           "group": "navigation@1",
-          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 0"
+          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount == 1"
+        },
+        {
+          "command": "kaoto.integrations.run.all.workspaces",
+          "group": "navigation@1",
+          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 1"
         },
         {
           "submenu": "kaoto.new.file",
