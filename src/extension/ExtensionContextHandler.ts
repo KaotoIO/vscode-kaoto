@@ -43,6 +43,8 @@ import { RecommendationCore } from '@redhat-developer/vscode-extension-proposals
 import { WhatsNewPanel } from './WhatsNewPanel';
 import { satisfies } from 'compare-versions';
 import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
+import { CamelRunSourceDirJBangTask } from '../tasks/CamelRunSourceDirJBangTask';
+import { Folder } from '../views/integrationTreeItems/Folder';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -325,6 +327,35 @@ export class ExtensionContextHandler {
 				await this.sendCommandTrackingEvent(INTEGRATIONS_RUN_COMMAND_ID);
 			}),
 		);
+	}
+
+	public registerRunSourceDirCommands(portManager: PortManager) {
+		const INTEGRATIONS_RUN_FOLDER_COMMAND_ID: string = 'kaoto.integrations.run.folder';
+		const INTEGRATIONS_RUN_ALL_COMMAND_ID: string = 'kaoto.integrations.run.all';
+
+		const runSourceDirTask = async (folderPath: string) => {
+			const port = await portManager.allocatePort();
+			const runTask = await CamelRunSourceDirJBangTask.create(folderPath, port);
+			await runTask.execute();
+		};
+
+		const runFolderCommand = vscode.commands.registerCommand(INTEGRATIONS_RUN_FOLDER_COMMAND_ID, async (folder: Folder) => {
+			await runSourceDirTask(folder.folderUri.fsPath);
+			await this.sendCommandTrackingEvent(INTEGRATIONS_RUN_FOLDER_COMMAND_ID);
+		});
+
+		const runAllCommand = vscode.commands.registerCommand(INTEGRATIONS_RUN_ALL_COMMAND_ID, async () => {
+			const folders = vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0 ? vscode.workspace.workspaceFolders : undefined;
+			if (!folders) {
+				return;
+			}
+			for (const folder of folders) {
+				await runSourceDirTask(folder.uri.fsPath);
+			}
+			await this.sendCommandTrackingEvent(INTEGRATIONS_RUN_ALL_COMMAND_ID);
+		});
+
+		this.context.subscriptions.push(runFolderCommand, runAllCommand);
 	}
 
 	public registerKubernetesRunCommands() {
