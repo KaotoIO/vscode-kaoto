@@ -1,0 +1,46 @@
+name: 📦 Kaoto VSIX Snapshot
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 👷🏻 Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: ⚙️ Setup NodeJS
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: "yarn"
+
+      - name: 🔧 Install
+        run: yarn --network-timeout 1000000
+
+      - name: 🔧 Build:dev
+        run: yarn build:dev
+
+      - name: 🔧 Build:prod
+        run: yarn build:prod
+
+      - name: 🛠 Read version from package.json
+        id: version
+        run: |
+          VERSION=$(node -p 'require("./package.json").version')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: 🛠 Pack extension
+        run: yarn vsce package --no-dependencies --yarn -o vscode-kaoto-${{ steps.version.outputs.version }}-SNAPSHOT.vsix
+
+      - name: 💾 Upload VSIX
+        uses: actions/upload-artifact@v5
+        with:
+          name: vscode-kaoto-${{ steps.version.outputs.version }}-SNAPSHOT.vsix
+          path: vscode-kaoto-${{ steps.version.outputs.version }}-SNAPSHOT.vsix
