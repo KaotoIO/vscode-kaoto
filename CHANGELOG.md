@@ -1,6 +1,7 @@
 # 2.9.0
 
 - rework Integrations section of Kaoto view to bring tree-like structure
+- add buttons `Run: Folder` and `Run: Workspace` into Integrations section of Kaoto view
 
 # 2.8.0
 
