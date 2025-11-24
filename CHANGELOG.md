@@ -1,5 +1,7 @@
 # 2.9.0
 
+- rework Integrations section of Kaoto view to bring tree-like structure
+
 # 2.8.0
 
 - Upgrade to Kaoto 2.8.3
