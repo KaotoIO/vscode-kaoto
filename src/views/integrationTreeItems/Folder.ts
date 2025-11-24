@@ -27,9 +27,14 @@ export class Folder extends TreeItem {
 		return isUnderMavenRoot ? Folder.CONTEXT_FOLDER_MAVEN_CHILD : Folder.CONTEXT_FOLDER;
 	}
 
-	private static resolveIcon(isMavenRoot: boolean): ThemeIcon {
-		const icon = isMavenRoot ? 'folder-library' : 'symbol-folder';
-		return new ThemeIcon(icon);
+	private static resolveIcon(isMavenRoot: boolean, isWorkspaceRoot?: boolean): ThemeIcon {
+		if (isMavenRoot) {
+			return new ThemeIcon('folder-library');
+		}
+		if (isWorkspaceRoot) {
+			return new ThemeIcon('file-submodule');
+		}
+		return new ThemeIcon('symbol-folder');
 	}
 
 	constructor(
@@ -38,12 +43,13 @@ export class Folder extends TreeItem {
 		public readonly tooltipText?: string,
 		public readonly isUnderMavenRoot: boolean = false,
 		public readonly isMavenRoot: boolean = false,
+		public readonly isWorkspaceRoot: boolean = false,
 	) {
 		super(labelName, TreeItemCollapsibleState.Collapsed);
 		this.resourceUri = folderUri;
 		this.tooltip = tooltipText ?? folderUri.fsPath;
 
-		this.iconPath = Folder.resolveIcon(this.isMavenRoot);
+		this.iconPath = Folder.resolveIcon(this.isMavenRoot, this.isWorkspaceRoot);
 
 		this.description = this.isMavenRoot ? 'M' : undefined;
 		this.contextValue = Folder.resolveContextValue(this.isUnderMavenRoot, this.isMavenRoot);

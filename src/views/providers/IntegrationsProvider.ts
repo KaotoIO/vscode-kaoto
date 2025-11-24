@@ -127,6 +127,7 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 						undefined,
 						false,
 						files.some((f) => f.fsPath === join(wf.uri.fsPath, 'pom.xml')),
+						true,
 					),
 			);
 		return folders;
