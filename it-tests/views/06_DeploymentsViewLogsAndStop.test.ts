@@ -90,10 +90,10 @@ describe('Deployments View', function () {
 			await waitUntilTerminalHasText(driver, [p.message], 2_000, 30_000);
 		});
 
-		it(`stop running '${p.file}'`, async function () {
+		it(`terminate running '${p.file}'`, async function () {
 			const item = await getTreeItem(driver, deploymentsSection, p.label);
-			const stop = await item?.getActionButton('Stop');
-			await stop?.click();
+			const terminate = await item?.getActionButton('Terminate');
+			await terminate?.click();
 			await waitUntilTerminalHasText(driver, ['Routes stopped', 'shutdown in'], 2_000, 30_000);
 		});
 

@@ -87,6 +87,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	contextHandler.registerNewCamelProjectCommands();
 	contextHandler.registerKubernetesRunCommands();
 	contextHandler.registerRunIntegrationCommands(portManager);
+	contextHandler.registerRunSourceDirCommands(portManager);
 
 	/*
 	 * register 'Deployments' view provider

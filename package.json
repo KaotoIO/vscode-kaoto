@@ -284,13 +284,13 @@
       },
       {
         "command": "kaoto.camel.jbang.export",
-        "title": "Export",
+        "title": "Export: File",
         "category": "Kaoto",
         "icon": "$(link-external)"
       },
       {
         "command": "kaoto.integrations.kubernetes.run",
-        "title": "Deploy",
+        "title": "Deploy: File",
         "category": "Kaoto",
         "icon": {
           "dark": "./icons/kubernetes/kube-dark.png",
@@ -324,12 +324,24 @@
       },
       {
         "command": "kaoto.integrations.run",
-        "title": "Run",
+        "title": "Run: File",
         "category": "Kaoto",
         "icon": {
           "dark": "./icons/kaoto-run/kaoto-run-dark.png",
           "light": "./icons/kaoto-run/kaoto-run-light.png"
         }
+      },
+      {
+        "command": "kaoto.integrations.run.all",
+        "title": "Run: Workspace",
+        "category": "Kaoto",
+        "icon": "$(run-all)"
+      },
+      {
+        "command": "kaoto.integrations.run.folder",
+        "title": "Run: Folder",
+        "category": "Kaoto",
+        "icon": "$(play)"
       },
       {
         "command": "kaoto.deployments.refresh",
@@ -339,7 +351,7 @@
       },
       {
         "command": "kaoto.deployments.stop",
-        "title": "Stop",
+        "title": "Terminate",
         "category": "Kaoto",
         "icon": "$(circle-slash)"
       },
@@ -459,6 +471,14 @@
           "when": "false"
         },
         {
+          "command": "kaoto.integrations.run.all",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.integrations.run.folder",
+          "when": "false"
+        },
+        {
           "command": "kaoto.integrations.kubernetes.run",
           "when": "false"
         },
@@ -528,8 +548,13 @@
       ],
       "view/title": [
         {
-          "submenu": "kaoto.new.file",
+          "command": "kaoto.integrations.run.all",
           "group": "navigation@1",
+          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 0"
+        },
+        {
+          "submenu": "kaoto.new.file",
+          "group": "navigation@2",
           "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 0"
         },
         {
@@ -544,6 +569,11 @@
         }
       ],
       "view/item/context": [
+        {
+          "command": "kaoto.integrations.run.folder",
+          "when": "view == kaoto.integrations && viewItem == folder && !virtualWorkspace && kaoto.jbangAvailable",
+          "group": "inline@1"
+        },
         {
           "command": "kaoto.integrations.showSource",
           "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child || viewItem == integration-maven-child || viewItem == file)",
@@ -764,17 +794,31 @@
             ],
             "order": 1
           },
+          "kaoto.camelJbang.runFolderOrWorkspaceArguments": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            },
+            "additionalProperties": false,
+            "markdownDescription": "User defined arguments to be applied at every launch of a folder or workspace. In case of spaces, the values needs to be enclosed with quotes.\n\nFor possible values see [official docs](https://camel.apache.org/manual/camel-jbang.html#_creating_and_running_camel_routes).",
+            "default": [
+              "--dev",
+              "--local-kamelet-dir=."
+            ],
+            "order": 2
+          },
           "kaoto.camelJbang.redHatMavenRepository": {
             "type": "string",
             "markdownDescription": "Define Red Hat Maven Repository, which is used automatically in case the `#kaoto.camelVersion#` uses Red Hat productized Camel version (e.g. `4.8.0.redhat-00017`).",
             "default": "https://maven.repository.redhat.com/ga/",
-            "order": 2
+            "order": 3
           },
           "kaoto.camelJbang.redHatMavenRepository.global": {
             "type": "boolean",
             "markdownDescription": "The `#repos` placeholder will be added by default to use also repositories defined in global Camel JBang configuration file.\n\n**Note**: The placeholder is available for versions `3.20.7/3.21` onwards.",
             "default": true,
-            "order": 3
+            "order": 4
           },
           "kaoto.camelJbang.kubernetesRunArguments": {
             "type": "array",
@@ -789,7 +833,7 @@
               "--disable-auto",
               "--dev"
             ],
-            "order": 3
+            "order": 5
           }
         }
       },

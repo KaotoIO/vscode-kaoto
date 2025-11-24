@@ -38,7 +38,7 @@
   - **Orchestrate** and manage all Camel integrations running locally through a dedicated view
   - **Initialize** Camel Routes, Pipes and Kamelets quickly.
   - **Export** integrations as **Maven projects** for Quarkus or Spring Boot deployments.
-  - **Run locally** – Test and execute individual integration files effortlessly.
+  - **Run locally** – Test and execute Camel projects or individual integration files effortlessly.
   - **Deploy to OpenShift/Kubernetes** – Deploy a single integration file seamlessly.
     - For Minikube, check out the [Deployment Tips & Troubleshooting Guide](https://camel.apache.org/manual/camel-jbang-kubernetes.html#_minikube_deployment_tips_and_troubleshooting).
 
