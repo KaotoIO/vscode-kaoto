@@ -573,6 +573,11 @@
           "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 0"
         },
         {
+          "submenu": "kaoto.new.file",
+          "group": "navigation@2",
+          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 0"
+        },
+        {
           "command": "kaoto.integrations.refresh",
           "group": "navigation@2",
           "when": "view == kaoto.integrations"
