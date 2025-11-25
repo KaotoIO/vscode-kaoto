@@ -21,20 +21,25 @@ jobs:
         uses: actions/checkout@v6
         with:
           path: vscode-kaoto
+
       - name: Checkout Kaoto
         uses: actions/checkout@v6
         with:
           path: kaoto
           repository: KaotoIO/kaoto
+
       - uses: actions/setup-node@v6
         with:
           node-version: 22
+
       - uses: actions/setup-java@v5
         with:
           distribution: "temurin"
           java-version: "21"
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.7.0
+
       - name: Start Minikube
         uses: medyagh/setup-minikube@v0.0.20
         with:
@@ -42,56 +47,80 @@ jobs:
           addons: registry,registry-aliases
           container-runtime: docker
           insecure-registry: "10.0.0.0/24"
+
       - name: Set Minikube ENV
         run: |
           eval $(minikube -p minikube docker-env)
           echo "INSTALL_REGISTRY=$(kubectl -n kube-system get service registry -o jsonpath='{.spec.clusterIP}')" >> $GITHUB_ENV
           echo $INSTALL_REGISTRY
+
       - name: Install JBang
         run: |
           curl -Ls https://sh.jbang.dev | bash -s - app setup
           echo "$HOME/.jbang/bin" >> $GITHUB_PATH
+
       - name: Kaoto build
         working-directory: kaoto
         run: |
           yarn
           yarn workspace @kaoto/kaoto run build:lib
+
       - name: yarn link kaoto
         working-directory: vscode-kaoto
         run: yarn link ../kaoto/packages/ui
+
       - name: yarn build:dev
         working-directory: vscode-kaoto
         run: yarn build:dev
+
       - name: yarn build:prod
         working-directory: vscode-kaoto
         run: yarn build:prod
+
       - name: vsix package
         working-directory: vscode-kaoto
         run: yarn vsce package --no-dependencies --yarn
+
       - name: Allow unprivileged user namespace (ubuntu)
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
       - name: Run Unit tests
         working-directory: vscode-kaoto
         run: xvfb-run -a yarn test:unit
+
       - name: Run UI Tests
         working-directory: vscode-kaoto
         run: |
           eval $(minikube -p minikube docker-env)
           xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
-      - name: Archive vsix
-        uses: actions/upload-artifact@v5
-        with:
-          name: vsix-from-main-branch-of-kaoto
-          path: "vscode-kaoto/*.vsix"
+
       - name: Store VS Code logs
         uses: actions/upload-artifact@v5
         if: always()
         with:
           name: vscode-logs
           path: vscode-kaoto/test-resources/settings/logs
+
       - name: Store VS Code UI Tests screenshots on failure
         uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: ui-test-screenshots
           path: vscode-kaoto/test-resources/screenshots
+
+  snapshot:
+    if: always()
+    runs-on: ubuntu-latest
+    name: 📦 Kaoto VSIX Snapshot
+    needs: [build]
+    steps:
+      - name: 🛠 Read version from package.json
+        id: version
+        run: |
+          VERSION=$(node -p 'require("./package.json").version')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: 💾 Upload VSIX
+        uses: actions/upload-artifact@v5
+        with:
+          name: vscode-kaoto-${{ steps.version.outputs.version }}-SNAPSHOT.vsix
+          path: vscode-kaoto/vscode-kaoto-${{ steps.version.outputs.version }}*.vsix
