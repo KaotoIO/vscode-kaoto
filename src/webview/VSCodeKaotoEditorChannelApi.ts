@@ -13,10 +13,10 @@ import { ResourceContentService } from '@kie-tools-core/workspace/dist/api';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
-import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
-import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
-import { getSuggestions } from '../helpers/SuggestionRegistry';
 import { CamelJBang } from '../helpers/CamelJBang';
+import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
+import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
+import { getSuggestions } from '../helpers/SuggestionRegistry';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 	private readonly currentEditedDocument: vscode.TextDocument | VsCodeKieEditorCustomDocument;
@@ -109,6 +109,10 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		await vscode.workspace.fs.writeFile(kaotoMetadatafile, new TextEncoder().encode(JSON.stringify(jsonContent, null, '\t')));
 	}
 
+	async getResourcesContentByType(_type: string): Promise<Array<{ filename: string; content: string }>> {
+		return [];
+	}
+
 	async getResourceContent(relativePath: string): Promise<string | undefined> {
 		const classpathRoot: string = findClasspathRoot(this.currentEditedDocument.uri);
 		try {
@@ -178,9 +182,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 				return;
 			}
 			let kaotoMetadataFile = await this.findExistingKaotoMetadataFile(this.currentEditedDocument.uri);
-			if (kaotoMetadataFile === undefined) {
-				kaotoMetadataFile = await this.findKaotoMetadataToCreate();
-			}
+			kaotoMetadataFile ??= await this.findKaotoMetadataToCreate();
 			return await vscode.window.showQuickPick(
 				files.map((f) => {
 					return path.relative(path.dirname(kaotoMetadataFile.fsPath), f.fsPath);
