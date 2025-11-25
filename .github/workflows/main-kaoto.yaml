@@ -18,11 +18,11 @@ jobs:
 
     steps:
       - name: Checkout vscode-kaoto
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: vscode-kaoto
       - name: Checkout Kaoto
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: kaoto
           repository: KaotoIO/kaoto
