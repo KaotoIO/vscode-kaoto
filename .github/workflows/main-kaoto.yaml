@@ -116,6 +116,7 @@ jobs:
     steps:
       - name: 🛠 Read version from package.json
         id: version
+        working-directory: vscode-kaoto
         run: |
           VERSION=$(node -p 'require("./package.json").version')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
