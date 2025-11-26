@@ -30,6 +30,7 @@ import {
 	TextEditor,
 	TreeItem,
 	until,
+	ViewPanelAction,
 	ViewSection,
 	VSBrowser,
 	WebDriver,
@@ -325,5 +326,28 @@ export async function collapseItemsInsideIntegrationsView(integrationsSection: V
 		await collapseItems?.click();
 	} else {
 		throw new Error('Driver not found');
+	}
+}
+
+/**
+ * Get action button from view section
+ * @param section The view section.
+ * @param action The action to get the button for.
+ * @param timeout The timeout in milliseconds.
+ * @returns A Promise that resolves to the action button or undefined if not found.
+ */
+export async function getViewActionButton(section: ViewSection | undefined, action: string, timeout: number = 5_000): Promise<ViewPanelAction | undefined> {
+	const driver = section?.getDriver();
+	if (driver) {
+		await driver.actions().move({ origin: section }).perform(); // move mouse to bring auto-hided buttons visible again
+		return await driver.wait(
+			async function () {
+				return await section?.getAction(action);
+			},
+			timeout,
+			`'${action}' action button was not found!`,
+		);
+	} else {
+		return undefined;
 	}
 }
