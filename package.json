@@ -627,6 +627,7 @@
     ],
     "configuration": [
       {
+        "id": "kaoto",
         "title": "Kaoto",
         "properties": {
           "kaoto.catalog.url": {
@@ -695,6 +696,7 @@
         }
       },
       {
+        "id": "canvas",
         "title": "Canvas",
         "properties": {
           "kaoto.nodeLabel": {
@@ -737,6 +739,7 @@
         }
       },
       {
+        "id": "jbang",
         "title": "JBang",
         "properties": {
           "kaoto.camelJbang.version": {
@@ -791,6 +794,7 @@
         }
       },
       {
+        "id": "maven",
         "title": "Maven Projects",
         "properties": {
           "kaoto.maven.dependenciesUpdate.onSave": {
