@@ -36,7 +36,8 @@ describe('Integrations View', function () {
 		kaotoView = await kaotoViewContainer?.openView();
 		await (await kaotoView?.getContent().getSection('Help & Feedback'))?.collapse();
 		integrationsSection = await kaotoView?.getContent().getSection('Integrations');
-		const collapseItems = await getViewActionButton(integrationsSection, 'Collapse All');
+
+		const collapseItems = await getViewActionButton(kaotoViewContainer, integrationsSection, 'Collapse All');
 		await collapseItems?.click();
 	});
 
@@ -50,13 +51,14 @@ describe('Integrations View', function () {
 		after(async function () {
 			await killTerminal();
 		});
+
 		it('button is available', async function () {
-			const button = await getViewActionButton(integrationsSection, 'Run: Workspace');
+			const button = await getViewActionButton(kaotoViewContainer, integrationsSection, 'Run: Workspace');
 			expect(button).to.not.be.undefined;
 		});
 
 		it(`click button`, async function () {
-			const button = await getViewActionButton(integrationsSection, 'Run: Workspace');
+			const button = await getViewActionButton(kaotoViewContainer, integrationsSection, 'Run: Workspace');
 			await button?.click();
 		});
 
@@ -74,7 +76,7 @@ describe('Integrations View', function () {
 			await input.setText(WORKSPACE_FILE);
 			await input.confirm();
 
-			await driver.sleep(1000);
+			await driver.sleep(1_000);
 			await VSBrowser.instance.waitForWorkbench();
 
 			kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
@@ -83,12 +85,12 @@ describe('Integrations View', function () {
 		});
 
 		it('button is available', async function () {
-			const button = await getViewActionButton(integrationsSection, 'Run: All Workspaces');
+			const button = await getViewActionButton(kaotoViewContainer, integrationsSection, 'Run: All Workspaces');
 			expect(button).to.not.be.undefined;
 		});
 
 		it(`click button`, async function () {
-			const button = await getViewActionButton(integrationsSection, 'Run: All Workspaces');
+			const button = await getViewActionButton(kaotoViewContainer, integrationsSection, 'Run: All Workspaces');
 			await button?.click();
 		});
 

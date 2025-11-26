@@ -15,8 +15,8 @@
  */
 import { expect, assert } from 'chai';
 import { join } from 'path';
-import { ActivityBar, after, before, EditorView, SideBarView, ViewControl, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
-import { getTreeItem, killTerminal, openResourcesAndWaitForActivation, waitUntilTerminalHasText } from '../Util';
+import { ActivityBar, after, before, EditorView, SideBarView, TreeItem, ViewControl, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
+import { getTreeItem, getTreeItemActionButton, killTerminal, openResourcesAndWaitForActivation, waitUntilTerminalHasText } from '../Util';
 
 describe('Deployments View', function () {
 	this.timeout(1_200_000); // 20 minutes
@@ -46,7 +46,8 @@ describe('Deployments View', function () {
 	it(`click 'Run' button (Integrations view)`, async function () {
 		const integrationsSection = await kaotoView?.getContent().getSection('Integrations');
 		const item = await getTreeItem(driver, integrationsSection, 'sample2.camel.yaml');
-		const button = await item?.getActionButton('Run');
+		expect(item).to.not.be.undefined;
+		const button = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, 'Run');
 		await button?.click();
 
 		await waitUntilTerminalHasText(driver, ['Routes startup', 'Hello World'], 4_000, 180_000);

@@ -15,8 +15,8 @@
  */
 import { expect } from 'chai';
 import { join } from 'path';
-import { ActivityBar, after, EditorView, SideBarView, ViewControl, ViewItemAction, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
-import { getTreeItem, killTerminal, openResourcesAndWaitForActivation, waitUntilTerminalHasText } from '../Util';
+import { ActivityBar, after, EditorView, SideBarView, TreeItem, ViewControl, ViewItemAction, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
+import { getTreeItem, getTreeItemActionButton, killTerminal, openResourcesAndWaitForActivation, waitUntilTerminalHasText } from '../Util';
 
 describe('Deployments View', function () {
 	this.timeout(600_000); // 10 minutes
@@ -64,7 +64,8 @@ describe('Deployments View', function () {
 		describe(`Manipulate '${p.file}' routes`, function () {
 			it(`run '${p.file}' integration`, async function () {
 				const item = await getTreeItem(driver, integrationsSection, p.file);
-				const run = await item?.getActionButton('Run');
+				expect(item).to.not.be.undefined;
+				const run = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, 'Run');
 				await run?.click();
 			});
 
@@ -78,7 +79,7 @@ describe('Deployments View', function () {
 					const route = await getTreeItem(driver, deploymentsSection, p.route);
 					expect(route).to.not.be.undefined;
 
-					const btn = await route?.getActionButton(rm.button);
+					const btn = await getTreeItemActionButton(kaotoViewContainer, route as TreeItem, rm.button);
 					await btn?.click();
 
 					await waitUntilTerminalHasText(driver, [`${rm.state} ${p.route}`], 1_000, 10_000);
@@ -96,6 +97,7 @@ describe('Deployments View', function () {
 				async function () {
 					try {
 						const route = await getTreeItem(driver, deploymentsSection, p.route);
+						expect(route).to.not.be.undefined;
 						const description = await route?.getDescription();
 						return description?.startsWith(state);
 					} catch (err) {
