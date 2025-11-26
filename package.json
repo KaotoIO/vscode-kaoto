@@ -682,10 +682,23 @@
             "scope": "window",
             "order": 0
           },
+          "kaoto.localKameletDirectories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "additionalProperties": false,
+            "markdownDescription": "List of local directories to be used for Kamelet files. It is used for every run by adding `--local-kamelet-dir` argument into `#kaoto.camelJbang.runArguments#` or `#kaoto.camelJbang.runFolderOrWorkspaceArguments#` settings.\n\n**Note**: The setting can be overridden by the `--local-kamelet-dir` argument set in mentioned run arguments settings.\n\nSupports common variables - `${workspaceFolder}`, `${workspaceFolderBasename}`, `${cwd}`",
+            "default": [
+              "."
+            ],
+            "scope": "window",
+            "order": 1
+          },
           "kaoto.camelVersion": {
             "type": "string",
             "markdownDescription": "Camel version used for internal Camel JBang CLI commands execution. As default Camel Version is used `#kaoto.camelJbang.version#`.",
-            "order": 1
+            "order": 2
           },
           "kaoto.deployments.refresh.interval": {
             "type": "number",
@@ -706,7 +719,7 @@
             ],
             "default": 30000,
             "scope": "window",
-            "order": 2
+            "order": 3
           },
           "kaoto.integrations.files.regexp": {
             "type": "array",
@@ -726,7 +739,7 @@
             ],
             "markdownDescription": "Regular expression to filter files to be displayed in `Kaoto > Integrations` view.",
             "scope": "window",
-            "order": 3
+            "order": 4
           },
           "redhat.telemetry.enabled": {
             "type": "boolean",
@@ -736,7 +749,7 @@
               "telemetry"
             ],
             "scope": "window",
-            "order": 4
+            "order": 5
           }
         }
       },
@@ -804,7 +817,6 @@
             "default": [
               "--dev",
               "--logging-level=info",
-              "--local-kamelet-dir=.",
               "*.xsl"
             ],
             "order": 1
@@ -818,8 +830,7 @@
             "additionalProperties": false,
             "markdownDescription": "User defined arguments to be applied at every launch of a folder or workspace. In case of spaces, the values needs to be enclosed with quotes.\n\nFor possible values see [official docs](https://camel.apache.org/manual/camel-jbang.html#_creating_and_running_camel_routes).",
             "default": [
-              "--dev",
-              "--local-kamelet-dir=."
+              "--dev"
             ],
             "order": 2
           },
