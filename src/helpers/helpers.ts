@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { ProgressLocation, window } from 'vscode';
+import { ProgressLocation, window, workspace, WorkspaceFolder } from 'vscode';
 import { exec, execSync } from 'child_process';
 import { promisify } from 'util';
-import { dirname, join, normalize } from 'path';
+import * as path from 'path';
 import fs from 'fs';
 
 /**
@@ -37,6 +37,8 @@ export const KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID: string = 'ka
 export const KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID: string = 'kaoto.camelJbang.redHatMavenRepository.global';
 
 export const KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID: string = 'kaoto.camelJbang.kubernetesRunArguments';
+
+export const KAOTO_LOCAL_KAMELET_DIRECTORIES_SETTING_ID: string = 'kaoto.localKameletDirectories';
 
 export const KAOTO_INTEGRATIONS_FILES_REGEXP_SETTING_ID: string = 'kaoto.integrations.files.regexp';
 
@@ -97,8 +99,8 @@ async function runJBangCommandWithStatusBar(args: string, msg: string): Promise<
  * @returns `true` if paths are equal `false` otherwise.
  */
 export function arePathsEqual(path1: string, path2: string): boolean {
-	const normalizedPath1 = normalize(path1);
-	const normalizedPath2 = normalize(path2);
+	const normalizedPath1 = path.normalize(path1);
+	const normalizedPath2 = path.normalize(path2);
 
 	// on Windows and macOS, perform case-insensitive comparison
 	if (process.platform === 'win32' || process.platform === 'darwin') {
@@ -116,13 +118,82 @@ export function arePathsEqual(path1: string, path2: string): boolean {
  * @returns the folder containing the pom.xml file or undefined if not found
  */
 export function findFolderOfPomXml(currentFile: string): string | undefined {
-	const parentFolder = dirname(currentFile);
+	const parentFolder = path.dirname(currentFile);
 	if (parentFolder !== undefined && parentFolder !== currentFile) {
-		if (fs.existsSync(join(parentFolder, 'pom.xml'))) {
+		if (fs.existsSync(path.join(parentFolder, 'pom.xml'))) {
 			return parentFolder;
 		} else {
 			return findFolderOfPomXml(parentFolder);
 		}
 	}
 	return undefined;
+}
+
+/**
+ * Resolve a list of paths against the current working directory.
+ *
+ * @param paths The list of paths to resolve
+ * @param cwd The current working directory
+ * @returns The resolved paths
+ */
+export function resolvePaths(paths: string[], cwd: string): Set<string> {
+	const allResolvedPaths = paths.map((p) => resolvePathAgainstCwd(p, cwd));
+	return new Set(allResolvedPaths);
+}
+
+/**
+ * Helper to properly resolve path to be relative to cwd unless already absolute.
+ *
+ * @param pathString The path string to resolve
+ * @param cwd The current working directory
+ * @returns The resolved path
+ */
+// The cwd parameter changes based on which file/folder is clicked in the integrations view.
+function resolvePathAgainstCwd(pathString: string, cwd: string): string {
+	// Expand VS Code variables first
+	const expandedPath = expandVSCodeVariables(pathString, cwd);
+
+	// resolve absolute paths first
+	if (path.isAbsolute(expandedPath)) {
+		return path.normalize(expandedPath);
+	}
+
+	// then resolve relative paths against cwd
+	return path.normalize(path.resolve(cwd, expandedPath));
+}
+
+/**
+ * Expands VS Code variables in a path string.
+ * Supports common variables - ${workspaceFolder}, ${workspaceFolderBasename}, ${cwd} - in the path string.
+ *
+ * @param pathString The path string that may contain VS Code variables
+ * @param cwd The current working directory (used for ${cwd} variable)
+ * @returns The path string with variables expanded
+ */
+function expandVSCodeVariables(pathString: string, cwd: string): string {
+	if (!pathString.includes('${')) {
+		return pathString;
+	}
+
+	// Find workspace folder that contains cwd, or use first workspace folder
+	const workspaceFolders = workspace.workspaceFolders;
+	let workspaceFolder: WorkspaceFolder | undefined;
+
+	if (workspaceFolders && workspaceFolders.length > 0) {
+		// Try to find workspace folder that contains cwd
+		workspaceFolder = workspaceFolders.find((wf) => cwd.startsWith(wf.uri.fsPath)) || workspaceFolders[0];
+	}
+
+	let expanded = pathString;
+
+	// Handle ${workspaceFolder}
+	if (workspaceFolder) {
+		expanded = expanded.replaceAll('${workspaceFolder}', workspaceFolder.uri.fsPath);
+		expanded = expanded.replaceAll('${workspaceFolderBasename}', workspaceFolder.name);
+	}
+
+	// Handle ${cwd}
+	expanded = expanded.replaceAll('${cwd}', cwd);
+
+	return expanded;
 }
