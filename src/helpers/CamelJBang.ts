@@ -23,8 +23,9 @@ import {
 	KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID,
 	KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID,
 	KAOTO_CAMEL_JBANG_VERSION_SETTING_ID,
+	KAOTO_LOCAL_KAMELET_DIRECTORIES_SETTING_ID,
 } from './helpers';
-import { dirname } from 'path';
+import { dirname, normalize } from 'path';
 import { execSync, execFile } from 'child_process';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { satisfies } from 'compare-versions';
@@ -235,7 +236,7 @@ export class CamelJBang {
 
 	private getKubernetesRunArguments(): string[] {
 		const kubernetesRunArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID) as string[];
-		if (kubernetesRunArgs) {
+		if (kubernetesRunArgs.length > 0) {
 			return kubernetesRunArgs;
 		} else {
 			return [];
@@ -244,8 +245,8 @@ export class CamelJBang {
 
 	private async getRunArguments(filePath: string): Promise<string[]> {
 		const runArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID) as string[];
-		if (runArgs) {
-			return await this.handleMissingXslFiles(filePath, runArgs);
+		if (runArgs.length > 0) {
+			return await this.handleLocalKameletDirectories(await this.handleMissingXslFiles(filePath, runArgs));
 		} else {
 			return [];
 		}
@@ -253,11 +254,39 @@ export class CamelJBang {
 
 	private async getRunSourceDirArguments(): Promise<string[]> {
 		const runArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID) as string[];
-		if (runArgs) {
-			return runArgs;
+		if (runArgs.length > 0) {
+			return await this.handleLocalKameletDirectories(runArgs);
 		} else {
 			return [];
 		}
+	}
+
+	private async getLocalKameletDirArgument(): Promise<string | undefined> {
+		const localKameletDirectories = workspace.getConfiguration().get(KAOTO_LOCAL_KAMELET_DIRECTORIES_SETTING_ID) as string[];
+		return localKameletDirectories.length > 0 ? `--local-kamelet-dir=${localKameletDirectories.map((dir) => normalize(dir)).join(',')}` : undefined;
+	}
+
+	private async handleLocalKameletDirectories(runArgs: string[]): Promise<string[]> {
+		const localKameletDirArgument = await this.getLocalKameletDirArgument();
+
+		// Early return if no local kamelet directory argument is configured
+		if (!localKameletDirArgument) {
+			return runArgs;
+		}
+
+		const localKameletDirIndex = runArgs.findIndex((parameter) => parameter.startsWith('--local-kamelet-dir'));
+
+		// If not present, append it
+		if (localKameletDirIndex === -1) {
+			return [...runArgs, localKameletDirArgument];
+		}
+
+		// If present and different, replace it (immutably)
+		if (runArgs[localKameletDirIndex] !== localKameletDirArgument) {
+			return runArgs.map((arg, index) => (index === localKameletDirIndex ? localKameletDirArgument : arg));
+		}
+
+		return runArgs;
 	}
 
 	private getCamelVersion(): string {
