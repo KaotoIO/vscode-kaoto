@@ -19,7 +19,7 @@ import { ActivityBar, after, before, EditorView, SideBarView, ViewControl, ViewS
 import { getTreeItem, killTerminal, openResourcesAndWaitForActivation, waitUntilTerminalHasText } from '../Util';
 
 describe('Deployments View', function () {
-	this.timeout(1200_000); // 20 minutes
+	this.timeout(1_200_000); // 20 minutes
 
 	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars', 'kaoto-view');
 
