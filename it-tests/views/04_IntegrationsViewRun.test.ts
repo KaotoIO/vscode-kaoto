@@ -15,11 +15,12 @@
  */
 import { expect } from 'chai';
 import { join } from 'path';
-import { ActivityBar, after, before, EditorView, SideBarView, ViewControl, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
+import { ActivityBar, after, before, EditorView, SideBarView, TreeItem, ViewControl, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
 import {
 	collapseItemsInsideIntegrationsView,
 	expandFolderItemsInIntegrationsView,
 	getTreeItem,
+	getTreeItemActionButton,
 	getViewActionButton,
 	killTerminal,
 	openResourcesAndWaitForActivation,
@@ -49,7 +50,7 @@ describe('Integrations View', function () {
 		kaotoView = await kaotoViewContainer?.openView();
 		await (await kaotoView?.getContent().getSection('Help & Feedback'))?.collapse();
 		integrationsSection = await kaotoView?.getContent().getSection('Integrations');
-		const collapseItems = await getViewActionButton(integrationsSection, 'Collapse All');
+		const collapseItems = await getViewActionButton(kaotoViewContainer, integrationsSection, 'Collapse All');
 		await collapseItems?.click();
 
 		// expand folders
@@ -79,6 +80,7 @@ describe('Integrations View', function () {
 		describe(`Click '${btn.label}' button`, function () {
 			after(async function () {
 				await killTerminal();
+				await new EditorView().closeAllEditors();
 			});
 
 			it(`check 'sample2.camel.yaml' is running`, async function () {
@@ -86,7 +88,8 @@ describe('Integrations View', function () {
 					this.skip();
 				}
 				const item = await getTreeItem(driver, integrationsSection, 'sample2.camel.yaml');
-				const button = await item?.getActionButton(btn.label);
+				expect(item).to.not.be.undefined;
+				const button = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, btn.label);
 				await button?.click();
 
 				await waitUntilTerminalHasText(driver, ['Routes startup', 'Hello World'], btn.interval, btn.timeout);

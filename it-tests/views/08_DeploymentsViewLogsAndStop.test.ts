@@ -28,7 +28,7 @@ import {
 	VSBrowser,
 	WebDriver,
 } from 'vscode-extension-tester';
-import { getTreeItem, killTerminal, openResourcesAndWaitForActivation, waitUntilTerminalHasText } from '../Util';
+import { getTreeItem, getTreeItemActionButton, killTerminal, openResourcesAndWaitForActivation, waitUntilTerminalHasText } from '../Util';
 
 describe('Deployments View', function () {
 	this.timeout(600_000); // 10 minutes
@@ -67,7 +67,8 @@ describe('Deployments View', function () {
 	parameters.forEach((p) => {
 		it(`run '${p.file}' integration`, async function () {
 			const item = await getTreeItem(driver, integrationsSection, p.file);
-			const run = await item?.getActionButton('Run');
+			expect(item).to.not.be.undefined;
+			const run = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, 'Run');
 			await run?.click();
 		});
 
@@ -84,7 +85,8 @@ describe('Deployments View', function () {
 	parameters.forEach((p) => {
 		it(`show logs for '${p.file}'`, async function () {
 			const item = await getTreeItem(driver, deploymentsSection, p.label);
-			const logs = await item?.getActionButton('Follow Logs');
+			expect(item).to.not.be.undefined;
+			const logs = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, 'Follow Logs');
 			await logs?.click();
 
 			await waitUntilTerminalHasText(driver, [p.message], 2_000, 30_000);
@@ -92,7 +94,8 @@ describe('Deployments View', function () {
 
 		it(`terminate running '${p.file}'`, async function () {
 			const item = await getTreeItem(driver, deploymentsSection, p.label);
-			const terminate = await item?.getActionButton('Terminate');
+			expect(item).to.not.be.undefined;
+			const terminate = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, 'Terminate');
 			await terminate?.click();
 			await waitUntilTerminalHasText(driver, ['Routes stopped', 'shutdown in'], 2_000, 30_000);
 		});

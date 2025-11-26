@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 import { join } from 'path';
-import { ActivityBar, EditorView, SideBarView, ViewControl, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
+import { ActivityBar, EditorView, SideBarView, TreeItem, ViewControl, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
 import {
 	collapseItemsInsideIntegrationsView,
 	getTreeItem,
+	getTreeItemActionButton,
 	getViewActionButton,
 	killTerminal,
 	openResourcesAndWaitForActivation,
@@ -43,7 +44,7 @@ describe('Integrations View', function () {
 		kaotoView = await kaotoViewContainer?.openView();
 		await (await kaotoView?.getContent().getSection('Help & Feedback'))?.collapse();
 		integrationsSection = await kaotoView?.getContent().getSection('Integrations');
-		const collapseItems = await getViewActionButton(integrationsSection, 'Collapse All');
+		const collapseItems = await getViewActionButton(kaotoViewContainer, integrationsSection, 'Collapse All');
 		await collapseItems?.click();
 	});
 
@@ -60,13 +61,15 @@ describe('Integrations View', function () {
 
 		it('button is available', async function () {
 			const item = await getTreeItem(driver, integrationsSection, 'folderB');
-			const button = await item?.getActionButton('Run: Folder');
+			expect(item).to.not.be.undefined;
+			const button = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, 'Run: Folder');
 			expect(button).to.not.be.undefined;
 		});
 
 		it(`click 'folderB' button`, async function () {
 			const item = await getTreeItem(driver, integrationsSection, 'folderB');
-			const button = await item?.getActionButton('Run: Folder');
+			expect(item).to.not.be.undefined;
+			const button = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, 'Run: Folder');
 			await button?.click();
 		});
 
