@@ -25,7 +25,7 @@ import {
 	workaroundToRedrawContextualMenu,
 } from './Util';
 import { By, EditorView, until, VSBrowser, WebDriver, Workbench, NotificationType, WebView, ActivityBar, TextEditor } from 'vscode-extension-tester';
-import { assert } from 'chai';
+import { assert, expect } from 'chai';
 import * as fs from 'fs';
 
 describe('Maven dependency update pom.xml', function () {
@@ -157,7 +157,9 @@ describe('Maven dependency update pom.xml', function () {
 
 			// click Update Camel Dependencies button
 			const item = await getTreeItem(driver, integrationsSection, 'my-camel-quarkus-route.camel.yaml');
-			const updateDependenciesButton = await item?.getActionButton('Update Camel Dependencies');
+			expect(item).to.not.be.undefined;
+			const contextMenu = await item?.openContextMenu();
+			const updateDependenciesButton = await contextMenu?.getItem('Update Camel Dependencies');
 			await updateDependenciesButton?.click();
 
 			// close Kaoto view
