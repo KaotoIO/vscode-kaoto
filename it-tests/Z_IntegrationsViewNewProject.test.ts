@@ -33,7 +33,7 @@ import {
 	VSBrowser,
 	WebDriver,
 } from 'vscode-extension-tester';
-import { expandFolderItemsInIntegrationsView, getTreeItem, openResourcesAndWaitForActivation } from './Util';
+import { expandFolderItemsInIntegrationsView, getTreeItem, getTreeItemActionButton, openResourcesAndWaitForActivation } from './Util';
 
 /**
  * This test needs to be always executed as last in suite
@@ -148,14 +148,11 @@ describe('Integrations View', function () {
 			async () => {
 				try {
 					const item = await getTreeItem(driver, integrationsSection, treeItemLabel);
-					exportButton = await item?.getActionButton('Export');
-					if (exportButton !== undefined) {
-						return true;
-					} else {
-						return false;
-					}
+					expect(item).to.not.be.undefined;
+					exportButton = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, 'Export');
+					return exportButton !== undefined;
 				} catch (error) {
-					return false;
+					return undefined;
 				}
 			},
 			5_000,

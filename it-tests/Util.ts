@@ -30,6 +30,9 @@ import {
 	TextEditor,
 	TreeItem,
 	until,
+	ViewControl,
+	ViewItemAction,
+	ViewPanelAction,
 	ViewSection,
 	VSBrowser,
 	WebDriver,
@@ -326,4 +329,66 @@ export async function collapseItemsInsideIntegrationsView(integrationsSection: V
 	} else {
 		throw new Error('Driver not found');
 	}
+}
+
+/**
+ * Get action button from view section
+ * @param section The view section.
+ * @param action The action to get the button for.
+ * @param timeout The timeout in milliseconds.
+ * @returns A Promise that resolves to the action button or undefined if not found.
+ */
+export async function getViewActionButton(
+	kaotoViewContainer: ViewControl | undefined,
+	section: ViewSection | undefined,
+	action: string,
+	timeout: number = 5_000,
+): Promise<ViewPanelAction | undefined> {
+	await reopenKaotoView(kaotoViewContainer);
+
+	const driver = section?.getDriver();
+	if (driver) {
+		await driver.actions().move({ origin: section }).perform(); // move mouse to bring auto-hided buttons visible again
+		await driver.sleep(250); // wait for the buttons to be visible
+		return await driver.wait(
+			async function () {
+				return await section?.getAction(action);
+			},
+			timeout,
+			`'${action}' action button was not found!`,
+		);
+	} else {
+		return undefined;
+	}
+}
+
+export async function getTreeItemActionButton(
+	kaotoViewContainer: ViewControl | undefined,
+	treeItem: TreeItem,
+	action: string,
+	timeout: number = 5_000,
+): Promise<ViewItemAction | undefined> {
+	await reopenKaotoView(kaotoViewContainer);
+
+	const driver = treeItem.getDriver();
+	await driver.actions().move({ origin: treeItem }).perform(); // move mouse to bring auto-hided buttons visible again
+	await driver.sleep(250); // wait for the buttons to be visible
+	return await driver.wait(
+		async function () {
+			return await treeItem.getActionButton(action);
+		},
+		timeout,
+		`'${action}' action button was not found!`,
+	);
+}
+
+/**
+ * Reopen Kaoto view to workaround 'stale element reference: stale element not found in the current frame' ExTester issue
+ * @param kaotoViewContainer The Kaoto view container.
+ * @returns A Promise that resolves when the view is reopened.
+ */
+async function reopenKaotoView(kaotoViewContainer: ViewControl | undefined): Promise<void> {
+	await kaotoViewContainer?.closeView();
+	await kaotoViewContainer?.getDriver().sleep(500);
+	await kaotoViewContainer?.openView();
 }
