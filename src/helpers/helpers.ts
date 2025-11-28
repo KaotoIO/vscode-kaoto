@@ -30,6 +30,8 @@ export const KAOTO_CAMEL_JBANG_VERSION_SETTING_ID: string = 'kaoto.camelJbang.ve
 
 export const KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID: string = 'kaoto.camelJbang.runArguments';
 
+export const KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID: string = 'kaoto.camelJbang.runFolderOrWorkspaceArguments';
+
 export const KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID: string = 'kaoto.camelJbang.redHatMavenRepository';
 
 export const KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID: string = 'kaoto.camelJbang.redHatMavenRepository.global';

@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { expect } from 'chai';
 import { join } from 'path';
-import { ActivityBar, after, before, EditorView, SideBarView, TreeItem, ViewControl, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
+import { ActivityBar, EditorView, SideBarView, TreeItem, ViewControl, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
 import {
 	collapseItemsInsideIntegrationsView,
-	expandFolderItemsInIntegrationsView,
 	getTreeItem,
 	getTreeItemActionButton,
 	getViewActionButton,
@@ -26,16 +24,12 @@ import {
 	openResourcesAndWaitForActivation,
 	waitUntilTerminalHasText,
 } from '../Util';
+import { expect } from 'chai';
 
-/**
- * Note:
- * - OC login needs to be done before executing this test for deployment into OpenShift
- * - Linux Only for a Deploy part
- */
 describe('Integrations View', function () {
-	this.timeout(1200_000); // 20 minutes
+	this.timeout(600_000); // 10 minutes
 
-	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars', 'kaoto-view');
+	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars', 'kaoto-view', 'routes');
 
 	let driver: WebDriver;
 	let kaotoViewContainer: ViewControl | undefined;
@@ -52,9 +46,6 @@ describe('Integrations View', function () {
 		integrationsSection = await kaotoView?.getContent().getSection('Integrations');
 		const collapseItems = await getViewActionButton(kaotoViewContainer, integrationsSection, 'Collapse All');
 		await collapseItems?.click();
-
-		// expand folders
-		await expandFolderItemsInIntegrationsView(integrationsSection, 'pipes', 'others');
 	});
 
 	after(async function () {
@@ -63,37 +54,27 @@ describe('Integrations View', function () {
 		await new EditorView().closeAllEditors();
 	});
 
-	const buttons = [
-		{ label: 'Run', interval: 4_000, timeout: 180_000 },
-		{ label: 'Deploy', interval: 10_000, timeout: 900_000 },
-	];
+	describe(`Check 'Run: Folder' button functionality`, function () {
+		after(async function () {
+			await killTerminal();
+		});
 
-	buttons.forEach((btn) => {
-		it(`'${btn.label}' button is available`, async function () {
-			const item = await getTreeItem(driver, integrationsSection, 'pipe1.pipe.yaml');
-			const button = await item?.getActionButton(btn.label);
+		it('button is available', async function () {
+			const item = await getTreeItem(driver, integrationsSection, 'folderB');
+			expect(item).to.not.be.undefined;
+			const button = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, 'Run: Folder');
 			expect(button).to.not.be.undefined;
 		});
-	});
 
-	buttons.forEach((btn) => {
-		describe(`Click '${btn.label}' button`, function () {
-			after(async function () {
-				await killTerminal();
-				await new EditorView().closeAllEditors();
-			});
+		it(`click 'folderB' button`, async function () {
+			const item = await getTreeItem(driver, integrationsSection, 'folderB');
+			expect(item).to.not.be.undefined;
+			const button = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, 'Run: Folder');
+			await button?.click();
+		});
 
-			it(`check 'sample2.camel.yaml' is running`, async function () {
-				if (btn.label === 'Deploy' && process.platform !== 'linux') {
-					this.skip();
-				}
-				const item = await getTreeItem(driver, integrationsSection, 'sample2.camel.yaml');
-				expect(item).to.not.be.undefined;
-				const button = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, btn.label);
-				await button?.click();
-
-				await waitUntilTerminalHasText(driver, ['Routes startup', 'Hello World'], btn.interval, btn.timeout);
-			});
+		it(`check 'folderB' routes are running`, async function () {
+			await waitUntilTerminalHasText(driver, ['Routes startup', 'Hello Route B', 'Hello Route BB'], 4_000, 180_000);
 		});
 	});
 });

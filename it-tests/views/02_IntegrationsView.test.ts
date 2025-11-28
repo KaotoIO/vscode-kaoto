@@ -112,7 +112,7 @@ describe('Integrations View', function () {
 	});
 
 	it('routes are parsed and displayed', async function () {
-		const routes = labels.filter((label) => label.startsWith('route'));
+		const routes = labels.filter((label) => label.startsWith('route-'));
 		expect(routes).to.not.be.empty;
 		expect(routes.length).to.be.equal(10);
 
