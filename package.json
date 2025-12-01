@@ -93,6 +93,15 @@
     }
   },
   "contributes": {
+    "icons": {
+      "export-icon": {
+        "description": "Export icon",
+        "default": {
+          "fontPath": "./icons/integrations/export-icons.woff",
+          "fontCharacter": "\\E900"
+        }
+      }
+    },
     "walkthroughs": [
       {
         "id": "kaoto.walkthrough",
@@ -286,7 +295,19 @@
         "command": "kaoto.camel.jbang.export",
         "title": "Export: File",
         "category": "Kaoto",
-        "icon": "$(link-external)"
+        "icon": "$(export-icon)"
+      },
+      {
+        "command": "kaoto.camel.jbang.export.folder",
+        "title": "Export: Folder",
+        "category": "Kaoto",
+        "icon": "$(export-icon)"
+      },
+      {
+        "command": "kaoto.camel.jbang.export.workspace",
+        "title": "Export: Workspace",
+        "category": "Kaoto",
+        "icon": "$(export-icon)"
       },
       {
         "command": "kaoto.integrations.kubernetes.run",
@@ -473,6 +494,14 @@
           "when": "false"
         },
         {
+          "command": "kaoto.camel.jbang.export.folder",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.camel.jbang.export.workspace",
+          "when": "false"
+        },
+        {
           "command": "kaoto.integrations.run",
           "when": "false"
         },
@@ -573,8 +602,13 @@
           "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 0"
         },
         {
+          "command": "kaoto.camel.jbang.export.workspace",
+          "group": "navigation@3",
+          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount == 1 && !kaoto.workspaceHasPomXml"
+        },
+        {
           "command": "kaoto.integrations.refresh",
-          "group": "navigation@2",
+          "group": "navigation@4",
           "when": "view == kaoto.integrations"
         },
         {
@@ -588,6 +622,11 @@
           "command": "kaoto.integrations.run.folder",
           "when": "view == kaoto.integrations && viewItem == folder && !virtualWorkspace && kaoto.jbangAvailable",
           "group": "inline@1"
+        },
+        {
+          "command": "kaoto.camel.jbang.export.folder",
+          "when": "view == kaoto.integrations && viewItem == folder && !virtualWorkspace && kaoto.jbangAvailable",
+          "group": "inline@2"
         },
         {
           "command": "kaoto.integrations.showSource",
@@ -870,7 +909,19 @@
           "kaoto.maven.dependenciesUpdate.onSave": {
             "type": "boolean",
             "default": true,
-            "markdownDescription": "Enable automatic update of Camel dependencies in pom.xml on save."
+            "markdownDescription": "Enable automatic update of Camel dependencies in pom.xml on save.",
+            "order": 0
+          },
+          "kaoto.maven.camelJbang.exportProjectArguments": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            },
+            "additionalProperties": false,
+            "markdownDescription": "User defined arguments to be applied at every export of a Maven project. In case of spaces, the values needs to be enclosed with quotes.\n\nFor possible values see [official docs](https://camel.apache.org/manual/camel-jbang.html#_creating_projects).",
+            "default": [],
+            "order": 1
           }
         }
       }
