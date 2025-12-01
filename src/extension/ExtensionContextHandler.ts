@@ -308,12 +308,22 @@ export class ExtensionContextHandler {
 	}
 
 	public registerNewCamelProjectCommands() {
-		this.context.subscriptions.push(
-			vscode.commands.registerCommand(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT, async (integration: Integration) => {
+		const exportSingleFileCommand = vscode.commands.registerCommand(
+			NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT,
+			async (integration: Integration) => {
 				await new NewCamelProjectCommand().create(integration.filepath);
 				await this.sendCommandTrackingEvent(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT);
-			}),
+			},
 		);
+		const exportFolderCommand = vscode.commands.registerCommand(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_FOLDER, async (folder: Folder) => {
+			await new NewCamelProjectCommand().create(folder.folderUri);
+			await this.sendCommandTrackingEvent(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_FOLDER);
+		});
+		const exportWorkspaceCommand = vscode.commands.registerCommand(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_WORKSPACE, async () => {
+			await new NewCamelProjectCommand().create(vscode.workspace.workspaceFolders?.[0]?.uri as vscode.Uri);
+			await this.sendCommandTrackingEvent(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_WORKSPACE);
+		});
+		this.context.subscriptions.push(exportSingleFileCommand, exportFolderCommand, exportWorkspaceCommand);
 	}
 
 	public registerRunIntegrationCommands(portManager: PortManager) {

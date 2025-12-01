@@ -20,6 +20,8 @@ import { confirmDestructiveActionInSelectedFolder } from '../helpers/modals';
 
 export class NewCamelProjectCommand {
 	public static readonly ID_COMMAND_CAMEL_NEW_PROJECT = 'kaoto.camel.jbang.export';
+	public static readonly ID_COMMAND_CAMEL_NEW_PROJECT_FOLDER = 'kaoto.camel.jbang.export.folder';
+	public static readonly ID_COMMAND_CAMEL_NEW_PROJECT_WORKSPACE = 'kaoto.camel.jbang.export.workspace';
 
 	public async create(uri: Uri) {
 		const runtime = await this.askForRuntime();
@@ -44,7 +46,7 @@ export class NewCamelProjectCommand {
 						return;
 					}
 				}
-				await new CamelExportJBangTask(currentWorkspace, uri.fsPath, input, runtime, outputFolder.fsPath).executeAndWaitWithProgress(
+				await new CamelExportJBangTask(currentWorkspace, uri, input, runtime, outputFolder.fsPath).executeAndWaitWithProgress(
 					'Creating a new Camel project...',
 				);
 
@@ -127,6 +129,7 @@ export class NewCamelProjectCommand {
 			canSelectFiles: false,
 			openLabel: 'Select',
 			title: 'Select a folder to create the project in. ESC to cancel the project creation',
+			defaultUri: workspace.workspaceFolders?.[0]?.uri,
 		});
 		if (selectedFolders !== undefined) {
 			return selectedFolders[0];

@@ -24,6 +24,7 @@ import {
 	KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID,
 	KAOTO_CAMEL_JBANG_VERSION_SETTING_ID,
 	KAOTO_LOCAL_KAMELET_DIRECTORIES_SETTING_ID,
+	KAOTO_MAVEN_CAMEL_JBANG_EXPORT_FOLDER_ARGUMENTS_SETTING_ID,
 	resolvePaths,
 } from './helpers';
 import { dirname } from 'path';
@@ -65,11 +66,11 @@ export class CamelJBang {
 		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'bind', '--source', source, '--sink', sink, `'${file}'`]);
 	}
 
-	public export(filePath: string, gav: string, runtime: string, outputPath: string): ShellExecution {
+	public export(uri: Uri, gav: string, runtime: string, outputPath: string): ShellExecution {
 		// workaround for an issue during Camel JBang execution in Windows machines.
 		// specifying the --directory option with the complete path when it is equal to the current working directory causes issues.
 		// omitting the option (using default '.') works as expected.
-		const directoryArg = arePathsEqual(dirname(filePath), outputPath) ? '' : `'--directory=${outputPath}'`;
+		const directoryArg = arePathsEqual(dirname(uri.fsPath), outputPath) ? '' : `'--directory=${outputPath}'`;
 
 		if (this.camelJBangVersion.startsWith('4.12') && isWindows) {
 			window.showInformationMessage(
@@ -77,16 +78,35 @@ export class CamelJBang {
 			);
 			return new ShellExecution(
 				this.jbang,
-				[...this.defaultJbangArgs, 'export', `'${filePath}'`, `--runtime=${runtime}`, `--gav=${gav}`, '--maven-wrapper=false', directoryArg].filter(
-					function (arg) {
-						return arg !== undefined && arg !== null && arg !== ''; // remove ALL empty values ("", null, undefined and 0)
-					},
-				),
+				[
+					...this.defaultJbangArgs,
+					'export',
+					`'${uri.fsPath}'`,
+					`--runtime=${runtime}`,
+					`--gav=${gav}`,
+					'--maven-wrapper=false',
+					directoryArg,
+					...this.getExportProjectArguments(),
+					this.getCamelVersion(),
+					this.getRedHatMavenRepository(),
+				].filter(function (arg) {
+					return arg !== undefined && arg !== null && arg !== ''; // remove ALL empty values ("", null, undefined and 0)
+				}),
 			);
 		} else {
 			return new ShellExecution(
 				this.jbang,
-				[...this.defaultJbangArgs, 'export', `'${filePath}'`, `--runtime=${runtime}`, `--gav=${gav}`, directoryArg].filter(function (arg) {
+				[
+					...this.defaultJbangArgs,
+					'export',
+					`'${uri.fsPath}'`,
+					`--runtime=${runtime}`,
+					`--gav=${gav}`,
+					directoryArg,
+					...this.getExportProjectArguments(),
+					this.getCamelVersion(),
+					this.getRedHatMavenRepository(),
+				].filter(function (arg) {
 					return arg !== undefined && arg !== null && arg !== ''; // remove ALL empty values ("", null, undefined and 0)
 				}),
 			);
@@ -237,6 +257,15 @@ export class CamelJBang {
 	 */
 	private getPortArgument(port?: number): string {
 		return satisfies(this.camelJBangVersion, '>=4.14') ? `--management-port=${port ?? -1}` : `--port=${port ?? 8080}`;
+	}
+
+	private getExportProjectArguments(): string[] {
+		const exportArgs = workspace.getConfiguration().get(KAOTO_MAVEN_CAMEL_JBANG_EXPORT_FOLDER_ARGUMENTS_SETTING_ID) as string[];
+		if (exportArgs.length > 0) {
+			return exportArgs;
+		} else {
+			return [];
+		}
 	}
 
 	private getKubernetesRunArguments(): string[] {

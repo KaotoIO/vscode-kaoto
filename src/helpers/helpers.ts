@@ -38,6 +38,8 @@ export const KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID: strin
 
 export const KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID: string = 'kaoto.camelJbang.kubernetesRunArguments';
 
+export const KAOTO_MAVEN_CAMEL_JBANG_EXPORT_FOLDER_ARGUMENTS_SETTING_ID: string = 'kaoto.maven.camelJbang.exportProjectArguments';
+
 export const KAOTO_LOCAL_KAMELET_DIRECTORIES_SETTING_ID: string = 'kaoto.localKameletDirectories';
 
 export const KAOTO_INTEGRATIONS_FILES_REGEXP_SETTING_ID: string = 'kaoto.integrations.files.regexp';

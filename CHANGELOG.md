@@ -3,6 +3,7 @@
 - rework Integrations section of Kaoto view to bring tree-like structure
 - add buttons `Run: Folder` and `Run: Workspace` into Integrations section of Kaoto view
 - user setting allowing specify a list of local kamelet directories used for integrations run
+- add button `Export Folder` and `Export: Workspace` into Integrations section of Kaoto view
 
 # 2.8.0
 
