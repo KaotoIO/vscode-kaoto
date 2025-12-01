@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TaskRevealKind, TaskScope, WorkspaceFolder } from 'vscode';
+import { TaskRevealKind, TaskScope, Uri, WorkspaceFolder } from 'vscode';
 import { CamelJBangTask } from './CamelJBangTask';
 import { CamelJBang } from '../helpers/CamelJBang';
 
 export class CamelExportJBangTask extends CamelJBangTask {
-	constructor(scope: WorkspaceFolder | TaskScope.Workspace, filePath: string, gav: string, runtime: string, outputPath: string) {
-		super(scope, 'Create a Camel project', new CamelJBang().export(filePath, gav, runtime, outputPath), true, TaskRevealKind.Silent);
+	constructor(scope: WorkspaceFolder | TaskScope.Workspace, uri: Uri, gav: string, runtime: string, outputPath: string) {
+		super(scope, 'Create a Camel project', new CamelJBang().export(uri, gav, runtime, outputPath), true, TaskRevealKind.Silent);
 	}
 }
