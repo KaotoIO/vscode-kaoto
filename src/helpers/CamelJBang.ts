@@ -80,6 +80,7 @@ export class CamelJBang {
 				this.jbang,
 				[
 					...this.defaultJbangArgs,
+					'kubernetes',
 					'export',
 					`'${uri.fsPath}'`,
 					`--runtime=${runtime}`,
@@ -98,6 +99,7 @@ export class CamelJBang {
 				this.jbang,
 				[
 					...this.defaultJbangArgs,
+					'kubernetes',
 					'export',
 					`'${uri.fsPath}'`,
 					`--runtime=${runtime}`,

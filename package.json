@@ -919,7 +919,7 @@
               "type": "string"
             },
             "additionalProperties": false,
-            "markdownDescription": "User defined arguments to be applied at every export of a Maven project. In case of spaces, the values needs to be enclosed with quotes.\n\nFor possible values see [official docs](https://camel.apache.org/manual/camel-jbang.html#_creating_projects).",
+            "markdownDescription": "User defined arguments to be applied at every export of a Maven project. In case of spaces, the values needs to be enclosed with quotes.\n\nFor possible values see [official docs](https://camel.apache.org/manual/camel-jbang-kubernetes.html#_kubernetes_export).",
             "default": [],
             "order": 1
           }

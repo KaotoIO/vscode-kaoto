@@ -112,6 +112,13 @@ export async function activate(context: vscode.ExtensionContext) {
 	}
 
 	/*
+	 * check Apache Camel JBang Kubernetes plugin is installed
+	 */
+	if (jbang) {
+		await contextHandler.checkCamelJBangKubernetesPlugin();
+	}
+
+	/*
 	 * send extension startup event into Red Hat Telemetry
 	 */
 	await telemetryService.sendStartupEvent();
