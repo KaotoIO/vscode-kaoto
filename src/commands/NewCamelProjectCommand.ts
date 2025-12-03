@@ -23,7 +23,7 @@ export class NewCamelProjectCommand {
 	public static readonly ID_COMMAND_CAMEL_NEW_PROJECT_FOLDER = 'kaoto.camel.jbang.export.folder';
 	public static readonly ID_COMMAND_CAMEL_NEW_PROJECT_WORKSPACE = 'kaoto.camel.jbang.export.workspace';
 
-	public async create(uri: Uri) {
+	public async create(uri: Uri, cwd: string) {
 		const runtime = await this.askForRuntime();
 		if (!runtime) {
 			return;
@@ -46,9 +46,8 @@ export class NewCamelProjectCommand {
 						return;
 					}
 				}
-				await new CamelExportJBangTask(currentWorkspace, uri, input, runtime, outputFolder.fsPath).executeAndWaitWithProgress(
-					'Creating a new Camel project...',
-				);
+				const camelExportJBangTask = await CamelExportJBangTask.create(currentWorkspace, uri, input, runtime, outputFolder.fsPath, cwd);
+				await camelExportJBangTask.executeAndWaitWithProgress('Creating a new Camel project...');
 
 				// open the newly created project in a new vscode instance
 				await commands.executeCommand('vscode.openFolder', outputFolder, true);
