@@ -311,16 +311,20 @@ export class ExtensionContextHandler {
 		const exportSingleFileCommand = vscode.commands.registerCommand(
 			NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT,
 			async (integration: Integration) => {
-				await new NewCamelProjectCommand().create(integration.filepath);
+				await new NewCamelProjectCommand().create(integration.filepath, path.dirname(integration.filepath.fsPath));
 				await this.sendCommandTrackingEvent(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT);
 			},
 		);
 		const exportFolderCommand = vscode.commands.registerCommand(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_FOLDER, async (folder: Folder) => {
-			await new NewCamelProjectCommand().create(folder.folderUri);
+			await new NewCamelProjectCommand().create(folder.folderUri, folder.folderUri.fsPath);
 			await this.sendCommandTrackingEvent(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_FOLDER);
 		});
 		const exportWorkspaceCommand = vscode.commands.registerCommand(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_WORKSPACE, async () => {
-			await new NewCamelProjectCommand().create(vscode.workspace.workspaceFolders?.[0]?.uri as vscode.Uri);
+			if (!vscode.workspace.workspaceFolders?.[0]) {
+				return;
+			}
+			const workspaceFolder = vscode.workspace.workspaceFolders[0];
+			await new NewCamelProjectCommand().create(workspaceFolder.uri, workspaceFolder.uri.fsPath);
 			await this.sendCommandTrackingEvent(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_WORKSPACE);
 		});
 		this.context.subscriptions.push(exportSingleFileCommand, exportFolderCommand, exportWorkspaceCommand);
