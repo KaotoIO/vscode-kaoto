@@ -90,6 +90,12 @@ describe('Integrations View', function () {
 		});
 
 		it(`click button`, async function () {
+			if (process.platform === 'win32') {
+				// temporarily skip on Windows because it is really unstable
+				// failing with JBang error: 'The process cannot access the file because it is being used by another process.'
+				this.skip();
+			}
+
 			const button = await getViewActionButton(kaotoViewContainer, integrationsSection, 'Run: All Workspaces');
 			await button?.click();
 		});
@@ -101,6 +107,11 @@ describe('Integrations View', function () {
 
 		for (const { workspace, messages } of expectedMessages) {
 			it(`check ${workspace} workspace routes are running`, async function () {
+				if (process.platform === 'win32') {
+					// temporarily skip on Windows because it is really unstable
+					// failing with JBang error: 'The process cannot access the file because it is being used by another process.'
+					this.skip();
+				}
 				await waitUntilTerminalHasText(driver, ['Routes startup', ...messages], 4_000, 180_000);
 				await killTerminal(); // terminate the running workspace integrations
 			});

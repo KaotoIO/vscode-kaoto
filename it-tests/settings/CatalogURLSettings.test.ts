@@ -296,7 +296,7 @@ describe('User Settings', function () {
 		// expand selected runtime list
 		const parentItem = await driver.findElement(locators.RuntimeSelector.selector(item));
 		try {
-			await driver.actions().move({ origin: parentItem }).perform();
+			await driver.actions().move({ origin: parentItem, duration: 1_000 }).perform();
 			await driver.wait(until.elementLocated(locators.RuntimeSelectorItems.submenu), timeout, 'Runtime selector sub-menu was not displayed properly!');
 		} catch (error) {
 			await parentItem.click();
@@ -318,7 +318,7 @@ describe('User Settings', function () {
 	async function selectDropdownItem(item: string, dropdown: WebElement, timeout: number = 2500) {
 		const parentItem = await dropdown.findElement(locators.RuntimeSelector.selector(item));
 		try {
-			await driver.actions().move({ origin: parentItem }).perform();
+			await driver.actions().move({ origin: parentItem, duration: 1_000 }).perform();
 			await driver.wait(until.elementLocated(locators.RuntimeSelectorItems.submenu), timeout, 'Runtime selector sub-menu was not displayed properly!');
 		} catch (error) {
 			await parentItem.click();

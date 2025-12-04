@@ -89,9 +89,10 @@ describe('Integrations View', function () {
 		let input: InputBox;
 
 		beforeEach(async function () {
-			await driver.actions().move({ origin: integrationsSection }).perform(); // move mouse to bring auto-hided buttons visible again
 			newFileButton = await driver.wait(
 				async function () {
+					await driver.actions().move({ origin: integrationsSection, duration: 1_000 }).perform(); // move mouse to bring auto-hided buttons visible again
+					await driver.sleep(500); // wait for the buttons to be visible
 					return (await integrationsSection?.getAction('New File...')) as ViewPanelActionDropdown;
 				},
 				10_000,
