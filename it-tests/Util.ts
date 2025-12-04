@@ -317,9 +317,10 @@ export async function expandFolderItemsInIntegrationsView(integrationsSection: V
 export async function collapseItemsInsideIntegrationsView(integrationsSection: ViewSection | undefined): Promise<void> {
 	const driver = integrationsSection?.getDriver();
 	if (driver) {
-		await driver.actions().move({ origin: integrationsSection }).perform(); // move mouse to bring auto-hided buttons visible again
 		const collapseItems = await driver.wait(
 			async function () {
+				await driver.actions().move({ origin: integrationsSection, duration: 1_000 }).perform(); // move mouse to bring auto-hided buttons visible again
+				await driver.sleep(500); // wait for the buttons to be visible
 				return await integrationsSection?.getAction('Collapse All');
 			},
 			5_000,
@@ -348,10 +349,10 @@ export async function getViewActionButton(
 
 	const driver = section?.getDriver();
 	if (driver) {
-		await driver.actions().move({ origin: section }).perform(); // move mouse to bring auto-hided buttons visible again
-		await driver.sleep(250); // wait for the buttons to be visible
 		return await driver.wait(
 			async function () {
+				await driver.actions().move({ origin: section, duration: 1_000 }).perform(); // move mouse to bring auto-hided buttons visible again
+				await driver.sleep(500); // wait for the buttons to be visible
 				return await section?.getAction(action);
 			},
 			timeout,
@@ -371,10 +372,10 @@ export async function getTreeItemActionButton(
 	await reopenKaotoView(kaotoViewContainer);
 
 	const driver = treeItem.getDriver();
-	await driver.actions().move({ origin: treeItem }).perform(); // move mouse to bring auto-hided buttons visible again
-	await driver.sleep(250); // wait for the buttons to be visible
 	return await driver.wait(
 		async function () {
+			await driver.actions().move({ origin: treeItem, duration: 1_000 }).perform(); // move mouse to bring auto-hided buttons visible again
+			await driver.sleep(500); // wait for the buttons to be visible
 			return await treeItem.getActionButton(action);
 		},
 		timeout,
