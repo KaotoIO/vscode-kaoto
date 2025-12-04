@@ -57,12 +57,16 @@ jobs:
         run: choco install jbang
       - name: yarn
         run: yarn --network-timeout 1000000
-      - name: yarn build:dev
-        run: yarn build:dev
       - name: yarn build:prod
         run: yarn build:prod
       - name: vsix package
         run: yarn vsce package --no-dependencies --yarn
+      - name: Archive vsix
+        uses: actions/upload-artifact@v5
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        with:
+          name: "vscode-kaoto-vsix"
+          path: "*.vsix"
       - name: Allow unprivileged user namespace (ubuntu)
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
@@ -96,12 +100,6 @@ jobs:
         with:
           name: sbom
           path: manifest.json
-      - name: Archive vsix
-        uses: actions/upload-artifact@v5
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        with:
-          name: "vscode-kaoto-vsix"
-          path: "*.vsix"
       - name: Store VS Code logs
         uses: actions/upload-artifact@v5
         if: always()
