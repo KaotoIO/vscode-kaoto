@@ -59,15 +59,17 @@ jobs:
       - name: yarn link kaoto
         working-directory: vscode-kaoto
         run: yarn link ../kaoto/packages/ui
-      - name: yarn build:dev
-        working-directory: vscode-kaoto
-        run: yarn build:dev
       - name: yarn build:prod
         working-directory: vscode-kaoto
         run: yarn build:prod
       - name: vsix package
         working-directory: vscode-kaoto
         run: yarn vsce package --no-dependencies --yarn
+      - name: Archive vsix
+        uses: actions/upload-artifact@v5
+        with:
+          name: vsix-from-main-branch-of-kaoto
+          path: "vscode-kaoto/*.vsix"
       - name: Allow unprivileged user namespace (ubuntu)
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Run Unit tests
@@ -78,11 +80,6 @@ jobs:
         run: |
           eval $(minikube -p minikube docker-env)
           xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
-      - name: Archive vsix
-        uses: actions/upload-artifact@v5
-        with:
-          name: vsix-from-main-branch-of-kaoto
-          path: "vscode-kaoto/*.vsix"
       - name: Store VS Code logs
         uses: actions/upload-artifact@v5
         if: always()

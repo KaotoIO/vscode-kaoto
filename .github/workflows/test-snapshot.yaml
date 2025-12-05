@@ -76,9 +76,6 @@ jobs:
       - name: yarn
         run: yarn --network-timeout 1000000
 
-      - name: yarn build:dev
-        run: yarn build:dev
-
       - name: yarn build:prod
         run: yarn build:prod
 
