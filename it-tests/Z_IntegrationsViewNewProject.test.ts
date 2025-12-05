@@ -65,7 +65,7 @@ describe('Integrations View', function () {
 	});
 
 	it(`'Export' button is available`, async function () {
-		const exportButton = await getItemExportButton('kam1.kamelet.yaml');
+		const exportButton = await getItemExportButton('kam1.kamelet.yaml', 'Export: File');
 		expect(exportButton).to.not.be.undefined;
 	});
 
@@ -77,7 +77,7 @@ describe('Integrations View', function () {
 
 		before(async function () {
 			fs.mkdirSync(PROJECT_OUTPUT_DIR, { recursive: true });
-			exportButton = await getItemExportButton('sample1.camel.yaml');
+			exportButton = await getItemExportButton('routes', 'Export: Folder');
 			await exportButton?.click();
 		});
 
@@ -129,11 +129,12 @@ describe('Integrations View', function () {
 			await expandFolderItemsInIntegrationsView(integrationsSection, 'src', 'main', 'resources', 'camel');
 			await driver.wait(
 				async function () {
-					const items = (await integrationsSection?.getVisibleItems()) as TreeItem[];
-					const item = items.find(async (item) => {
-						return (await item.getDescription()) === 'quarkus-export-example/src/main/resources/camel';
-					});
-					return item && fs.existsSync(join(PROJECT_OUTPUT_DIR, 'pom.xml'));
+					return (
+						fs.existsSync(join(PROJECT_OUTPUT_DIR, 'pom.xml')) &&
+						fs.existsSync(join(PROJECT_OUTPUT_DIR, 'src', 'main', 'resources', 'camel', 'root-route.camel.yaml')) &&
+						fs.existsSync(join(PROJECT_OUTPUT_DIR, 'src', 'main', 'resources', 'application.properties')) &&
+						fs.existsSync(join(PROJECT_OUTPUT_DIR, 'src', 'main', 'resources', 'kamelets', 'rootKam-sink.kamelet.yaml'))
+					);
 				},
 				180_000,
 				`New Camel Project was not created properly!`,
@@ -142,14 +143,15 @@ describe('Integrations View', function () {
 		}
 	});
 
-	async function getItemExportButton(treeItemLabel: string): Promise<ViewItemAction | undefined> {
+	async function getItemExportButton(treeItemLabel: string, action: string): Promise<ViewItemAction | undefined> {
 		let exportButton: ViewItemAction | undefined = undefined;
 		await driver.wait(
 			async () => {
 				try {
 					const item = await getTreeItem(driver, integrationsSection, treeItemLabel);
 					expect(item).to.not.be.undefined;
-					exportButton = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, 'Export');
+					await item?.click();
+					exportButton = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, action);
 					return exportButton !== undefined;
 				} catch (error) {
 					return undefined;

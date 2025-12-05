@@ -30,7 +30,7 @@ describe('Kaoto View Container', function () {
 	let deploymentsSection: ViewSection | undefined;
 
 	before(async function () {
-		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER, false);
+		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
 	});
 
 	after(async function () {

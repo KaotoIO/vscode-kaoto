@@ -51,6 +51,10 @@ jobs:
         run: |
           curl -Ls https://sh.jbang.dev | bash -s - app setup
           echo "$HOME/.jbang/bin" >> $GITHUB_PATH
+      - name: Add Camel Kubernetes plugin to JBang
+        run: |
+          jbang trust add https://github.com/apache/camel/
+          jbang camel@apache/camel plugin add kubernetes
       - name: Kaoto build
         working-directory: kaoto
         run: |

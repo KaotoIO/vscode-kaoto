@@ -55,6 +55,10 @@ jobs:
       - name: Install JBang (windows)
         if: matrix.os == 'windows-latest'
         run: choco install jbang
+      - name: Add Camel Kubernetes plugin to JBang
+        run: |
+          jbang trust add https://github.com/apache/camel/
+          jbang camel@apache/camel plugin add kubernetes
       - name: yarn
         run: yarn --network-timeout 1000000
       - name: yarn build:dev

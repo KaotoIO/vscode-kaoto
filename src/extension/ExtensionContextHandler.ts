@@ -129,6 +129,16 @@ export class ExtensionContextHandler {
 		}
 	}
 
+	public async checkCamelJBangKubernetesPlugin() {
+		const camelJBangKubernetesPlugin = await verifyCamelKubernetesPluginIsInstalled();
+		if (!camelJBangKubernetesPlugin) {
+			await new CamelAddPluginJBangTask('kubernetes').executeAndWait();
+			KaotoOutputChannel.logInfo('Apache Camel JBang Kubernetes plugin was installed.');
+			return true;
+		}
+		return false;
+	}
+
 	public async showWhatsNewIfNeeded() {
 		try {
 			const extension = vscode.extensions.getExtension('redhat.vscode-kaoto');
@@ -308,12 +318,26 @@ export class ExtensionContextHandler {
 	}
 
 	public registerNewCamelProjectCommands() {
-		this.context.subscriptions.push(
-			vscode.commands.registerCommand(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT, async (integration: Integration) => {
-				await new NewCamelProjectCommand().create(integration.filepath);
+		const exportSingleFileCommand = vscode.commands.registerCommand(
+			NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT,
+			async (integration: Integration) => {
+				await new NewCamelProjectCommand().create(integration.filepath, path.dirname(integration.filepath.fsPath));
 				await this.sendCommandTrackingEvent(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT);
-			}),
+			},
 		);
+		const exportFolderCommand = vscode.commands.registerCommand(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_FOLDER, async (folder: Folder) => {
+			await new NewCamelProjectCommand().create(folder.folderUri, folder.folderUri.fsPath);
+			await this.sendCommandTrackingEvent(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_FOLDER);
+		});
+		const exportWorkspaceCommand = vscode.commands.registerCommand(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_WORKSPACE, async () => {
+			if (!vscode.workspace.workspaceFolders?.[0]) {
+				return;
+			}
+			const workspaceFolder = vscode.workspace.workspaceFolders[0];
+			await new NewCamelProjectCommand().create(workspaceFolder.uri, workspaceFolder.uri.fsPath);
+			await this.sendCommandTrackingEvent(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_WORKSPACE);
+		});
+		this.context.subscriptions.push(exportSingleFileCommand, exportFolderCommand, exportWorkspaceCommand);
 	}
 
 	public registerRunIntegrationCommands(portManager: PortManager) {
@@ -381,10 +405,6 @@ export class ExtensionContextHandler {
 
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID, async (integration: Integration) => {
-				if (!(await verifyCamelKubernetesPluginIsInstalled())) {
-					await new CamelAddPluginJBangTask('kubernetes').executeAndWait();
-					KaotoOutputChannel.logInfo('Apache Camel JBang Kubernetes plugin was installed.');
-				}
 				await new CamelKubernetesRunJBangTask(integration.filepath.fsPath).execute();
 				await this.sendCommandTrackingEvent(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID);
 			}),
