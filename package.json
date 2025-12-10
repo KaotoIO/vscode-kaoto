@@ -884,6 +884,15 @@
             "tags": [
               "preview"
             ]
+          },
+          "kaoto.deployment.clusterType": {
+            "type": "string",
+            "markdownDescription": "Allow to select the cluster type for the deployment. If not set, Kaoto will ask via Quick Pick.",
+            "enum": [
+              "OpenShift",
+              "Kubernetes"
+            ],
+            "scope": "window"
           }
         }
       },

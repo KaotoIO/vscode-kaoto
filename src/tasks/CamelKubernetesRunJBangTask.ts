@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ShellExecution, TaskScope } from 'vscode';
+import { ShellExecution, TaskScope, window, workspace } from 'vscode';
 import { CamelJBangTask } from './CamelJBangTask';
 import { basename, dirname } from 'path';
 import { CamelKubernetesJBang } from '../helpers/CamelKubernetesJBang';
@@ -24,7 +24,20 @@ export class CamelKubernetesRunJBangTask extends CamelJBangTask {
 	}
 
 	static async create(filePath: string): Promise<CamelKubernetesRunJBangTask> {
-		const shellExecution = await new CamelKubernetesJBang().run(filePath, dirname(filePath));
+		let clusterType = workspace.getConfiguration().get('kaoto.deploy.clusterType') as string;
+
+		if (clusterType === 'Ask') {
+			const clusterTypePick = await window.showQuickPick(['Kubernetes', 'OpenShift', 'Knative', 'Minikube', 'Kind'], {
+				placeHolder: 'Select the cluster type',
+			});
+
+			if (clusterTypePick === undefined) {
+				throw new Error('Deployment cancelled');
+			}
+			clusterType = clusterTypePick;
+		}
+
+		const shellExecution = await new CamelKubernetesJBang().run(filePath, dirname(filePath), undefined, clusterType);
 		return new CamelKubernetesRunJBangTask(shellExecution, filePath);
 	}
 }
