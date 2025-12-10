@@ -176,13 +176,20 @@ export class CamelJBang {
 		);
 	}
 
-	public kubernetesRun(filePattern: string, cwd?: string): ShellExecution {
+	public kubernetesRun(filePattern: string, clusterType: string, cwd?: string): ShellExecution {
 		const shellExecOptions: ShellExecutionOptions = {
 			cwd: cwd,
 		};
+
+		if (clusterType === 'Kubernetes') {
+			return new ShellExecution('kamel', ['run', filePattern], shellExecOptions);
+		}
+
+		const runArgs = this.getKubernetesRunArguments();
+
 		return new ShellExecution(
 			this.jbang,
-			[...this.defaultJbangArgs, 'kubernetes', 'run', filePattern, this.getCamelVersion(), ...this.getKubernetesRunArguments()].filter(function (arg) {
+			[...this.defaultJbangArgs, 'kubernetes', 'run', filePattern, this.getCamelVersion(), ...runArgs].filter(function (arg) {
 				return arg !== undefined && arg !== null && arg !== ''; // remove ALL empty values ("", null, undefined and 0)
 			}), // remove ALL empty values ("", null, undefined and 0)
 			shellExecOptions,
@@ -241,11 +248,7 @@ export class CamelJBang {
 
 	private getKubernetesRunArguments(): string[] {
 		const kubernetesRunArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID) as string[];
-		if (kubernetesRunArgs.length > 0) {
-			return kubernetesRunArgs;
-		} else {
-			return [];
-		}
+		return kubernetesRunArgs && kubernetesRunArgs.length > 0 ? kubernetesRunArgs : [];
 	}
 
 	private async getRunArguments(filePath: string, cwd: string): Promise<string[]> {

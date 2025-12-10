@@ -1,0 +1,118 @@
+# package.json
+
+diff --git a/package.json b/package.json
+index 972b6de..7a20baf 100644
+--- a/package.json
++++ b/package.json
+@@ -793,6 +793,15 @@
+             "tags": [
+               "preview"
+             ]
++          },
++          "kaoto.deployment.clusterType": {
++            "type": "string",
++            "markdownDescription": "Allow to select the cluster type for the deployment. If not set, Kaoto will ask via Quick Pick.",
++            "enum": [
++              "OpenShift",
++              "Kubernetes"
++            ],
++            "scope": "window"
+           }
+         }
+       },
+
+# src/extension/ExtensionContextHandler.ts
+
+	public registerKubernetesRunCommands() {
+		const INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID: string = 'kaoto.integrations.kubernetes.run';
+
+		this.context.subscriptions.push(
+			vscode.commands.registerCommand(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID, async (integration: Integration) => {
+				if (!(await verifyCamelKubernetesPluginIsInstalled())) {
+					await new CamelAddPluginJBangTask('kubernetes').executeAndWait();
+					KaotoOutputChannel.logInfo('Apache Camel JBang Kubernetes plugin was installed.');
+				}
+
+				const clusterType = await this.getClusterType();
+				if (!clusterType) {
+					return;
+				}
+
+				await new CamelKubernetesRunJBangTask(integration.filepath.fsPath, clusterType).execute();
+				await this.sendCommandTrackingEvent(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID);
+			}),
+		);
+	}
+
+	private async getClusterType(): Promise<string | undefined> {
+		const clusterTypeSetting = 'kaoto.deployment.clusterType';
+		let clusterType = vscode.workspace.getConfiguration().get(clusterTypeSetting) as string;
+
+		if (!clusterType) {
+			const selected = await vscode.window.showQuickPick(['OpenShift', 'Kubernetes'], {
+				placeHolder: 'Select target cluster type',
+			});
+			if (selected) {
+				clusterType = selected;
+				await vscode.workspace.getConfiguration().update(clusterTypeSetting, selected, vscode.ConfigurationTarget.Global);
+			}
+		}
+
+		return clusterType;
+	}
+
+# src/helpers/CamelJBang.ts
+
+import {
+	arePathsEqual,
+	findFolderOfPomXml,
+	KAOTO_CAMEL_JBANG_KUBERNETES_CLUSTER_RUN_ARGUMENTS_SETTING_ID,
++	KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID,
+	KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID,
+	KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID,
+	KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID,
+	KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID,
+	KAOTO_CAMEL_JBANG_VERSION_SETTING_ID,
+	KAOTO_LOCAL_KAMELET_DIRECTORIES_SETTING_ID,
+	resolvePaths,
+} from './helpers';
+
+
+	public kubernetesRun(filePattern: string, clusterType: string, cwd?: string): ShellExecution {
+		const shellExecOptions: ShellExecutionOptions = {
+			cwd: cwd,
+		};
+		const runArgs = clusterType === 'Kubernetes' ? this.getKubernetesClusterRunArguments() : this.getKubernetesRunArguments();
+
+		return new ShellExecution(
+			this.jbang,
+			[...this.defaultJbangArgs, 'kubernetes', 'run', filePattern, this.getCamelVersion(), ...runArgs].filter(function (arg) {
+				return arg !== undefined && arg !== null && arg !== ''; // remove ALL empty values ("", null, undefined and 0)
+			}), // remove ALL empty values ("", null, undefined and 0)
+			shellExecOptions,
+		);
+	}
+
+
+	private getKubernetesRunArguments(): string[] {
+		const kubernetesRunArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID) as string[];
+		return kubernetesRunArgs && kubernetesRunArgs.length > 0 ? kubernetesRunArgs : [];
+	}
+
+
+	private getKubernetesClusterRunArguments(): string[] {
+		const kubernetesClusterRunArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_KUBERNETES_CLUSTER_RUN_ARGUMENTS_SETTING_ID) as string[];
+		return kubernetesClusterRunArgs && kubernetesClusterRunArgs.length > 0 ? kubernetesClusterRunArgs : [];
+	}
+
+# src/helpers/helpers.ts
+
+export const KAOTO_CAMEL_JBANG_KUBERNETES_CLUSTER_RUN_ARGUMENTS_SETTING_ID: string = 'kaoto.camelJbang.kubernetesClusterRunArguments';
+
+# src/tasks/CamelKubernetesRunJBangTask.ts
+
+export class CamelKubernetesRunJBangTask extends CamelJBangTask {
+	constructor(filePath: string, clusterType: string) {
+		super(TaskScope.Workspace, `Deploying - ${basename(filePath)}`, new CamelJBang().kubernetesRun(filePath, clusterType, dirname(filePath)));
+	}
+}

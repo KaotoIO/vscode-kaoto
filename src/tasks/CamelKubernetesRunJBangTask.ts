@@ -19,7 +19,7 @@ import { CamelJBang } from '../helpers/CamelJBang';
 import { basename, dirname } from 'path';
 
 export class CamelKubernetesRunJBangTask extends CamelJBangTask {
-	constructor(filePath: string) {
-		super(TaskScope.Workspace, `Deploying - ${basename(filePath)}`, new CamelJBang().kubernetesRun(filePath, dirname(filePath)));
+	constructor(filePath: string, clusterType: string) {
+		super(TaskScope.Workspace, `Deploying - ${basename(filePath)}`, new CamelJBang().kubernetesRun(filePath, clusterType, dirname(filePath)));
 	}
 }
