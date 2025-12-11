@@ -28,7 +28,7 @@ import { I18nDictionariesProvider } from '@kie-tools-core/i18n/dist/react-compon
 import { createRef, FunctionComponent, RefObject, useCallback } from 'react';
 
 interface KogitoEditorEnvelopeAppProps {
-	callback: (ref: RefObject<EditorEnvelopeViewApi<Editor>>) => void;
+	callback: (ref: RefObject<EditorEnvelopeViewApi<Editor> | null>) => void;
 	context: KogitoEditorEnvelopeContextType<any>;
 	showKeyBindingsOverlay: boolean;
 }
