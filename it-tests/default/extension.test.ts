@@ -13,28 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { NotificationsCenter, NotificationType, Workbench } from 'vscode-extension-tester';
+import { before, NotificationsCenter, NotificationType, Workbench } from 'vscode-extension-tester';
 import { openResourcesAndWaitForActivation } from '../Util';
 import { join } from 'path';
 import { expect } from 'chai';
 import { waitUntil } from 'async-wait-until';
 
 describe('Extension', function () {
-	this.timeout(90_000);
+	this.timeout(240_000);
 
 	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars');
 
 	let notificationCenter: NotificationsCenter;
 
 	before(async function () {
-		this.timeout(60_000);
 		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
 
 		notificationCenter = await new Workbench().openNotificationsCenter();
-		await notificationCenter.getDriver().wait(async () => {
-			// expect to have at least two notifications, in fact would better to check both are already available
-			return (await notificationCenter.getNotifications(NotificationType.Info)).length > 1;
-		});
+		await notificationCenter.getDriver().wait(
+			async () => {
+				// expect to have at least two notifications, in fact would better to check both are already available
+				return (await notificationCenter.getNotifications(NotificationType.Info)).length > 1;
+			},
+			90_000,
+			'Notifications were not available after 90 seconds',
+		);
 	});
 
 	it(`Check 'XML' extension recommendation exists`, async function () {

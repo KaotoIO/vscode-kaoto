@@ -103,6 +103,7 @@ export async function getTreeItem(
 		},
 		timeout,
 		`${filename} was not found within ${await section?.getTitle()} view!`,
+		500,
 	);
 }
 
@@ -253,6 +254,7 @@ async function extensionIsActivated(displayName: string): Promise<boolean> {
 			await extensionsControl?.closeView();
 			return true;
 		} else {
+			await extensionsControl?.closeView();
 			return false;
 		}
 	} catch (err) {
@@ -357,6 +359,7 @@ export async function getViewActionButton(
 			},
 			timeout,
 			`'${action}' action button was not found!`,
+			500,
 		);
 	} else {
 		return undefined;
@@ -380,6 +383,7 @@ export async function getTreeItemActionButton(
 		},
 		timeout,
 		`'${action}' action button was not found!`,
+		500,
 	);
 }
 

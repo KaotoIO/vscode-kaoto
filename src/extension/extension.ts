@@ -101,18 +101,6 @@ export async function activate(context: vscode.ExtensionContext) {
 	contextHandler.registerHelpAndFeedbackView();
 
 	/*
-	 * check JBang is available on a system PATH
-	 */
-	const jbang = await contextHandler.checkJbangOnPath();
-
-	/*
-	 * check Apache Camel Trusted Source is configured
-	 */
-	if (jbang) {
-		await contextHandler.checkCamelJbangTrustedSource();
-	}
-
-	/*
 	 * send extension startup event into Red Hat Telemetry
 	 */
 	await telemetryService.sendStartupEvent();
@@ -126,6 +114,18 @@ export async function activate(context: vscode.ExtensionContext) {
 	 * Show What's New on first start for this version
 	 */
 	await contextHandler.showWhatsNewIfNeeded();
+
+	/*
+	 * check JBang is available on a system PATH
+	 */
+	const jbang = await contextHandler.checkJbangOnPath();
+
+	/*
+	 * check Apache Camel Trusted Source is configured
+	 */
+	if (jbang) {
+		await contextHandler.checkCamelJbangTrustedSource();
+	}
 
 	KaotoOutputChannel.logInfo('Kaoto extension is successfully setup.');
 }

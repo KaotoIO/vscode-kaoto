@@ -55,6 +55,10 @@ jobs:
       - name: Install JBang (windows)
         if: matrix.os == 'windows-latest'
         run: choco install jbang
+      - name: Add Camel Trusted Source to JBang
+        run: jbang trust add https://github.com/apache/camel/
+      - name: Add Kubernetes plugin to Camel JBang
+        run: jbang camel@apache/camel plugin add kubernetes
       - name: yarn
         run: yarn --network-timeout 1000000
       - name: yarn build:prod
@@ -100,19 +104,19 @@ jobs:
         with:
           name: sbom
           path: manifest.json
-      - name: Store VS Code logs
+      - name: Store UI Tests VS Code Logs
         uses: actions/upload-artifact@v5
-        if: always()
+        if: failure()
         with:
           name: vscode-logs-${{ matrix.os }}
           path: test-resources/settings/logs
-      - name: Store VS Code Logs
+      - name: Store Unit Tests VS Code Logs
         uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: ${{ matrix.os }}-test-logs
           path: .vscode-test/user-data/logs/*
-      - name: Store VS Code UI Tests screenshots on failure
+      - name: Store UI Tests VS Code screenshots
         uses: actions/upload-artifact@v5
         if: failure()
         with:
