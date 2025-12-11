@@ -129,6 +129,14 @@ export class ExtensionContextHandler {
 		}
 	}
 
+	public async checkCamelJBangKubernetesPlugin() {
+		const camelKubernetesPluginInstalled = await verifyCamelKubernetesPluginIsInstalled();
+		if (!camelKubernetesPluginInstalled) {
+			await new CamelAddPluginJBangTask('kubernetes').executeAndWait();
+			KaotoOutputChannel.logInfo('Apache Camel JBang Kubernetes plugin was installed.');
+		}
+	}
+
 	public async showWhatsNewIfNeeded() {
 		try {
 			const extension = vscode.extensions.getExtension('redhat.vscode-kaoto');
@@ -395,10 +403,6 @@ export class ExtensionContextHandler {
 
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID, async (integration: Integration) => {
-				if (!(await verifyCamelKubernetesPluginIsInstalled())) {
-					await new CamelAddPluginJBangTask('kubernetes').executeAndWait();
-					KaotoOutputChannel.logInfo('Apache Camel JBang Kubernetes plugin was installed.');
-				}
 				await new CamelKubernetesRunJBangTask(integration.filepath.fsPath).execute();
 				await this.sendCommandTrackingEvent(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID);
 			}),
