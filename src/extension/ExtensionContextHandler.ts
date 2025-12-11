@@ -456,6 +456,24 @@ export class ExtensionContextHandler {
 		);
 	}
 
+	public async hideIntegrationsViewButtonsForMavenProjects() {
+		// Initial check
+		await this.updatePomContext();
+
+		// Watch for addition/removal of pom.xml in workspace root
+		const pomWatcher = vscode.workspace.createFileSystemWatcher('**/pom.xml');
+		pomWatcher.onDidCreate(() => this.updatePomContext());
+		pomWatcher.onDidDelete(() => this.updatePomContext());
+		pomWatcher.onDidChange(() => this.updatePomContext());
+		this.context.subscriptions.push(pomWatcher);
+	}
+
+	private async updatePomContext() {
+		const pomFile = await vscode.workspace.findFiles('pom.xml', IntegrationsProvider.EXCLUDE_PATTERN, 1);
+		const hasPom = pomFile.length > 0;
+		await vscode.commands.executeCommand('setContext', 'kaoto.workspaceHasPomXml', hasPom);
+	}
+
 	private async sendCommandTrackingEvent(commandId: string) {
 		const telemetryEvent: TelemetryEvent = {
 			type: 'track',

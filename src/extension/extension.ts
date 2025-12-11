@@ -83,6 +83,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	 * register 'Integrations' view provider
 	 */
 	contextHandler.registerIntegrationsView();
+	await contextHandler.hideIntegrationsViewButtonsForMavenProjects();
 	contextHandler.registerNewCamelFilesCommands();
 	contextHandler.registerNewCamelProjectCommands();
 	contextHandler.registerKubernetesRunCommands();
