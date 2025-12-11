@@ -3,6 +3,8 @@
 - rework Integrations section of Kaoto view to bring tree-like structure
 - add buttons `Run: Folder` and `Run: Workspace` into Integrations section of Kaoto view
 - user setting allowing specify a list of local kamelet directories used for integrations run
+- Upgrade to Kaoto 2.9.0-RC1
+- Upgrade to React 19
 
 # 2.8.0
 
