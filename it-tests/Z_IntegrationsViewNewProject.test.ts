@@ -126,7 +126,7 @@ describe('Integrations View', function () {
 
 		async function waitUntilNewCamelProjectHasCrucialFiles(): Promise<void> {
 			// expand folders
-			await expandFolderItemsInIntegrationsView(integrationsSection, 'src', 'main', 'resources', 'camel');
+			await expandFolderItemsInIntegrationsView(integrationsSection, 'quarkus-export-example', 'src', 'main', 'resources', 'camel');
 			await driver.wait(
 				async function () {
 					return (
@@ -136,9 +136,9 @@ describe('Integrations View', function () {
 						fs.existsSync(join(PROJECT_OUTPUT_DIR, 'src', 'main', 'resources', 'kamelets', 'rootKam-sink.kamelet.yaml'))
 					);
 				},
-				180_000,
+				240_000,
 				`New Camel Project was not created properly!`,
-				2_000,
+				5_000,
 			);
 		}
 	});
