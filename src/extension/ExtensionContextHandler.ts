@@ -358,7 +358,7 @@ export class ExtensionContextHandler {
 			const storageKey = 'kaoto.showRunAllFoldersMessage';
 			let showInfoMessage = this.context.globalState.get<boolean>(storageKey, true);
 
-			if (showInfoMessage) {
+			if (showInfoMessage && commandId === INTEGRATIONS_RUN_ALL_WORKSPACES_COMMAND_ID) {
 				const doNotShowAgain = "Don't show again";
 				const ok = 'OK';
 				const result = await vscode.window.showInformationMessage(
