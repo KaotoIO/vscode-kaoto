@@ -961,7 +961,7 @@
     "path-browserify": "^1.0.1",
     "prettier": "3.7.4",
     "rimraf": "^6.1.2",
-    "sass": "^1.95.1",
+    "sass": "^1.96.0",
     "sass-loader": "^16.0.4",
     "source-map-loader": "4.0.1",
     "style-loader": "3.3.3",
