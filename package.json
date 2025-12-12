@@ -560,7 +560,7 @@
         {
           "command": "kaoto.integrations.run.workspace",
           "group": "navigation@1",
-          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount == 1"
+          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount == 1 && !kaoto.workspaceHasPomXml"
         },
         {
           "command": "kaoto.integrations.run.all.workspaces",
