@@ -385,10 +385,33 @@ export class ExtensionContextHandler {
 					await new CamelAddPluginJBangTask('kubernetes').executeAndWait();
 					KaotoOutputChannel.logInfo('Apache Camel JBang Kubernetes plugin was installed.');
 				}
-				await new CamelKubernetesRunJBangTask(integration.filepath.fsPath).execute();
+
+				const clusterType = await this.getClusterType();
+				if (!clusterType) {
+					return;
+				}
+
+				await new CamelKubernetesRunJBangTask(integration.filepath.fsPath, clusterType).execute();
 				await this.sendCommandTrackingEvent(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID);
 			}),
 		);
+	}
+
+	private async getClusterType(): Promise<string | undefined> {
+		const clusterTypeSetting = 'kaoto.deployment.clusterType';
+		let clusterType = vscode.workspace.getConfiguration().get(clusterTypeSetting) as string;
+
+		if (!clusterType) {
+			const selected = await vscode.window.showQuickPick(['OpenShift', 'Kubernetes'], {
+				placeHolder: 'Select target cluster type',
+			});
+			if (selected) {
+				clusterType = selected;
+				await vscode.workspace.getConfiguration().update(clusterTypeSetting, selected, vscode.ConfigurationTarget.Global);
+			}
+		}
+
+		return clusterType;
 	}
 
 	public registerDeploymentsIntegrationCommands() {
