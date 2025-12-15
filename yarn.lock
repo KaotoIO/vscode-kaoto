@@ -605,9 +605,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/kaoto@npm:2.9.0-RC2":
-  version: 2.9.0-RC2
-  resolution: "@kaoto/kaoto@npm:2.9.0-RC2"
+"@kaoto/kaoto@npm:2.9.0-RC3":
+  version: 2.9.0-RC3
+  resolution: "@kaoto/kaoto@npm:2.9.0-RC3"
   dependencies:
     "@carbon/icons-react": "npm:^11.67.0"
     "@dnd-kit/core": "npm:^6.1.0"
@@ -647,7 +647,7 @@ __metadata:
     react: ^18.3.1
     react-dom: ^18.3.1
     react-monaco-editor: ^0.56.0
-  checksum: 10/8f1ac946e632ba85322fc3ebb77590da5b33992b7aa2136958a1c827dac8573be7a8947a1370e45105fa8530ea55641bf22e8f1a1f696998ab76702178cb9401
+  checksum: 10/1384c3c842a820e5918506db4b6aec9067cf41114cb835ba340ef6519282f620f59bc125f9ce358a33fbcbb398d14cdd379fc14352b8c1cd6fafb6548ec7d05e
   languageName: node
   linkType: hard
 
@@ -12900,7 +12900,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto/kaoto": "npm:2.9.0-RC2"
+    "@kaoto/kaoto": "npm:2.9.0-RC3"
     "@kie-tools-core/backend": "npm:10.0.0"
     "@kie-tools-core/editor": "npm:10.0.0"
     "@kie-tools-core/i18n": "npm:10.0.0"
