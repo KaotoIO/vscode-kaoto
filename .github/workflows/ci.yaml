@@ -34,7 +34,7 @@ jobs:
         uses: docker/setup-qemu-action@v3.7.0
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
       - name: Start Minikube
-        uses: medyagh/setup-minikube@v0.0.20
+        uses: medyagh/setup-minikube@v0.0.21
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
         with:
           driver: docker
