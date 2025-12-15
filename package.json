@@ -244,6 +244,11 @@
     ],
     "commands": [
       {
+        "command": "kaoto.whatsNew.show",
+        "title": "Show What's New",
+        "category": "Kaoto"
+      },
+      {
         "command": "kaoto.open",
         "title": "Open with Kaoto Graphical Editor for Camel"
       },

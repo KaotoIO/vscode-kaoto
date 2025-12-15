@@ -138,9 +138,17 @@ export class ExtensionContextHandler {
 	}
 
 	public async showWhatsNewIfNeeded() {
+		const currentVersion = this.context.extension.packageJSON.version;
+		this.context.subscriptions.push(
+			vscode.commands.registerCommand('kaoto.whatsNew.show', async () => {
+				try {
+					await WhatsNewPanel.show(this.context, currentVersion);
+				} catch (err) {
+					KaotoOutputChannel.logWarning(`Unable to show What's New: ${String(err)}`);
+				}
+			}),
+		);
 		try {
-			const extension = vscode.extensions.getExtension('redhat.vscode-kaoto');
-			const currentVersion: string | undefined = extension?.packageJSON?.version as string | undefined;
 			if (!currentVersion) {
 				return;
 			}
