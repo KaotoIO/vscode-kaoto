@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     env:
       CODE_VERSION: max
