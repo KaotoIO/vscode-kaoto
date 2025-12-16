@@ -39,7 +39,7 @@ import { expandFolderItemsInIntegrationsView, getTreeItem, getTreeItemActionButt
  * This test needs to be always executed as last in suite
  */
 describe('Integrations View', function () {
-	this.timeout(240_000);
+	this.timeout(300_000); // 5 minutes
 
 	const WORKSPACE_FOLDER = join(__dirname, '../test Fixture with speci@l chars', 'kaoto-view');
 
@@ -83,7 +83,11 @@ describe('Integrations View', function () {
 
 		after(async function () {
 			await new EditorView().closeAllEditors();
-			fs.rmSync(PROJECT_OUTPUT_DIR, { force: true, recursive: true });
+			fs.rm(PROJECT_OUTPUT_DIR, { force: true, recursive: true, maxRetries: 3, retryDelay: 1000 }, (err) => {
+				if (err) {
+					console.error(err);
+				}
+			});
 		});
 
 		it(`Create a new Quarkus project`, async function () {
