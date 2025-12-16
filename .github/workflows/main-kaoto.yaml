@@ -70,7 +70,7 @@ jobs:
         working-directory: vscode-kaoto
         run: yarn vsce package --no-dependencies --yarn
       - name: Archive vsix
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: vsix-from-main-branch-of-kaoto
           path: "vscode-kaoto/*.vsix"
@@ -85,13 +85,13 @@ jobs:
           eval $(minikube -p minikube docker-env)
           xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
       - name: Store UI Tests VS Code Logs
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: vscode-logs
           path: vscode-kaoto/test-resources/settings/logs
       - name: Store UI Tests VS Code screenshots
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: ui-test-screenshots

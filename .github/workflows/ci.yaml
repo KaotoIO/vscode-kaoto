@@ -66,7 +66,7 @@ jobs:
       - name: vsix package
         run: yarn vsce package --no-dependencies --yarn
       - name: Archive vsix
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: ${{ matrix.os == 'ubuntu-latest' }}
         with:
           name: "vscode-kaoto-vsix"
@@ -99,25 +99,25 @@ jobs:
           npm install -g @cyclonedx/cdxgen
           cdxgen -o manifest.json
       - name: Store SBOM
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: matrix.os == 'ubuntu-latest'
         with:
           name: sbom
           path: manifest.json
       - name: Store UI Tests VS Code Logs
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: vscode-logs-${{ matrix.os }}
           path: test-resources/settings/logs
       - name: Store Unit Tests VS Code Logs
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: ${{ matrix.os }}-test-logs
           path: .vscode-test/user-data/logs/*
       - name: Store UI Tests VS Code screenshots
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: ui-test-screenshots-${{ matrix.os }}

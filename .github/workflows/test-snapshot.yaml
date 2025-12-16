@@ -109,14 +109,14 @@ jobs:
           yarn run test:it:with-prebuilt-vsix
 
       - name: Store UI Tests VS Code Logs
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: vscode-logs-${{ matrix.os }}
           path: test-resources/settings/logs
 
       - name: Store UI Tests VS Code screenshots
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: ui-test-screenshots-${{ matrix.os }}
