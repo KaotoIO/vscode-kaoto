@@ -6241,6 +6241,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fs-extra@npm:^11.3.3":
+  version: 11.3.3
+  resolution: "fs-extra@npm:11.3.3"
+  dependencies:
+    graceful-fs: "npm:^4.2.0"
+    jsonfile: "npm:^6.0.1"
+    universalify: "npm:^2.0.0"
+  checksum: 10/daeaefafbebe8fa6efd2fb96fc926f2c952be5877811f00a6794f0d64e0128e3d0d93368cd328f8f063b45deacf385c40e3d931aa46014245431cd2f4f89c67a
+  languageName: node
+  linkType: hard
+
 "fs-minipass@npm:^2.0.0":
   version: 2.1.0
   resolution: "fs-minipass@npm:2.1.0"
@@ -12940,7 +12951,7 @@ __metadata:
     eslint-plugin-chai-friendly: "npm:^1.1.0"
     eslint-plugin-import: "npm:^2.32.0"
     eslint-plugin-prettier: "npm:^5.5.4"
-    fs-extra: "npm:^11.3.2"
+    fs-extra: "npm:^11.3.3"
     get-port-please: "npm:^3.2.0"
     mocha: "npm:^11.7.5"
     mocha-jenkins-reporter: "npm:^0.4.8"
