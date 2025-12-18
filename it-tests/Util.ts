@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import { assert } from 'chai';
-import * as path from 'path';
 import * as fs from 'node:fs';
 import * as os from 'os';
+import * as path from 'path';
 import {
 	ActivityBar,
 	BottomBarPanel,
@@ -26,6 +26,7 @@ import {
 	ExtensionsViewItem,
 	ExtensionsViewSection,
 	ModalDialog,
+	StatusBar,
 	TerminalView,
 	TextEditor,
 	TreeItem,
@@ -208,6 +209,27 @@ export async function openResourcesAndWaitForActivation(
 	await VSBrowser.instance.openResources(path, async () => {
 		await VSBrowser.instance.driver.sleep(interval);
 		if (waitForActivation) {
+			// make sure extension is activated checking status bar is not contain Kaoto messages anymore
+			try {
+				await VSBrowser.instance.driver.wait(
+					async () => {
+						const statusBarItems = await new StatusBar().getItems();
+						const statusBarMessages = await Promise.all(statusBarItems.map((item) => item.getText()));
+
+						return statusBarMessages.every((msg) => !msg.includes('Kaoto:'));
+					},
+					timeout / 2, // half of the timeout to avoid timeout errors
+					`Status bar contains Kaoto messages. The Kaoto extension was not activated after ${timeout} sec.`,
+					interval,
+				);
+			} catch (error) {
+				if (error instanceof Error && error.name !== 'TimeoutError') {
+					// if not timeout error, throw the error
+					throw new Error(error.message);
+				}
+			}
+
+			// make sure MCP servers and recommended extensions are collapsed
 			try {
 				await collapseMcpServersAndRecommendedView();
 			} catch (error) {
@@ -216,17 +238,19 @@ export async function openResourcesAndWaitForActivation(
 						!error.message.includes(`No section with title 'MCP Servers' found`) &&
 						!error.message.includes(`No section with title 'Recommended' found`)
 					) {
-						throw Error(error.message);
+						throw new Error(error.message);
 					}
 				}
 			}
+
+			// make sure Kaoto extension is activated checking extension activation time
 			await VSBrowser.instance.driver.sleep(interval);
 			await VSBrowser.instance.driver.wait(
 				async function () {
 					return await extensionIsActivated('Kaoto');
 				},
-				timeout,
-				`The Kaoto extension was not activated after ${timeout} sec.`,
+				timeout / 2, // half of the timeout to avoid timeout errors
+				`Extension activation time is not found. The Kaoto extension was not activated after ${timeout} sec.`,
 				interval,
 			);
 		}
@@ -244,8 +268,9 @@ async function collapseMcpServersAndRecommendedView(): Promise<void> {
 }
 
 async function extensionIsActivated(displayName: string): Promise<boolean> {
+	let extensionsControl: ViewControl | undefined;
 	try {
-		const extensionsControl = await new ActivityBar().getViewControl('Extensions');
+		extensionsControl = await new ActivityBar().getViewControl('Extensions');
 		const extensionsView = await extensionsControl?.openView();
 		const marketplace = (await extensionsView?.getContent().getSection('Installed')) as ExtensionsViewSection;
 		const item = (await marketplace.findItem(`@installed ${displayName}`)) as ExtensionsViewItem;
@@ -258,6 +283,7 @@ async function extensionIsActivated(displayName: string): Promise<boolean> {
 			return false;
 		}
 	} catch (err) {
+		await extensionsControl?.closeView();
 		return false;
 	}
 }
@@ -305,9 +331,11 @@ export function readUserSetting(id: string): string {
  * @returns A Promise that resolves when the folders are expanded.
  */
 export async function expandFolderItemsInIntegrationsView(integrationsSection: ViewSection | undefined, ...folderNames: string[]): Promise<void> {
+	const driver = integrationsSection?.getDriver();
 	for (const folderName of folderNames) {
 		const folderItem = await integrationsSection?.findItem(folderName);
 		await folderItem?.click();
+		await driver?.sleep(500); // wait for the item to be expanded
 	}
 }
 

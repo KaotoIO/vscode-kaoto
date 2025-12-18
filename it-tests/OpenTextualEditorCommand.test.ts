@@ -17,9 +17,10 @@ import { EditorView, TextEditor, VSBrowser } from 'vscode-extension-tester';
 import { expect } from 'chai';
 import * as path from 'path';
 import * as os from 'os';
+import { openResourcesAndWaitForActivation } from './Util';
 
 describe('Toggle Source Code', function () {
-	this.timeout(30_000);
+	this.timeout(300_000); // 5 minutes
 
 	const WORKSPACE_FOLDER: string = path.join(__dirname, '../test Fixture with speci@l chars');
 	const CAMEL_FILE: string = 'my.camel.yaml';
@@ -32,6 +33,10 @@ describe('Toggle Source Code', function () {
 	} else {
 		actionTitle += ' (Ctrl+K V)';
 	}
+
+	before(async function () {
+		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
+	});
 
 	beforeEach(async function () {
 		await VSBrowser.instance.openResources(path.join(WORKSPACE_FOLDER, CAMEL_FILE), async (timeout: number = 5_000, interval: number = 1_000) => {

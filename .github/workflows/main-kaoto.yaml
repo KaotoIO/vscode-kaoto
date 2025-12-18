@@ -10,7 +10,7 @@ name: Build with main branch of kaoto
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     env:
       CODE_VERSION: max
@@ -21,6 +21,10 @@ jobs:
         uses: actions/checkout@v6
         with:
           path: vscode-kaoto
+
+      - name: Print the available disk space
+        run: df -h /
+
       - name: Checkout Kaoto
         uses: actions/checkout@v6
         with:
@@ -55,6 +59,10 @@ jobs:
         run: jbang trust add https://github.com/apache/camel/
       - name: Add Kubernetes plugin to Camel JBang
         run: jbang camel@apache/camel plugin add kubernetes
+
+      - name: Print the available disk space
+        run: df -h /
+
       - name: Kaoto build
         working-directory: kaoto
         run: |

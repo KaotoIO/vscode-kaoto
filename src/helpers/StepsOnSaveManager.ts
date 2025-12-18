@@ -39,7 +39,7 @@ export class StepsOnSaveManager {
 		const camelJBangVersion = vscode.workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_VERSION_SETTING_ID) as string;
 		if (satisfies(camelJBangVersion, '<4.14')) {
 			KaotoOutputChannel.logWarning('Camel JBang version is <4.14. Skipping update on save for Camel dependencies in pom.xml.');
-			vscode.window.setStatusBarMessage('Camel JBang version is <4.14. Skipping update on save for Camel dependencies in pom.xml.', 5_000);
+			vscode.window.setStatusBarMessage('Kaoto: Camel JBang version is <4.14. Skipping update on save for Camel dependencies in pom.xml.', 5_000);
 			return; // skip update on save for Camel JBang <4.14
 		}
 
@@ -59,7 +59,7 @@ export class StepsOnSaveManager {
 			if (exitCode === 0) {
 				this.hasStepsByDocPath.set(docPath, false);
 				KaotoOutputChannel.logInfo('Camel dependencies update completed successfully.');
-				vscode.window.setStatusBarMessage(`Camel dependencies in '${pomPath}' successfully updated.`, 5_000);
+				vscode.window.setStatusBarMessage(`Kaoto: Camel dependencies in '${pomPath}' successfully updated.`, 5_000);
 			} else {
 				const selection = await vscode.window.showWarningMessage(
 					'Camel dependencies could not be updated. Fix errors in your route and save again to retry.',
