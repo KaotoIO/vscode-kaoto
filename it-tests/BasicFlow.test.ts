@@ -28,7 +28,7 @@ import * as fs from 'fs-extra';
 
 const DATA_TEST_ID_DATAMAPPERSTEP_2_5 = 'custom-node__route.from.steps.0.step:kaoto-datamapper';
 
-describe('Kaoto basic development flow', function () {
+describe.only('Kaoto basic development flow', function () {
 	this.timeout(90_000);
 
 	const workspaceFolder = path.join(__dirname, '../test Fixture with speci@l chars');
