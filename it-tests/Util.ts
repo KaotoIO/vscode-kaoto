@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import { assert } from 'chai';
-import * as path from 'path';
 import * as fs from 'node:fs';
 import * as os from 'os';
+import * as path from 'path';
 import {
 	ActivityBar,
 	BottomBarPanel,
@@ -212,14 +212,11 @@ export async function openResourcesAndWaitForActivation(
 			// make sure extension is activated checking status bar is not contain Kaoto messages anymore
 			try {
 				await VSBrowser.instance.driver.wait(
-					async function () {
+					async () => {
 						const statusBarItems = await new StatusBar().getItems();
-						const kaotoStatusBarMsg = await statusBarItems[2].getText();
-						if (kaotoStatusBarMsg.startsWith('Kaoto:')) {
-							return false;
-						} else {
-							return true;
-						}
+						const statusBarMessages = await Promise.all(statusBarItems.map((item) => item.getText()));
+
+						return statusBarMessages.every((msg) => !msg.includes('Kaoto:'));
 					},
 					timeout / 2, // half of the timeout to avoid timeout errors
 					`Status bar contains Kaoto messages. The Kaoto extension was not activated after ${timeout} sec.`,
