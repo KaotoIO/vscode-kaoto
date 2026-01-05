@@ -1,3 +1,5 @@
+# 2.10.0
+
 # 2.9.0
 
 - Rework Integrations section of Kaoto view to bring tree-like structure
