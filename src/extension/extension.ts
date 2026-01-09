@@ -116,17 +116,13 @@ export async function activate(context: vscode.ExtensionContext) {
 	await contextHandler.showWhatsNewIfNeeded();
 
 	/*
-	 * check JBang is available on a system PATH
+	 * check JBang, Camel trusted source, and Kubernetes plugin once on first activation.
+	 * On first activation, these checks will block until complete.
+	 * On subsequent activations, cached results are used and checks are skipped.
 	 */
-	const jbang = await contextHandler.checkJbangOnPath();
-
-	/*
-	 * check Apache Camel Trusted Source is configured
-	 */
-	if (jbang) {
-		await contextHandler.checkCamelJbangTrustedSource();
-		await contextHandler.checkCamelJBangKubernetesPlugin();
-	}
+	await contextHandler.checkJbangOnPathOnce();
+	await contextHandler.checkCamelJbangTrustedSourceOnce();
+	await contextHandler.checkCamelJBangKubernetesPluginOnce();
 
 	KaotoOutputChannel.logInfo('Kaoto extension is successfully setup.');
 }

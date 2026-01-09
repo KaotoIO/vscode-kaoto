@@ -120,6 +120,76 @@ export class ExtensionContextHandler {
 		return true;
 	}
 
+	/**
+	 * Check JBang availability once on first activation, then use cached result.
+	 * On first activation, this will block until the check completes.
+	 * On subsequent activations, this returns immediately using cached result.
+	 * Updates the VS Code context when the check completes.
+	 */
+	public async checkJbangOnPathOnce(): Promise<void> {
+		const storageKey = 'kaoto.jbangVerified';
+		const cachedAvailable = this.context.globalState.get<boolean>('kaoto.jbangAvailable');
+
+		// If we've already verified, use cached result
+		if (this.context.globalState.get<boolean>(storageKey) === true && cachedAvailable !== undefined) {
+			await vscode.commands.executeCommand('setContext', 'kaoto.jbangAvailable', cachedAvailable);
+			return;
+		}
+
+		// First activation - perform check and cache result
+		try {
+			const result = await this.checkJbangOnPath();
+			// Cache the result for future activations
+			await this.context.globalState.update('kaoto.jbangAvailable', result);
+			await this.context.globalState.update(storageKey, true);
+		} catch (error) {
+			// Log error but don't fail activation
+			KaotoOutputChannel.logWarning(`Check for JBang failed: ${error instanceof Error ? error.message : String(error)}`);
+			// Ensure context is set to false if check fails
+			await vscode.commands.executeCommand('setContext', 'kaoto.jbangAvailable', false);
+			await this.context.globalState.update('kaoto.jbangAvailable', false);
+			await this.context.globalState.update(storageKey, true);
+		}
+	}
+
+	/**
+	 * Check JBang availability lazily when needed (e.g., when user tries to use JBang features).
+	 * Uses cached result if available, otherwise performs a fresh check.
+	 * This ensures JBang is available before executing commands.
+	 */
+	public async ensureJbangOnPath(): Promise<boolean> {
+		// Check cache first
+		const cachedAvailable = this.context.globalState.get<boolean>('kaoto.jbangAvailable');
+		const isVerified = this.context.globalState.get<boolean>('kaoto.jbangVerified') === true;
+
+		if (isVerified && cachedAvailable !== undefined) {
+			// Use cached result
+			await vscode.commands.executeCommand('setContext', 'kaoto.jbangAvailable', cachedAvailable);
+			if (!cachedAvailable) {
+				vscode.window.showWarningMessage('JBang is not available. Please install JBang to use this feature.');
+			}
+			return cachedAvailable;
+		}
+
+		// Cache miss or not verified - perform fresh check
+		try {
+			const available = await this.checkJbangOnPath();
+			// Update cache
+			await this.context.globalState.update('kaoto.jbangAvailable', available);
+			await this.context.globalState.update('kaoto.jbangVerified', true);
+			if (!available) {
+				vscode.window.showWarningMessage('JBang is not available. Please install JBang to use this feature.');
+			}
+			return available;
+		} catch (error) {
+			KaotoOutputChannel.logError(`Failed to check JBang availability: ${error instanceof Error ? error.message : String(error)}`, error);
+			await vscode.commands.executeCommand('setContext', 'kaoto.jbangAvailable', false);
+			await this.context.globalState.update('kaoto.jbangAvailable', false);
+			await this.context.globalState.update('kaoto.jbangVerified', true);
+			return false;
+		}
+	}
+
 	public async checkCamelJbangTrustedSource() {
 		const camelTrustedSource = await verifyCamelJBangTrustedSource();
 		if (!camelTrustedSource) {
@@ -129,11 +199,147 @@ export class ExtensionContextHandler {
 		}
 	}
 
+	/**
+	 * Check Camel JBang trusted source once on first activation, then use cached result.
+	 * On first activation, this will block until the check completes.
+	 * On subsequent activations, this returns immediately.
+	 */
+	public async checkCamelJbangTrustedSourceOnce(): Promise<void> {
+		const storageKey = 'kaoto.trustedSourceVerified';
+
+		// If we've already verified, skip the check
+		if (this.context.globalState.get<boolean>(storageKey) === true) {
+			return;
+		}
+
+		// First activation - perform check and cache result
+		try {
+			await this.checkCamelJbangTrustedSource();
+			// Cache that we've verified
+			await this.context.globalState.update(storageKey, true);
+		} catch (error) {
+			// Log error but don't fail activation
+			KaotoOutputChannel.logWarning(`Check for Camel JBang trusted source failed: ${error instanceof Error ? error.message : String(error)}`);
+			// Still mark as verified to avoid repeated failures on every activation
+			await this.context.globalState.update(storageKey, true);
+		}
+	}
+
+	/**
+	 * Check Camel JBang trusted source lazily when needed (e.g., when user tries to use Camel JBang features).
+	 * Uses cached result if available, otherwise performs a fresh check.
+	 * This ensures the trusted source is configured before executing commands.
+	 */
+	public async ensureCamelJbangTrustedSource(): Promise<boolean> {
+		// Check cache first
+		const isVerified = this.context.globalState.get<boolean>('kaoto.trustedSourceVerified') === true;
+
+		if (isVerified) {
+			// Assume it's configured if we've verified before (trusted source doesn't change often)
+			// If it was missing, checkCamelJbangTrustedSource would have added it
+			return true;
+		}
+
+		// Cache miss or not verified - perform fresh check
+		try {
+			await this.checkCamelJbangTrustedSource();
+			// Update cache
+			await this.context.globalState.update('kaoto.trustedSourceVerified', true);
+			return true;
+		} catch (error) {
+			KaotoOutputChannel.logError(
+				`Failed to ensure Camel JBang trusted source is configured: ${error instanceof Error ? error.message : String(error)}`,
+				error,
+			);
+			// Still mark as verified to avoid repeated failures
+			await this.context.globalState.update('kaoto.trustedSourceVerified', true);
+			return false;
+		}
+	}
+
+	/**
+	 * Ensure JBang and Camel trusted source are available before executing JBang commands.
+	 * This is a convenience method that checks both requirements.
+	 * @returns true if both requirements are met, false otherwise
+	 */
+	public async ensureJbangRequirements(): Promise<boolean> {
+		const jbangAvailable = await this.ensureJbangOnPath();
+		if (!jbangAvailable) {
+			return false;
+		}
+
+		const trustedSourceReady = await this.ensureCamelJbangTrustedSource();
+		if (!trustedSourceReady) {
+			vscode.window.showErrorMessage('Failed to ensure Camel JBang trusted source is configured. Please check the output channel for details.');
+			return false;
+		}
+
+		return true;
+	}
+
 	public async checkCamelJBangKubernetesPlugin() {
 		const camelKubernetesPluginInstalled = await verifyCamelKubernetesPluginIsInstalled();
 		if (!camelKubernetesPluginInstalled) {
 			await new CamelAddPluginJBangTask('kubernetes').executeAndWait();
 			KaotoOutputChannel.logInfo('Apache Camel JBang Kubernetes plugin was installed.');
+		}
+	}
+
+	/**
+	 * Check Camel JBang Kubernetes plugin once on first activation, then use cached result.
+	 * On first activation, this will block until the check completes.
+	 * On subsequent activations, this returns immediately.
+	 */
+	public async checkCamelJBangKubernetesPluginOnce(): Promise<void> {
+		const storageKey = 'kaoto.kubernetesPluginVerified';
+
+		// If we've already verified, skip the check
+		if (this.context.globalState.get<boolean>(storageKey) === true) {
+			return;
+		}
+
+		// First activation - perform check and cache result
+		try {
+			await this.checkCamelJBangKubernetesPlugin();
+			// Cache that we've verified
+			await this.context.globalState.update(storageKey, true);
+		} catch (error) {
+			// Log error but don't fail activation
+			KaotoOutputChannel.logWarning(`Check for Camel JBang Kubernetes plugin failed: ${error instanceof Error ? error.message : String(error)}`);
+			// Still mark as verified to avoid repeated failures on every activation
+			await this.context.globalState.update(storageKey, true);
+		}
+	}
+
+	/**
+	 * Check Camel JBang Kubernetes plugin lazily when needed (e.g., when user tries to use Kubernetes features).
+	 * Uses cached result if available, otherwise performs a fresh check.
+	 * This ensures the plugin is available before executing Kubernetes commands.
+	 */
+	public async ensureCamelJBangKubernetesPlugin(): Promise<boolean> {
+		// Check cache first
+		const isVerified = this.context.globalState.get<boolean>('kaoto.kubernetesPluginVerified') === true;
+
+		if (isVerified) {
+			// Assume it's installed if we've verified before (plugin doesn't uninstall itself)
+			// If it was missing, checkCamelJBangKubernetesPlugin would have installed it
+			return true;
+		}
+
+		// Cache miss or not verified - perform fresh check
+		try {
+			await this.checkCamelJBangKubernetesPlugin();
+			// Update cache
+			await this.context.globalState.update('kaoto.kubernetesPluginVerified', true);
+			return true;
+		} catch (error) {
+			KaotoOutputChannel.logError(
+				`Failed to ensure Camel JBang Kubernetes plugin is installed: ${error instanceof Error ? error.message : String(error)}`,
+				error,
+			);
+			// Still mark as verified to avoid repeated failures
+			await this.context.globalState.update('kaoto.kubernetesPluginVerified', true);
+			return false;
 		}
 	}
 
@@ -327,11 +533,21 @@ export class ExtensionContextHandler {
 		const exportSingleFileCommand = vscode.commands.registerCommand(
 			NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT,
 			async (integration: Integration) => {
+				// Ensure JBang and trusted source are available before executing
+				if (!(await this.ensureJbangRequirements())) {
+					return;
+				}
+
 				await new NewCamelProjectCommand().create(integration.filepath, path.dirname(integration.filepath.fsPath));
 				await this.sendCommandTrackingEvent(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT);
 			},
 		);
 		const exportFolderCommand = vscode.commands.registerCommand(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_FOLDER, async (folder: Folder) => {
+			// Ensure JBang and trusted source are available before executing
+			if (!(await this.ensureJbangRequirements())) {
+				return;
+			}
+
 			await new NewCamelProjectCommand().create(folder.folderUri, folder.folderUri.fsPath);
 			await this.sendCommandTrackingEvent(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_FOLDER);
 		});
@@ -339,6 +555,12 @@ export class ExtensionContextHandler {
 			if (!vscode.workspace.workspaceFolders?.[0]) {
 				return;
 			}
+
+			// Ensure JBang and trusted source are available before executing
+			if (!(await this.ensureJbangRequirements())) {
+				return;
+			}
+
 			const workspaceFolder = vscode.workspace.workspaceFolders[0];
 			await new NewCamelProjectCommand().create(workspaceFolder.uri, workspaceFolder.uri.fsPath);
 			await this.sendCommandTrackingEvent(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_WORKSPACE);
@@ -351,6 +573,11 @@ export class ExtensionContextHandler {
 
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(INTEGRATIONS_RUN_COMMAND_ID, async (integration: Integration) => {
+				// Ensure JBang and trusted source are available before executing
+				if (!(await this.ensureJbangRequirements())) {
+					return;
+				}
+
 				const port = await portManager.allocatePort();
 				const runTask = await CamelRunJBangTask.create(integration.filepath.fsPath, port);
 				await runTask.execute();
@@ -371,6 +598,11 @@ export class ExtensionContextHandler {
 		};
 
 		const runFolderCommand = vscode.commands.registerCommand(INTEGRATIONS_RUN_FOLDER_COMMAND_ID, async (folder: Folder) => {
+			// Ensure JBang and trusted source are available before executing
+			if (!(await this.ensureJbangRequirements())) {
+				return;
+			}
+
 			await runSourceDirTask(folder.folderUri.fsPath);
 			await this.sendCommandTrackingEvent(INTEGRATIONS_RUN_FOLDER_COMMAND_ID);
 		});
@@ -381,6 +613,12 @@ export class ExtensionContextHandler {
 			if (!folders) {
 				return;
 			}
+
+			// Ensure JBang and trusted source are available before executing
+			if (!(await this.ensureJbangRequirements())) {
+				return;
+			}
+
 			for (const folder of folders) {
 				await runSourceDirTask(folder.uri.fsPath);
 			}
@@ -411,6 +649,17 @@ export class ExtensionContextHandler {
 
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID, async (integration: Integration) => {
+				// Ensure JBang, trusted source, and plugin are available before executing
+				if (!(await this.ensureJbangRequirements())) {
+					return;
+				}
+
+				const pluginReady = await this.ensureCamelJBangKubernetesPlugin();
+				if (!pluginReady) {
+					vscode.window.showErrorMessage('Failed to ensure Camel JBang Kubernetes plugin is installed. Please check the output channel for details.');
+					return;
+				}
+
 				await new CamelKubernetesRunJBangTask(integration.filepath.fsPath).execute();
 				await this.sendCommandTrackingEvent(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID);
 			}),
@@ -423,6 +672,11 @@ export class ExtensionContextHandler {
 
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(DEPLOYMENTS_INTEGRATION_STOP_COMMAND_ID, async (integration: ParentItem) => {
+				// Ensure JBang and trusted source are available before executing
+				if (!(await this.ensureJbangRequirements())) {
+					return;
+				}
+
 				await new CamelStopJBangTask(integration.label as string).executeAndWait();
 				await this.sendCommandTrackingEvent(DEPLOYMENTS_INTEGRATION_STOP_COMMAND_ID);
 			}),
@@ -450,6 +704,11 @@ export class ExtensionContextHandler {
 
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_START_COMMAND_ID, async (route: ChildItem) => {
+				// Ensure JBang and trusted source are available before executing
+				if (!(await this.ensureJbangRequirements())) {
+					return;
+				}
+
 				await new CamelRouteOperationJBangTask(RouteOperation.start, route.parentIntegration.label as string, route.label as string).executeAndWait();
 				await deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Started');
 				deploymentsProvider.refresh();
@@ -458,6 +717,11 @@ export class ExtensionContextHandler {
 		);
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_STOP_COMMAND_ID, async (route: ChildItem) => {
+				// Ensure JBang and trusted source are available before executing
+				if (!(await this.ensureJbangRequirements())) {
+					return;
+				}
+
 				await new CamelRouteOperationJBangTask(RouteOperation.stop, route.parentIntegration.label as string, route.label as string).executeAndWait();
 				await deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Stopped');
 				deploymentsProvider.refresh();
@@ -466,6 +730,11 @@ export class ExtensionContextHandler {
 		);
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_RESUME_COMMAND_ID, async (route: ChildItem) => {
+				// Ensure JBang and trusted source are available before executing
+				if (!(await this.ensureJbangRequirements())) {
+					return;
+				}
+
 				await new CamelRouteOperationJBangTask(RouteOperation.resume, route.parentIntegration.label as string, route.label as string).executeAndWait();
 				await deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Started');
 				deploymentsProvider.refresh();
@@ -474,6 +743,11 @@ export class ExtensionContextHandler {
 		);
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_SUSPEND_COMMAND_ID, async (route: ChildItem) => {
+				// Ensure JBang and trusted source are available before executing
+				if (!(await this.ensureJbangRequirements())) {
+					return;
+				}
+
 				await new CamelRouteOperationJBangTask(RouteOperation.suspend, route.parentIntegration.label as string, route.label as string).executeAndWait();
 				await deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Suspended');
 				deploymentsProvider.refresh();
