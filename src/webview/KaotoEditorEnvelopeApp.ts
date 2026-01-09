@@ -25,7 +25,8 @@ void initCustom({
 	container: document.getElementById('envelope-app')!,
 	bus: acquireVsCodeApi(),
 	apiImplFactory: {
-		create: (createArgs) => new KogitoEditorEnvelopeApiImpl(createArgs, new KaotoEditorFactory()),
+		create: (createArgs) =>
+			new KogitoEditorEnvelopeApiImpl(createArgs as unknown as ConstructorParameters<typeof KogitoEditorEnvelopeApiImpl>[0], new KaotoEditorFactory()),
 	},
 	keyboardShortcutsService: new NoOpKeyboardShortcutsService(),
 });
