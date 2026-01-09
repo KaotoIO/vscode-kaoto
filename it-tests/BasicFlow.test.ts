@@ -24,7 +24,7 @@ import {
 	workaroundToRedrawContextualMenu,
 } from './Util';
 import { waitUntil } from 'async-wait-until';
-import * as fs from 'fs-extra';
+import * as fs from 'fs';
 
 const DATA_TEST_ID_DATAMAPPERSTEP_2_5 = 'custom-node__route.from.steps.0.step:kaoto-datamapper';
 
@@ -40,11 +40,11 @@ describe('Kaoto basic development flow', function () {
 		await openResourcesAndWaitForActivation(workspaceFolder);
 		const logger = logging.getLogger('webdriver');
 		logger.setLevel(logging.Level.DEBUG);
-		fs.copySync(path.join(workspaceFolder, 'empty.camel.yaml'), path.join(workspaceFolder, 'empty_copy.camel.yaml'));
-		fs.copySync(path.join(workspaceFolder, 'empty.camel.xml'), path.join(workspaceFolder, 'empty_copy.camel.xml'));
-		fs.copySync(path.join(workspaceFolder, 'empty.camel.yaml'), path.join(workspaceFolder, 'for_datamapper_test.camel.yaml'));
-		fs.copySync(path.join(workspaceFolder, 'emptyPipe_template.pipe.yaml'), path.join(workspaceFolder, 'emptyPipe.pipe.yaml'));
-		fs.copySync(path.join(workspaceFolder, 'emptyPipe_template.pipe.yaml'), path.join(workspaceFolder, 'emptyPipe-pipe.yaml'));
+		fs.cpSync(path.join(workspaceFolder, 'empty.camel.yaml'), path.join(workspaceFolder, 'empty_copy.camel.yaml'));
+		fs.cpSync(path.join(workspaceFolder, 'empty.camel.xml'), path.join(workspaceFolder, 'empty_copy.camel.xml'));
+		fs.cpSync(path.join(workspaceFolder, 'empty.camel.yaml'), path.join(workspaceFolder, 'for_datamapper_test.camel.yaml'));
+		fs.cpSync(path.join(workspaceFolder, 'emptyPipe_template.pipe.yaml'), path.join(workspaceFolder, 'emptyPipe.pipe.yaml'));
+		fs.cpSync(path.join(workspaceFolder, 'emptyPipe_template.pipe.yaml'), path.join(workspaceFolder, 'emptyPipe-pipe.yaml'));
 
 		driver = VSBrowser.instance.driver;
 	});
