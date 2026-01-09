@@ -44,7 +44,7 @@ describe('Integrations View', function () {
 
 	before(async function () {
 		driver = VSBrowser.instance.driver;
-		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER, false);
+		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
 
 		kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
 		kaotoView = await kaotoViewContainer?.openView();

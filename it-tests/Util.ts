@@ -202,7 +202,7 @@ export async function closeEditor(title: string, save?: boolean) {
 
 export async function openResourcesAndWaitForActivation(
 	path: string,
-	waitForActivation: boolean = true,
+	waitForActivation: boolean = false,
 	timeout: number = 150_000,
 	interval: number = 2_500,
 ): Promise<void> {

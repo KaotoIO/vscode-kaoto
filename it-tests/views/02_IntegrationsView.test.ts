@@ -37,7 +37,7 @@ describe('Integrations View', function () {
 	let labels: string[];
 
 	before(async function () {
-		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER, false);
+		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
 
 		kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
 		kaotoView = await kaotoViewContainer?.openView();

@@ -27,7 +27,7 @@ describe('Extension', function () {
 	let notificationCenter: NotificationsCenter;
 
 	before(async function () {
-		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
+		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER, true);
 
 		notificationCenter = await new Workbench().openNotificationsCenter();
 		await notificationCenter.getDriver().wait(

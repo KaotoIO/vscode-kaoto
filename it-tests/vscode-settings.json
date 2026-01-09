@@ -1,4 +1,5 @@
 {
+  "window.openFoldersInNewWindow": "off",
   "git.openRepositoryInParentFolders": "never",
   "redhat.telemetry.enabled": false,
   "workbench.secondarySideBar.defaultVisibility": "hidden",

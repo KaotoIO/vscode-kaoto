@@ -32,7 +32,7 @@ describe('Deployments View', function () {
 	before(async function () {
 		this.timeout(180_000);
 		driver = VSBrowser.instance.driver;
-		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER, false);
+		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
 
 		kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
 		kaotoView = await kaotoViewContainer?.openView();

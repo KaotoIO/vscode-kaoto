@@ -29,7 +29,7 @@
     "test:unit": "yarn build:test:unit && vscode-test",
     "test:it": "yarn build:test:it && extest setup-and-run --yarn --uninstall_extension --extensions_dir ./test-resources --open_resource './test Fixture with speci@l chars' 'out/**/*.test.js'",
     "setup:test:it:with-prebuilt-vsix": "yarn build:test:it && extest get-vscode && extest get-chromedriver && extest install-vsix --vsix_file vscode-kaoto-$npm_package_version.vsix --extensions_dir ./test-resources && extest run-tests --uninstall_extension --extensions_dir ./test-resources --open_resource './test Fixture with speci@l chars'",
-    "test:it:with-prebuilt-vsix": "yarn setup:test:it:with-prebuilt-vsix -- 'out/01_env/set.camel.version.js' 'out/**/*.test.js' 'out/01_env/check.camel.version.js'",
+    "test:it:with-prebuilt-vsix": "yarn setup:test:it:with-prebuilt-vsix --code_settings ./it-tests/vscode-settings.json 'out/01_env/set.camel.version.js' 'out/**/*.test.js' 'out/01_env/check.camel.version.js'",
     "test:it:with-prebuilt-vsix:minikube": "yarn setup:test:it:with-prebuilt-vsix --code_settings ./it-tests/vscode-settings-minikube.json 'out/01_env/set.camel.version.js' 'out/**/*.test.js' 'out/01_env/check.camel.version.js'",
     "test:it:clean": "rimraf ./test-resources && rimraf ./out && rimraf *.vsix"
   },
