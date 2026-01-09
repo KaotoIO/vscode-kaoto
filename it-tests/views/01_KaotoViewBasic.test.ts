@@ -15,7 +15,7 @@
  */
 import { expect } from 'chai';
 import { join } from 'path';
-import { ActivityBar, SideBarView, ViewControl, ViewItem, ViewSection } from 'vscode-extension-tester';
+import { ActivityBar, SideBarView, ViewControl, ViewItem, ViewSection, VSBrowser, WaitHelper } from 'vscode-extension-tester';
 import { openResourcesAndWaitForActivation } from '../Util';
 
 describe('Kaoto View Container', function () {
@@ -83,6 +83,10 @@ describe('Kaoto View Container', function () {
 		});
 
 		it('content check', async function () {
+			await new WaitHelper(VSBrowser.instance.driver).forCondition(
+				async () => helpFeedbackSection && (await helpFeedbackSection?.getVisibleItems())?.length > 0,
+			);
+
 			const items = (await helpFeedbackSection?.getVisibleItems()) as ViewItem[];
 			const labels = await Promise.all(items.map((item) => item.getText()));
 			expect(labels).to.not.be.empty;
