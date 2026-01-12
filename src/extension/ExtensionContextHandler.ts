@@ -127,6 +127,8 @@ export class ExtensionContextHandler {
 	 * Updates the VS Code context when the check completes.
 	 */
 	public async checkJbangOnPathOnce(): Promise<void> {
+		console.log('checking JBang on path');
+
 		const storageKey = 'kaoto.jbangVerified';
 		const cachedAvailable = this.context.globalState.get<boolean>('kaoto.jbangAvailable');
 
@@ -205,6 +207,8 @@ export class ExtensionContextHandler {
 	 * On subsequent activations, this returns immediately.
 	 */
 	public async checkCamelJbangTrustedSourceOnce(): Promise<void> {
+		console.log('checking Camel JBang trusted source');
+
 		const storageKey = 'kaoto.trustedSourceVerified';
 
 		// If we've already verified, skip the check
@@ -291,6 +295,8 @@ export class ExtensionContextHandler {
 	 * On subsequent activations, this returns immediately.
 	 */
 	public async checkCamelJBangKubernetesPluginOnce(): Promise<void> {
+		console.log('checking Camel JBang Kubernetes plugin');
+
 		const storageKey = 'kaoto.kubernetesPluginVerified';
 
 		// If we've already verified, skip the check
