@@ -42,13 +42,13 @@ jobs:
           container-runtime: docker
           insecure-registry: "10.0.0.0/24"
       - name: Set Minikube ENV
-        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        if: ${{ startsWith(matrix.os, 'self') }}
         run: |
           eval $(minikube -p minikube docker-env)
           echo "INSTALL_REGISTRY=$(kubectl -n kube-system get service registry -o jsonpath='{.spec.clusterIP}')" >> $GITHUB_ENV
           echo $INSTALL_REGISTRY
       - name: Install JBang (ubuntu, macOS)
-        if: ${{ startsWith(matrix.os, 'ubuntu') }} || matrix.os == 'macos-latest'
+        if: ${{ startsWith(matrix.os, 'self') }} || matrix.os == 'macos-latest'
         run: |
           curl -Ls https://sh.jbang.dev | bash -s - app setup
           echo "$HOME/.jbang/bin" >> $GITHUB_PATH
@@ -67,24 +67,24 @@ jobs:
         run: yarn vsce package --no-dependencies --yarn
       - name: Archive vsix
         uses: actions/upload-artifact@v6
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+        if: ${{ matrix.os == 'self-hosted' }}
         with:
           name: "vscode-kaoto-vsix"
           path: "*.vsix"
       - name: Allow unprivileged user namespace (ubuntu)
-        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        if: ${{ startsWith(matrix.os, 'self') }}
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Run Unit tests on Linux
         run: xvfb-run -a yarn test:unit
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+        if: ${{ matrix.os == 'self-hosted' }}
       - name: Run Unit tests on Other OSes than Linux
         run: yarn test:unit
-        if: ${{ matrix.os != 'ubuntu-latest' }}
+        if: ${{ matrix.os != 'self-hosted' }}
       - name: Run UI Tests on Linux
         run: |
           eval $(minikube -p minikube docker-env)
           xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+        if: ${{ matrix.os == 'self-hosted' }}
       - name: Run UI Tests on macOS
         run: yarn run test:it:with-prebuilt-vsix
         if: matrix.os == 'macos-latest'
@@ -94,13 +94,13 @@ jobs:
           Set-DisplayResolution -Width 1920 -Height 1080 -Force
           yarn run test:it:with-prebuilt-vsix
       - name: Generate SBOM
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'self-hosted'
         run: |
           npm install -g @cyclonedx/cdxgen
           cdxgen -o manifest.json
       - name: Store SBOM
         uses: actions/upload-artifact@v6
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'self-hosted'
         with:
           name: sbom
           path: manifest.json
