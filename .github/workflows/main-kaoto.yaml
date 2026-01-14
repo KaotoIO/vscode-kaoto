@@ -33,6 +33,64 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "21"
+      - name: Kaoto build
+        working-directory: kaoto
+        run: |
+          yarn
+          yarn workspace @kaoto/kaoto run build:lib
+      - name: yarn link kaoto
+        working-directory: vscode-kaoto
+        run: yarn link ../kaoto/packages/ui
+      - name: yarn build:prod
+        working-directory: vscode-kaoto
+        run: yarn build:prod
+      - name: Install JBang
+        run: |
+          curl -Ls https://sh.jbang.dev | bash -s - app setup
+          echo "$HOME/.jbang/bin" >> $GITHUB_PATH
+      - name: Add Camel Trusted Source to JBang
+        run: jbang trust add https://github.com/apache/camel/
+      - name: Add Kubernetes plugin to Camel JBang
+        run: jbang camel@apache/camel plugin add kubernetes
+      - name: Allow unprivileged user namespace
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - name: Run Unit tests
+        working-directory: vscode-kaoto
+        run: xvfb-run -a yarn test:unit
+      - name: vsix package
+        working-directory: vscode-kaoto
+        run: yarn vsce package --no-dependencies --yarn
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: vsix-from-main-branch-of-kaoto
+          path: "vscode-kaoto/*.vsix"
+      - name: Store Unit Tests VS Code Logs
+        uses: actions/upload-artifact@v6
+        if: failure()
+        with:
+          name: ubuntu-unit-test-logs
+          path: vscode-kaoto/.vscode-test/user-data/logs/*
+
+  test-integration-ubuntu:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      CODE_VERSION: max
+      TEST_RESOURCES: test-resources
+
+    steps:
+      - name: Checkout vscode-kaoto
+        uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v5
+        with:
+          distribution: "temurin"
+          java-version: "21"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.7.0
       - name: Start Minikube
@@ -55,44 +113,27 @@ jobs:
         run: jbang trust add https://github.com/apache/camel/
       - name: Add Kubernetes plugin to Camel JBang
         run: jbang camel@apache/camel plugin add kubernetes
-      - name: Kaoto build
-        working-directory: kaoto
-        run: |
-          yarn
-          yarn workspace @kaoto/kaoto run build:lib
-      - name: yarn link kaoto
-        working-directory: vscode-kaoto
-        run: yarn link ../kaoto/packages/ui
-      - name: yarn build:prod
-        working-directory: vscode-kaoto
-        run: yarn build:prod
-      - name: vsix package
-        working-directory: vscode-kaoto
-        run: yarn vsce package --no-dependencies --yarn
-      - name: Archive vsix
-        uses: actions/upload-artifact@v6
+      - name: Download VSIX artifact
+        uses: actions/download-artifact@v6
         with:
           name: vsix-from-main-branch-of-kaoto
-          path: "vscode-kaoto/*.vsix"
-      - name: Allow unprivileged user namespace (ubuntu)
+      - name: Install test dependencies
+        run: yarn install --mode=skip-build
+      - name: Allow unprivileged user namespace
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-      - name: Run Unit tests
-        working-directory: vscode-kaoto
-        run: xvfb-run -a yarn test:unit
-      - name: Run UI Tests
-        working-directory: vscode-kaoto
+      - name: Run Integration Tests
         run: |
           eval $(minikube -p minikube docker-env)
           xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
-      - name: Store UI Tests VS Code Logs
+      - name: Store Integration Tests VS Code Logs
         uses: actions/upload-artifact@v6
         if: failure()
         with:
-          name: vscode-logs
-          path: vscode-kaoto/test-resources/settings/logs
-      - name: Store UI Tests VS Code screenshots
+          name: vscode-logs-ubuntu
+          path: test-resources/settings/logs
+      - name: Store Integration Tests VS Code screenshots
         uses: actions/upload-artifact@v6
         if: failure()
         with:
-          name: ui-test-screenshots
-          path: vscode-kaoto/test-resources/screenshots
+          name: ui-test-screenshots-ubuntu
+          path: test-resources/screenshots
