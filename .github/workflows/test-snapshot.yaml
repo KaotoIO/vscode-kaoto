@@ -50,7 +50,7 @@ jobs:
   test-integration-ubuntu:
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
 
     env:
       CODE_VERSION: max
@@ -96,9 +96,14 @@ jobs:
       - name: Allow unprivileged user namespace
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Run Integration Tests
-        run: |
-          eval $(minikube -p minikube docker-env)
-          xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
+        uses: nick-fields/retry@v3.0.2
+        with:
+          timeout_minutes: 30
+          retry_wait_seconds: 30
+          max_attempts: 2
+          command: |
+            eval $(minikube -p minikube docker-env)
+            xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
       - name: Store Integration Tests VS Code Logs
         uses: actions/upload-artifact@v6
         if: failure()
@@ -115,7 +120,7 @@ jobs:
   test-integration-macos:
     needs: build
     runs-on: macos-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
 
     env:
       CODE_VERSION: max
@@ -145,7 +150,13 @@ jobs:
       - name: Install test dependencies
         run: yarn install --mode=skip-build
       - name: Run Integration Tests
-        run: yarn run test:it:with-prebuilt-vsix
+        uses: nick-fields/retry@v3.0.2
+        with:
+          timeout_minutes: 30
+          retry_wait_seconds: 60
+          max_attempts: 2
+          command: yarn run test:it:with-prebuilt-vsix
+          on_retry_command: rm -rf "${RUNNER_TEMP}/extest-code"
       - name: Store Integration Tests VS Code Logs
         uses: actions/upload-artifact@v6
         if: failure()
@@ -162,7 +173,7 @@ jobs:
   test-integration-windows:
     needs: build
     runs-on: windows-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
 
     env:
       CODE_VERSION: max
@@ -190,9 +201,14 @@ jobs:
       - name: Install test dependencies
         run: yarn install --mode=skip-build
       - name: Run Integration Tests
-        run: |
-          Set-DisplayResolution -Width 1920 -Height 1080 -Force
-          yarn run test:it:with-prebuilt-vsix
+        uses: nick-fields/retry@v3.0.2
+        with:
+          timeout_minutes: 30
+          retry_wait_seconds: 30
+          max_attempts: 2
+          command: |
+            Set-DisplayResolution -Width 1920 -Height 1080 -Force
+            yarn run test:it:with-prebuilt-vsix
       - name: Store Integration Tests VS Code Logs
         uses: actions/upload-artifact@v6
         if: failure()

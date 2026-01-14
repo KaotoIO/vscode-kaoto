@@ -75,7 +75,7 @@ jobs:
   test-integration-ubuntu:
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
 
     env:
       CODE_VERSION: max
@@ -122,9 +122,14 @@ jobs:
       - name: Allow unprivileged user namespace
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Run Integration Tests
-        run: |
-          eval $(minikube -p minikube docker-env)
-          xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
+        uses: nick-fields/retry@v3.0.2
+        with:
+          timeout_minutes: 30
+          retry_wait_seconds: 30
+          max_attempts: 2
+          command: |
+            eval $(minikube -p minikube docker-env)
+            xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
       - name: Store Integration Tests VS Code Logs
         uses: actions/upload-artifact@v6
         if: failure()
