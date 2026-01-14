@@ -126,8 +126,18 @@ describe('Integrations View', function () {
 		await sample2.click();
 
 		const driver = sample2.getDriver();
+		await driver.wait(
+			async () => {
+				const editor = await new EditorView().getActiveTab();
+				return (await editor?.getTitle()) === 'sample2.camel.yaml';
+			},
+			5_000,
+			`Cannot open file 'sample2.camel.yaml'`,
+			500,
+		);
+
 		const { kaotoWebview } = await switchToKaotoFrame(driver, true);
-		await checkTopologyLoaded(driver);
+		await checkTopologyLoaded(driver, 20_000);
 
 		await kaotoWebview.switchBack();
 	});

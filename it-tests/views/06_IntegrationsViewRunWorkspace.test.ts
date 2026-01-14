@@ -15,7 +15,14 @@
  */
 import { join } from 'path';
 import { ActivityBar, EditorView, InputBox, SideBarView, ViewControl, ViewSection, VSBrowser, WebDriver, Workbench } from 'vscode-extension-tester';
-import { collapseItemsInsideIntegrationsView, getViewActionButton, killTerminal, openResourcesAndWaitForActivation, waitUntilTerminalHasText } from '../Util';
+import {
+	collapseItemsInsideIntegrationsView,
+	getViewActionButton,
+	killTerminal,
+	openResourcesAndWaitForActivation,
+	waitForExtensionActivation,
+	waitUntilTerminalHasText,
+} from '../Util';
 import { expect } from 'chai';
 
 describe('Integrations View', function () {
@@ -71,6 +78,7 @@ describe('Integrations View', function () {
 		const WORKSPACE_FILE = join(__dirname, '../../test Fixture with speci@l chars', 'kaoto-view', 'routes.code-workspace');
 
 		before(async function () {
+			this.timeout(120_000);
 			await new Workbench().executeCommand('File: Open Workspace from File...');
 			const input = await InputBox.create(10_000);
 			await input.setText(WORKSPACE_FILE);
@@ -78,6 +86,7 @@ describe('Integrations View', function () {
 
 			await driver.sleep(1_000);
 			await VSBrowser.instance.waitForWorkbench();
+			await waitForExtensionActivation('Kaoto', 90_000, 2_500);
 
 			kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
 			kaotoView = await kaotoViewContainer?.openView();

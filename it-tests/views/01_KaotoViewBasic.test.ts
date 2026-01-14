@@ -19,7 +19,7 @@ import { ActivityBar, SideBarView, ViewControl, ViewItem, ViewSection } from 'vs
 import { openResourcesAndWaitForActivation } from '../Util';
 
 describe('Kaoto View Container', function () {
-	this.timeout(30_000);
+	this.timeout(180_000);
 
 	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars', 'kaoto-view');
 

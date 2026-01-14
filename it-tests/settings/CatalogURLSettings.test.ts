@@ -211,13 +211,13 @@ describe('User Settings', function () {
 	async function clickCatalogProviderDropdown(open: boolean, catalogWindow: WebElement) {
 		const dropdown = await catalogWindow.findElement(locators.KaotoView.catalogProviderSelector.dropdown);
 		await dropdown.click();
-		await driver.sleep(500); // time to reflect changes in DOM
+		await driver.sleep(1_000); // time to reflect changes in DOM
 
 		if (open) {
-			await driver.wait(until.elementLocated(locators.KaotoView.catalogProviderSelector.menu), 2_000);
+			await driver.wait(until.elementLocated(locators.KaotoView.catalogProviderSelector.menu), 5_000);
 		} else {
 			try {
-				await driver.wait(until.elementLocated(locators.KaotoView.catalogProviderSelector.menu), 2_000);
+				await driver.wait(until.elementLocated(locators.KaotoView.catalogProviderSelector.menu), 5_000);
 			} catch (error) {
 				if (error instanceof Error && error.name !== 'TimeoutError') {
 					throw new Error(error.message);

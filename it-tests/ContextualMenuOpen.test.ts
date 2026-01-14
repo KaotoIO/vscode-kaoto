@@ -39,7 +39,7 @@ describe('Contextual menu opening', function () {
 	before(async function () {
 		this.timeout(60_000);
 		driver = VSBrowser.instance.driver;
-		await openResourcesAndWaitForActivation(workspaceFolder, false);
+		await openResourcesAndWaitForActivation(workspaceFolder);
 	});
 
 	afterEach(async function () {
