@@ -81,6 +81,7 @@ describe('Deployments View', function () {
 
 					const btn = await getTreeItemActionButton(kaotoViewContainer, route as TreeItem, rm.button);
 					await btn?.click();
+					await driver.sleep(1_000); // wait for the button to be clicked
 
 					await waitUntilTerminalHasText(driver, [`${rm.state} ${p.route}`], 1_000, 20_000);
 					await waitUntilRouteHasState(rm.state);

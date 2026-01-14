@@ -16,15 +16,27 @@
 import * as path from 'path';
 import {
 	checkTopologyLoaded,
+	closeEditor,
 	expandFolderItemsInIntegrationsView,
 	getTreeItem,
 	openAndSwitchToKaotoFrame,
 	openResourcesAndWaitForActivation,
 	resetUserSettings,
-	setUserSettingsDirectly,
 	workaroundToRedrawContextualMenu,
 } from './Util';
-import { By, EditorView, until, VSBrowser, WebDriver, Workbench, NotificationType, WebView, ActivityBar, TextEditor } from 'vscode-extension-tester';
+import {
+	By,
+	EditorView,
+	until,
+	VSBrowser,
+	WebDriver,
+	Workbench,
+	NotificationType,
+	WebView,
+	ActivityBar,
+	TextEditor,
+	CheckboxSetting,
+} from 'vscode-extension-tester';
 import { assert, expect } from 'chai';
 import * as fs from 'fs';
 
@@ -134,7 +146,17 @@ describe('Maven dependency update pom.xml', function () {
 	describe('update manually test', function () {
 		before(async function () {
 			// disable auto update on save
-			setUserSettingsDirectly('kaoto.maven.dependenciesUpdate.onSave', 'false');
+			const settings = await new Workbench().openSettings();
+			const checkboxSetting = await driver.wait(
+				async () => {
+					return (await settings.findSetting('On Save', 'Kaoto', 'Maven', 'Dependencies Update')) as CheckboxSetting;
+				},
+				5_000,
+				'Looking for "Kaoto > Maven > Dependencis Update: On Save" checkbox.',
+			);
+			await checkboxSetting.setValue(false);
+			await driver.sleep(1_000); // stabilize tests which are sometimes failing on macOS CI
+			await closeEditor('Settings', true);
 		});
 
 		after(async function () {

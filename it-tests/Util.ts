@@ -26,6 +26,7 @@ import {
 	ExtensionsViewItem,
 	ExtensionsViewSection,
 	ModalDialog,
+	StatusBar,
 	TerminalView,
 	TextEditor,
 	TreeItem,
@@ -208,56 +209,125 @@ export async function openResourcesAndWaitForActivation(
 	await VSBrowser.instance.openResources(path, async () => {
 		await VSBrowser.instance.driver.sleep(interval);
 		if (waitForActivation) {
-			try {
-				await collapseMcpServersAndRecommendedView();
-			} catch (error) {
-				if (error instanceof Error) {
-					if (
-						!error.message.includes(`No section with title 'MCP Servers' found`) &&
-						!error.message.includes(`No section with title 'Recommended' found`)
-					) {
-						throw Error(error.message);
-					}
-				}
-			}
-			await VSBrowser.instance.driver.sleep(interval);
-			await VSBrowser.instance.driver.wait(
-				async function () {
-					return await extensionIsActivated('Kaoto');
-				},
-				timeout,
-				`The Kaoto extension was not activated after ${timeout} sec.`,
-				interval,
-			);
+			await waitForExtensionActivation('Kaoto', timeout, interval);
 		}
 	});
 }
 
-async function collapseMcpServersAndRecommendedView(): Promise<void> {
-	const extensionsControl = await new ActivityBar().getViewControl('Extensions');
-	const extensionsView = await extensionsControl?.openView();
-	const mcp = (await extensionsView?.getContent().getSection('MCP Servers')) as ExtensionsViewSection;
-	await mcp.collapse();
-	const recommended = (await extensionsView?.getContent().getSection('Recommended')) as ExtensionsViewSection;
-	await recommended.collapse();
-	await extensionsControl?.closeView();
+/**
+ * Waits for the extension to be fully activated.
+ *
+ * The activation check follows this flow:
+ * 1. Check if extension activation time is visible (indicates fully activated)
+ * 2. If not activated, check status bar for "Kaoto:" messages (indicates activation in progress)
+ * 3. If no status bar messages, re-check activation time (handles gap between status messages)
+ * 4. Repeat until extension is fully activated or timeout is reached
+ *
+ * @param extensionName Display name of the extension to check
+ * @param timeout Maximum time to wait for activation in milliseconds
+ * @param interval Polling interval in milliseconds
+ */
+export async function waitForExtensionActivation(extensionName: string, timeout: number, interval: number): Promise<void> {
+	const driver = VSBrowser.instance.driver;
+
+	await driver.wait(
+		async function () {
+			// Step 1: Check if extension is already activated (activation time visible)
+			const activated = await extensionIsActivated(extensionName);
+			if (activated) {
+				return true;
+			}
+
+			// Step 2: Extension not activated yet, check status bar for activation messages
+			// During activation, Kaoto shows progress messages like "Kaoto: Checking requirements..."
+			const hasKaotoStatusMessage = await checkStatusBarForKaotoMessages();
+			if (hasKaotoStatusMessage) {
+				// Still showing activation messages, extension is activating - continue waiting
+				return false;
+			}
+
+			// Step 3: No status bar messages found, check activation time one more time
+			// This handles the brief gap between status messages during activation
+			const activatedFinal = await extensionIsActivated(extensionName);
+			if (activatedFinal) {
+				return true;
+			}
+
+			// Not activated yet and no status messages - continue polling
+			return false;
+		},
+		timeout,
+		`Extension '${extensionName}' was not activated within ${timeout}ms. ` +
+			`Check that the extension activates properly and status bar messages complete.`,
+		interval,
+	);
+}
+
+/**
+ * Checks if any status bar item contains a message starting with "Kaoto:".
+ * These messages indicate the extension is in the process of activating
+ * (e.g., "Kaoto: Checking requirements...", "Kaoto: Loading catalogs...").
+ *
+ * @returns true if a Kaoto status message is found, false otherwise
+ */
+async function checkStatusBarForKaotoMessages(): Promise<boolean> {
+	try {
+		const statusBar = new StatusBar();
+		const statusBarItems = await statusBar.getItems();
+
+		const kaotoStatusBarMsg = await statusBarItems[2].getText();
+		if (kaotoStatusBarMsg.startsWith('Kaoto:')) {
+			return false;
+		} else {
+			return true;
+		}
+	} catch (error) {
+		// Status bar might not be accessible, treat as no messages
+		return false;
+	}
+}
+
+/**
+ * Open the extension page.
+ * @param name Display name of the extension.
+ * @param timeout Timeout in ms.
+ * @returns A tuple -- marketplace and ExtensionViewItem object tied with the extension.
+ */
+async function openExtensionPage(name: string, timeout: number): Promise<ExtensionsViewItem> {
+	let item: ExtensionsViewItem;
+	const driver = VSBrowser.instance.driver;
+
+	await driver.wait(
+		async () => {
+			try {
+				const extensionsView = await (await new ActivityBar().getViewControl('Extensions'))?.openView();
+				const marketplace = (await extensionsView?.getContent().getSection('Installed')) as ExtensionsViewSection;
+				item = (await marketplace.findItem(`@installed ${name}`)) as ExtensionsViewItem;
+				return true;
+			} catch (e) {
+				return false;
+			}
+		},
+		timeout,
+		'Page was not rendered',
+	);
+	return item!;
 }
 
 async function extensionIsActivated(displayName: string): Promise<boolean> {
+	let extensionControl = await new ActivityBar().getViewControl('Extensions');
 	try {
-		const extensionsControl = await new ActivityBar().getViewControl('Extensions');
-		const extensionsView = await extensionsControl?.openView();
-		const marketplace = (await extensionsView?.getContent().getSection('Installed')) as ExtensionsViewSection;
-		const item = (await marketplace.findItem(`@installed ${displayName}`)) as ExtensionsViewItem;
-		const activationTime = await item.findElement(By.className('activationTime'));
+		const item = await openExtensionPage(displayName, 10_000);
+		const activationTime = await item?.findElement(By.className('activationTime'));
 		if (activationTime) {
-			await extensionsControl?.closeView();
+			await extensionControl?.closeView();
 			return true;
 		} else {
-			await extensionsControl?.closeView();
+			await extensionControl?.closeView();
 			return false;
 		}
 	} catch (err) {
+		await extensionControl?.closeView();
 		return false;
 	}
 }
