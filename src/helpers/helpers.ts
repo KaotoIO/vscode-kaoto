@@ -50,7 +50,7 @@ export async function verifyJBangExists(): Promise<boolean> {
 		{
 			location: ProgressLocation.Window,
 			cancellable: false,
-			title: 'Checking JBang executable on PATH...',
+			title: 'Kaoto: Checking JBang executable on PATH...',
 		},
 		async (progress) => {
 			progress.report({ increment: 0 });
@@ -82,7 +82,7 @@ async function runJBangCommandWithStatusBar(args: string, msg: string): Promise<
 		{
 			location: ProgressLocation.Window,
 			cancellable: false,
-			title: msg,
+			title: `Kaoto: ${msg}`,
 		},
 		async (progress) => {
 			progress.report({ increment: 0 });
