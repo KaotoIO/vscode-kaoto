@@ -815,15 +815,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@koa/router@npm:^15.0.0":
-  version: 15.0.0
-  resolution: "@koa/router@npm:15.0.0"
+"@koa/router@npm:^15.2.0":
+  version: 15.2.0
+  resolution: "@koa/router@npm:15.2.0"
   dependencies:
     debug: "npm:^4.4.3"
     http-errors: "npm:^2.0.1"
     koa-compose: "npm:^4.1.0"
     path-to-regexp: "npm:^8.3.0"
-  checksum: 10/3f1a664e6425e7d4ddd65a054eb80917dac5184af80e59ef36453edfeaeac2ef2d4ff61f6948ac3a67509f83efaa3eb9c55e1b0a54613fb1320730be830d93e8
+  peerDependencies:
+    koa: ^2.0.0 || ^3.0.0
+  peerDependenciesMeta:
+    koa:
+      optional: false
+  checksum: 10/3cda04b577d046d9903db2c3da704cbfd01b4afb43e7d86d733335b7632ca2a839b980f7cef348343d3eb790afb3087fe5779e91d58ccd9cb4e13297467fbef0
   languageName: node
   linkType: hard
 
@@ -2551,12 +2556,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/test-web@npm:^0.0.77":
-  version: 0.0.77
-  resolution: "@vscode/test-web@npm:0.0.77"
+"@vscode/test-web@npm:^0.0.78":
+  version: 0.0.78
+  resolution: "@vscode/test-web@npm:0.0.78"
   dependencies:
     "@koa/cors": "npm:^5.0.0"
-    "@koa/router": "npm:^15.0.0"
+    "@koa/router": "npm:^15.2.0"
     "@playwright/browser-chromium": "npm:^1.57.0"
     gunzip-maybe: "npm:^1.4.2"
     http-proxy-agent: "npm:^7.0.2"
@@ -2572,7 +2577,7 @@ __metadata:
     vscode-uri: "npm:^3.1.0"
   bin:
     vscode-test-web: out/server/index.js
-  checksum: 10/bb65bef126f4c4aff2ebff808b9bd2b00ace674e23b1bb4a184083093fdd92e2d49200200ebf9d3c9492234d12dd7247dffb98c790bcf6da6a6c39e8d27b71b5
+  checksum: 10/89499e136b43ec4fd6800f937659b90ad66af8a896f2173f8ecaa3bd992e5d6b2fc166605e18668c73f9a9ff236d9b3fa1aca48d046f8f0e88ef751d5d2b7dcf
   languageName: node
   linkType: hard
 
@@ -12891,7 +12896,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:^8.52.0"
     "@vscode/test-cli": "npm:^0.0.12"
     "@vscode/test-electron": "npm:^2.5.2"
-    "@vscode/test-web": "npm:^0.0.77"
+    "@vscode/test-web": "npm:^0.0.78"
     "@vscode/vsce": "npm:^3.7.1"
     async-wait-until: "npm:^2.0.31"
     buffer: "npm:^6.0.3"
