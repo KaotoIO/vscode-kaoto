@@ -31,7 +31,11 @@ suite('CamelJbang tests', function () {
 	test('Can retrieve runtime information from Maven context for Quarkus project', async () => {
 		const files = await vscode.workspace.findFiles('camel-maven-quarkus-project/src/main/resources/camel/my-camel-quarkus-route.camel.yaml');
 		assert(files.length === 1, 'For the test, we expect to have a single file in the camel quarkus project');
-		const runtimeInfo = await new CamelJBang().getRuntimeInfoFromMavenContext(files[0].fsPath);
+		let runtimeInfo = await new CamelJBang().getRuntimeInfoFromMavenContext(files[0].fsPath);
+		if (runtimeInfo === undefined) {
+			// Retry the getRuntimeInfoFromMavenContext if the first attempt fails, it can happen when camel jbang downloads dependencies, eg. when there is a new version of Camel JBang used in the project.
+			runtimeInfo = await new CamelJBang().getRuntimeInfoFromMavenContext(files[0].fsPath);
+		}
 		const expected: RuntimeMavenInformation = {
 			runtime: 'quarkus',
 			camelVersion: '4.11.0',
