@@ -30,10 +30,6 @@ jobs:
         run: |
           curl -Ls https://sh.jbang.dev | bash -s - app setup
           echo "$HOME/.jbang/bin" >> $GITHUB_PATH
-      - name: Add Camel Trusted Source to JBang
-        run: jbang trust add https://github.com/apache/camel/
-      - name: Add Kubernetes plugin to Camel JBang
-        run: jbang camel@apache/camel plugin add kubernetes
       - name: Allow unprivileged user namespace
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Run Unit tests
