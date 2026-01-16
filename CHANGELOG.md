@@ -1,5 +1,7 @@
 # 2.10.0
 
+- Upgrade default Camel JBang version from 4.16.0 to 4.17.0
+
 # 2.9.0
 
 - Rework Integrations section of Kaoto view to bring tree-like structure
