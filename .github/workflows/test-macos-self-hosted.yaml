@@ -1,0 +1,106 @@
+on:
+  workflow_dispatch:
+
+name: Test on macOS self-hosted runner
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      CODE_VERSION: max
+      TEST_RESOURCES: test-resources
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: "yarn"
+      - uses: actions/setup-java@v5
+        with:
+          distribution: "temurin"
+          java-version: "21"
+      - name: yarn install
+        run: yarn --network-timeout 1000000
+      - name: yarn build:prod
+        run: yarn build:prod
+      - name: Install JBang
+        run: |
+          curl -Ls https://sh.jbang.dev | bash -s - app setup
+          echo "$HOME/.jbang/bin" >> $GITHUB_PATH
+      - name: Add Camel Trusted Source to JBang
+        run: jbang trust add https://github.com/apache/camel/
+      - name: Add Kubernetes plugin to Camel JBang
+        run: jbang camel@apache/camel plugin add kubernetes
+      - name: Allow unprivileged user namespace
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - name: Run Unit tests
+        run: xvfb-run -a yarn test:unit
+      - name: vsix package
+        run: yarn vsce package --no-dependencies --yarn
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: vscode-kaoto-vsix
+          path: "*.vsix"
+      - name: Store Unit Tests VS Code Logs
+        uses: actions/upload-artifact@v6
+        if: failure()
+        with:
+          name: ubuntu-unit-test-logs
+          path: .vscode-test/user-data/logs/*
+
+  test-integration-macos:
+    needs: build
+    runs-on: macOS-self-hosted
+    timeout-minutes: 60
+
+    env:
+      CODE_VERSION: max
+      TEST_RESOURCES: test-resources
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v5
+        with:
+          distribution: "temurin"
+          java-version: "21"
+      - name: Install JBang
+        run: |
+          curl -Ls https://sh.jbang.dev | bash -s - app setup
+          echo "$HOME/.jbang/bin" >> $GITHUB_PATH
+      - name: Add Camel Trusted Source to JBang
+        run: jbang trust add https://github.com/apache/camel/
+      - name: Add Kubernetes plugin to Camel JBang
+        run: jbang camel@apache/camel plugin add kubernetes
+      - name: Download VSIX artifact
+        uses: actions/download-artifact@v6
+        with:
+          name: vscode-kaoto-vsix
+      - name: Install test dependencies
+        run: yarn install --mode=skip-build
+      - name: Run Integration Tests
+        uses: nick-fields/retry@v3.0.2
+        with:
+          timeout_minutes: 30
+          retry_wait_seconds: 60
+          max_attempts: 2
+          command: yarn run test:it:with-prebuilt-vsix
+          on_retry_command: rm -rf "${RUNNER_TEMP}/extest-code"
+      - name: Store Integration Tests VS Code Logs
+        uses: actions/upload-artifact@v6
+        if: failure()
+        with:
+          name: vscode-logs-macos
+          path: test-resources/settings/logs
+      - name: Store Integration Tests VS Code screenshots
+        uses: actions/upload-artifact@v6
+        if: failure()
+        with:
+          name: ui-test-screenshots-macos
+          path: test-resources/screenshots
