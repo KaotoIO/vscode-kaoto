@@ -88,7 +88,7 @@ jobs:
       - name: Add Kubernetes plugin to Camel JBang
         run: jbang camel@apache/camel plugin add kubernetes
       - name: Download VSIX artifact
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: vscode-kaoto-vsix
       - name: Install test dependencies
@@ -144,7 +144,7 @@ jobs:
       - name: Add Kubernetes plugin to Camel JBang
         run: jbang camel@apache/camel plugin add kubernetes
       - name: Download VSIX artifact
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: vscode-kaoto-vsix
       - name: Install test dependencies
@@ -195,7 +195,7 @@ jobs:
       - name: Add Kubernetes plugin to Camel JBang
         run: jbang camel@apache/camel plugin add kubernetes
       - name: Download VSIX artifact
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: vscode-kaoto-vsix
       - name: Install test dependencies
