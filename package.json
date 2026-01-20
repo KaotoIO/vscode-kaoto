@@ -847,7 +847,7 @@
           "kaoto.camelJbang.version": {
             "type": "string",
             "markdownDescription": "Apache [Camel JBang](https://camel.apache.org/manual/camel-jbang.html) version used for an internal Camel JBang CLI calls. Requirements can differ between versions.\n\nIt is recommended to use `default` version to ensure all extension features works properly.",
-            "default": "4.16.0",
+            "default": "4.17.0",
             "order": 0
           },
           "kaoto.camelJbang.runArguments": {
