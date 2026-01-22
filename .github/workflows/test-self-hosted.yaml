@@ -2,17 +2,17 @@ on:
   workflow_dispatch:
     inputs:
       run_ubuntu:
-        description: 'Run tests on Ubuntu self-hosted'
+        description: "Run tests on Ubuntu self-hosted"
         required: false
         type: boolean
         default: false
       run_macos:
-        description: 'Run tests on macOS self-hosted'
+        description: "Run tests on macOS self-hosted"
         required: false
         type: boolean
         default: true
       run_windows:
-        description: 'Run tests on Windows self-hosted'
+        description: "Run tests on Windows self-hosted"
         required: false
         type: boolean
         default: false
@@ -79,10 +79,14 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 22
+          cache: "yarn"
       - uses: actions/setup-java@v5
         with:
           distribution: "temurin"
           java-version: "21"
+      - name: Install Yarn
+        run: |
+          npm install -g yarn
       - name: Install JBang
         run: |
           curl -Ls https://sh.jbang.dev | bash -s - app setup
@@ -135,10 +139,14 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 22
+          cache: "yarn"
       - uses: actions/setup-java@v5
         with:
           distribution: "temurin"
           java-version: "21"
+      - name: Install Yarn
+        run: |
+          npm install -g yarn
       - name: Install JBang
         run: |
           curl -Ls https://sh.jbang.dev | bash -s - app setup
@@ -189,10 +197,14 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 22
+          cache: "yarn"
       - uses: actions/setup-java@v5
         with:
           distribution: "temurin"
           java-version: "21"
+      - name: Install Yarn
+        run: |
+          npm install -g yarn
       - name: Install JBang
         run: choco install jbang
       - name: Add Camel Trusted Source to JBang
