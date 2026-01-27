@@ -79,7 +79,6 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-          cache: "yarn"
       - uses: actions/setup-java@v5
         with:
           distribution: "temurin"
@@ -139,7 +138,6 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-          cache: "yarn"
       - uses: actions/setup-java@v5
         with:
           distribution: "temurin"
@@ -197,7 +195,6 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-          cache: "yarn"
       - uses: actions/setup-java@v5
         with:
           distribution: "temurin"
