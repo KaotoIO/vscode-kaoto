@@ -79,7 +79,6 @@ is contained within parenthesis, e.g., `feat(parser): add ability to parse array
 
 - `yarn`
 - `yarn build:dev`
-- `yarn build:prod`
 - `yarn vsce package --no-dependencies --yarn` to build the vsix binary
 
 ### How to launch VS Code extension during development
@@ -164,6 +163,15 @@ It is launching UI tests. Beware that it can take several minutes to start. Stay
 
 - Open new PR and wait till checks are green
 - Wait for review from contributors
+
+## Snapshots
+
+If you want to test the latest snapshot versions from the Kaoto VS Code extension repository `main` branch, two types of binaries (`*.vsix`) are available:
+
+1. **Snapshot** using a **released Kaoto version**: [Download here](https://download.jboss.org/jbosstools/vscode/snapshots/vscode-kaoto/).
+2. **Snapshot** using the **latest Kaoto build**: [Find the latest build](https://github.com/KaotoIO/vscode-kaoto/actions/workflows/main-kaoto.yaml?query=branch%3Amain), download the `vsix-from-main-branch-of-kaoto.zip` artifact, and extract the `.vsix` file.
+
+To install a `.vsix` binary, refer to the [official VS Code guide](https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix).
 
 ## How to provide a new release version on VS Code Marketplace
 
