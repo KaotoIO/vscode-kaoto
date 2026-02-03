@@ -133,7 +133,9 @@ describe('Integrations View', function () {
 						fs.existsSync(join(PROJECT_OUTPUT_DIR, 'pom.xml')) &&
 						fs.existsSync(join(PROJECT_OUTPUT_DIR, 'src', 'main', 'resources', 'camel', 'root-route.camel.yaml')) &&
 						fs.existsSync(join(PROJECT_OUTPUT_DIR, 'src', 'main', 'resources', 'application.properties')) &&
-						fs.existsSync(join(PROJECT_OUTPUT_DIR, 'src', 'main', 'resources', 'kamelets', 'rootKam-sink.kamelet.yaml'))
+						fs.existsSync(join(PROJECT_OUTPUT_DIR, 'src', 'main', 'resources', 'kamelets', 'rootKam-sink.kamelet.yaml')) &&
+						fs.existsSync(join(PROJECT_OUTPUT_DIR, 'src', 'main', 'docker', 'Dockerfile')) &&
+						fs.existsSync(join(PROJECT_OUTPUT_DIR, 'src', 'main', 'jkube', 'deployment.yml'))
 					);
 				},
 				240_000,

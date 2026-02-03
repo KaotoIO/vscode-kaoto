@@ -411,7 +411,8 @@ export class ExtensionContextHandler {
 
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID, async (integration: Integration) => {
-				await new CamelKubernetesRunJBangTask(integration.filepath.fsPath).execute();
+				const deployTask = await CamelKubernetesRunJBangTask.create(integration.filepath.fsPath);
+				await deployTask.execute();
 				await this.sendCommandTrackingEvent(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID);
 			}),
 		);
