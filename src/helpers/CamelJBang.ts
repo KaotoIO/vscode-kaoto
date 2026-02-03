@@ -17,7 +17,6 @@ import { RelativePattern, ShellExecution, ShellExecutionOptions, Uri, workspace,
 import {
 	arePathsEqual,
 	findFolderOfPomXml,
-	KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID,
 	KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID,
 	KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID,
 	KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID,
@@ -40,16 +39,16 @@ export enum RouteOperation {
 	resume = 'resume',
 }
 
-const isWindows: boolean = process.platform.startsWith('win');
+export const isWindows: boolean = process.platform.startsWith('win');
 
 /**
  * Camel JBang class which allows shell execution of different JBang CLI commands
  */
 export class CamelJBang {
-	private readonly camelJBangVersion: string;
-	private readonly defaultJbangArgs: string[];
+	protected readonly camelJBangVersion: string;
+	protected readonly defaultJbangArgs: string[];
 
-	constructor(private readonly jbang: string = 'jbang') {
+	constructor(protected readonly jbang: string = 'jbang') {
 		this.camelJBangVersion = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_VERSION_SETTING_ID) as string;
 		this.defaultJbangArgs = [`'-Dcamel.jbang.version=${this.camelJBangVersion}'`, 'camel@apache/camel'];
 	}
@@ -66,7 +65,7 @@ export class CamelJBang {
 		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'bind', '--source', source, '--sink', sink, `'${file}'`]);
 	}
 
-	public async export(uri: Uri, gav: string, runtime: string, outputPath: string, cwd: string): Promise<ShellExecution> {
+	public async export(uri: Uri, gav: string, runtime: string, outputPath: string, cwd: string, kubernetes?: boolean): Promise<ShellExecution> {
 		// workaround for an issue during Camel JBang execution in Windows machines.
 		// specifying the --directory option with the complete path when it is equal to the current working directory causes issues.
 		// omitting the option (using default '.') works as expected.
@@ -84,6 +83,7 @@ export class CamelJBang {
 				this.jbang,
 				[
 					...this.defaultJbangArgs,
+					kubernetes ? 'kubernetes' : '',
 					'export',
 					`'${relativeWorkspacePath}'`,
 					`--runtime=${runtime}`,
@@ -102,6 +102,7 @@ export class CamelJBang {
 				this.jbang,
 				[
 					...this.defaultJbangArgs,
+					kubernetes ? 'kubernetes' : '',
 					'export',
 					`'${relativeWorkspacePath}'`,
 					`--runtime=${runtime}`,
@@ -200,19 +201,6 @@ export class CamelJBang {
 		);
 	}
 
-	public kubernetesRun(filePattern: string, cwd?: string): ShellExecution {
-		const shellExecOptions: ShellExecutionOptions = {
-			cwd: cwd,
-		};
-		return new ShellExecution(
-			this.jbang,
-			[...this.defaultJbangArgs, 'kubernetes', 'run', filePattern, this.getCamelVersion(), ...this.getKubernetesRunArguments()].filter(function (arg) {
-				return arg !== undefined && arg !== null && arg !== ''; // remove ALL empty values ("", null, undefined and 0)
-			}), // remove ALL empty values ("", null, undefined and 0)
-			shellExecOptions,
-		);
-	}
-
 	public stop(name: string): ShellExecution {
 		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'stop', name]);
 	}
@@ -259,35 +247,26 @@ export class CamelJBang {
 	 * @param port - The port to use.
 	 * @returns The port argument.
 	 */
-	private getPortArgument(port?: number): string {
+	protected getPortArgument(port?: number): string {
 		return satisfies(this.camelJBangVersion, '>=4.14') ? `--management-port=${port ?? -1}` : `--port=${port ?? 8080}`;
 	}
 
-	private async getExportProjectArguments(cwd: string): Promise<string[]> {
+	protected async getExportProjectArguments(cwd: string): Promise<string[]> {
 		const exportArgs = workspace.getConfiguration().get(KAOTO_MAVEN_CAMEL_JBANG_EXPORT_FOLDER_ARGUMENTS_SETTING_ID) as string[];
 		return await this.handleLocalKameletDirArgument(exportArgs, cwd);
 	}
 
-	private getKubernetesRunArguments(): string[] {
-		const kubernetesRunArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID) as string[];
-		if (kubernetesRunArgs.length > 0) {
-			return kubernetesRunArgs;
-		} else {
-			return [];
-		}
-	}
-
-	private async getRunArguments(filePath: string, cwd: string): Promise<string[]> {
+	protected async getRunArguments(filePath: string, cwd: string): Promise<string[]> {
 		const runArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID) as string[];
 		return await this.handleLocalKameletDirArgument(await this.handleMissingXslFiles(filePath, runArgs), cwd);
 	}
 
-	private async getRunSourceDirArguments(cwd: string): Promise<string[]> {
+	protected async getRunSourceDirArguments(cwd: string): Promise<string[]> {
 		const runArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID) as string[];
 		return await this.handleLocalKameletDirArgument(runArgs, cwd);
 	}
 
-	private async handleLocalKameletDirArgument(runArgs: string[], cwd: string): Promise<string[]> {
+	protected async handleLocalKameletDirArgument(runArgs: string[], cwd: string): Promise<string[]> {
 		const localKameletDirIndex = runArgs.findIndex((parameter) => parameter.startsWith('--local-kamelet-dir'));
 
 		// Early return if local kamelet directory argument is already present
@@ -307,7 +286,7 @@ export class CamelJBang {
 		return [...runArgs, localKameletDirectoriesGlobalArgument];
 	}
 
-	private async resolveAlreadyExistingLocalKameletDirArgument(existingKameletDirArgument: string, cwd: string): Promise<string> {
+	protected async resolveAlreadyExistingLocalKameletDirArgument(existingKameletDirArgument: string, cwd: string): Promise<string> {
 		const kameletDirPaths = existingKameletDirArgument
 			.replace('--local-kamelet-dir=', '') // remove the --local-kamelet-dir= prefix
 			.split(',')
@@ -316,7 +295,7 @@ export class CamelJBang {
 		return `'--local-kamelet-dir=${Array.from(resolvedKameletDirPaths).join(',')}'`;
 	}
 
-	private async resolveLocalKameletDirsFromGlobalSetting(cwd: string): Promise<string | undefined> {
+	protected async resolveLocalKameletDirsFromGlobalSetting(cwd: string): Promise<string | undefined> {
 		const localKameletDirectories = workspace.getConfiguration().get(KAOTO_LOCAL_KAMELET_DIRECTORIES_SETTING_ID) as string[];
 		if (localKameletDirectories.length > 0) {
 			return `'--local-kamelet-dir=${Array.from(resolvePaths(localKameletDirectories, cwd)).join(',')}'`;
@@ -325,7 +304,7 @@ export class CamelJBang {
 		}
 	}
 
-	private getCamelVersion(): string {
+	protected getCamelVersion(): string {
 		const camelVersion = workspace.getConfiguration().get('kaoto.camelVersion');
 		if (camelVersion) {
 			return `--camel-version=${camelVersion as string}`;
@@ -334,7 +313,7 @@ export class CamelJBang {
 		}
 	}
 
-	private getRedHatMavenRepository(): string {
+	protected getRedHatMavenRepository(): string {
 		if (this.getCamelVersion().includes('redhat')) {
 			const url = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID) as string;
 			const reposPlaceholder = this.getCamelGlobalRepos();
@@ -344,7 +323,7 @@ export class CamelJBang {
 		}
 	}
 
-	private getCamelGlobalRepos(): string {
+	protected getCamelGlobalRepos(): string {
 		const globalRepos = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID) as boolean;
 		if (globalRepos) {
 			return '#repos,';
