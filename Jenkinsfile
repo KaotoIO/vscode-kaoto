@@ -29,7 +29,7 @@ node('rhel9'){
 	stage('UI Tests') {
 		wrap([$class: 'Xvnc']) {
 			withCredentials([[$class: 'StringBinding', credentialsId: 'oc_developer_token', variable: 'TOKEN']]) {
-				sh 'oc login --token=${TOKEN} --server=https://api.ft-417-a.fuse.integration-qe.com:6443 --insecure-skip-tls-verify=true'
+				sh 'oc login --token=${TOKEN} --server=https://api.ft-421-a.fuse.integration-qe.com:6443 --insecure-skip-tls-verify=true'
 				sh 'oc project kaoto'
 			}
 			env.TEST_RESOURCES = 'test-resources'
