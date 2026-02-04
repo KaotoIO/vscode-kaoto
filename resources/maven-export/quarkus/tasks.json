@@ -1,0 +1,19 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+		{
+            "label": "Deploy on OpenShift (Quarkus)",
+            "type": "shell",
+            "command": "./mvnw",
+            "args": [
+                "package",
+                "-Dquarkus.openshift.deploy=true"
+            ],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always"
+            }
+        }
+
+    ]
+}

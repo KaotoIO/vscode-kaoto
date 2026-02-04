@@ -17,6 +17,7 @@ import { commands, QuickPickItem, Uri, window, workspace } from 'vscode';
 import { arePathsEqual } from '../helpers/helpers';
 import { CamelExportJBangTask } from '../tasks/CamelExportJBangTask';
 import { confirmDestructiveActionInSelectedFolder } from '../helpers/modals';
+import path from 'path';
 
 export class NewCamelProjectCommand {
 	public static readonly ID_COMMAND_CAMEL_NEW_PROJECT = 'kaoto.camel.jbang.export';
@@ -48,6 +49,12 @@ export class NewCamelProjectCommand {
 				}
 				const camelExportJBangTask = await CamelExportJBangTask.create(currentWorkspace, uri, input, runtime, outputFolder.fsPath, cwd);
 				await camelExportJBangTask.executeAndWaitWithProgress('Creating a new Camel project...');
+
+				// if not exist, init .vscode with tasks.json and launch.json config files
+				await workspace.fs.createDirectory(Uri.file(path.join(outputFolder.fsPath, '.vscode')));
+				for (const filename of ['tasks', 'launch']) {
+					await this.copyFile(`../../resources/maven-export/${runtime}/${filename}.json`, path.join(outputFolder.fsPath, `.vscode/${filename}.json`));
+				}
 
 				// open the newly created project in a new vscode instance
 				await commands.executeCommand('vscode.openFolder', outputFolder, true);
@@ -150,5 +157,21 @@ export class NewCamelProjectCommand {
 			placeHolder: 'Please select a Camel Runtime.',
 			title: 'Runtime selection...',
 		});
+	}
+
+	/**
+	 * Handles copy of the resources from the extension to the vscode workspace
+	 *
+	 * @param sourcePath Path of source
+	 * @param destPath Path of destination
+	 */
+	private async copyFile(sourcePath: string, destPath: string): Promise<void> {
+		const sourcePathUri = Uri.file(path.resolve(__dirname, sourcePath));
+		const destPathUri = Uri.file(path.resolve(__dirname, destPath));
+		try {
+			await workspace.fs.copy(sourcePathUri, destPathUri, { overwrite: false });
+		} catch (error) {
+			// Do nothing in case there already exists tasks.json and launch.json files
+		}
 	}
 }

@@ -1,0 +1,20 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+		{
+            "label": "Deploy on OpenShift (Spring Boot)",
+            "type": "shell",
+            "command": "./mvnw",
+            "args": [
+                "package",
+                "oc:build",
+                "oc:apply"
+            ],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always"
+            }
+        }
+
+    ]
+}

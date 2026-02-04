@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Deploy on OpenShift (Spring Boot)",
+            "type": "node",
+            "request": "launch",
+            "runtimeArgs": ["-e", "process.exit(0)"],
+            "preLaunchTask": "Deploy on OpenShift (Spring Boot)",
+            "console": "internalConsole",
+            "internalConsoleOptions": "neverOpen"
+        }
+    ]
+}
