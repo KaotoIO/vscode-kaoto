@@ -75,6 +75,8 @@ export class CamelJBang {
 
 		const relativeWorkspacePath = uri.fsPath === parentWorkspaceFolder ? '.' : relative(parentWorkspaceFolder, uri.fsPath);
 
+		const quarkusOpenshiftDependency = runtime === 'quarkus' && kubernetes ? ['--dependency=mvn:io.quarkus:quarkus-openshift'] : [];
+
 		if (this.camelJBangVersion.startsWith('4.12') && isWindows) {
 			window.showInformationMessage(
 				'The created project do not have the Maven wrapper because Camel JBang 4.12 is used on Windows. If you want the Maven wrapper either: call `mvn wrapper:wrapper` on the created project, recreate the project using a different Camel Version or using a non-Windows OS.',
@@ -90,6 +92,7 @@ export class CamelJBang {
 					`--gav=${gav}`,
 					'--maven-wrapper=false',
 					directoryArg,
+					...quarkusOpenshiftDependency,
 					...exportArgs,
 					this.getCamelVersion(),
 					this.getRedHatMavenRepository(),
@@ -108,6 +111,7 @@ export class CamelJBang {
 					`--runtime=${runtime}`,
 					`--gav=${gav}`,
 					directoryArg,
+					...quarkusOpenshiftDependency,
 					...exportArgs,
 					this.getCamelVersion(),
 					this.getRedHatMavenRepository(),
