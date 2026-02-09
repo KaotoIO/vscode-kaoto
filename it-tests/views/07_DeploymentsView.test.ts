@@ -15,8 +15,16 @@
  */
 import { expect, assert } from 'chai';
 import { join } from 'path';
-import { ActivityBar, after, before, EditorView, SideBarView, TreeItem, ViewControl, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
-import { getTreeItem, getTreeItemActionButton, killTerminal, openResourcesAndWaitForActivation, waitUntilTerminalHasText } from '../Util';
+import { after, before, EditorView, SideBarView, TreeItem, ViewControl, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
+import {
+	expandViews,
+	getKaotoViewControl,
+	getTreeItem,
+	getTreeItemActionButton,
+	killTerminal,
+	openResourcesAndWaitForActivation,
+	waitUntilTerminalHasText,
+} from '../Util';
 
 describe('Deployments View', function () {
 	this.timeout(1_200_000); // 20 minutes
@@ -32,10 +40,12 @@ describe('Deployments View', function () {
 		driver = VSBrowser.instance.driver;
 		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
 
-		kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
-		kaotoView = await kaotoViewContainer?.openView();
-		await (await kaotoView?.getContent().getSection('Help & Feedback'))?.collapse();
+		const control = await getKaotoViewControl();
+		kaotoViewContainer = control.kaotoViewContainer;
+		kaotoView = control.kaotoView;
+
 		deploymentsSection = await kaotoView?.getContent().getSection('Deployments');
+		await expandViews(kaotoView, 'Deployments');
 	});
 
 	after(async function () {
@@ -45,6 +55,7 @@ describe('Deployments View', function () {
 
 	it(`click 'Run' button (Integrations view)`, async function () {
 		const integrationsSection = await kaotoView?.getContent().getSection('Integrations');
+		await expandViews(kaotoView, 'Integrations');
 		const item = await getTreeItem(driver, integrationsSection, 'sample2.camel.yaml');
 		expect(item).to.not.be.undefined;
 		const button = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, 'Run');

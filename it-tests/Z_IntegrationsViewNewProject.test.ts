@@ -17,14 +17,12 @@ import { expect } from 'chai';
 import { join } from 'path';
 import fs from 'fs';
 import {
-	ActivityBar,
 	after,
 	before,
 	By,
 	EditorView,
 	InputBox,
 	ModalDialog,
-	SideBarView,
 	TreeItem,
 	until,
 	ViewControl,
@@ -33,7 +31,14 @@ import {
 	VSBrowser,
 	WebDriver,
 } from 'vscode-extension-tester';
-import { expandFolderItemsInIntegrationsView, getTreeItem, getTreeItemActionButton, openResourcesAndWaitForActivation } from './Util';
+import {
+	expandFolderItemsInTreeStructuredView,
+	expandViews,
+	getKaotoViewControl,
+	getTreeItem,
+	getTreeItemActionButton,
+	openResourcesAndWaitForActivation,
+} from './Util';
 
 /**
  * This test needs to be always executed as last in suite
@@ -45,18 +50,18 @@ describe('Integrations View', function () {
 
 	let driver: WebDriver;
 	let kaotoViewContainer: ViewControl | undefined;
-	let kaotoView: SideBarView | undefined;
 	let integrationsSection: ViewSection | undefined;
 
 	before(async function () {
 		driver = VSBrowser.instance.driver;
 		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
 
-		kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
-		kaotoView = await kaotoViewContainer?.openView();
-		integrationsSection = await kaotoView?.getContent().getSection('Integrations');
+		const control = await getKaotoViewControl();
+		kaotoViewContainer = control.kaotoViewContainer;
+		integrationsSection = await control.kaotoView?.getContent().getSection('Integrations');
+		await expandViews(control.kaotoView, 'Integrations');
 
-		await expandFolderItemsInIntegrationsView(integrationsSection, 'kamelets');
+		await expandFolderItemsInTreeStructuredView(integrationsSection, 'kamelets');
 	});
 
 	after(async function () {
@@ -126,7 +131,7 @@ describe('Integrations View', function () {
 
 		async function waitUntilNewCamelProjectHasCrucialFiles(): Promise<void> {
 			// expand folders
-			await expandFolderItemsInIntegrationsView(integrationsSection, 'quarkus-export-example', 'src', 'main', 'resources', 'camel');
+			await expandFolderItemsInTreeStructuredView(integrationsSection, 'quarkus-export-example', 'src', 'main', 'resources', 'camel');
 			await driver.wait(
 				async function () {
 					return (

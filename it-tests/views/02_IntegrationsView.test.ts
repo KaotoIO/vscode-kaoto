@@ -15,11 +15,13 @@
  */
 import { expect } from 'chai';
 import { join } from 'path';
-import { ActivityBar, EditorView, SideBarView, TreeItem, ViewControl, ViewSection } from 'vscode-extension-tester';
+import { EditorView, TreeItem, ViewControl, ViewSection } from 'vscode-extension-tester';
 import {
 	checkTopologyLoaded,
-	collapseItemsInsideIntegrationsView,
-	expandFolderItemsInIntegrationsView,
+	collapseItemsInsideTreeStructuredView,
+	expandFolderItemsInTreeStructuredView,
+	expandViews,
+	getKaotoViewControl,
 	openResourcesAndWaitForActivation,
 	switchToKaotoFrame,
 } from '../Util';
@@ -30,24 +32,21 @@ describe('Integrations View', function () {
 	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars', 'kaoto-view');
 
 	let kaotoViewContainer: ViewControl | undefined;
-	let kaotoView: SideBarView | undefined;
 	let integrationsSection: ViewSection | undefined;
-	let deploymentsSection: ViewSection | undefined;
 	let items: TreeItem[] | undefined;
 	let labels: string[];
 
 	before(async function () {
 		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER, false);
 
-		kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
-		kaotoView = await kaotoViewContainer?.openView();
-		await (await kaotoView?.getContent().getSection('Help & Feedback'))?.collapse();
-		deploymentsSection = await kaotoView?.getContent().getSection('Deployments');
-		await deploymentsSection?.collapse();
-		integrationsSection = await kaotoView?.getContent().getSection('Integrations');
+		const control = await getKaotoViewControl();
+		kaotoViewContainer = control.kaotoViewContainer;
+
+		integrationsSection = await control.kaotoView?.getContent().getSection('Integrations');
+		await expandViews(control.kaotoView, 'Integrations');
 
 		// expand folders
-		await expandFolderItemsInIntegrationsView(integrationsSection, 'kamelets', 'pipes', 'others');
+		await expandFolderItemsInTreeStructuredView(integrationsSection, 'kamelets', 'pipes', 'others');
 
 		items = await integrationsSection?.getDriver().wait(
 			async () => {
@@ -69,8 +68,7 @@ describe('Integrations View', function () {
 	});
 
 	after(async function () {
-		await collapseItemsInsideIntegrationsView(integrationsSection);
-		await deploymentsSection?.expand();
+		await collapseItemsInsideTreeStructuredView(integrationsSection);
 		await kaotoViewContainer?.closeView();
 		await new EditorView().closeAllEditors();
 	});

@@ -15,8 +15,16 @@
  */
 import { expect } from 'chai';
 import { join } from 'path';
-import { ActivityBar, after, EditorView, SideBarView, TreeItem, ViewControl, ViewItemAction, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
-import { getTreeItem, getTreeItemActionButton, killTerminal, openResourcesAndWaitForActivation, waitUntilTerminalHasText } from '../Util';
+import { after, EditorView, TreeItem, ViewControl, ViewItemAction, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
+import {
+	expandViews,
+	getKaotoViewControl,
+	getTreeItem,
+	getTreeItemActionButton,
+	killTerminal,
+	openResourcesAndWaitForActivation,
+	waitUntilTerminalHasText,
+} from '../Util';
 
 describe('Deployments View', function () {
 	this.timeout(600_000); // 10 minutes
@@ -25,7 +33,6 @@ describe('Deployments View', function () {
 
 	let driver: WebDriver;
 	let kaotoViewContainer: ViewControl | undefined;
-	let kaotoView: SideBarView | undefined;
 	let deploymentsSection: ViewSection | undefined;
 	let integrationsSection: ViewSection | undefined;
 
@@ -34,11 +41,11 @@ describe('Deployments View', function () {
 		driver = VSBrowser.instance.driver;
 		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER, false);
 
-		kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
-		kaotoView = await kaotoViewContainer?.openView();
-		await (await kaotoView?.getContent().getSection('Help & Feedback'))?.collapse();
-		deploymentsSection = await kaotoView?.getContent().getSection('Deployments');
-		integrationsSection = await kaotoView?.getContent().getSection('Integrations');
+		const control = await getKaotoViewControl();
+		kaotoViewContainer = control.kaotoViewContainer;
+		deploymentsSection = await control.kaotoView?.getContent().getSection('Deployments');
+		integrationsSection = await control.kaotoView?.getContent().getSection('Integrations');
+		await expandViews(control.kaotoView, 'Deployments', 'Integrations');
 	});
 
 	after(async function () {
