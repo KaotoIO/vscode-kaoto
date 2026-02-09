@@ -15,8 +15,8 @@
  */
 import { expect } from 'chai';
 import { join } from 'path';
-import { ActivityBar, SideBarView, ViewControl, ViewItem, ViewSection } from 'vscode-extension-tester';
-import { openResourcesAndWaitForActivation } from '../Util';
+import { SideBarView, ViewControl, ViewItem, ViewSection } from 'vscode-extension-tester';
+import { expandViews, getKaotoViewControl, openResourcesAndWaitForActivation } from '../Util';
 
 describe('Kaoto View Container', function () {
 	this.timeout(180_000);
@@ -28,21 +28,20 @@ describe('Kaoto View Container', function () {
 	let helpFeedbackSection: ViewSection | undefined;
 	let integrationsSection: ViewSection | undefined;
 	let deploymentsSection: ViewSection | undefined;
+	let testsSection: ViewSection | undefined;
 
 	before(async function () {
 		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
+		const control = await getKaotoViewControl();
+		kaotoViewContainer = control.kaotoViewContainer;
+		await expandViews(control.kaotoView, 'Integrations', 'Deployments', 'Tests', 'Help & Feedback');
 	});
 
 	after(async function () {
-		await helpFeedbackSection?.collapse();
-		await integrationsSection?.expand();
-		await deploymentsSection?.expand();
 		await kaotoViewContainer?.closeView();
 	});
 
 	it('is available in Activity Bar', async function () {
-		const bar = new ActivityBar();
-		kaotoViewContainer = await bar.getViewControl('Kaoto');
 		expect(kaotoViewContainer).to.not.be.undefined;
 
 		const title = await kaotoViewContainer?.getTitle();
@@ -76,7 +75,22 @@ describe('Kaoto View Container', function () {
 		});
 	});
 
+	describe('Tests view', function () {
+		after(async function () {
+			await testsSection?.collapse();
+		});
+
+		it('is present', async function () {
+			testsSection = await kaotoView?.getContent().getSection('Tests');
+			expect(testsSection).to.not.be.undefined;
+		});
+	});
+
 	describe('Help & Feedback view', function () {
+		after(async function () {
+			await helpFeedbackSection?.collapse();
+		});
+
 		it('is present', async function () {
 			helpFeedbackSection = await kaotoView?.getContent().getSection('Help & Feedback');
 			expect(helpFeedbackSection).to.not.be.undefined;

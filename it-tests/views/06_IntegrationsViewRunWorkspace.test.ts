@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 import { join } from 'path';
-import { ActivityBar, EditorView, InputBox, SideBarView, ViewControl, ViewSection, VSBrowser, WebDriver, Workbench } from 'vscode-extension-tester';
+import { EditorView, InputBox, ViewControl, ViewSection, VSBrowser, WebDriver, Workbench } from 'vscode-extension-tester';
 import {
-	collapseItemsInsideIntegrationsView,
+	collapseItemsInsideTreeStructuredView,
+	expandViews,
+	getKaotoViewControl,
 	getViewActionButton,
 	killTerminal,
 	openResourcesAndWaitForActivation,
@@ -32,24 +34,23 @@ describe('Integrations View', function () {
 
 	let driver: WebDriver;
 	let kaotoViewContainer: ViewControl | undefined;
-	let kaotoView: SideBarView | undefined;
 	let integrationsSection: ViewSection | undefined;
 
 	before(async function () {
 		driver = VSBrowser.instance.driver;
 		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER, false);
 
-		kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
-		kaotoView = await kaotoViewContainer?.openView();
-		await (await kaotoView?.getContent().getSection('Help & Feedback'))?.collapse();
-		integrationsSection = await kaotoView?.getContent().getSection('Integrations');
+		const control = await getKaotoViewControl();
+		kaotoViewContainer = control.kaotoViewContainer;
+		integrationsSection = await control.kaotoView?.getContent().getSection('Integrations');
+		await expandViews(control.kaotoView, 'Integrations');
 
-		const collapseItems = await getViewActionButton(kaotoViewContainer, integrationsSection, 'Collapse All');
-		await collapseItems?.click();
+		// collapse all items inside integrations section
+		await collapseItemsInsideTreeStructuredView(integrationsSection);
 	});
 
 	after(async function () {
-		await collapseItemsInsideIntegrationsView(integrationsSection);
+		await collapseItemsInsideTreeStructuredView(integrationsSection);
 		await kaotoViewContainer?.closeView();
 		await new EditorView().closeAllEditors();
 	});
@@ -88,9 +89,10 @@ describe('Integrations View', function () {
 			await VSBrowser.instance.waitForWorkbench();
 			await waitForExtensionActivation('Kaoto', 90_000, 2_500);
 
-			kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
-			kaotoView = await kaotoViewContainer?.openView();
-			integrationsSection = await kaotoView?.getContent().getSection('Integrations');
+			const control = await getKaotoViewControl();
+			kaotoViewContainer = control.kaotoViewContainer;
+			integrationsSection = await control.kaotoView?.getContent().getSection('Integrations');
+			await expandViews(control.kaotoView, 'Integrations');
 		});
 
 		it('button is available', async function () {

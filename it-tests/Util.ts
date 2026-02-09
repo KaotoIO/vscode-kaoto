@@ -26,6 +26,7 @@ import {
 	ExtensionsViewItem,
 	ExtensionsViewSection,
 	ModalDialog,
+	SideBarView,
 	StatusBar,
 	TerminalView,
 	TextEditor,
@@ -369,31 +370,32 @@ export function readUserSetting(id: string): string {
 }
 
 /**
- * Expand folder items in Integrations View
- * @param integrationsSection The Integrations View section.
+ * Expand folder items in Tree Structured View
+ * @param treeStructuredSection The Tree Structured View section.
  * @param folderNames The names of the folders to expand.
  * @returns A Promise that resolves when the folders are expanded.
  */
-export async function expandFolderItemsInIntegrationsView(integrationsSection: ViewSection | undefined, ...folderNames: string[]): Promise<void> {
+export async function expandFolderItemsInTreeStructuredView(treeStructuredSection: ViewSection | undefined, ...folderNames: string[]): Promise<void> {
 	for (const folderName of folderNames) {
-		const folderItem = await integrationsSection?.findItem(folderName);
+		const folderItem = await treeStructuredSection?.findItem(folderName);
 		await folderItem?.click();
+		await treeStructuredSection?.getDriver().sleep(50);
 	}
 }
 
 /**
  * Collapse items inside Integrations View
- * @param integrationsSection The Integrations View section.
+ * @param treeStructuredSection The Tree Structured View section.
  * @returns A Promise that resolves when the items are collapsed.
  */
-export async function collapseItemsInsideIntegrationsView(integrationsSection: ViewSection | undefined): Promise<void> {
-	const driver = integrationsSection?.getDriver();
+export async function collapseItemsInsideTreeStructuredView(treeStructuredSection: ViewSection | undefined): Promise<void> {
+	const driver = treeStructuredSection?.getDriver();
 	if (driver) {
 		const collapseItems = await driver.wait(
 			async function () {
-				await driver.actions().move({ origin: integrationsSection, duration: 1_000 }).perform(); // move mouse to bring auto-hided buttons visible again
+				await driver.actions().move({ origin: treeStructuredSection, duration: 1_000 }).perform(); // move mouse to bring auto-hided buttons visible again
 				await driver.sleep(500); // wait for the buttons to be visible
-				return await integrationsSection?.getAction('Collapse All');
+				return await treeStructuredSection?.getAction('Collapse All');
 			},
 			5_000,
 			`'Collapse All' button was not found!`,
@@ -466,4 +468,61 @@ async function reopenKaotoView(kaotoViewContainer: ViewControl | undefined): Pro
 	await kaotoViewContainer?.closeView();
 	await kaotoViewContainer?.getDriver().sleep(500);
 	await kaotoViewContainer?.openView();
+}
+
+/**
+ * Close views by name
+ * @param kaotoViewContainer The Kaoto view container.
+ * @param views The names of the views to collapse.
+ * @returns A Promise that resolves when the views are closed.
+ */
+export async function collapseViews(kaotoView: SideBarView | undefined, ...views: string[]): Promise<void> {
+	if (kaotoView) {
+		for (const view of views) {
+			const section = await kaotoView.getContent().getSection(view);
+			if (section) {
+				await section.collapse();
+				await kaotoView.getContent().getDriver().sleep(50);
+			}
+		}
+	}
+}
+
+/**
+ * Expand views by name
+ * @param kaotoViewContainer The Kaoto view container.
+ * @param views The names of the views to expand.
+ * @returns A Promise that resolves when the views are expanded.
+ */
+export async function expandViews(kaotoView: SideBarView | undefined, ...views: string[]): Promise<void> {
+	if (kaotoView) {
+		for (const view of views) {
+			const section = await kaotoView.getContent().getSection(view);
+			await section?.expand();
+			await section?.getDriver().wait(
+				async () => {
+					const items = await section?.getVisibleItems();
+					if (items && items?.length > 0) {
+						return items as TreeItem[];
+					} else {
+						return undefined;
+					}
+				},
+				5_000,
+				`${view} section items were not loaded properly`,
+				500,
+			);
+		}
+	}
+}
+
+/**
+ * Get Kaoto view control and collapse all views
+ * @returns A Promise that resolves to the Kaoto view control.
+ */
+export async function getKaotoViewControl(): Promise<{ kaotoViewContainer: ViewControl | undefined; kaotoView: SideBarView | undefined }> {
+	const kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
+	const kaotoView = await kaotoViewContainer?.openView();
+	await collapseViews(kaotoView, 'Integrations', 'Deployments', 'Tests', 'Help & Feedback');
+	return { kaotoViewContainer, kaotoView };
 }

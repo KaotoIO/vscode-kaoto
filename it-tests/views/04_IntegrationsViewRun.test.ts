@@ -15,13 +15,14 @@
  */
 import { expect } from 'chai';
 import { join } from 'path';
-import { ActivityBar, after, before, EditorView, SideBarView, TreeItem, ViewControl, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
+import { after, before, EditorView, TreeItem, ViewControl, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
 import {
-	collapseItemsInsideIntegrationsView,
-	expandFolderItemsInIntegrationsView,
+	collapseItemsInsideTreeStructuredView,
+	expandFolderItemsInTreeStructuredView,
+	expandViews,
+	getKaotoViewControl,
 	getTreeItem,
 	getTreeItemActionButton,
-	getViewActionButton,
 	killTerminal,
 	openResourcesAndWaitForActivation,
 	waitUntilTerminalHasText,
@@ -39,26 +40,23 @@ describe('Integrations View', function () {
 
 	let driver: WebDriver;
 	let kaotoViewContainer: ViewControl | undefined;
-	let kaotoView: SideBarView | undefined;
 	let integrationsSection: ViewSection | undefined;
 
 	before(async function () {
 		driver = VSBrowser.instance.driver;
 		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER, false);
 
-		kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
-		kaotoView = await kaotoViewContainer?.openView();
-		await (await kaotoView?.getContent().getSection('Help & Feedback'))?.collapse();
-		integrationsSection = await kaotoView?.getContent().getSection('Integrations');
-		const collapseItems = await getViewActionButton(kaotoViewContainer, integrationsSection, 'Collapse All');
-		await collapseItems?.click();
+		const control = await getKaotoViewControl();
+		kaotoViewContainer = control.kaotoViewContainer;
+		integrationsSection = await control.kaotoView?.getContent().getSection('Integrations');
+		await expandViews(control.kaotoView, 'Integrations');
 
 		// expand folders
-		await expandFolderItemsInIntegrationsView(integrationsSection, 'pipes', 'others');
+		await expandFolderItemsInTreeStructuredView(integrationsSection, 'pipes', 'others');
 	});
 
 	after(async function () {
-		await collapseItemsInsideIntegrationsView(integrationsSection);
+		await collapseItemsInsideTreeStructuredView(integrationsSection);
 		await kaotoViewContainer?.closeView();
 		await new EditorView().closeAllEditors();
 	});
