@@ -37,6 +37,7 @@ import {
 	expandViews,
 	getKaotoViewControl,
 	getTreeItem,
+	handleInputPathSelection,
 	openResourcesAndWaitForActivation,
 	switchToKaotoFrame,
 } from '../Util';
@@ -141,7 +142,7 @@ describe('Integrations View', function () {
 			input = await InputBox.create(30_000);
 			await input.setText(join(WORKSPACE_FOLDER, 'kamelets'));
 			await input.confirm();
-			await handleInputPathSelection();
+			await handleInputPathSelection(input);
 
 			input = await InputBox.create(30_000);
 			await input.setText('sink');
@@ -164,7 +165,7 @@ describe('Integrations View', function () {
 			input = await InputBox.create(10_000);
 			await input.setText(join(WORKSPACE_FOLDER, 'pipes', 'others'));
 			await input.confirm();
-			await handleInputPathSelection();
+			await handleInputPathSelection(input);
 
 			input = await InputBox.create(10_000);
 			await input.setText('newPipe');
@@ -175,17 +176,6 @@ describe('Integrations View', function () {
 
 			await switchToKaotoAndCheckIntegrationType(PIPE_FILE, 'Pipe', 'timer-source');
 		});
-
-		async function handleInputPathSelection(): Promise<void> {
-			const nextButton = await input.findElement(By.className('monaco-button'));
-			if (nextButton && (await nextButton.getText()) === 'Select') {
-				/**
-				 * when the provided path is not exactly formatted to the OS specificities, there is first a `Select` button and then a `Confirm`
-				 * see also see https://github.com/redhat-developer/vscode-extension-tester/issues/1778
-				 */
-				await input.confirm();
-			}
-		}
 
 		async function checkStepWithNodeLabelPresent(nodeLabel: string, timeout: number = 10_000) {
 			await driver.wait(
