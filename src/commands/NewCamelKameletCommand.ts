@@ -39,7 +39,7 @@ export class NewCamelKameletCommand extends AbstractNewCamelRouteCommand {
 						const filePath = this.computeFullPath(targetFolder.fsPath, fileName);
 
 						const wsFolderTarget = wsFolder || this.singleWorkspaceFolder;
-						await new CamelInitJBangTask(wsFolderTarget, path.relative(wsFolderTarget.uri.fsPath, filePath)).executeAndWaitWithProgress(
+						await new CamelInitJBangTask(path.relative(wsFolderTarget.uri.fsPath, filePath), wsFolderTarget).executeAndWaitWithProgress(
 							NewCamelKameletCommand.PROGRESS_NOTIFICATION_MESSAGE,
 						);
 						const targetFileURI = Uri.file(filePath);

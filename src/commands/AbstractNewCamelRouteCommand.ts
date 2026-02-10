@@ -44,10 +44,13 @@ export abstract class AbstractNewCamelRouteCommand extends AbstractCamelCommand 
 	}
 
 	protected async showWorkspaceFolderPick(): Promise<WorkspaceFolder | undefined> {
-		if (workspace.workspaceFolders && workspace.workspaceFolders.length > 1) {
+		if (!workspace.workspaceFolders) {
+			return undefined;
+		}
+		if (workspace.workspaceFolders.length > 1) {
 			return await window.showWorkspaceFolderPick();
 		}
-		return undefined;
+		return this.singleWorkspaceFolder;
 	}
 
 	protected async showNoWorkspaceNotification(): Promise<void> {

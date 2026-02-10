@@ -5,6 +5,7 @@
 - export Maven projects with predefined VS Code launch configurations for easy deployment to OpenShift
 - Add `Tests` section into Kaoto view
   - list existing Citrus tests in a current workspace
+  - create a new Citrus Test file button
 
 # 2.9.0
 

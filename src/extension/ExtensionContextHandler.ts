@@ -53,6 +53,7 @@ import { CamelRunSourceDirJBangTask } from '../tasks/CamelRunSourceDirJBangTask'
 import { Folder } from '../views/integrationTreeItems/Folder';
 import { TestsProvider } from '../views/providers/TestsProvider';
 import { AbstractFolderTreeProvider } from 'src/views/providers/AbstractFolderTreeProvider';
+import { NewCamelTestCommand } from '../commands/NewCamelTestCommand';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -262,6 +263,15 @@ export class ExtensionContextHandler {
 		this.context.subscriptions.push(testsTreeView, dispose, refreshCommand, refreshOnVisibilityChange);
 
 		this.registerViewItemContextMenu(this.testsProvider);
+	}
+
+	public registerTestsInitCommands() {
+		this.context.subscriptions.push(
+			vscode.commands.registerCommand(NewCamelTestCommand.ID_COMMAND_CITRUS_INIT, async () => {
+				await new NewCamelTestCommand().create();
+				await this.sendCommandTrackingEvent(NewCamelTestCommand.ID_COMMAND_CITRUS_INIT);
+			}),
+		);
 	}
 
 	public registerDeploymentsView(portManager: PortManager) {
