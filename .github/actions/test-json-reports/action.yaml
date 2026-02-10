@@ -6,8 +6,10 @@ runs:
   steps:
     - name: Upload Test Reports
       uses: dorny/test-reporter@v2.5.0
-      if: ${{ always() && !cancelled() }}
+      if: ${{ !cancelled() }}
       with:
         name: UI Tests
         path: reports/ui-test-results.json
         reporter: mocha-json
+        fail-on-error: "true"
+        fail-on-empty: "true"
