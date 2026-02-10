@@ -106,6 +106,8 @@ jobs:
         run: jbang trust add https://github.com/apache/camel/
       - name: Add Kubernetes plugin to Camel JBang
         run: jbang camel@apache/camel plugin add kubernetes
+      - name: Add Test plugin to Camel JBang
+        run: jbang camel@apache/camel plugin add test
       - name: Download VSIX artifact
         uses: actions/download-artifact@v7
         with:
@@ -166,6 +168,8 @@ jobs:
         run: jbang trust add https://github.com/apache/camel/
       - name: Add Kubernetes plugin to Camel JBang
         run: jbang camel@apache/camel plugin add kubernetes
+      - name: Add Test plugin to Camel JBang
+        run: jbang camel@apache/camel plugin add test
       - name: Download VSIX artifact
         uses: actions/download-artifact@v7
         with:
@@ -221,6 +225,8 @@ jobs:
         run: jbang trust add https://github.com/apache/camel/
       - name: Add Kubernetes plugin to Camel JBang
         run: jbang camel@apache/camel plugin add kubernetes
+      - name: Add Test plugin to Camel JBang
+        run: jbang camel@apache/camel plugin add test
       - name: Download VSIX artifact
         uses: actions/download-artifact@v7
         with:
