@@ -25,6 +25,7 @@ import {
 	EditorView,
 	ExtensionsViewItem,
 	ExtensionsViewSection,
+	InputBox,
 	ModalDialog,
 	SideBarView,
 	StatusBar,
@@ -525,4 +526,17 @@ export async function getKaotoViewControl(): Promise<{ kaotoViewContainer: ViewC
 	const kaotoView = await kaotoViewContainer?.openView();
 	await collapseViews(kaotoView, 'Integrations', 'Deployments', 'Tests', 'Help & Feedback');
 	return { kaotoViewContainer, kaotoView };
+}
+
+/**
+ * Handle input path selection
+ * When the provided path is not exactly formatted to the OS specificities, there is first a `Select` button and then a `Confirm`
+ * See also https://github.com/redhat-developer/vscode-extension-tester/issues/1778
+ * @param input The input box to handle the path selection.
+ */
+export async function handleInputPathSelection(input: InputBox): Promise<void> {
+	const nextButton = await input.findElement(By.className('monaco-button'));
+	if (nextButton && (await nextButton.getText()) === 'Select') {
+		await input.confirm(); // confirm the path selection
+	}
 }
