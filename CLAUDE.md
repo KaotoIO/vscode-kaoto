@@ -32,7 +32,7 @@ This is a VS Code extension for **Kaoto**, a visual low-code editor for Apache C
 #### How to run Integration tests
 
 1. yarn build:dev
-2. yarn vsce package --no-dependencies --yarn
+2. yarn build:vsix
 3. yarn run test:it:with-prebuilt-vsix
    3.1 For headless: `xvfb-run -a yarn run test:it:with-prebuilt-vsix`
 

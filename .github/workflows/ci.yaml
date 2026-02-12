@@ -39,7 +39,7 @@ jobs:
       - name: Run Unit tests
         run: xvfb-run -a yarn test:unit
       - name: vsix package
-        run: yarn vsce package --no-dependencies --yarn
+        run: yarn build:vsix
       - name: Generate SBOM
         run: |
           npm install -g @cyclonedx/cdxgen
