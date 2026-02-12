@@ -16,8 +16,10 @@
 import { commands, RelativePattern, TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
 import { AbstractFolderTreeProvider } from './AbstractFolderTreeProvider';
 import { Test } from '../testTreeItems/Test';
+import { TestResult } from '../../types/testTreeItemType';
 import { TestFolder } from '../testTreeItems/TestFolder';
-import { basename } from 'path';
+import { basename, dirname, join } from 'path';
+import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
 
 export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
 	public readonly VIEW_ITEM_SHOW_SOURCE_COMMAND_ID: string = 'kaoto.tests.showSource';
@@ -28,6 +30,14 @@ export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
 
 	/** Cache of file paths to Test items for efficient lookup and single-item refresh */
 	private readonly testItemCache: Map<string, Test> = new Map();
+
+	/** Persistent storage of test results that survives cache clears */
+	private readonly testResults: Map<string, TestResult> = new Map();
+
+	/** Paths awaiting a batched full refresh (items not yet in cache) */
+	private readonly pendingRefreshPaths = new Set<string>();
+	private pendingRefreshTimer?: NodeJS.Timeout;
+	private static readonly SCHEDULE_REFRESH_MS = 100;
 
 	constructor() {
 		super();
@@ -65,8 +75,12 @@ export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
 			return cachedTest;
 		}
 
-		// Create new test item and cache it
+		// Create new test item, restore any persisted result, and cache it
 		const test = new Test(file, isUnderMavenRoot);
+		const persistedResult = this.testResults.get(file.fsPath);
+		if (persistedResult) {
+			test.setResult(persistedResult);
+		}
 
 		this.testItemCache.set(file.fsPath, test);
 		return test;
@@ -117,5 +131,84 @@ export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
 		const pattern = new RelativePattern(folderUri, TestsProvider.TEST_FILE_PATTERN);
 		const files = await workspace.findFiles(pattern, this.getExcludePattern());
 		return files.map((file) => file.fsPath);
+	}
+
+	/**
+	 * Set the running state for a test and refresh only that item
+	 * @param filePath The file path of the test
+	 * @param running Whether the test is running
+	 */
+	setTestRunning(filePath: string, running: boolean): void {
+		const testItem = this.testItemCache.get(filePath);
+		if (testItem) {
+			testItem.setRunning(running);
+			this.refreshImmediate(testItem);
+		} else {
+			this.pendingRefreshPaths.add(filePath);
+			this.scheduleRefresh();
+		}
+	}
+
+	/**
+	 * Schedule a single debounced full refresh for uncached items.
+	 * Accumulates paths and fires one refresh instead of one per missing item.
+	 */
+	private scheduleRefresh(): void {
+		if (this.pendingRefreshTimer) {
+			clearTimeout(this.pendingRefreshTimer);
+		}
+		this.pendingRefreshTimer = setTimeout(() => {
+			this.pendingRefreshTimer = undefined;
+			this.pendingRefreshPaths.clear();
+			this.refresh();
+		}, TestsProvider.SCHEDULE_REFRESH_MS);
+	}
+
+	/**
+	 * Set the test result and refresh only that item
+	 * @param filePath The file path of the test
+	 * @param result The test result
+	 */
+	setTestResult(filePath: string, result: TestResult): void {
+		// Store the result persistently
+		this.testResults.set(filePath, result);
+
+		const testItem = this.testItemCache.get(filePath);
+		if (testItem) {
+			testItem.setResult(result);
+			// Refresh only this specific item immediately (no debouncing)
+			this.refreshImmediate(testItem);
+		}
+	}
+
+	/**
+	 * Read the test result from the Citrus report JSON file
+	 * @param testFilePath The path to the test file
+	 * @returns The test result (success, failure, or none if not found)
+	 */
+	async readTestResult(testFilePath: string): Promise<TestResult> {
+		try {
+			const testDir = dirname(testFilePath);
+			const fileName = basename(testFilePath, '.yaml'); // e.g., "name.test.yaml" -> "name.test" or "name.citrus.yaml" -> "name.citrus"
+
+			const resultFilePath = join(testDir, '.citrus-jbang', 'citrus-reports', `${fileName}-flow.json`);
+
+			const resultUri = Uri.file(resultFilePath);
+			const resultContent = await workspace.fs.readFile(resultUri);
+			const resultJson = JSON.parse(new TextDecoder('utf-8').decode(resultContent));
+
+			// Check the result field in the JSON
+			// Expected structure: { result: { result: "SUCCESS" | "FAILURE" | ... } }
+			const result = resultJson?.result?.result;
+			if (result === 'SUCCESS') {
+				return 'success';
+			} else if (result) {
+				return 'failure';
+			}
+			return 'none';
+		} catch (error) {
+			KaotoOutputChannel.logWarning(`Could not read test result for ${testFilePath}: ${error}`);
+			return 'none';
+		}
 	}
 }

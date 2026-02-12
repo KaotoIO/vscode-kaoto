@@ -52,8 +52,13 @@ import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
 import { CamelRunSourceDirJBangTask } from '../tasks/CamelRunSourceDirJBangTask';
 import { Folder } from '../views/integrationTreeItems/Folder';
 import { TestsProvider } from '../views/providers/TestsProvider';
-import { AbstractFolderTreeProvider } from 'src/views/providers/AbstractFolderTreeProvider';
+import { AbstractFolderTreeProvider } from '../views/providers/AbstractFolderTreeProvider';
 import { NewCamelTestCommand } from '../commands/NewCamelTestCommand';
+import { CamelTestRunFolderJBangTask } from '../tasks/CamelTestRunFolderJBangTask';
+import { TestFolder } from '../views/testTreeItems/TestFolder';
+import { CamelJBangTask } from '../tasks/CamelJBangTask';
+import { CamelTestRunJBangTask } from '../tasks/CamelTestRunJBangTask';
+import { Test } from '../views/testTreeItems/Test';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -272,6 +277,58 @@ export class ExtensionContextHandler {
 				await this.sendCommandTrackingEvent(NewCamelTestCommand.ID_COMMAND_CITRUS_INIT);
 			}),
 		);
+	}
+
+	public registerTestsRunCommands() {
+		const TESTS_RUN_COMMAND_ID = 'kaoto.tests.run';
+		const runCommand = vscode.commands.registerCommand(TESTS_RUN_COMMAND_ID, async (test: Test) => {
+			const filePath = test.resourceUri?.fsPath as string;
+			const fileName = path.basename(filePath) || 'test';
+
+			await this.executeTestRun([filePath], () => CamelTestRunJBangTask.create(filePath), `Running test: ${fileName}`);
+			await this.sendCommandTrackingEvent(TESTS_RUN_COMMAND_ID);
+		});
+
+		const TESTS_RUN_FOLDER_COMMAND_ID = 'kaoto.tests.run.folder';
+		const runFolderCommand = vscode.commands.registerCommand(TESTS_RUN_FOLDER_COMMAND_ID, async (folder: TestFolder) => {
+			const folderPath = folder.folderUri.fsPath;
+			const folderName = path.basename(folderPath) || 'tests';
+
+			const testFilePaths = await this.testsProvider.getTestFilesInFolder(folderPath);
+			if (testFilePaths.length === 0) {
+				vscode.window.showInformationMessage(`No test files found in folder: ${folderName}`);
+				return;
+			}
+
+			await this.executeTestRun(testFilePaths, () => CamelTestRunFolderJBangTask.create(folderPath), `Running tests in: ${folderName}`);
+			await this.sendCommandTrackingEvent(TESTS_RUN_FOLDER_COMMAND_ID);
+		});
+
+		this.context.subscriptions.push(runCommand, runFolderCommand);
+	}
+
+	private async executeTestRun(testFilePaths: string[], createTask: () => Promise<CamelJBangTask>, progressMessage: string): Promise<void> {
+		for (const testPath of testFilePaths) {
+			this.testsProvider.setTestRunning(testPath, true);
+		}
+
+		try {
+			const runTask = await createTask();
+			await runTask.executeAndWaitWithProgress(progressMessage);
+
+			for (const testPath of testFilePaths) {
+				const testResult = await this.testsProvider.readTestResult(testPath);
+				this.testsProvider.setTestResult(testPath, testResult);
+			}
+		} catch {
+			for (const testPath of testFilePaths) {
+				this.testsProvider.setTestResult(testPath, 'failure');
+			}
+		} finally {
+			for (const testPath of testFilePaths) {
+				this.testsProvider.setTestRunning(testPath, false);
+			}
+		}
 	}
 
 	public registerDeploymentsView(portManager: PortManager) {

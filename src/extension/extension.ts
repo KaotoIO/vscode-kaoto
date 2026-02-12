@@ -107,6 +107,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	 * register commands for 'Tests' view
 	 */
 	contextHandler.registerTestsInitCommands();
+	contextHandler.registerTestsRunCommands();
 
 	/*
 	 * send extension startup event into Red Hat Telemetry

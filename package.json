@@ -451,6 +451,18 @@
         "title": "New Citrus Test...",
         "category": "Kaoto",
         "icon": "$(new-file)"
+      },
+      {
+        "command": "kaoto.tests.run",
+        "title": "Run",
+        "category": "Kaoto",
+        "icon": "$(run)"
+      },
+      {
+        "command": "kaoto.tests.run.folder",
+        "title": "Run: Folder",
+        "category": "Kaoto",
+        "icon": "$(run)"
       }
     ],
     "keybindings": [
@@ -606,6 +618,14 @@
         {
           "command": "kaoto.citrus.jbang.init.test",
           "when": "false"
+        },
+        {
+          "command": "kaoto.tests.run",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.tests.run.folder",
+          "when": "false"
         }
       ],
       "editor/title": [
@@ -749,6 +769,16 @@
           "command": "kaoto.tests.delete",
           "when": "view == kaoto.tests && (viewItem =~ /^citrus-test-file/ || viewItem == test-folder || viewItem == jbang-properties-file || viewItem =~ /^test-folder-maven/)",
           "group": "navigation@2"
+        },
+        {
+          "command": "kaoto.tests.run",
+          "when": "view == kaoto.tests && viewItem =~ /^citrus-test-file(-passed|-failed)?$/ && kaoto.jbangAvailable",
+          "group": "inline@1"
+        },
+        {
+          "command": "kaoto.tests.run.folder",
+          "when": "view == kaoto.tests && viewItem == test-folder && kaoto.jbangAvailable",
+          "group": "inline@1"
         }
       ]
     },
