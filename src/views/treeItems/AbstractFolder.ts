@@ -27,10 +27,13 @@ export abstract class AbstractFolder extends TreeItem implements IFolderTreeItem
 	 */
 	protected abstract getContextPrefix(): string;
 
-	private resolveContextValue(isUnderMavenRoot: boolean, isMavenRoot: boolean): string {
+	private resolveContextValue(isUnderMavenRoot: boolean, isMavenRoot: boolean, isWorkspaceRoot?: boolean): string {
 		const prefix = this.getContextPrefix();
 		if (isMavenRoot) {
 			return `${prefix}-maven-root`;
+		}
+		if (isWorkspaceRoot) {
+			return `${prefix}-workspace-root`;
 		}
 		return isUnderMavenRoot ? `${prefix}-maven-child` : prefix;
 	}
@@ -60,6 +63,6 @@ export abstract class AbstractFolder extends TreeItem implements IFolderTreeItem
 		this.iconPath = AbstractFolder.resolveIcon(this.isMavenRoot, this.isWorkspaceRoot);
 
 		this.description = this.isMavenRoot ? 'M' : undefined;
-		this.contextValue = this.resolveContextValue(this.isUnderMavenRoot, this.isMavenRoot);
+		this.contextValue = this.resolveContextValue(this.isUnderMavenRoot, this.isMavenRoot, this.isWorkspaceRoot);
 	}
 }

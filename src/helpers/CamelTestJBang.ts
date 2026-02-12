@@ -15,6 +15,9 @@
  */
 import { ShellExecution, ShellExecutionOptions } from 'vscode';
 import { CamelJBang } from './CamelJBang';
+import path from 'path';
+import { readdir } from 'fs/promises';
+import { Dirent } from 'fs';
 
 export class CamelTestJBang extends CamelJBang {
 	constructor(jbang: string = 'jbang') {
@@ -29,12 +32,15 @@ export class CamelTestJBang extends CamelJBang {
 	}
 
 	public async run(filePath: string, cwd: string): Promise<ShellExecution> {
+		const fileName = path.basename(filePath);
+
 		const shellExecOptions: ShellExecutionOptions = {
 			cwd: cwd,
 		};
+
 		return new ShellExecution(
 			this.jbang,
-			[...this.defaultJbangArgs, 'test', 'run', `'${filePath}'`].filter(function (arg) {
+			[...this.defaultJbangArgs, 'test', 'run', fileName].filter(function (arg) {
 				return arg !== undefined && arg !== null && arg !== ''; // remove empty string, null and undefined values
 			}),
 			shellExecOptions,
@@ -42,9 +48,12 @@ export class CamelTestJBang extends CamelJBang {
 	}
 
 	public async runFolder(cwd: string): Promise<ShellExecution> {
+		const testFolder = await this.resolveTestFolder(cwd);
+
 		const shellExecOptions: ShellExecutionOptions = {
-			cwd: cwd,
+			cwd: testFolder,
 		};
+
 		return new ShellExecution(
 			this.jbang,
 			[...this.defaultJbangArgs, 'test', 'run', '*'].filter(function (arg) {
@@ -52,5 +61,48 @@ export class CamelTestJBang extends CamelJBang {
 			}),
 			shellExecOptions,
 		);
+	}
+
+	/**
+	 * BFS through the directory hierarchy under baseDir to find the first
+	 * subdirectory whose name contains 'test'. Returns baseDir itself if it
+	 * already contains 'test' in its name, or falls back to baseDir when no
+	 * test directory is found.
+	 */
+	private async resolveTestFolder(baseDir: string): Promise<string> {
+		if (this.isTestFolder(path.basename(baseDir))) {
+			return baseDir;
+		}
+
+		const EXCLUDED = new Set(['node_modules', '.git', 'dist', 'lib', 'target', '.citrus-jbang', '.vscode', '.mvn', 'out']);
+		const queue: string[] = [baseDir];
+
+		while (queue.length > 0) {
+			const current = queue.shift()!;
+			let entries: Dirent[] = [];
+			try {
+				entries = await readdir(current, { withFileTypes: true });
+			} catch {
+				continue;
+			}
+
+			for (const entry of entries) {
+				if (!entry.isDirectory() || EXCLUDED.has(entry.name)) {
+					continue;
+				}
+				const fullPath = path.join(current, entry.name);
+				if (this.isTestFolder(entry.name)) {
+					return fullPath;
+				}
+				queue.push(fullPath);
+			}
+		}
+
+		return baseDir;
+	}
+
+	private isTestFolder(name: string): boolean {
+		const n = name.toLowerCase();
+		return n === 'test' || n === 'tests' || n.endsWith('-test') || n.endsWith('-tests');
 	}
 }

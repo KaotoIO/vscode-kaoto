@@ -44,3 +44,4 @@ yarn-error.log*
 # the camel-jbang folders
 .camel-jbang
 .camel-jbang-run
+.citrus-jbang
