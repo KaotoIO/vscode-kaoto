@@ -12853,7 +12853,7 @@ __metadata:
     vscode-extension-tester: "npm:^8.21.0"
     wait-on: "npm:^9.0.3"
     web-worker: "npm:^1.5.0"
-    webpack: "npm:5.105.1"
+    webpack: "npm:5.105.2"
     webpack-cli: "npm:6.0.1"
     webpack-merge: "npm:6.0.1"
     webpack-permissions-plugin: "npm:^1.0.10"
@@ -12985,9 +12985,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.105.1":
-  version: 5.105.1
-  resolution: "webpack@npm:5.105.1"
+"webpack@npm:5.105.2":
+  version: 5.105.2
+  resolution: "webpack@npm:5.105.2"
   dependencies:
     "@types/eslint-scope": "npm:^3.7.7"
     "@types/estree": "npm:^1.0.8"
@@ -13019,7 +13019,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 10/fdd9bb384114a5937edf627966ef0d4ecfcaea0e3cb49db86c073f8c74bb8ef3f46d02655e1ac549c620e5bd104f2544bd9d1d23e150f93e162433a73060bd62
+  checksum: 10/77cf6f13e55cae2fafae015cc4a0b341b096c284877244ef4b46b4de1884dcf4e8d1a166a91f0a7cb6db41e9de2d0facb5caf518cbd4cd7ba963c59c07ff0a5a
   languageName: node
   linkType: hard
 
