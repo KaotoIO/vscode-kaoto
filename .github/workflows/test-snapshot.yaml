@@ -40,7 +40,7 @@ jobs:
       - name: yarn build:prod
         run: yarn build:prod
       - name: vsix package
-        run: yarn vsce package --no-dependencies --yarn
+        run: yarn build:vsix
       - name: Upload VSIX artifact
         uses: actions/upload-artifact@v6
         with:

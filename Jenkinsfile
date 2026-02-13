@@ -34,7 +34,7 @@ node('rhel9'){
 			}
 			env.TEST_RESOURCES = 'test-resources'
 			env.CODE_VERSION = 'max'
-			sh "yarn vsce package --no-dependencies --yarn"
+			sh "yarn build:vsix"
 			sh "yarn test:it:with-prebuilt-vsix"
 			sh "rm -rf *.vsix"
 		}
@@ -42,7 +42,7 @@ node('rhel9'){
 
 	stage 'Package vscode-kaoto'
 	def packageJson = readJSON file: 'package.json'
-	sh "yarn vsce package --no-dependencies --yarn -o vscode-kaoto-${packageJson.version}-${env.BUILD_NUMBER}.vsix"
+	sh "yarn build:vsix -o vscode-kaoto-${packageJson.version}-${env.BUILD_NUMBER}.vsix"
 
 	stage 'Upload vscode-kaoto to staging'
 	def vsix = findFiles(glob: '**.vsix')

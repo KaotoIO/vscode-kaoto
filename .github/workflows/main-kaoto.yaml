@@ -55,7 +55,7 @@ jobs:
         run: xvfb-run -a yarn test:unit
       - name: vsix package
         working-directory: vscode-kaoto
-        run: yarn vsce package --no-dependencies --yarn
+        run: yarn build:vsix
       - name: Upload VSIX artifact
         uses: actions/upload-artifact@v6
         with:

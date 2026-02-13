@@ -23,6 +23,7 @@
     "build:dev": "rimraf dist && yarn run watch && yarn run lint",
     "build:test:it": "rimraf ./out && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && yarn run lint",
     "build:test:unit": "rimraf ./out && tsc --project tsconfig.unit-tests.json --skipLibCheck --sourceMap true && yarn run lint",
+    "build:vsix": "yarn vsce package --no-dependencies --yarn",
     "compile": "webpack",
     "watch": "webpack --env dev",
     "run:webmode": "yarn vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --open-devtools ./resources",
