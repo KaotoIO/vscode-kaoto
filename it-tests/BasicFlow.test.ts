@@ -179,6 +179,18 @@ async function addXsdForSource(driver: WebDriver, kaotoWebview: WebView) {
 	await kaotoWebview.switchBack();
 	const xsdInputbox = await InputBox.create(10000);
 	await xsdInputbox.setText('shiporder.xsd');
+	try {
+		const checkboxes = await xsdInputbox.getCheckboxes();
+		if (checkboxes.length > 0) {
+			await checkboxes[0].select();
+		}
+	} catch (error) {
+		const message = error instanceof Error ? error.message : String(error);
+		if (!/NoSuchElement/i.test(message) && !/checkbox/i.test(message)) {
+			throw error;
+		}
+		// Fallback for Kaoto <2.10.0 (no checkboxes)
+	}
 	await xsdInputbox.confirm();
 	await kaotoWebview.switchToFrame();
 
