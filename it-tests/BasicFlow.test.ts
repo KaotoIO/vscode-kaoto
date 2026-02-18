@@ -186,7 +186,7 @@ async function addXsdForSource(driver: WebDriver, kaotoWebview: WebView) {
 		}
 	} catch (error) {
 		const message = error instanceof Error ? error.message : String(error);
-		if (!/NoSuchElement/i.test(message)) {
+		if (!/NoSuchElement/i.test(message) && !/checkbox/i.test(message)) {
 			throw error;
 		}
 		// Fallback for Kaoto <2.10.0 (no checkboxes)
