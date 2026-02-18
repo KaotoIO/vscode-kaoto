@@ -1,0 +1,67 @@
+name: Setup Tools
+description: Sets up Node.js, Java, and optionally JBang
+
+inputs:
+  node-version:
+    description: Node.js version
+    required: false
+    default: "22"
+  java-version:
+    description: Java version
+    required: false
+    default: "21"
+  cache:
+    description: "Package manager to cache (e.g. 'yarn'). Leave empty to skip caching."
+    required: false
+    default: ""
+  cache-dependency-path:
+    description: "Path to lock file for cache key (e.g. 'vscode-kaoto/yarn.lock'). Needed when checkout uses a subdirectory."
+    required: false
+    default: ""
+  install-jbang:
+    description: Whether to install JBang
+    required: false
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v6
+      if: ${{ inputs.cache != '' && inputs.cache-dependency-path != '' }}
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: ${{ inputs.cache }}
+        cache-dependency-path: ${{ inputs.cache-dependency-path }}
+    - uses: actions/setup-node@v6
+      if: ${{ inputs.cache != '' && inputs.cache-dependency-path == '' }}
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: ${{ inputs.cache }}
+    - uses: actions/setup-node@v6
+      if: ${{ inputs.cache == '' }}
+      with:
+        node-version: ${{ inputs.node-version }}
+        package-manager-cache: false
+    - uses: actions/setup-java@v5
+      with:
+        distribution: temurin
+        java-version: ${{ inputs.java-version }}
+    - name: Setup JBang
+      if: ${{ inputs.install-jbang == 'true' }}
+      uses: jbangdev/setup-jbang@v0.1.1
+    - name: Setup JBang properties
+      if: ${{ inputs.install-jbang == 'true' }}
+      shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+      run: jbang properties@jbangdev
+    - name: Add Camel Trusted Source to JBang
+      if: ${{ inputs.install-jbang == 'true' }}
+      shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+      run: jbang trust add https://github.com/apache/camel/
+    - name: Add Kubernetes plugin to Camel JBang
+      if: ${{ inputs.install-jbang == 'true' }}
+      shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+      run: jbang camel@apache/camel plugin add kubernetes
+    - name: Add Test plugin to Camel JBang
+      if: ${{ inputs.install-jbang == 'true' }}
+      shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+      run: jbang camel@apache/camel plugin add test
