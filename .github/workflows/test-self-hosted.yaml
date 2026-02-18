@@ -220,7 +220,11 @@ jobs:
         run: |
           npm install -g yarn
       - name: Install JBang
-        run: choco install jbang
+        run: |
+          curl -Ls https://sh.jbang.dev | bash -s - app setup
+          echo "$HOME/.jbang/bin" >> $GITHUB_PATH
+      # - name: Install JBang
+      #   run: choco install jbang
       - name: Add Camel Trusted Source to JBang
         run: jbang trust add https://github.com/apache/camel/
       - name: Add Kubernetes plugin to Camel JBang
