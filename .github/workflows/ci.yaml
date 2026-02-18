@@ -30,10 +30,10 @@ jobs:
         run: yarn --network-timeout 1000000
       - name: yarn build:prod
         run: yarn build:prod
-      - name: Install JBang
-        run: |
-          curl -Ls https://sh.jbang.dev | bash -s - app setup
-          echo "$HOME/.jbang/bin" >> $GITHUB_PATH
+      - name: Setup JBang
+        uses: jbangdev/setup-jbang@main
+      - name: Setup JBang properties
+        run: jbang properties@jbangdev
       - name: Allow unprivileged user namespace
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Run Unit tests
@@ -93,10 +93,10 @@ jobs:
           eval $(minikube -p minikube docker-env)
           echo "INSTALL_REGISTRY=$(kubectl -n kube-system get service registry -o jsonpath='{.spec.clusterIP}')" >> $GITHUB_ENV
           echo $INSTALL_REGISTRY
-      - name: Install JBang
-        run: |
-          curl -Ls https://sh.jbang.dev | bash -s - app setup
-          echo "$HOME/.jbang/bin" >> $GITHUB_PATH
+      - name: Setup JBang
+        uses: jbangdev/setup-jbang@main
+      - name: Setup JBang properties
+        run: jbang properties@jbangdev
       - name: Add Camel Trusted Source to JBang
         run: jbang trust add https://github.com/apache/camel/
       - name: Add Kubernetes plugin to Camel JBang
@@ -151,10 +151,10 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "21"
-      - name: Install JBang
-        run: |
-          curl -Ls https://sh.jbang.dev | bash -s - app setup
-          echo "$HOME/.jbang/bin" >> $GITHUB_PATH
+      - name: Setup JBang
+        uses: jbangdev/setup-jbang@main
+      - name: Setup JBang properties
+        run: jbang properties@jbangdev
       - name: Add Camel Trusted Source to JBang
         run: jbang trust add https://github.com/apache/camel/
       - name: Add Kubernetes plugin to Camel JBang
@@ -206,12 +206,10 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "21"
-      - name: Install JBang
-        run: |
-          curl -Ls https://sh.jbang.dev | bash -s - app setup
-          echo "$HOME/.jbang/bin" >> $GITHUB_PATH
-      # - name: Install JBang
-      #   run: choco install jbang
+      - name: Setup JBang
+        uses: jbangdev/setup-jbang@main
+      - name: Setup JBang properties
+        run: jbang properties@jbangdev
       - name: Add Camel Trusted Source to JBang
         run: jbang trust add https://github.com/apache/camel/
       - name: Add Kubernetes plugin to Camel JBang

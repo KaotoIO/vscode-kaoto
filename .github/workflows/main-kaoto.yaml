@@ -44,10 +44,10 @@ jobs:
       - name: yarn build:prod
         working-directory: vscode-kaoto
         run: yarn build:prod
-      - name: Install JBang
-        run: |
-          curl -Ls https://sh.jbang.dev | bash -s - app setup
-          echo "$HOME/.jbang/bin" >> $GITHUB_PATH
+      - name: Setup JBang
+        uses: jbangdev/setup-jbang@main
+      - name: Setup JBang properties
+        run: jbang properties@jbangdev
       - name: Allow unprivileged user namespace
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Run Unit tests
@@ -101,10 +101,10 @@ jobs:
           eval $(minikube -p minikube docker-env)
           echo "INSTALL_REGISTRY=$(kubectl -n kube-system get service registry -o jsonpath='{.spec.clusterIP}')" >> $GITHUB_ENV
           echo $INSTALL_REGISTRY
-      - name: Install JBang
-        run: |
-          curl -Ls https://sh.jbang.dev | bash -s - app setup
-          echo "$HOME/.jbang/bin" >> $GITHUB_PATH
+      - name: Setup JBang
+        uses: jbangdev/setup-jbang@main
+      - name: Setup JBang properties
+        run: jbang properties@jbangdev
       - name: Add Camel Trusted Source to JBang
         run: jbang trust add https://github.com/apache/camel/
       - name: Add Kubernetes plugin to Camel JBang
