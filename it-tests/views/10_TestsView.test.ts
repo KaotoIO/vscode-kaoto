@@ -24,7 +24,7 @@ import {
 	openResourcesAndWaitForActivation,
 } from '../Util';
 
-describe('Tests View', function () {
+describe.only('Tests View', function () {
 	this.timeout(60_000);
 
 	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars', 'kaoto-view', 'example-tests');
