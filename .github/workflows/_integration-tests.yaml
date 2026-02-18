@@ -1,0 +1,174 @@
+on:
+  workflow_call:
+    inputs:
+      vsix-artifact-name:
+        description: Name of the VSIX artifact to download
+        required: true
+        type: string
+      runner-ubuntu:
+        description: Ubuntu runner label
+        required: false
+        type: string
+        default: ubuntu-latest
+      runner-macos:
+        description: macOS runner label
+        required: false
+        type: string
+        default: macos-latest
+      runner-windows:
+        description: Windows runner label
+        required: false
+        type: string
+        default: windows-latest
+      run-ubuntu:
+        description: Whether to run Ubuntu integration tests
+        required: false
+        type: boolean
+        default: true
+      run-macos:
+        description: Whether to run macOS integration tests
+        required: false
+        type: boolean
+        default: true
+      run-windows:
+        description: Whether to run Windows integration tests
+        required: false
+        type: boolean
+        default: true
+      enable-qemu:
+        description: Whether to set up QEMU for Ubuntu Minikube
+        required: false
+        type: boolean
+        default: true
+      install-yarn:
+        description: Whether to install Yarn globally (for self-hosted runners)
+        required: false
+        type: boolean
+        default: false
+      retry-wait-ubuntu:
+        description: Retry wait seconds for Ubuntu
+        required: false
+        type: number
+        default: 30
+      retry-wait-macos:
+        description: Retry wait seconds for macOS
+        required: false
+        type: number
+        default: 60
+      retry-wait-windows:
+        description: Retry wait seconds for Windows
+        required: false
+        type: number
+        default: 30
+
+name: Integration Tests
+
+jobs:
+  test-ubuntu:
+    if: ${{ inputs.run-ubuntu }}
+    runs-on: ${{ inputs.runner-ubuntu }}
+    timeout-minutes: 60
+
+    env:
+      CODE_VERSION: max
+      TEST_RESOURCES: test-resources
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-tools
+      - uses: ./.github/actions/setup-minikube
+        with:
+          enable-qemu: ${{ inputs.enable-qemu && 'true' || 'false' }}
+      - name: Install Yarn
+        if: ${{ inputs.install-yarn }}
+        run: npm install -g yarn
+      - name: Download VSIX artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: ${{ inputs.vsix-artifact-name }}
+      - name: Install test dependencies
+        run: yarn install --mode=skip-build
+      - name: Allow unprivileged user namespace
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - name: Run Integration Tests
+        uses: nick-fields/retry@v3.0.2
+        with:
+          timeout_minutes: 30
+          retry_wait_seconds: ${{ inputs.retry-wait-ubuntu }}
+          max_attempts: 2
+          command: |
+            eval $(minikube -p minikube docker-env)
+            xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube --mocha_config .mocharc-json.js
+      - uses: ./.github/actions/upload-test-artifacts
+        if: failure()
+        with:
+          os-name: ubuntu
+
+  test-macos:
+    if: ${{ inputs.run-macos }}
+    runs-on: ${{ inputs.runner-macos }}
+    timeout-minutes: 60
+
+    env:
+      CODE_VERSION: max
+      TEST_RESOURCES: test-resources
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-tools
+      - name: Install Yarn
+        if: ${{ inputs.install-yarn }}
+        run: npm install -g yarn
+      - name: Download VSIX artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: ${{ inputs.vsix-artifact-name }}
+      - name: Install test dependencies
+        run: yarn install --mode=skip-build
+      - name: Run Integration Tests
+        uses: nick-fields/retry@v3.0.2
+        with:
+          timeout_minutes: 30
+          retry_wait_seconds: ${{ inputs.retry-wait-macos }}
+          max_attempts: 2
+          command: yarn run test:it:with-prebuilt-vsix --mocha_config .mocharc-json.js
+          on_retry_command: rm -rf "${RUNNER_TEMP}/extest-code"
+      - uses: ./.github/actions/upload-test-artifacts
+        if: failure()
+        with:
+          os-name: macos
+
+  test-windows:
+    if: ${{ inputs.run-windows }}
+    runs-on: ${{ inputs.runner-windows }}
+    timeout-minutes: 60
+
+    env:
+      CODE_VERSION: max
+      TEST_RESOURCES: test-resources
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-tools
+      - name: Install Yarn
+        if: ${{ inputs.install-yarn }}
+        run: npm install -g yarn
+      - name: Download VSIX artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: ${{ inputs.vsix-artifact-name }}
+      - name: Install test dependencies
+        run: yarn install --mode=skip-build
+      - name: Run Integration Tests
+        uses: nick-fields/retry@v3.0.2
+        with:
+          timeout_minutes: 30
+          retry_wait_seconds: ${{ inputs.retry-wait-windows }}
+          max_attempts: 2
+          command: |
+            Set-DisplayResolution -Width 1920 -Height 1080 -Force
+            yarn run test:it:with-prebuilt-vsix --mocha_config .mocharc-json.js
+      - uses: ./.github/actions/upload-test-artifacts
+        if: failure()
+        with:
+          os-name: windows

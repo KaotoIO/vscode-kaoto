@@ -30,22 +30,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: ./.github/actions/setup-tools
         with:
-          node-version: 22
-          cache: "yarn"
-      - uses: actions/setup-java@v5
-        with:
-          distribution: "temurin"
-          java-version: "21"
+          cache: yarn
       - name: yarn install
         run: yarn --network-timeout 1000000
       - name: yarn build:prod
         run: yarn build:prod
-      - name: Setup JBang
-        uses: jbangdev/setup-jbang@main
-      - name: Setup JBang properties
-        run: jbang properties@jbangdev
       - name: Allow unprivileged user namespace
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Run Unit tests
@@ -64,210 +55,17 @@ jobs:
           name: ubuntu-unit-test-logs
           path: .vscode-test/user-data/logs/*
 
-  test-integration-ubuntu:
+  integration-tests:
     needs: build
-    if: ${{ inputs.run_ubuntu }}
-    runs-on: ubuntu-self-hosted
-    timeout-minutes: 60
-
-    env:
-      CODE_VERSION: max
-      TEST_RESOURCES: test-resources
-
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-      - uses: actions/setup-java@v5
-        with:
-          distribution: "temurin"
-          java-version: "21"
-      - name: Start Minikube
-        uses: medyagh/setup-minikube@v0.0.21
-        with:
-          driver: docker
-          addons: registry,registry-aliases
-          container-runtime: docker
-          insecure-registry: "10.0.0.0/24"
-      - name: Set Minikube ENV
-        run: |
-          eval $(minikube -p minikube docker-env)
-          echo "INSTALL_REGISTRY=$(kubectl -n kube-system get service registry -o jsonpath='{.spec.clusterIP}')" >> $GITHUB_ENV
-          echo $INSTALL_REGISTRY
-      - name: Install Yarn
-        run: |
-          npm install -g yarn
-      - name: Setup JBang
-        uses: jbangdev/setup-jbang@main
-      - name: Setup JBang properties
-        run: jbang properties@jbangdev
-      - name: Add Camel Trusted Source to JBang
-        run: jbang trust add https://github.com/apache/camel/
-      - name: Add Kubernetes plugin to Camel JBang
-        run: jbang camel@apache/camel plugin add kubernetes
-      - name: Download VSIX artifact
-        uses: actions/download-artifact@v7
-        with:
-          name: vscode-kaoto-vsix
-      - name: Install test dependencies
-        run: yarn install --mode=skip-build
-      - name: Allow unprivileged user namespace
-        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-      - name: Run Integration Tests
-        uses: nick-fields/retry@v3.0.2
-        with:
-          timeout_minutes: 30
-          retry_wait_seconds: 60
-          max_attempts: 2
-          command: |
-            eval $(minikube -p minikube docker-env)
-            xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube --mocha_config .mocharc-json.js
-      - name: Test Report
-        uses: dorny/test-reporter@v2.5.0
-        if: ${{ !cancelled() }}
-        with:
-          name: UI Tests
-          path: reports/ui-test-results.json
-          reporter: mocha-json
-      - name: Store Integration Tests VS Code Logs
-        uses: actions/upload-artifact@v6
-        if: failure()
-        with:
-          name: vscode-logs-ubuntu
-          path: test-resources/settings/logs
-      - name: Store Integration Tests VS Code screenshots
-        uses: actions/upload-artifact@v6
-        if: failure()
-        with:
-          name: ui-test-screenshots-ubuntu
-          path: test-resources/screenshots
-
-  test-integration-macos:
-    needs: build
-    if: ${{ inputs.run_macos }}
-    runs-on: macOS-self-hosted
-    timeout-minutes: 60
-
-    env:
-      CODE_VERSION: max
-      TEST_RESOURCES: test-resources
-
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-      - uses: actions/setup-java@v5
-        with:
-          distribution: "temurin"
-          java-version: "21"
-      - name: Install Yarn
-        run: |
-          npm install -g yarn
-      - name: Setup JBang
-        uses: jbangdev/setup-jbang@main
-      - name: Setup JBang properties
-        run: jbang properties@jbangdev
-      - name: Add Camel Trusted Source to JBang
-        run: jbang trust add https://github.com/apache/camel/
-      - name: Add Kubernetes plugin to Camel JBang
-        run: jbang camel@apache/camel plugin add kubernetes
-      - name: Download VSIX artifact
-        uses: actions/download-artifact@v7
-        with:
-          name: vscode-kaoto-vsix
-      - name: Install test dependencies
-        run: yarn install --mode=skip-build
-      - name: Run Integration Tests
-        uses: nick-fields/retry@v3.0.2
-        with:
-          timeout_minutes: 30
-          retry_wait_seconds: 60
-          max_attempts: 2
-          command: yarn run test:it:with-prebuilt-vsix --mocha_config .mocharc-json.js
-          on_retry_command: rm -rf "${RUNNER_TEMP}/extest-code"
-      - name: Test Report
-        uses: dorny/test-reporter@v2.5.0
-        if: ${{ !cancelled() }}
-        with:
-          name: UI Tests
-          path: reports/ui-test-results.json
-          reporter: mocha-json
-      - name: Store Integration Tests VS Code Logs
-        uses: actions/upload-artifact@v6
-        if: failure()
-        with:
-          name: vscode-logs-macos
-          path: test-resources/settings/logs
-      - name: Store Integration Tests VS Code screenshots
-        uses: actions/upload-artifact@v6
-        if: failure()
-        with:
-          name: ui-test-screenshots-macos
-          path: test-resources/screenshots
-
-  test-integration-windows:
-    needs: build
-    if: ${{ inputs.run_windows }}
-    runs-on: win-self-hosted
-    timeout-minutes: 60
-
-    env:
-      CODE_VERSION: max
-      TEST_RESOURCES: test-resources
-
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-      - uses: actions/setup-java@v5
-        with:
-          distribution: "temurin"
-          java-version: "21"
-      - name: Install Yarn
-        run: |
-          npm install -g yarn
-      - name: Setup JBang
-        uses: jbangdev/setup-jbang@main
-      - name: Setup JBang properties
-        run: jbang properties@jbangdev
-      - name: Add Camel Trusted Source to JBang
-        run: jbang trust add https://github.com/apache/camel/
-      - name: Add Kubernetes plugin to Camel JBang
-        run: jbang camel@apache/camel plugin add kubernetes
-      - name: Download VSIX artifact
-        uses: actions/download-artifact@v7
-        with:
-          name: vscode-kaoto-vsix
-      - name: Install test dependencies
-        run: yarn install --mode=skip-build
-      - name: Run Integration Tests
-        uses: nick-fields/retry@v3.0.2
-        with:
-          timeout_minutes: 30
-          retry_wait_seconds: 30
-          max_attempts: 2
-          command: |
-            Set-DisplayResolution -Width 1920 -Height 1080 -Force
-            yarn run test:it:with-prebuilt-vsix --mocha_config .mocharc-json.js
-      - name: Test Report
-        uses: dorny/test-reporter@v2.5.0
-        if: ${{ !cancelled() }}
-        with:
-          name: UI Tests
-          path: reports/ui-test-results.json
-          reporter: mocha-json
-      - name: Store Integration Tests VS Code Logs
-        uses: actions/upload-artifact@v6
-        if: failure()
-        with:
-          name: vscode-logs-windows
-          path: test-resources/settings/logs
-      - name: Store Integration Tests VS Code screenshots
-        uses: actions/upload-artifact@v6
-        if: failure()
-        with:
-          name: ui-test-screenshots-windows
-          path: test-resources/screenshots
+    uses: ./.github/workflows/_integration-tests.yaml
+    with:
+      vsix-artifact-name: vscode-kaoto-vsix
+      run-ubuntu: ${{ inputs.run_ubuntu }}
+      run-macos: ${{ inputs.run_macos }}
+      run-windows: ${{ inputs.run_windows }}
+      runner-ubuntu: ubuntu-self-hosted
+      runner-macos: macOS-self-hosted
+      runner-windows: win-self-hosted
+      enable-qemu: false
+      install-yarn: true
+      retry-wait-ubuntu: 60
