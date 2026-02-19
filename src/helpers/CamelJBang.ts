@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { RelativePattern, ShellExecution, ShellExecutionOptions, Uri, workspace, window } from 'vscode';
+import { RelativePattern, ShellExecution, ShellExecutionOptions, ShellQuotedString, ShellQuoting, Uri, workspace, window } from 'vscode';
 import {
 	arePathsEqual,
 	findFolderOfPomXml,
@@ -26,8 +26,8 @@ import {
 	KAOTO_MAVEN_CAMEL_JBANG_EXPORT_FOLDER_ARGUMENTS_SETTING_ID,
 	resolvePaths,
 } from './helpers';
-import { dirname, relative } from 'path';
-import { execSync, execFile } from 'child_process';
+import path, { dirname, relative } from 'path';
+import { execSync } from 'child_process';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { satisfies } from 'compare-versions';
 import { RuntimeMavenInformation } from '@kaoto/kaoto';
@@ -123,38 +123,22 @@ export class CamelJBang {
 	}
 
 	/**
-	 * Execute dependency update directly (bypassing VS Code Tasks) to avoid native task failure notifications.
-	 * Resolves with the exit code (0 on success, non-zero on failure).
+	 * Execute the 'jbang camel@apache/camel dependency update' command to update the Camel dependencies in the pom.xml file.
+	 * @param pomPath - The path to the pom.xml file.
+	 * @param integrationFilePath - The path to the integration file.
+	 * @returns The shell execution for the dependency update command.
 	 */
-	public async dependencyUpdate(pomPath: string, routePath: string, cwd?: string): Promise<number> {
-		return await new Promise<number>((resolve) => {
-			const args: string[] = [
-				`-Dcamel.jbang.version=${this.camelJBangVersion}`,
-				'camel@apache/camel',
-				'dependency',
-				'update',
-				pomPath,
-				routePath,
-				'--lazy-bean',
-				'--ignore-loading-error',
-			];
-			KaotoOutputChannel.logInfo(`Camel Dependency Update: jbang ${args.join(' ')}`);
-			execFile(this.jbang, args, { cwd, maxBuffer: 50 * 1024 * 1024 }, (error, stdout, stderr) => {
-				if (stdout) {
-					KaotoOutputChannel.logInfo(stdout.toString().trimEnd());
-				}
-				if (stderr) {
-					KaotoOutputChannel.logError(stderr.toString());
-				}
-				if (error) {
-					const anyErr = error as unknown as { code?: number | string | null };
-					const code = anyErr?.code;
-					resolve(typeof code === 'number' ? code : 1);
-				} else {
-					resolve(0);
-				}
-			});
-		});
+	public dependencyUpdate(pomPath: string, integrationFilePath: string): ShellExecution {
+		const shellExecOptions: ShellExecutionOptions = {
+			cwd: path.dirname(pomPath),
+		};
+		const quotedPomPath: ShellQuotedString = { value: pomPath, quoting: ShellQuoting.Strong };
+		const quotedIntegrationFilePath: ShellQuotedString = { value: integrationFilePath, quoting: ShellQuoting.Strong };
+		return new ShellExecution(
+			this.jbang,
+			[...this.defaultJbangArgs, 'dependency', 'update', quotedPomPath, quotedIntegrationFilePath, '--lazy-bean', '--ignore-loading-error'],
+			shellExecOptions,
+		);
 	}
 
 	public async run(filePath: string, cwd: string, port?: number): Promise<ShellExecution> {
