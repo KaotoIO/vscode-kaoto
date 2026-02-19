@@ -72,13 +72,17 @@ export abstract class CamelJBangTask extends Task {
 			},
 			(progress) => {
 				progress.report({ increment: 0 });
-				return new Promise<void>((resolve) => {
+				return new Promise<void>((resolve, reject) => {
 					progress.report({ increment: 50 });
-					const disposable = tasks.onDidEndTask((e) => {
+					const disposable = tasks.onDidEndTaskProcess((e) => {
 						if (e.execution.task.name === this.label) {
 							disposable.dispose();
-							resolve();
 							progress.report({ increment: 100 });
+							if (e.exitCode === 0) {
+								resolve();
+							} else {
+								reject(new Error(`Task "${this.label}" failed with exit code ${e.exitCode}`));
+							}
 						}
 					});
 				});
@@ -92,17 +96,23 @@ export abstract class CamelJBangTask extends Task {
 	public async execute(): Promise<void> {
 		if (this.execution) {
 			const exec = this.execution as ShellExecution;
-			KaotoOutputChannel.logInfo(`${this.label}: "${exec.command} ${exec.args?.join(' ')}"`);
+			const cmd = typeof exec.command === 'string' ? exec.command : (exec.command?.value ?? '');
+			const argsStr = exec.args?.map((a) => (typeof a === 'string' ? a : a.value)).join(' ');
+			KaotoOutputChannel.logInfo(`${this.label}: "${cmd} ${argsStr}"`);
 		}
 		await tasks.executeTask(this);
 	}
 
 	private async waitForEnd(): Promise<void> {
-		await new Promise<void>((resolve) => {
-			const disposable = tasks.onDidEndTask((e) => {
+		await new Promise<void>((resolve, reject) => {
+			const disposable = tasks.onDidEndTaskProcess((e) => {
 				if (e.execution.task.name === this.label) {
 					disposable.dispose();
-					resolve();
+					if (e.exitCode === 0) {
+						resolve();
+					} else {
+						reject(new Error(`Task "${this.label}" failed with exit code ${e.exitCode}`));
+					}
 				}
 			});
 		});
