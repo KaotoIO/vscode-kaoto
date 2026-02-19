@@ -125,7 +125,14 @@ jobs:
           max_attempts: 2
           command: |
             eval $(minikube -p minikube docker-env)
-            xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
+            xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube --mocha_config .mocharc-json.js
+      - name: Test Report
+        uses: dorny/test-reporter@v2.5.0
+        if: ${{ !cancelled() }}
+        with:
+          name: UI Tests
+          path: reports/ui-test-results.json
+          reporter: mocha-json
       - name: Store Integration Tests VS Code Logs
         uses: actions/upload-artifact@v6
         if: failure()

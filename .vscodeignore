@@ -21,3 +21,4 @@ uitest-resources
 *test*
 it-tests/**
 .github/**
+reports/**
