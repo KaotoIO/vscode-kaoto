@@ -26,13 +26,17 @@ export class CamelKubernetesJBang extends CamelJBang {
 		return await super.export(uri, gav, runtime, outputPath, cwd, true);
 	}
 
-	public async run(filePattern: string, cwd?: string): Promise<ShellExecution> {
+	public async run(filePattern: string, cwd?: string, port?: number, clusterType?: string): Promise<ShellExecution> {
 		const shellExecOptions: ShellExecutionOptions = {
 			cwd: cwd,
 		};
+		const args = [...this.defaultJbangArgs, 'kubernetes', 'run', filePattern, this.getCamelVersion(), ...this.getKubernetesRunArguments()];
+		if (clusterType && clusterType !== 'Ask') {
+			args.push(`--cluster-type=${clusterType.toLowerCase()}`);
+		}
 		return new ShellExecution(
 			this.jbang,
-			[...this.defaultJbangArgs, 'kubernetes', 'run', filePattern, this.getCamelVersion(), ...this.getKubernetesRunArguments()].filter(function (arg) {
+			args.filter(function (arg) {
 				return arg !== undefined && arg !== null && arg !== ''; // remove ALL empty values ("", null, undefined and 0)
 			}), // remove ALL empty values ("", null, undefined and 0)
 			shellExecOptions,
