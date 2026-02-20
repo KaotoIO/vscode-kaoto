@@ -152,7 +152,7 @@ describe('Maven dependency update pom.xml', function () {
 					return (await settings.findSetting('On Save', 'Kaoto', 'Maven', 'Dependencies Update')) as CheckboxSetting;
 				},
 				5_000,
-				'Looking for "Kaoto > Maven > Dependencis Update: On Save" checkbox.',
+				'Looking for "Kaoto > Maven > Dependencies Update: On Save" checkbox.',
 			);
 			await checkboxSetting.setValue(false);
 			await driver.sleep(1_000); // stabilize tests which are sometimes failing on macOS CI

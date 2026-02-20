@@ -1,0 +1,51 @@
+name: Setup Tools
+description: Sets up Node.js, Java, and optionally JBang
+
+inputs:
+  node-version:
+    description: Node.js version
+    required: false
+    default: "22"
+  java-version:
+    description: Java version
+    required: false
+    default: "21"
+  cache:
+    description: "Package manager to cache (e.g. 'yarn'). Leave empty to skip caching."
+    required: false
+    default: ""
+  install-jbang:
+    description: Whether to install JBang
+    required: false
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v6
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: ${{ inputs.cache }}
+    - uses: actions/setup-java@v5
+      with:
+        distribution: temurin
+        java-version: ${{ inputs.java-version }}
+    - name: Setup JBang
+      if: ${{ inputs.install-jbang == 'true' }}
+      uses: jbangdev/setup-jbang@v0.1.1
+    - name: Setup JBang properties
+      if: ${{ inputs.install-jbang == 'true' }}
+      shell: bash
+      run: jbang properties@jbangdev
+    - name: Add Camel Trusted Source to JBang
+      if: ${{ inputs.install-jbang == 'true' }}
+      shell: bash
+      run: jbang trust add https://github.com/apache/camel/
+    - name: Add Kubernetes plugin to Camel JBang
+      if: ${{ inputs.install-jbang == 'true' }}
+      shell: bash
+      run: jbang camel@apache/camel plugin add kubernetes
+    - name: Add Test plugin to Camel JBang
+      if: ${{ inputs.install-jbang == 'true' }}
+      shell: bash
+      run: jbang camel@apache/camel plugin add test

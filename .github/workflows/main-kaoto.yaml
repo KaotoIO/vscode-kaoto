@@ -26,13 +26,7 @@ jobs:
         with:
           path: kaoto
           repository: KaotoIO/kaoto
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-      - uses: actions/setup-java@v5
-        with:
-          distribution: "temurin"
-          java-version: "21"
+      - uses: ./vscode-kaoto/.github/actions/setup-tools
       - name: Kaoto build
         working-directory: kaoto
         run: |
@@ -44,10 +38,6 @@ jobs:
       - name: yarn build:prod
         working-directory: vscode-kaoto
         run: yarn build:prod
-      - name: Install JBang
-        run: |
-          curl -Ls https://sh.jbang.dev | bash -s - app setup
-          echo "$HOME/.jbang/bin" >> $GITHUB_PATH
       - name: Allow unprivileged user namespace
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Run Unit tests
@@ -60,7 +50,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: vsix-from-main-branch-of-kaoto
-          path: "vscode-kaoto/*.vsix"
+          path: vscode-kaoto/*.vsix
       - name: Store Unit Tests VS Code Logs
         uses: actions/upload-artifact@v6
         if: failure()
@@ -68,80 +58,10 @@ jobs:
           name: ubuntu-unit-test-logs
           path: vscode-kaoto/.vscode-test/user-data/logs/*
 
-  test-integration-ubuntu:
+  integration-tests:
     needs: build
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-
-    env:
-      CODE_VERSION: max
-      TEST_RESOURCES: test-resources
-
-    steps:
-      - name: Checkout vscode-kaoto
-        uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-      - uses: actions/setup-java@v5
-        with:
-          distribution: "temurin"
-          java-version: "21"
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.7.0
-      - name: Start Minikube
-        uses: medyagh/setup-minikube@v0.0.21
-        with:
-          driver: docker
-          addons: registry,registry-aliases
-          container-runtime: docker
-          insecure-registry: "10.0.0.0/24"
-      - name: Set Minikube ENV
-        run: |
-          eval $(minikube -p minikube docker-env)
-          echo "INSTALL_REGISTRY=$(kubectl -n kube-system get service registry -o jsonpath='{.spec.clusterIP}')" >> $GITHUB_ENV
-          echo $INSTALL_REGISTRY
-      - name: Install JBang
-        run: |
-          curl -Ls https://sh.jbang.dev | bash -s - app setup
-          echo "$HOME/.jbang/bin" >> $GITHUB_PATH
-      - name: Add Camel Trusted Source to JBang
-        run: jbang trust add https://github.com/apache/camel/
-      - name: Add Kubernetes plugin to Camel JBang
-        run: jbang camel@apache/camel plugin add kubernetes
-      - name: Download VSIX artifact
-        uses: actions/download-artifact@v7
-        with:
-          name: vsix-from-main-branch-of-kaoto
-      - name: Install test dependencies
-        run: yarn install --mode=skip-build
-      - name: Allow unprivileged user namespace
-        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-      - name: Run Integration Tests
-        uses: nick-fields/retry@v3.0.2
-        with:
-          timeout_minutes: 30
-          retry_wait_seconds: 30
-          max_attempts: 2
-          command: |
-            eval $(minikube -p minikube docker-env)
-            xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube --mocha_config .mocharc-json.js
-      - name: Test Report
-        uses: dorny/test-reporter@v2.5.0
-        if: ${{ !cancelled() }}
-        with:
-          name: UI Tests
-          path: reports/ui-test-results.json
-          reporter: mocha-json
-      - name: Store Integration Tests VS Code Logs
-        uses: actions/upload-artifact@v6
-        if: failure()
-        with:
-          name: vscode-logs-ubuntu
-          path: test-resources/settings/logs
-      - name: Store Integration Tests VS Code screenshots
-        uses: actions/upload-artifact@v6
-        if: failure()
-        with:
-          name: ui-test-screenshots-ubuntu
-          path: test-resources/screenshots
+    uses: ./.github/workflows/_integration-tests.yaml
+    with:
+      vsix-artifact-name: vsix-from-main-branch-of-kaoto
+      run-macos: false
+      run-windows: false
