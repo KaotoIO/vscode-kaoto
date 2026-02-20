@@ -1,0 +1,28 @@
+name: Setup Minikube
+description: Sets up QEMU (optional) and Minikube with registry
+
+inputs:
+  enable-qemu:
+    description: Whether to set up QEMU before Minikube
+    required: false
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - name: Set up QEMU
+      if: ${{ inputs.enable-qemu == 'true' }}
+      uses: docker/setup-qemu-action@v3.7.0
+    - name: Start Minikube
+      uses: medyagh/setup-minikube@v0.0.21
+      with:
+        driver: docker
+        addons: registry,registry-aliases
+        container-runtime: docker
+        insecure-registry: "10.0.0.0/24"
+    - name: Set Minikube ENV
+      shell: bash
+      run: |
+        eval $(minikube -p minikube docker-env)
+        echo "INSTALL_REGISTRY=$(kubectl -n kube-system get service registry -o jsonpath='{.spec.clusterIP}')" >> $GITHUB_ENV
+        echo $INSTALL_REGISTRY
