@@ -11,5 +11,6 @@
     "container.image-push=true",
     "--trait",
     "container.image-pull-policy=IfNotPresent"
-  ]
+  ],
+  "kaoto.deploy.clusterType": "Minikube"
 }

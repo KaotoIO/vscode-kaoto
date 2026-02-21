@@ -812,6 +812,21 @@
             "scope": "window",
             "order": 3
           },
+          "kaoto.deploy.clusterType": {
+            "type": "string",
+            "enum": [
+              "Ask",
+              "Kubernetes",
+              "OpenShift",
+              "Knative",
+              "Minikube",
+              "Kind"
+            ],
+            "default": "Ask",
+            "markdownDescription": "Specifies the cluster type for deployment. If set to 'Ask', you will be prompted to select a cluster type for each deployment.",
+            "scope": "window",
+            "order": 4
+          },
           "kaoto.integrations.files.regexp": {
             "type": "array",
             "items": {

@@ -490,6 +490,23 @@ export class ExtensionContextHandler {
 		);
 	}
 
+	private async getClusterType(): Promise<string | undefined> {
+		const clusterTypeSetting = 'kaoto.deployment.clusterType';
+		let clusterType = vscode.workspace.getConfiguration().get(clusterTypeSetting) as string;
+
+		if (!clusterType) {
+			const selected = await vscode.window.showQuickPick(['OpenShift', 'Kubernetes'], {
+				placeHolder: 'Select target cluster type',
+			});
+			if (selected) {
+				clusterType = selected;
+				await vscode.workspace.getConfiguration().update(clusterTypeSetting, selected, vscode.ConfigurationTarget.Global);
+			}
+		}
+
+		return clusterType;
+	}
+
 	public registerDeploymentsIntegrationCommands() {
 		const DEPLOYMENTS_INTEGRATION_STOP_COMMAND_ID: string = 'kaoto.deployments.stop';
 		const DEPLOYMENTS_INTEGRATION_LOGS_COMMAND_ID: string = 'kaoto.deployments.logs';
