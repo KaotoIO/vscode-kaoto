@@ -1,0 +1,23 @@
+name: Upload Test Artifacts
+description: Uploads VS Code logs and screenshots on test failure
+
+inputs:
+  os-name:
+    description: OS name used for artifact naming (e.g. ubuntu, macos, windows)
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Store Integration Tests VS Code Logs
+      uses: actions/upload-artifact@v6
+      if: ${{ always() }}
+      with:
+        name: vscode-logs-${{ inputs.os-name }}
+        path: test-resources/settings/logs
+    - name: Store Integration Tests VS Code screenshots
+      uses: actions/upload-artifact@v6
+      if: ${{ always() }}
+      with:
+        name: ui-test-screenshots-${{ inputs.os-name }}
+        path: test-resources/screenshots
