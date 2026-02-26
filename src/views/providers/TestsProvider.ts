@@ -170,15 +170,33 @@ export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
 	 * @param result The test result
 	 */
 	setTestResult(filePath: string, result: TestResult): void {
-		// Store the result persistently
 		this.testResults.set(filePath, result);
+		this.updateResultsContext();
 
 		const testItem = this.testItemCache.get(filePath);
 		if (testItem) {
 			testItem.setResult(result);
-			// Refresh only this specific item immediately (no debouncing)
 			this.refreshImmediate(testItem);
 		}
+	}
+
+	/**
+	 * Clear all stored test results and reset every cached Test item to default state
+	 */
+	clearAllResults(): void {
+		this.testResults.clear();
+		this.updateResultsContext();
+
+		for (const testItem of this.testItemCache.values()) {
+			testItem.setResult('none');
+		}
+
+		this.refresh();
+	}
+
+	private updateResultsContext(): void {
+		const hasResults = Array.from(this.testResults.values()).some((r) => r !== 'none');
+		commands.executeCommand('setContext', 'kaoto.testResultsExist', hasResults);
 	}
 
 	/**

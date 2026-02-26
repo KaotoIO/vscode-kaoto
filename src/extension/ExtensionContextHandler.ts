@@ -265,7 +265,8 @@ export class ExtensionContextHandler {
 			}
 		});
 		const refreshCommand = vscode.commands.registerCommand('kaoto.tests.refresh', () => this.testsProvider.refresh());
-		this.context.subscriptions.push(testsTreeView, dispose, refreshCommand, refreshOnVisibilityChange);
+		const clearResultsCommand = vscode.commands.registerCommand('kaoto.tests.clearResults', () => this.testsProvider.clearAllResults());
+		this.context.subscriptions.push(testsTreeView, dispose, refreshCommand, clearResultsCommand, refreshOnVisibilityChange);
 
 		this.registerViewItemContextMenu(this.testsProvider);
 	}
