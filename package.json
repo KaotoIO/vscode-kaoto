@@ -463,6 +463,12 @@
         "title": "Run: Folder",
         "category": "Kaoto",
         "icon": "$(run)"
+      },
+      {
+        "command": "kaoto.tests.clearResults",
+        "title": "Clear Results",
+        "category": "Kaoto",
+        "icon": "$(clear-all)"
       }
     ],
     "keybindings": [
@@ -626,6 +632,10 @@
         {
           "command": "kaoto.tests.run.folder",
           "when": "false"
+        },
+        {
+          "command": "kaoto.tests.clearResults",
+          "when": "false"
         }
       ],
       "editor/title": [
@@ -680,13 +690,18 @@
         },
         {
           "command": "kaoto.tests.refresh",
-          "group": "navigation",
+          "group": "navigation@3",
           "when": "view == kaoto.tests"
         },
         {
           "command": "kaoto.citrus.jbang.init.test",
-          "group": "navigation",
+          "group": "navigation@1",
           "when": "view == kaoto.tests && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 0"
+        },
+        {
+          "command": "kaoto.tests.clearResults",
+          "group": "navigation@2",
+          "when": "view == kaoto.tests && kaoto.testResultsExist"
         }
       ],
       "view/item/context": [
