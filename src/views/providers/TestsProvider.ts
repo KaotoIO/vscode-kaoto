@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { commands, RelativePattern, TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
 import { AbstractFolderTreeProvider } from './AbstractFolderTreeProvider';
+import { commands, Disposable, RelativePattern, TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
 import { Test } from '../testTreeItems/Test';
 import { TestResult } from '../../types/testTreeItemType';
 import { TestFolder } from '../testTreeItems/TestFolder';
 import { basename, dirname, join } from 'path';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
+import { KAOTO_TESTS_FILES_REGEXP_SETTING_ID } from '../../helpers/helpers';
 
 export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
 	public readonly VIEW_ITEM_SHOW_SOURCE_COMMAND_ID: string = 'kaoto.tests.showSource';
 	public readonly VIEW_ITEM_DELETE_COMMAND_ID: string = 'kaoto.tests.delete';
 
-	private static readonly FILE_PATTERN = '{**/*.test.yaml,**/*.citrus.yaml,**/jbang.properties}';
-	private static readonly TEST_FILE_PATTERN = '{**/*.test.yaml,**/*.citrus.yaml}';
+	private static readonly TEST_FILE_PATTERN = '{**/*.test.yaml,**/*.citrus.yaml,**/*.it.yaml}';
+	private static readonly SCHEDULE_REFRESH_MS = 100;
 
 	/** Cache of file paths to Test items for efficient lookup and single-item refresh */
 	private readonly testItemCache: Map<string, Test> = new Map();
@@ -37,19 +38,31 @@ export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
 	/** Paths awaiting a batched full refresh (items not yet in cache) */
 	private readonly pendingRefreshPaths = new Set<string>();
 	private pendingRefreshTimer?: NodeJS.Timeout;
-	private static readonly SCHEDULE_REFRESH_MS = 100;
+	private configChangeDisposable?: Disposable;
 
 	constructor() {
 		super();
 		this.initFileWatcher();
+		this.onConfigurationChange();
 	}
 
 	protected getFilePattern(): string {
-		return TestsProvider.FILE_PATTERN;
+		const filesRegexp: string[] = workspace.getConfiguration().get(KAOTO_TESTS_FILES_REGEXP_SETTING_ID) as string[];
+		return '{' + filesRegexp.map((r) => '**/' + r).join(',') + '}';
 	}
 
 	protected getExcludePattern(): string {
 		return TestsProvider.EXCLUDE_PATTERN;
+	}
+
+	protected onConfigurationChange(): void {
+		this.configChangeDisposable = workspace.onDidChangeConfiguration((event) => {
+			if (event.affectsConfiguration(KAOTO_TESTS_FILES_REGEXP_SETTING_ID)) {
+				this.fileWatcher?.dispose();
+				this.initFileWatcher();
+				this.refresh();
+			}
+		});
 	}
 
 	protected createFolderItem(name: string, folderUri: Uri, isUnderMavenRoot: boolean, isMavenRoot: boolean, isWorkspaceRoot: boolean = false): TestFolder {
@@ -102,6 +115,19 @@ export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
 		this.testItemCache.clear();
 		this.invalidateCache();
 		super.refresh();
+	}
+
+	/**
+	 * Dispose of the provider and all associated resources
+	 */
+	override dispose(): void {
+		if (this.pendingRefreshTimer) {
+			clearTimeout(this.pendingRefreshTimer);
+			this.pendingRefreshTimer = undefined;
+			this.pendingRefreshPaths.clear();
+		}
+		this.configChangeDisposable?.dispose();
+		super.dispose();
 	}
 
 	/**

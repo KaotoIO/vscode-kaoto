@@ -897,6 +897,21 @@
             "scope": "window",
             "order": 4
           },
+          "kaoto.tests.files.regexp": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "additionalProperties": false,
+            "default": [
+              "*.test.yaml",
+              "*.citrus.yaml",
+              "jbang.properties"
+            ],
+            "markdownDescription": "Regular expression to filter files to be displayed in `Kaoto > Tests` view.",
+            "scope": "window",
+            "order": 5
+          },
           "redhat.telemetry.enabled": {
             "type": "boolean",
             "default": null,
@@ -905,7 +920,7 @@
               "telemetry"
             ],
             "scope": "window",
-            "order": 5
+            "order": 6
           }
         }
       },
