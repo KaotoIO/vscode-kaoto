@@ -7,6 +7,7 @@
   - list existing Citrus tests in a current workspace
   - create a new Citrus Test file button
   - run single test or all tests in a folder
+  - test files regex can be configured through settings
 
 # 2.9.0
 
