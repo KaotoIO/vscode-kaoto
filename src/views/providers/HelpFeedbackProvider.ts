@@ -25,7 +25,7 @@ export class HelpFeedbackProvider implements TreeDataProvider<HelpFeedbackItem> 
 		{ label: 'Kaoto Documentation', icon: new ThemeIcon('book'), url: 'https://kaoto.io/docs/manual/' },
 		{ label: 'Enterprise Integration Explorer', icon: 'integration.svg', url: 'https://camel.solutionpatterns.io/#/patterns' },
 		{ label: 'Kaoto Examples', icon: new ThemeIcon('github'), url: 'https://github.com/KaotoIO/kaoto-examples' },
-		{ label: 'Citrus Samples', icon: 'citrus-logo.png', url: 'https://github.com/citrusframework/citrus-samples' },
+		{ label: 'Citrus Examples', icon: 'citrus-logo.png', url: 'https://github.com/citrusframework/citrus-samples' },
 		{ label: 'Feedback', icon: new ThemeIcon('comment'), url: 'https://github.com/KaotoIO/kaoto/issues/new/choose' },
 		{ label: 'Hawtio', icon: new ThemeIcon('flame'), url: 'https://hawt.io/docs/get-started.html' },
 		{
