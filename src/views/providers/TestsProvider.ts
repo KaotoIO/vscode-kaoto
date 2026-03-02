@@ -26,7 +26,7 @@ export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
 	public readonly VIEW_ITEM_SHOW_SOURCE_COMMAND_ID: string = 'kaoto.tests.showSource';
 	public readonly VIEW_ITEM_DELETE_COMMAND_ID: string = 'kaoto.tests.delete';
 
-	private static readonly TEST_FILE_PATTERN = '{**/*.test.yaml,**/*.citrus.yaml,**/*.it.yaml}';
+	private static readonly TEST_FILE_PATTERN = '{**/*.citrus.yaml,**/*.citrus.test.yaml,**/*.citrus.it.yaml,**/*.citrus-test.yaml,**/*.citrus-it.yaml}';
 	private static readonly SCHEDULE_REFRESH_MS = 100;
 
 	/** Cache of file paths to Test items for efficient lookup and single-item refresh */
@@ -233,7 +233,7 @@ export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
 	async readTestResult(testFilePath: string): Promise<TestResult> {
 		try {
 			const testDir = dirname(testFilePath);
-			const fileName = basename(testFilePath, '.yaml'); // e.g., "name.test.yaml" -> "name.test" or "name.citrus.yaml" -> "name.citrus"
+			const fileName = basename(testFilePath, '.yaml');
 
 			const resultFilePath = join(testDir, '.citrus-jbang', 'citrus-reports', `${fileName}-flow.json`);
 

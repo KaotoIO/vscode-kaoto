@@ -99,7 +99,7 @@ export class NewCamelTestCommand extends AbstractNewCamelRouteCommand {
 	protected getDSL(): CamelRouteDSL {
 		return {
 			language: 'YAML',
-			extension: 'test.yaml',
+			extension: 'citrus.yaml',
 			placeHolder: 'sample-test',
 		};
 	}

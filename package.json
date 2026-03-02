@@ -904,8 +904,11 @@
             },
             "additionalProperties": false,
             "default": [
-              "*.test.yaml",
               "*.citrus.yaml",
+              "*.citrus.test.yaml",
+              "*.citrus.it.yaml",
+              "*.citrus-test.yaml",
+              "*.citrus-it.yaml",
               "jbang.properties"
             ],
             "markdownDescription": "Regular expression to filter files to be displayed in `Kaoto > Tests` view.",

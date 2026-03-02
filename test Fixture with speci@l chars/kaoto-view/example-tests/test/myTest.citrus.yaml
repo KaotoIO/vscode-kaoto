@@ -1,4 +1,4 @@
-name: myFolderCitrusTest.citrus
+name: myTest.citrus
 author: Citrus
 status: FINAL
 description: Sample test in YAML

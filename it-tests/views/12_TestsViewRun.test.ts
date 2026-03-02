@@ -62,13 +62,13 @@ describe('Tests View', function () {
 			await new EditorView().closeAllEditors();
 		});
 
-		it(`check 'myTest.test.yaml' is running`, async function () {
-			const item = await getTreeItem(driver, testsSection, 'myTest.test.yaml');
+		it(`check 'myTest.citrus.yaml' is running`, async function () {
+			const item = await getTreeItem(driver, testsSection, 'myTest.citrus.yaml');
 			expect(item).to.not.be.undefined;
 			const button = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, 'Run');
 			await button?.click();
 
-			await waitUntilTerminalHasText(driver, ['myTest.test-flow.json', 'Tests finished'], 4_000, 180_000);
+			await waitUntilTerminalHasText(driver, ['myTest.citrus-flow.json', 'Tests finished'], 4_000, 180_000);
 		});
 	});
 
@@ -86,7 +86,7 @@ describe('Tests View', function () {
 			const button = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, 'Run: Folder');
 			await button?.click();
 
-			await waitUntilTerminalHasText(driver, ['myFolderCitrusTest.citrus-flow.json', 'myFolderTest.test-flow.json', 'Tests finished'], 4_000, 180_000);
+			await waitUntilTerminalHasText(driver, ['myFolderTest.citrus-flow.json', 'myFolderTest.citrus.test-flow.json', 'Tests finished'], 4_000, 180_000);
 		});
 	});
 });

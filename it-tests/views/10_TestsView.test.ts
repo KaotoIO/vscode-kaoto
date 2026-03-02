@@ -29,6 +29,10 @@ describe('Tests View', function () {
 
 	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars', 'kaoto-view', 'example-tests');
 
+	const CITRUS_TEST_FILE_SUFFIXES: string[] = ['.citrus.yaml', '.citrus.test.yaml', '.citrus.it.yaml', '.citrus-test.yaml', '.citrus-it.yaml'];
+
+	const CITRUS_TEST_FILE_LABELS: string[] = CITRUS_TEST_FILE_SUFFIXES.map((suffix) => `myTest${suffix}`);
+
 	let kaotoViewContainer: ViewControl | undefined;
 	let testsSection: ViewSection | undefined;
 	let items: TreeItem[] | undefined;
@@ -72,20 +76,7 @@ describe('Tests View', function () {
 
 	it('items are displayed', async function () {
 		expect(labels).to.not.be.empty;
-	});
-
-	it('camel tests (*.test.yaml) loaded', async function () {
-		const tests = labels.filter((label) => label.includes('.test.yaml'));
-
-		expect(tests).to.not.be.empty;
-		expect(tests).to.include.members(['myTest.test.yaml']);
-	});
-
-	it('citrus tests (*.citrus.yaml) loaded', async function () {
-		const tests = labels.filter((label) => label.includes('.citrus.yaml'));
-
-		expect(tests).to.not.be.empty;
-		expect(tests).to.include.members(['myCitrusTest.citrus.yaml']);
+		expect(labels).to.include.members(CITRUS_TEST_FILE_LABELS);
 	});
 
 	it('jbang.properties loaded', async function () {
