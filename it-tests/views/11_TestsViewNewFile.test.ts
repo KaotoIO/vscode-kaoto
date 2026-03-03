@@ -62,7 +62,7 @@ describe('Tests View', function () {
 	});
 
 	describe(`Click 'New Citrus Test...' button`, function () {
-		const CITRUS_TEST_FILE: string = 'newTest.test.yaml';
+		const CITRUS_TEST_FILE: string = 'newTest.citrus.yaml';
 
 		let input: InputBox;
 
