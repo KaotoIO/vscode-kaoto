@@ -547,9 +547,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/forms@npm:^1.5.9":
-  version: 1.5.9
-  resolution: "@kaoto/forms@npm:1.5.9"
+"@kaoto/forms@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "@kaoto/forms@npm:1.6.0"
   dependencies:
     ajv: "npm:^8.12.0"
     clsx: "npm:^2.1.0"
@@ -561,17 +561,17 @@ __metadata:
     "@patternfly/react-icons": 6.4.0
     react: ^18.3.1
     react-dom: ^18.3.1
-  checksum: 10/ff3234f89153d84c6b6a71da2e594d185049a09769e4c381f4ab121da12b75fc556cf80e8b3bccb6065cb35cd3eabab78be26419fede272bd8a53f0a25c718fb
+  checksum: 10/8c8b30daca3bb4b59b314805eb2c5ddb7835119370eb9e4e616bfb8da8470e930c003cd25a610bb223a3b5c48ecc9259dffc8d11a810b249ad2b77cdeac0c175
   languageName: node
   linkType: hard
 
-"@kaoto/kaoto@npm:2.9.0":
-  version: 2.9.0
-  resolution: "@kaoto/kaoto@npm:2.9.0"
+"@kaoto/kaoto@npm:2.10.0-RC1":
+  version: 2.10.0-RC1
+  resolution: "@kaoto/kaoto@npm:2.10.0-RC1"
   dependencies:
     "@carbon/icons-react": "npm:^11.67.0"
     "@dnd-kit/core": "npm:^6.1.0"
-    "@kaoto/forms": "npm:^1.5.9"
+    "@kaoto/forms": "npm:^1.6.0"
     "@kie-tools-core/editor": "npm:^10.0.0"
     "@kie-tools-core/notifications": "npm:^10.0.0"
     "@visx/shape": "npm:^3.12.0"
@@ -596,7 +596,7 @@ __metadata:
     zundo: "npm:^2.3.0"
     zustand: "npm:^4.3.9"
   peerDependencies:
-    "@kaoto/camel-catalog": ^0.2.2 || ^0.3.0
+    "@kaoto/camel-catalog": ^0.4.0
     "@patternfly/patternfly": ^6.4.0
     "@patternfly/react-code-editor": ^6.4.0
     "@patternfly/react-core": ^6.4.0
@@ -604,10 +604,10 @@ __metadata:
     "@patternfly/react-table": ^6.4.0
     "@patternfly/react-topology": ^6.4.0
     monaco-yaml: ^5.1.1
-    react: ^18.3.1
-    react-dom: ^18.3.1
+    react: ^19.2.1
+    react-dom: ^19.2.1
     react-monaco-editor: ^0.56.0
-  checksum: 10/9c903db0056b3b3ee12660707428fe1f68bfa3378274e1317c5bdf09e1862d2c9f89ea2cc19d757db8e350a3b6c520ad4138f9fae9ff999871a816e471f7b2ba
+  checksum: 10/25a2299a509695baeca444eff8f56aeea9d770d5dc3bc2a1ce50da7599616aac6ebd9dfa9a08e0bd6ad1fe58e69d2d18d77c7ee26a32d880233e4cc3569d1116
   languageName: node
   linkType: hard
 
@@ -8287,7 +8287,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loose-envify@npm:^1.0.0, loose-envify@npm:^1.1.0, loose-envify@npm:^1.4.0":
+"loose-envify@npm:^1.0.0, loose-envify@npm:^1.4.0":
   version: 1.4.0
   resolution: "loose-envify@npm:1.4.0"
   dependencies:
@@ -10644,15 +10644,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:18.3.1":
-  version: 18.3.1
-  resolution: "react-dom@npm:18.3.1"
+"react-dom@npm:19.2.1":
+  version: 19.2.1
+  resolution: "react-dom@npm:19.2.1"
   dependencies:
-    loose-envify: "npm:^1.1.0"
-    scheduler: "npm:^0.23.2"
+    scheduler: "npm:^0.27.0"
   peerDependencies:
-    react: ^18.3.1
-  checksum: 10/3f4b73a3aa083091173b29812b10394dd06f4ac06aff410b74702cfb3aa29d7b0ced208aab92d5272919b612e5cda21aeb1d54191848cf6e46e9e354f3541f81
+    react: ^19.2.1
+  checksum: 10/cceea7104bd3ad52e2f6377f47c4b346244c1263917fd95745e31647ff8ab23b16f719c2bfc8bcf2a6c802ecb9c9e81f08b09e3447e1f49bc27368283ed299ba
   languageName: node
   linkType: hard
 
@@ -10749,12 +10748,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:18.3.1":
-  version: 18.3.1
-  resolution: "react@npm:18.3.1"
-  dependencies:
-    loose-envify: "npm:^1.1.0"
-  checksum: 10/261137d3f3993eaa2368a83110466fc0e558bc2c7f7ae7ca52d94f03aac945f45146bd85e5f481044db1758a1dbb57879e2fcdd33924e2dde1bdc550ce73f7bf
+"react@npm:19.2.1":
+  version: 19.2.1
+  resolution: "react@npm:19.2.1"
+  checksum: 10/7c7ab0f40b98e87e1466bea8c28564c5f3c384506cbda93d24788d32b40bf6059c991687c7e90a396b11f09223a779a81b1188af9acd839aaa0a672987c13107
   languageName: node
   linkType: hard
 
@@ -11236,12 +11233,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"scheduler@npm:^0.23.2":
-  version: 0.23.2
-  resolution: "scheduler@npm:0.23.2"
-  dependencies:
-    loose-envify: "npm:^1.1.0"
-  checksum: 10/e8d68b89d18d5b028223edf090092846868a765a591944760942b77ea1f69b17235f7e956696efbb62c8130ab90af7e0949bfb8eba7896335507317236966bc9
+"scheduler@npm:^0.27.0":
+  version: 0.27.0
+  resolution: "scheduler@npm:0.27.0"
+  checksum: 10/eab3c3a8373195173e59c147224fc30dabe6dd453f248f5e610e8458512a5a2ee3a06465dc400ebfe6d35c9f5b7f3bb6b2e41c88c86fd177c25a73e7286a1e06
   languageName: node
   linkType: hard
 
@@ -13015,7 +13010,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto/kaoto": "npm:2.9.0"
+    "@kaoto/kaoto": "npm:2.10.0-RC1"
     "@kie-tools-core/backend": "npm:10.0.0"
     "@kie-tools-core/editor": "npm:10.0.0"
     "@kie-tools-core/i18n": "npm:10.0.0"
@@ -13064,8 +13059,8 @@ __metadata:
     os-browserify: "npm:^0.3.0"
     path-browserify: "npm:^1.0.1"
     prettier: "npm:3.8.1"
-    react: "npm:18.3.1"
-    react-dom: "npm:18.3.1"
+    react: "npm:19.2.1"
+    react-dom: "npm:19.2.1"
     react-monaco-editor: "npm:0.56.2"
     rimraf: "npm:^6.1.3"
     sass: "npm:^1.97.3"
