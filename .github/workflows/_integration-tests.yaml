@@ -91,7 +91,7 @@ jobs:
         if: ${{ inputs.install-yarn }}
         run: npm install -g yarn
       - name: Download VSIX artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.vsix-artifact-name }}
       - name: Install test dependencies
@@ -132,7 +132,7 @@ jobs:
         if: ${{ inputs.install-yarn }}
         run: npm install -g yarn
       - name: Download VSIX artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.vsix-artifact-name }}
       - name: Install test dependencies
@@ -170,7 +170,7 @@ jobs:
         if: ${{ inputs.install-yarn }}
         run: npm install -g yarn
       - name: Download VSIX artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.vsix-artifact-name }}
       - name: Install test dependencies
