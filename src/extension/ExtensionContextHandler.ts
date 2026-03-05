@@ -59,6 +59,7 @@ import { TestFolder } from '../views/testTreeItems/TestFolder';
 import { CamelJBangTask } from '../tasks/CamelJBangTask';
 import { CamelTestRunJBangTask } from '../tasks/CamelTestRunJBangTask';
 import { Test } from '../views/testTreeItems/Test';
+import { OpenApiProvider } from '../views/providers/OpenApiProvider';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -66,6 +67,7 @@ export class ExtensionContextHandler {
 
 	protected testsProvider: TestsProvider;
 	protected deploymentsProvider: DeploymentsProvider;
+	protected openApiProvider: OpenApiProvider;
 
 	constructor(
 		context: vscode.ExtensionContext,
@@ -355,6 +357,33 @@ export class ExtensionContextHandler {
 		});
 
 		this.context.subscriptions.push(deploymentsTreeView, deploymentsDispose, deploymentsRefreshCommand, refreshVisibilityChange);
+	}
+
+	public registerOpenApiView() {
+		this.openApiProvider = new OpenApiProvider();
+		const openApiTreeView = vscode.window.createTreeView('kaoto.openapi', {
+			treeDataProvider: this.openApiProvider,
+			showCollapseAll: true,
+		});
+		const dispose = {
+			dispose: () => this.openApiProvider.dispose(),
+		};
+		const refreshCommand = vscode.commands.registerCommand('kaoto.openapi.refresh', () => this.openApiProvider.refresh());
+		this.context.subscriptions.push(openApiTreeView, dispose, refreshCommand);
+
+		this.registerViewItemContextMenu(this.openApiProvider);
+	}
+
+	public registerOpenApiImportCommand() {
+		const OPENAPI_IMPORT_COMMAND_ID: string = 'kaoto.openapi.import';
+
+		const importCommand = vscode.commands.registerCommand(OPENAPI_IMPORT_COMMAND_ID, async () => {
+			// TODO: Implement OpenAPI import
+			vscode.window.showInformationMessage('OpenAPI import command not implemented');
+			await this.sendCommandTrackingEvent(OPENAPI_IMPORT_COMMAND_ID);
+		});
+
+		this.context.subscriptions.push(importCommand);
 	}
 
 	private registerIntegrationsItemsContextMenu(provider: IntegrationsProvider) {

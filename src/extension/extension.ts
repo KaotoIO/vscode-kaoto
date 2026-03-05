@@ -80,12 +80,13 @@ export async function activate(context: vscode.ExtensionContext) {
 	contextHandler.registerOpenWithKaoto();
 
 	/*
-	 * register all views (Integrations, Deployments, Tests, Help & Feedback) first to avoid race conditions
+	 * register all views (Integrations, Deployments, Tests, Help & Feedback, OpenAPI) first to avoid race conditions
 	 */
 	contextHandler.registerHelpAndFeedbackView();
 	contextHandler.registerIntegrationsView();
 	contextHandler.registerDeploymentsView(portManager);
 	contextHandler.registerTestsView();
+	contextHandler.registerOpenApiView();
 
 	/*
 	 * register commands for 'Integrations' view
@@ -102,6 +103,11 @@ export async function activate(context: vscode.ExtensionContext) {
 	 */
 	contextHandler.registerDeploymentsIntegrationCommands(); // Stop and Logs view item action buttons
 	contextHandler.registerDeploymentsRouteCommands(); // Stop/Start/Resume/Suspend route level buttons
+
+	/*
+	 * register commands for 'OpenAPI' view
+	 */
+	contextHandler.registerOpenApiImportCommand();
 
 	/*
 	 * register commands for 'Tests' view
