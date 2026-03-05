@@ -48,6 +48,10 @@ export const KAOTO_TESTS_FILES_REGEXP_SETTING_ID: string = 'kaoto.tests.files.re
 
 export const KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID: string = 'kaoto.openapi.files.regexp';
 
+export const KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID: string = 'kaoto.restConfiguration.apicurioRegistryUrl';
+
+export const KAOTO_REST_CUSTOM_MEDIA_TYPES_SETTING_ID: string = 'kaoto.restConfiguration.customMediaTypes';
+
 export const CAMEL_TRUSTED_SOURCE_URL: string = 'https://github.com/apache/camel/';
 
 export const CITRUS_TRUSTED_SOURCE_URL: string = 'https://github.com/citrusframework/citrus/';
