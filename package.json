@@ -1134,6 +1134,28 @@
             "order": 1
           }
         }
+      },
+      {
+        "id": "restConfiguration",
+        "title": "REST Configuration",
+        "properties": {
+          "kaoto.restConfiguration.apicurioRegistryUrl": {
+            "type": "string",
+            "markdownDescription": "URL to the Apicurio Registry. It is used to store and manage REST API specifications.",
+            "default": null,
+            "order": 0
+          },
+          "kaoto.restConfiguration.customMediaTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "additionalProperties": false,
+            "markdownDescription": "These values are available in Rest DSL Consumes/Produces fields. Add media type (e.g. `application/vnd.api+json`).",
+            "default": null,
+            "order": 1
+          }
+        }
       }
     ],
     "customEditors": [
