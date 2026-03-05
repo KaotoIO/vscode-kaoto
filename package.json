@@ -469,6 +469,24 @@
         "title": "Clear Results",
         "category": "Kaoto",
         "icon": "$(clear-all)"
+      },
+      {
+        "command": "kaoto.openapi.refresh",
+        "title": "Refresh",
+        "category": "Kaoto",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "kaoto.openapi.showSource",
+        "title": "Show Source",
+        "category": "Kaoto",
+        "icon": "$(code)"
+      },
+      {
+        "command": "kaoto.openapi.delete",
+        "title": "Delete",
+        "category": "Kaoto",
+        "icon": "$(trash)"
       }
     ],
     "keybindings": [
@@ -636,6 +654,14 @@
         {
           "command": "kaoto.tests.clearResults",
           "when": "false"
+        },
+        {
+          "command": "kaoto.openapi.showSource",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.openapi.delete",
+          "when": "false"
         }
       ],
       "editor/title": [
@@ -702,6 +728,11 @@
           "command": "kaoto.tests.clearResults",
           "group": "navigation@2",
           "when": "view == kaoto.tests && kaoto.testResultsExist"
+        },
+        {
+          "command": "kaoto.openapi.refresh",
+          "group": "navigation",
+          "when": "view == kaoto.openapi"
         }
       ],
       "view/item/context": [
@@ -794,6 +825,16 @@
           "command": "kaoto.tests.run.folder",
           "when": "view == kaoto.tests && viewItem == test-folder && kaoto.jbangAvailable",
           "group": "inline@1"
+        },
+        {
+          "command": "kaoto.openapi.showSource",
+          "when": "view == kaoto.openapi && viewItem == openapi",
+          "group": "navigation@1"
+        },
+        {
+          "command": "kaoto.openapi.delete",
+          "when": "view == kaoto.openapi && viewItem == openapi || viewItem == openapi-folder",
+          "group": "navigation@2"
         }
       ]
     },
@@ -915,6 +956,20 @@
             "scope": "window",
             "order": 5
           },
+          "kaoto.openapi.files.regexp": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "additionalProperties": false,
+            "default": [
+              "*openapi.yaml",
+              "*openapi.json"
+            ],
+            "markdownDescription": "Regular expression to filter files to be displayed in `Kaoto > OpenAPI` view.",
+            "scope": "window",
+            "order": 6
+          },
           "redhat.telemetry.enabled": {
             "type": "boolean",
             "default": null,
@@ -923,7 +978,7 @@
               "telemetry"
             ],
             "scope": "window",
-            "order": 6
+            "order": 7
           }
         }
       },
@@ -1102,6 +1157,13 @@
           "icon": "icons/kaoto.png",
           "initialSize": 2,
           "when": "!virtualWorkspace"
+        },
+        {
+          "id": "kaoto.openapi",
+          "name": "OpenAPI",
+          "contextualTitle": "Kaoto",
+          "icon": "icons/kaoto.png",
+          "initialSize": 2
         },
         {
           "id": "kaoto.tests",
