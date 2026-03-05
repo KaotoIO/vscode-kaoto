@@ -374,6 +374,18 @@ export class ExtensionContextHandler {
 		this.registerViewItemContextMenu(this.openApiProvider);
 	}
 
+	public registerOpenApiImportCommand() {
+		const OPENAPI_IMPORT_COMMAND_ID: string = 'kaoto.openapi.import';
+
+		const importCommand = vscode.commands.registerCommand(OPENAPI_IMPORT_COMMAND_ID, async () => {
+			// TODO: Implement OpenAPI import
+			vscode.window.showInformationMessage('OpenAPI import command not implemented');
+			await this.sendCommandTrackingEvent(OPENAPI_IMPORT_COMMAND_ID);
+		});
+
+		this.context.subscriptions.push(importCommand);
+	}
+
 	private registerIntegrationsItemsContextMenu(provider: IntegrationsProvider) {
 		const INTEGRATIONS_SHOW_SOURCE_COMMAND_ID: string = 'kaoto.integrations.showSource';
 		const INTEGRATIONS_DELETE_COMMAND_ID: string = 'kaoto.integrations.delete';

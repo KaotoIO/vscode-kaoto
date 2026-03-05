@@ -487,6 +487,12 @@
         "title": "Delete",
         "category": "Kaoto",
         "icon": "$(trash)"
+      },
+      {
+        "command": "kaoto.openapi.import",
+        "title": "Import",
+        "category": "Kaoto",
+        "icon": "$(symbol-reference)"
       }
     ],
     "keybindings": [
@@ -662,6 +668,10 @@
         {
           "command": "kaoto.openapi.delete",
           "when": "false"
+        },
+        {
+          "command": "kaoto.openapi.import",
+          "when": "false"
         }
       ],
       "editor/title": [
@@ -731,7 +741,12 @@
         },
         {
           "command": "kaoto.openapi.refresh",
-          "group": "navigation",
+          "group": "navigation@2",
+          "when": "view == kaoto.openapi"
+        },
+        {
+          "command": "kaoto.openapi.import",
+          "group": "navigation@1",
           "when": "view == kaoto.openapi"
         }
       ],

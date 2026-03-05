@@ -105,6 +105,11 @@ export async function activate(context: vscode.ExtensionContext) {
 	contextHandler.registerDeploymentsRouteCommands(); // Stop/Start/Resume/Suspend route level buttons
 
 	/*
+	 * register commands for 'OpenAPI' view
+	 */
+	contextHandler.registerOpenApiImportCommand();
+
+	/*
 	 * register commands for 'Tests' view
 	 */
 	contextHandler.registerTestsInitCommands();
