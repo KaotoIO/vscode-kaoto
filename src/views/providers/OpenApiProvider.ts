@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 import { promises as fsPromises } from 'fs';
-import { TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
+import { Disposable, TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
 import { basename, extname, normalize } from 'path';
 import YAML from 'yaml';
 import { OpenApiFile } from '../openApiTreeItems/OpenApiFile';
 import { OpenApiFolder } from '../openApiTreeItems/OpenApiFolder';
 import { AbstractFolderTreeProvider } from './AbstractFolderTreeProvider';
+import { KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID } from '../../helpers/helpers';
 
 export class OpenApiProvider extends AbstractFolderTreeProvider<OpenApiFolder> {
 	public readonly VIEW_ITEM_SHOW_SOURCE_COMMAND_ID: string = 'kaoto.openapi.showSource';
 	public readonly VIEW_ITEM_DELETE_COMMAND_ID: string = 'kaoto.openapi.delete';
-
-	private static readonly FILE_PATTERN = '**/*.{yaml,json}';
-	private static readonly OPENAPI_EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**,**/*.camel.yaml,**/target/**}';
 
 	/** Cached OpenAPI files after content-based filtering */
 	private openApiFilesCache: Uri[] | undefined;
@@ -35,21 +33,31 @@ export class OpenApiProvider extends AbstractFolderTreeProvider<OpenApiFolder> {
 	/** Parsed OpenAPI data cached during filtering to avoid re-reading in toTreeItemForFile */
 	private readonly openApiDataCache = new Map<string, { version: string }>();
 
+	private configChangeDisposable?: Disposable;
+
 	constructor() {
 		super();
 		this.initFileWatcher();
+		this.onConfigurationChange();
 	}
 
 	protected getFilePattern(): string {
-		return OpenApiProvider.FILE_PATTERN;
+		const filesRegexp: string[] = workspace.getConfiguration().get(KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID) ?? ['*openapi.yaml', '*openapi.json'];
+		return '{' + filesRegexp.map((r) => '**/' + r).join(',') + '}';
 	}
 
 	protected getExcludePattern(): string {
-		return OpenApiProvider.OPENAPI_EXCLUDE_PATTERN;
+		return AbstractFolderTreeProvider.EXCLUDE_PATTERN;
 	}
 
 	protected onConfigurationChange(): void {
-		// No configurable file patterns for OpenAPI files
+		this.configChangeDisposable = workspace.onDidChangeConfiguration((event) => {
+			if (event.affectsConfiguration(KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID)) {
+				this.fileWatcher?.dispose();
+				this.initFileWatcher();
+				this.refresh();
+			}
+		});
 	}
 
 	protected createFolderItem(name: string, folderUri: Uri, isUnderMavenRoot: boolean, isMavenRoot: boolean, isWorkspaceRoot: boolean = false): OpenApiFolder {
@@ -96,6 +104,16 @@ export class OpenApiProvider extends AbstractFolderTreeProvider<OpenApiFolder> {
 			return await this.getFolderChildren(files, element);
 		}
 		return [];
+	}
+
+	override refresh(): void {
+		this.invalidateCache();
+		super.refresh();
+	}
+
+	override dispose(): void {
+		this.configChangeDisposable?.dispose();
+		super.dispose();
 	}
 
 	protected override invalidateCache(): void {
