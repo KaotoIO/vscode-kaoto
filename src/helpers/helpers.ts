@@ -46,6 +46,8 @@ export const KAOTO_INTEGRATIONS_FILES_REGEXP_SETTING_ID: string = 'kaoto.integra
 
 export const KAOTO_TESTS_FILES_REGEXP_SETTING_ID: string = 'kaoto.tests.files.regexp';
 
+export const KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID: string = 'kaoto.openapi.files.regexp';
+
 export const CAMEL_TRUSTED_SOURCE_URL: string = 'https://github.com/apache/camel/';
 
 export const CITRUS_TRUSTED_SOURCE_URL: string = 'https://github.com/citrusframework/citrus/';
