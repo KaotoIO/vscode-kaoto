@@ -8,6 +8,7 @@
   - create a new Citrus Test file button
   - run single test or all tests in a folder
   - test files regex can be configured through settings
+- Upgrade to Kaoto 2.10.0-RC2
 
 # 2.9.0
 
