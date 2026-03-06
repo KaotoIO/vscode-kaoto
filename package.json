@@ -35,6 +35,7 @@
     "test:it:clean": "rimraf ./test-resources && rimraf ./out && rimraf *.vsix"
   },
   "dependencies": {
+    "@kaoto/camel-catalog": "^0.4.0",
     "@kaoto/kaoto": "2.10.0-RC2",
     "@kie-tools-core/backend": "10.0.0",
     "@kie-tools-core/editor": "10.0.0",
@@ -1125,6 +1126,7 @@
     "@types/chai": "^4.3.20",
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.10",
+    "@types/openapi-v3": "^3.0.0",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@types/vscode": "^1.100.0",

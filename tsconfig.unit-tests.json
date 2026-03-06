@@ -3,6 +3,9 @@
   "compilerOptions": {
     "module": "CommonJS",
     "moduleResolution": "Node",
+    "paths": {
+      "@kaoto/camel-catalog/types": ["./node_modules/@kaoto/camel-catalog/dist/types/index.ts"]
+    },
     "strict": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
