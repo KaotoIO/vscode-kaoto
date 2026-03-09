@@ -60,6 +60,7 @@ import { CamelJBangTask } from '../tasks/CamelJBangTask';
 import { CamelTestRunJBangTask } from '../tasks/CamelTestRunJBangTask';
 import { Test } from '../views/testTreeItems/Test';
 import { OpenApiProvider } from '../views/providers/OpenApiProvider';
+import { ImportOpenApiCommand } from '../commands/ImportOpenApiCommand';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -375,12 +376,9 @@ export class ExtensionContextHandler {
 	}
 
 	public registerOpenApiImportCommand() {
-		const OPENAPI_IMPORT_COMMAND_ID: string = 'kaoto.openapi.import';
-
-		const importCommand = vscode.commands.registerCommand(OPENAPI_IMPORT_COMMAND_ID, async () => {
-			// TODO: Implement OpenAPI import
-			vscode.window.showInformationMessage('OpenAPI import command not implemented');
-			await this.sendCommandTrackingEvent(OPENAPI_IMPORT_COMMAND_ID);
+		const importCommand = vscode.commands.registerCommand(ImportOpenApiCommand.ID_COMMAND_OPENAPI_IMPORT, async () => {
+			await new ImportOpenApiCommand().create();
+			await this.sendCommandTrackingEvent(ImportOpenApiCommand.ID_COMMAND_OPENAPI_IMPORT);
 		});
 
 		this.context.subscriptions.push(importCommand);
