@@ -15,6 +15,7 @@ import type {
 	OpenApiMap,
 	OpenApiMediaType,
 	OpenApiParameter,
+	OpenApiPaths,
 	OpenApiReference,
 	OpenApiRequestBody,
 	OpenApiResponse,
@@ -22,7 +23,7 @@ import type {
 	OpenApiSchema,
 	OpenApiSecurityRequirement,
 } from 'openapi-v3';
-import { parse } from 'yaml';
+import { parse, stringify } from 'yaml';
 
 /**
  * Utility type to flatten array types.
@@ -74,10 +75,10 @@ export interface OpenApiImportOptions {
 }
 
 /**
- * Internal representation of a parsed OpenAPI operation with all necessary data
+ * Representation of a parsed OpenAPI operation with all necessary data
  * for generating Camel REST and Route definitions.
  */
-interface ParsedOperation {
+export interface ParsedOperation {
 	operationId: string;
 	method: RestMethods;
 	path: string;
@@ -215,6 +216,92 @@ export class OpenApiImportService {
 			}
 			throw new OpenApiParseError('Failed to process OpenAPI specification', error instanceof Error ? error : undefined);
 		}
+	}
+
+	/**
+	 * Lists all operations found in an OpenAPI specification without generating Camel entities.
+	 * Useful for presenting a selection UI to the user before importing.
+	 *
+	 * @param openApiString - The OpenAPI specification as a YAML or JSON string
+	 * @returns Array of parsed operations with metadata (method, path, operationId, description)
+	 * @throws {OpenApiValidationError} If the input is invalid
+	 * @throws {OpenApiParseError} If parsing fails
+	 */
+	listOperations(openApiString: string): ParsedOperation[] {
+		if (!openApiString?.trim()) {
+			throw new OpenApiValidationError('OpenAPI specification string cannot be empty');
+		}
+
+		try {
+			const openApi = this.parseOpenApiSpec(openApiString);
+			this.currentSpec = openApi;
+			this.referenceCache.clear();
+			return this.extractOperations(openApi);
+		} catch (error) {
+			if (error instanceof OpenApiParseError || error instanceof OpenApiValidationError) {
+				throw error;
+			}
+			throw new OpenApiParseError('Failed to list operations from OpenAPI specification', error instanceof Error ? error : undefined);
+		}
+	}
+
+	/**
+	 * Filters an OpenAPI specification to include only the selected operations.
+	 * Non-verb properties (parameters, summary, description, etc.) on each path are preserved.
+	 *
+	 * @param specContent - The full OpenAPI specification as a YAML or JSON string
+	 * @param selectedOperations - Operations to keep in the filtered spec
+	 * @returns Filtered OpenAPI specification as a YAML string
+	 */
+	filterSpecByOperations(specContent: string, selectedOperations: ParsedOperation[]): string {
+		const spec = parse(specContent) as OpenApi;
+		const selectedKeys = new Set(selectedOperations.map((op) => `${op.method}::${op.path}`));
+		const filteredPaths: OpenApiPaths = {};
+
+		for (const [pathStr, pathItem] of Object.entries(spec.paths)) {
+			const filteredPathItem = { ...pathItem };
+
+			for (const method of REST_DSL_VERBS) {
+				if (!selectedKeys.has(`${method}::${pathStr}`)) {
+					delete filteredPathItem[method];
+				}
+			}
+
+			const hasOperations = REST_DSL_VERBS.some((m) => filteredPathItem[m] !== undefined);
+			if (hasOperations) {
+				filteredPaths[pathStr] = filteredPathItem;
+			}
+		}
+
+		spec.paths = filteredPaths;
+		return stringify(spec, { lineWidth: 0 });
+	}
+
+	/**
+	 * High-level method that parses an OpenAPI specification and produces a complete
+	 * Camel YAML string with route and/or rest definitions.
+	 *
+	 * @param specContent - The OpenAPI specification as a YAML or JSON string
+	 * @param options - Configuration options for the import process
+	 * @returns YAML string containing Camel route and/or rest definitions
+	 * @throws {OpenApiValidationError} If the input is invalid or options are misconfigured
+	 * @throws {OpenApiParseError} If parsing fails
+	 */
+	async generateCamelYaml(specContent: string, options: OpenApiImportOptions = {}): Promise<string> {
+		const entities = await this.parseOpenApi(specContent, options);
+
+		const yamlElements = entities.map((entity) => {
+			if (this.isRouteDefinition(entity)) {
+				return { route: entity };
+			}
+			return { rest: entity };
+		});
+
+		return stringify(yamlElements, { lineWidth: 0 });
+	}
+
+	private isRouteDefinition(entity: RouteDefinition | Rest): entity is RouteDefinition {
+		return 'from' in entity;
 	}
 
 	/**
