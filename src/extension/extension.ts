@@ -80,12 +80,13 @@ export async function activate(context: vscode.ExtensionContext) {
 	contextHandler.registerOpenWithKaoto();
 
 	/*
-	 * register all views (Integrations, Deployments, Tests, Help & Feedback) first to avoid race conditions
+	 * register all views (Integrations, Deployments, Tests, Help & Feedback, OpenAPI) first to avoid race conditions
 	 */
 	contextHandler.registerHelpAndFeedbackView();
 	contextHandler.registerIntegrationsView();
 	contextHandler.registerDeploymentsView(portManager);
 	contextHandler.registerTestsView();
+	contextHandler.registerOpenApiView();
 
 	/*
 	 * register commands for 'Integrations' view

@@ -29,6 +29,7 @@ describe('Kaoto View Container', function () {
 	let integrationsSection: ViewSection | undefined;
 	let deploymentsSection: ViewSection | undefined;
 	let testsSection: ViewSection | undefined;
+	let openAPISection: ViewSection | undefined;
 
 	before(async function () {
 		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER);
@@ -72,6 +73,17 @@ describe('Kaoto View Container', function () {
 		it('is present', async function () {
 			deploymentsSection = await kaotoView?.getContent().getSection('Deployments');
 			expect(deploymentsSection).to.not.be.undefined;
+		});
+	});
+
+	describe('OpenAPI view', function () {
+		after(async function () {
+			await openAPISection?.collapse();
+		});
+
+		it('is present', async function () {
+			openAPISection = await kaotoView?.getContent().getSection('OpenAPI');
+			expect(openAPISection).to.not.be.undefined;
 		});
 	});
 
