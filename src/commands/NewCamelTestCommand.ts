@@ -27,15 +27,16 @@ export class NewCamelTestCommand extends AbstractNewCamelRouteCommand {
 	public async create(): Promise<void> {
 		const wsFolder = await this.showWorkspaceFolderPick();
 		if (wsFolder) {
-			const targetFolder = await this.showDialogToPickFolder(wsFolder?.uri);
-			if (targetFolder) {
-				const name = await this.showInputBoxForFileName(targetFolder ? targetFolder.fsPath : undefined);
+			const selectedTargetFolder = await this.showDialogToPickFolder(wsFolder?.uri);
+			const targetFolderPath = this.handleTestFolderChaining(selectedTargetFolder?.fsPath);
+			if (targetFolderPath) {
+				const name = await this.showInputBoxForFileName(targetFolderPath);
 				const wsFolderTarget = wsFolder ?? this.singleWorkspaceFolder;
 				if (name && wsFolderTarget) {
 					const fileName = this.getFullName(name, this.getDSL().extension);
-					const filePath = this.computeFullPath(targetFolder.fsPath, fileName);
+					const filePath = this.computeFullPath(targetFolderPath, fileName);
 
-					await new CamelTestInitJBangTask(fileName, targetFolder.fsPath, wsFolderTarget).executeAndWaitWithProgress(
+					await new CamelTestInitJBangTask(fileName, targetFolderPath, wsFolderTarget).executeAndWaitWithProgress(
 						NewCamelTestCommand.PROGRESS_NOTIFICATION_MESSAGE,
 					);
 					const targetFileURI = Uri.file(filePath);
@@ -102,5 +103,21 @@ export class NewCamelTestCommand extends AbstractNewCamelRouteCommand {
 			extension: 'citrus.yaml',
 			placeHolder: 'sample-test',
 		};
+	}
+
+	/**
+	 * If the current working directory is a test folder, return the parent directory.
+	 * @param targetFolder - The target folder path.
+	 * @returns The parent directory.
+	 */
+	private handleTestFolderChaining(targetFolder?: string): string | undefined {
+		if (!targetFolder) {
+			return undefined;
+		}
+		const testFolderEnd = path.basename(targetFolder);
+		if (testFolderEnd === 'test') {
+			return path.dirname(targetFolder);
+		}
+		return targetFolder;
 	}
 }
