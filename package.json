@@ -1055,6 +1055,16 @@
               "light",
               "dark"
             ]
+          },
+          "kaoto.canvasLayoutDirection": {
+            "type": "string",
+            "markdownDescription": "Choose the layout direction for the canvas. `SelectInCanvas` will allow to select nodes in the canvas, `Horizontal` and `Vertical` will set the layout direction. It requires to reopen the Kaoto editors to be effective.",
+            "default": "SelectInCanvas",
+            "enum": [
+              "SelectInCanvas",
+              "Horizontal",
+              "Vertical"
+            ]
           }
         }
       },

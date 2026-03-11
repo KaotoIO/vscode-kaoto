@@ -1,5 +1,5 @@
 import { CatalogKind, KaotoEditorChannelApi, RuntimeMavenInformation, StepUpdateAction, Suggestion, SuggestionRequestContext } from '@kaoto/kaoto';
-import { ColorScheme, ISettingsModel, NodeLabelType, NodeToolbarTrigger, SettingsModel } from '@kaoto/kaoto/models';
+import { CanvasLayoutDirection, ColorScheme, ISettingsModel, NodeLabelType, NodeToolbarTrigger, SettingsModel } from '@kaoto/kaoto/models';
 import { BackendProxy } from '@kie-tools-core/backend/dist/api';
 import { I18n } from '@kie-tools-core/i18n/dist/core';
 import { DefaultVsCodeKieEditorChannelApiImpl } from '@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl';
@@ -50,6 +50,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		const nodeLabel = await vscode.workspace.getConfiguration('kaoto').get<Promise<NodeLabelType | null>>('nodeLabel');
 		const nodeToolbarTrigger = await vscode.workspace.getConfiguration('kaoto').get<Promise<NodeToolbarTrigger | null>>('nodeToolbarTrigger');
 		const colorThemeSetting = await vscode.workspace.getConfiguration('kaoto').get<Promise<ColorScheme | null>>('colorTheme');
+		const canvasLayoutDirection = await vscode.workspace.getConfiguration('kaoto').get<Promise<CanvasLayoutDirection | null>>('canvasLayoutDirection');
 		const colorTheme = this.getColorSchemeFromVSCode(colorThemeSetting, vscode.window.activeColorTheme);
 
 		const settingsModel: Partial<ISettingsModel> = {
@@ -57,6 +58,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 			nodeLabel: nodeLabel ?? NodeLabelType.Description,
 			nodeToolbarTrigger: nodeToolbarTrigger ?? NodeToolbarTrigger.onHover,
 			colorScheme: colorTheme,
+			canvasLayoutDirection: canvasLayoutDirection ?? CanvasLayoutDirection.SelectInCanvas,
 		};
 
 		return new SettingsModel(settingsModel);
