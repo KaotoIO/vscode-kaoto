@@ -231,6 +231,31 @@
           },
           {
             "id": "kaoto.walkthrough.step9",
+            "title": "Create a new Citrus Test",
+            "description": "Click the ``New Citrus Test...`` button inside Tests view to create a new Citrus Test.",
+            "media": {
+              "image": "images/walkthrough/new-citrus-test.png",
+              "altText": "New Citrus Test"
+            },
+            "completionEvents": [
+              "onCommand:kaoto.citrus.jbang.init.test"
+            ]
+          },
+          {
+            "id": "kaoto.walkthrough.step10",
+            "title": "Run a Citrus Test(s)",
+            "description": "Click the ``Run`` button inside Tests view to run a Citrus Test(s).",
+            "media": {
+              "image": "images/walkthrough/run-citrus-test.png",
+              "altText": "Run Citrus Test"
+            },
+            "completionEvents": [
+              "onCommand:kaoto.tests.run",
+              "onCommand:kaoto.tests.run.folder"
+            ]
+          },
+          {
+            "id": "kaoto.walkthrough.step11",
             "title": "Check out the documentation",
             "description": "Check out the documentation to learn more about Kaoto.\n\n[Open Documentation](https://kaoto.io/docs/manual/)",
             "media": {
