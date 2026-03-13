@@ -1156,7 +1156,7 @@
         "properties": {
           "kaoto.restConfiguration.apicurioRegistryUrl": {
             "type": "string",
-            "markdownDescription": "URL to the Apicurio Registry. It is used to store and manage REST API specifications.",
+            "markdownDescription": "URL to the Apicurio Registry. It is used to store and manage REST API specifications. Example: `https://registry.example.com/apis/registry/v3`",
             "default": null,
             "order": 0
           },

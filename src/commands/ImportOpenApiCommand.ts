@@ -15,16 +15,9 @@
  */
 import { commands, ProgressLocation, QuickPickItem, Uri, window, workspace } from 'vscode';
 import { KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID, KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID } from '../helpers/helpers';
+import { ApicurioRegistryService, ApicurioRegistryUrlError, type ApicurioArtifact } from '../services/apicurio-registry.service';
 import { OpenApiImportService, OpenApiParseError, OpenApiValidationError, type ParsedOperation } from '../services/openapi-import.service';
 import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
-
-interface ApicurioArtifact {
-	artifactId: string;
-	groupId: string;
-	name?: string;
-	description?: string;
-	type: string;
-}
 
 interface OutputOptions {
 	shouldGenerateRest: boolean;
@@ -41,6 +34,7 @@ export class ImportOpenApiCommand extends AbstractNewCamelRouteCommand {
 	public static readonly ID_COMMAND_OPENAPI_IMPORT = 'kaoto.openapi.import';
 
 	private readonly importService = new OpenApiImportService();
+	private readonly registryService = new ApicurioRegistryService();
 
 	public async create(): Promise<void> {
 		this.camelDSL ??= this.getDSL('YAML');
@@ -190,43 +184,44 @@ export class ImportOpenApiCommand extends AbstractNewCamelRouteCommand {
 		const config = workspace.getConfiguration();
 		let registryUrl: string | undefined = config.get<string>(KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID);
 
-		if (!registryUrl) {
-			registryUrl = await window.showInputBox({
-				prompt: 'Enter the Apicurio Registry URL (will be saved as default)',
-				placeHolder: 'https://registry.example.com',
-				title: 'Import OpenAPI - Apicurio Registry URL',
-				validateInput: (value) => {
-					if (!value) {
-						return 'URL is required';
+		registryUrl = await window.showInputBox({
+			prompt: 'Enter the Apicurio Registry URL (will be saved as default)',
+			placeHolder: 'https://registry.example.com/apis/registry/v3',
+			title: 'Import OpenAPI - Apicurio Registry URL',
+			value: registryUrl,
+			validateInput: (value) => {
+				if (!value) {
+					return 'URL is required';
+				}
+				try {
+					this.registryService.detectApiVersion(value);
+				} catch (error) {
+					if (error instanceof ApicurioRegistryUrlError) {
+						return error.message;
 					}
-					try {
-						new URL(value);
-					} catch {
-						return 'Please enter a valid URL';
-					}
-					return undefined;
-				},
-			});
-
-			if (!registryUrl) {
+					return 'Please enter a valid URL';
+				}
 				return undefined;
-			}
+			},
+		});
 
-			await config.update(KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID, registryUrl, true);
+		if (!registryUrl) {
+			return undefined;
 		}
 
-		const baseUrl = registryUrl.replace(/\/+$/, '');
+		await config.update(KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID, registryUrl, true);
 
-		const artifacts = await this.fetchApicurioArtifacts(baseUrl);
+		const artifacts = await this.fetchApicurioArtifacts(registryUrl);
 		if (!artifacts || artifacts.length === 0) {
 			window.showWarningMessage('No OpenAPI artifacts found in the Apicurio Registry.');
 			return undefined;
 		}
 
-		const items: QuickPickItem[] = artifacts.map((a) => ({
-			label: a.name || a.artifactId,
-			description: a.groupId === 'default' ? a.artifactId : `${a.groupId}/${a.artifactId}`,
+		const items: (QuickPickItem & { artifactId: string })[] = artifacts.map((a) => ({
+			label: a.name ?? a.artifactId,
+			description: a.groupId ? `${a.groupId}/${a.artifactId}` : a.artifactId,
 			detail: a.description,
+			artifactId: a.artifactId,
 		}));
 
 		const selected = await window.showQuickPick(items, {
@@ -238,24 +233,24 @@ export class ImportOpenApiCommand extends AbstractNewCamelRouteCommand {
 			return undefined;
 		}
 
-		const artifact = artifacts.find((a) => (a.name || a.artifactId) === selected.label);
+		const artifact = artifacts.find((a) => a.artifactId === selected.artifactId);
 		if (!artifact) {
 			return undefined;
 		}
 
-		const contentUrl = `${baseUrl}/apis/registry/v2/groups/${encodeURIComponent(artifact.groupId)}/artifacts/${encodeURIComponent(artifact.artifactId)}`;
+		const contentUrl = this.registryService.buildArtifactContentUrl(registryUrl, artifact);
 		return this.fetchUrl(contentUrl);
 	}
 
-	private async fetchApicurioArtifacts(baseUrl: string): Promise<ApicurioArtifact[]> {
-		const searchUrl = `${baseUrl}/apis/registry/v2/search/artifacts?type=OPENAPI&limit=100`;
+	private async fetchApicurioArtifacts(registryUrl: string): Promise<ApicurioArtifact[]> {
 		try {
+			const version = this.registryService.detectApiVersion(registryUrl);
+			const searchUrl = this.registryService.buildSearchUrl(registryUrl);
 			const response = await this.fetchUrl(searchUrl);
 			if (!response) {
 				return [];
 			}
-			const data = JSON.parse(response);
-			return (data.artifacts ?? []) as ApicurioArtifact[];
+			return this.registryService.parseSearchResponse(response, version);
 		} catch (error) {
 			window.showErrorMessage(`Failed to fetch artifacts from Apicurio Registry: ${error instanceof Error ? error.message : String(error)}`);
 			return [];
