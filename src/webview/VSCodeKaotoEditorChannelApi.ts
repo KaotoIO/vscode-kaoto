@@ -51,18 +51,12 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		const nodeToolbarTrigger = await vscode.workspace.getConfiguration('kaoto').get<Promise<NodeToolbarTrigger | null>>('nodeToolbarTrigger');
 		const colorThemeSetting = await vscode.workspace.getConfiguration('kaoto').get<Promise<ColorScheme | null>>('colorTheme');
 		const colorTheme = this.getColorSchemeFromVSCode(colorThemeSetting, vscode.window.activeColorTheme);
-		const enableDragAndDrop = await vscode.workspace
-			.getConfiguration('kaoto')
-			.get<Promise<ISettingsModel['experimentalFeatures']['enableDragAndDrop'] | null>>('enableDragAndDrop');
 
 		const settingsModel: Partial<ISettingsModel> = {
 			catalogUrl: catalogUrl ?? '',
 			nodeLabel: nodeLabel ?? NodeLabelType.Description,
 			nodeToolbarTrigger: nodeToolbarTrigger ?? NodeToolbarTrigger.onHover,
 			colorScheme: colorTheme,
-			experimentalFeatures: {
-				enableDragAndDrop: enableDragAndDrop ?? false,
-			},
 		};
 
 		return new SettingsModel(settingsModel);
