@@ -35,8 +35,8 @@
     "test:it:clean": "rimraf ./test-resources && rimraf ./out && rimraf *.vsix"
   },
   "dependencies": {
-    "@kaoto/camel-catalog": "^0.4.0",
-    "@kaoto/kaoto": "2.10.0-RC2",
+    "@kaoto/camel-catalog": "^0.4.3",
+    "@kaoto/kaoto": "2.10.0-RC3",
     "@kie-tools-core/backend": "10.0.0",
     "@kie-tools-core/editor": "10.0.0",
     "@kie-tools-core/i18n": "10.0.0",
@@ -959,14 +959,6 @@
               "auto",
               "light",
               "dark"
-            ]
-          },
-          "kaoto.enableDragAndDrop": {
-            "type": "boolean",
-            "default": true,
-            "markdownDescription": "Control whether to enable drag and drop feature. It requires to reopen the Kaoto editors to be effective.",
-            "tags": [
-              "preview"
             ]
           }
         }
