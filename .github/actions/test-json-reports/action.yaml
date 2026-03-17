@@ -6,7 +6,7 @@ runs:
   steps:
     - name: Upload Test Reports
       uses: dorny/test-reporter@v2.5.0
-      if: ${{ !cancelled() }}
+      if: ${{ always() }}
       with:
         name: UI Tests
         path: reports/ui-test-results.json
