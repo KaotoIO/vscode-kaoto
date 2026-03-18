@@ -341,7 +341,9 @@ export async function workaroundToRedrawContextualMenu(kaotoWebview: WebView) {
 	await kaotoWebview.switchBack();
 	const explorerView = await new ActivityBar().getViewControl('Explorer');
 	await explorerView?.openView();
+	await explorerView?.getDriver().sleep(500);
 	await explorerView?.closeView();
+	await explorerView?.getDriver().sleep(500);
 	await kaotoWebview.switchToFrame();
 }
 
