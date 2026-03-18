@@ -55,6 +55,13 @@ describe('Kaoto basic development flow', function () {
 		fs.rmSync(path.join(workspaceFolder, 'for_datamapper_test.camel.yaml'));
 		fs.rmSync(path.join(workspaceFolder, 'emptyPipe.pipe.yaml'));
 		fs.rmSync(path.join(workspaceFolder, 'emptyPipe-pipe.yaml'));
+
+		// Fallback: delete all xsl files
+		const files = fs.readdirSync(workspaceFolder);
+		const xslFiles = files.filter((file) => file.endsWith('.xsl'));
+		xslFiles.forEach((file) => {
+			fs.rmSync(path.join(workspaceFolder, file));
+		});
 	});
 
 	afterEach(async function () {
@@ -134,14 +141,17 @@ describe('Kaoto basic development flow', function () {
 		await deleteDataMapperStep(driver, workspaceFolder, kaotoWebview);
 
 		await kaotoWebview.switchBack();
-		assert.isTrue(await kaotoEditor.isDirty(), 'The Kaoto editor should be dirty after adding a DataMapper step.');
-		await kaotoEditor.save();
-		await waitUntil(async () => {
-			return !(await kaotoEditor.isDirty());
-		});
+		assert.isTrue(await kaotoEditor.isDirty(), 'The Kaoto editor should be dirty after deleting a DataMapper step.');
 
-		const editorView = new EditorView();
-		await editorView.closeAllEditors();
+		await kaotoEditor.save();
+		await driver.wait(
+			async () => {
+				const isDirty = await kaotoEditor.isDirty();
+				return !isDirty;
+			},
+			5_000,
+			'The Kaoto editor should not be dirty after saving',
+		);
 	});
 
 	it('Open Camel file and check Kaoto UI is loading', async function () {
@@ -229,25 +239,35 @@ async function openDataMapperEditor(driver: WebDriver) {
 
 async function deleteDataMapperStep(driver: WebDriver, workspaceFolder: string, kaotoWebview: WebView) {
 	await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__kaoto-datamapper', 'kaoto-datamapper');
-	const kaotoNodeConfigured = await driver.findElement(
-		By.css(
-			`g[data-testid^="custom-node__kaoto-datamapper"],g[data-testid="custom-node__route.from.steps.0.kaoto-datamapper"],g[data-testid="${DATA_TEST_ID_DATAMAPPERSTEP_2_5}"]`,
-		),
-	);
 
-	await driver.actions().contextClick(kaotoNodeConfigured).perform();
+	const kaotoNodeConfigured = await driver.findElement(
+		By.xpath(`//*[name()='g' and starts-with(@data-testid,'custom-node__kaoto-datamapper') or @data-nodelabel='kaoto-datamapper']`),
+	);
+	await kaotoNodeConfigured.click();
 
 	await workaroundToRedrawContextualMenu(kaotoWebview);
 
-	await driver.wait(until.elementLocated(By.className('pf-topology-context-menu__c-dropdown__menu')));
-	await (await driver.findElement(By.xpath("//*[@data-testid='context-menu-item-delete']"))).click();
+	await driver.wait(until.elementLocated(By.css("button[id='reset-view']")), 5000, 'Cannot find the reset view button');
+	await (await driver.findElement(By.css("button[id='reset-view']"))).click(); // reset view nodes position to see the delete button
 
+	await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='step-toolbar']")), 5000, 'Cannot find the step toolbar');
+	await (await driver.findElement(By.css('button[data-testid="kaoto-datamapper|step-toolbar-button-delete"]'))).click();
+
+	await driver.wait(
+		until.elementLocated(By.xpath("//div[@data-ouia-component-id='ActionConfirmationModal']")),
+		5000,
+		'Cannot find the modal to delete the data mapper step',
+	);
 	await (await driver.findElement(By.css('button[data-testid="action-confirmation-modal-btn-del-step-and-file"]'))).click();
-	await waitUntil(() => {
-		const filesAfterDeletion = fs.readdirSync(workspaceFolder);
-		const xslFilesAfterDeletion = filesAfterDeletion.filter((file) => file.endsWith('.xsl'));
-		return xslFilesAfterDeletion.length === 0;
-	});
+	await driver.wait(
+		async () => {
+			const filesAfterDeletion = fs.readdirSync(workspaceFolder);
+			const xslFilesAfterDeletion = filesAfterDeletion.filter((file) => file.endsWith('.xsl'));
+			return xslFilesAfterDeletion.length === 0;
+		},
+		5_000,
+		'The xsl files should be deleted after deleting the data mapper step',
+	);
 }
 
 async function createNewRoute(driver: WebDriver) {
@@ -264,10 +284,10 @@ async function addAMQPStep(driver: WebDriver) {
 	const canvasNode = await driver.findElement(By.css('g[data-testid^="custom-node__timer"],g[data-testid="custom-node__route.from"]'));
 	await driver.actions().contextClick(canvasNode).perform();
 
-	await driver.wait(until.elementLocated(By.className('pf-topology-context-menu__c-dropdown__menu')));
+	await driver.wait(until.elementLocated(By.className('pf-topology-context-menu__c-dropdown__menu')), 5000, 'Cannot find the context menu');
 	await (await driver.findElement(By.xpath("//\*[@data-testid='context-menu-item-replace']"))).click();
 
-	await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='tile-header-amqp']")));
+	await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='tile-header-amqp']")), 5000, 'Cannot find the tile header for the AMQP step');
 	await (await driver.findElement(By.xpath("//div[@data-testid='tile-header-amqp']"))).click();
 }
 
@@ -283,13 +303,13 @@ async function addDatamapperStep(driver: WebDriver, kaotoWebview: WebView) {
 
 	await workaroundToRedrawContextualMenu(kaotoWebview);
 
-	await driver.wait(until.elementLocated(By.className('pf-topology-context-menu__c-dropdown__menu')));
+	await driver.wait(until.elementLocated(By.className('pf-topology-context-menu__c-dropdown__menu')), 5000, 'Cannot find the context menu');
 	await (await driver.findElement(By.xpath("//*[@data-testid='context-menu-item-replace']"))).click();
 
-	await driver.wait(until.elementLocated(By.xpath("//input[@placeholder='Filter by name, description or tag']")));
+	await driver.wait(until.elementLocated(By.xpath("//input[@placeholder='Filter by name, description or tag']")), 5000, 'Cannot find the filter input');
 	const filterInput = await driver.findElement(By.xpath("//input[@placeholder='Filter by name, description or tag']"));
 	await filterInput.sendKeys('datamapper');
-	await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='tile-kaoto-datamapper']")));
+	await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='tile-kaoto-datamapper']")), 5000, 'Cannot find the tile for the DataMapper step');
 
 	await (await driver.findElement(By.xpath("//div[@data-testid='tile-kaoto-datamapper']"))).click();
 }
