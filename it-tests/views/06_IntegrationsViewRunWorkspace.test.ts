@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { join } from 'path';
-import { EditorView, InputBox, ViewControl, ViewSection, VSBrowser, WebDriver, Workbench } from 'vscode-extension-tester';
+import { EditorView, ViewControl, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
 import {
 	collapseItemsInsideTreeStructuredView,
 	expandViews,
@@ -22,7 +22,6 @@ import {
 	getViewActionButton,
 	killTerminal,
 	openResourcesAndWaitForActivation,
-	waitForExtensionActivation,
 	waitUntilTerminalHasText,
 } from '../Util';
 import { expect } from 'chai';
@@ -36,10 +35,8 @@ describe('Integrations View', function () {
 	let kaotoViewContainer: ViewControl | undefined;
 	let integrationsSection: ViewSection | undefined;
 
-	before(async function () {
-		driver = VSBrowser.instance.driver;
-		await openResourcesAndWaitForActivation(WORKSPACE_FOLDER, false);
-
+	const beforeFn = async function (resource: string, waitForActivation: boolean = false) {
+		await openResourcesAndWaitForActivation(resource, waitForActivation);
 		const control = await getKaotoViewControl();
 		kaotoViewContainer = control.kaotoViewContainer;
 		integrationsSection = await control.kaotoView?.getContent().getSection('Integrations');
@@ -47,6 +44,11 @@ describe('Integrations View', function () {
 
 		// collapse all items inside integrations section
 		await collapseItemsInsideTreeStructuredView(integrationsSection);
+	};
+
+	before(async function () {
+		driver = VSBrowser.instance.driver;
+		await beforeFn(WORKSPACE_FOLDER);
 	});
 
 	after(async function () {
@@ -79,20 +81,7 @@ describe('Integrations View', function () {
 		const WORKSPACE_FILE = join(__dirname, '../../test Fixture with speci@l chars', 'kaoto-view', 'routes.code-workspace');
 
 		before(async function () {
-			this.timeout(120_000);
-			await new Workbench().executeCommand('File: Open Workspace from File...');
-			const input = await InputBox.create(10_000);
-			await input.setText(WORKSPACE_FILE);
-			await input.confirm();
-
-			await driver.sleep(1_000);
-			await VSBrowser.instance.waitForWorkbench();
-			await waitForExtensionActivation('Kaoto', 90_000, 2_500);
-
-			const control = await getKaotoViewControl();
-			kaotoViewContainer = control.kaotoViewContainer;
-			integrationsSection = await control.kaotoView?.getContent().getSection('Integrations');
-			await expandViews(control.kaotoView, 'Integrations');
+			await beforeFn(WORKSPACE_FILE, true);
 		});
 
 		it('button is available', async function () {
