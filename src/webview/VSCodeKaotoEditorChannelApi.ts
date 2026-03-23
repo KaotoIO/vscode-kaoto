@@ -51,6 +51,8 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		const nodeToolbarTrigger = await vscode.workspace.getConfiguration('kaoto').get<Promise<NodeToolbarTrigger | null>>('nodeToolbarTrigger');
 		const colorThemeSetting = await vscode.workspace.getConfiguration('kaoto').get<Promise<ColorScheme | null>>('colorTheme');
 		const canvasLayoutDirection = await vscode.workspace.getConfiguration('kaoto').get<Promise<CanvasLayoutDirection | null>>('canvasLayoutDirection');
+		const customMediaTypes = await vscode.workspace.getConfiguration('kaoto').get<Promise<string[] | null>>('restConfiguration.customMediaTypes');
+		const apicurioRegistryUrl = await vscode.workspace.getConfiguration('kaoto').get<Promise<string | null>>('restConfiguration.apicurioRegistryUrl');
 		const colorTheme = this.getColorSchemeFromVSCode(colorThemeSetting, vscode.window.activeColorTheme);
 
 		const settingsModel: Partial<ISettingsModel> = {
@@ -59,6 +61,10 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 			nodeToolbarTrigger: nodeToolbarTrigger ?? NodeToolbarTrigger.onHover,
 			colorScheme: colorTheme,
 			canvasLayoutDirection: canvasLayoutDirection ?? CanvasLayoutDirection.SelectInCanvas,
+			rest: {
+				apicurioRegistryUrl: apicurioRegistryUrl ?? '',
+				customMediaTypes: customMediaTypes ?? [],
+			},
 		};
 
 		return new SettingsModel(settingsModel);
