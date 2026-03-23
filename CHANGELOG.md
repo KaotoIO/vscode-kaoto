@@ -8,7 +8,7 @@
   - create a new Citrus Test file button
   - run single test or all tests in a folder
   - test files regex can be configured through settings
-- Upgrade to Kaoto 2.10.0-RC3
+- Upgrade to Kaoto 2.10.0-RC4
 - Add `OpenAPI` into Kaoto view
   - list existing OpenAPI specification files (`*openapi.json` or `*openapi.yaml`)
   - import OpenAPI into Kaoto - file, URI or Apicurio Registry

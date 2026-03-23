@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@kaoto/camel-catalog": "^0.4.3",
-    "@kaoto/kaoto": "2.10.0-RC3",
+    "@kaoto/kaoto": "2.10.0-RC4",
     "@kie-tools-core/backend": "10.0.0",
     "@kie-tools-core/editor": "10.0.0",
     "@kie-tools-core/i18n": "10.0.0",
