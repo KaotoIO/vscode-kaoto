@@ -890,9 +890,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/kaoto@npm:2.10.0-RC4":
-  version: 2.10.0-RC4
-  resolution: "@kaoto/kaoto@npm:2.10.0-RC4"
+"@kaoto/kaoto@npm:2.10.0":
+  version: 2.10.0
+  resolution: "@kaoto/kaoto@npm:2.10.0"
   dependencies:
     "@carbon/icons-react": "npm:^11.67.0"
     "@carbon/react": "npm:^1.102.0"
@@ -933,7 +933,7 @@ __metadata:
     react: ^19.2.1
     react-dom: ^19.2.1
     react-monaco-editor: ^0.56.0
-  checksum: 10/34275c895989bf160898c7584d980da92523c2d26b68ecc9d768068e0bfd8180b0f4386bf80cbcc340a8131954be6d5f41cb4941fd087197b3bb6e1171afe9bf
+  checksum: 10/541ae057b9db3bd09ed407b8046c99767ba7e2bff7a7a2bbaaafb84875f76cfcb054eee2d123cf53ad3bc5aa0ed276e3c58c79a12ce9d5f86557e97601cd0ee0
   languageName: node
   linkType: hard
 
@@ -13455,7 +13455,7 @@ __metadata:
   resolution: "vscode-kaoto@workspace:."
   dependencies:
     "@kaoto/camel-catalog": "npm:^0.4.3"
-    "@kaoto/kaoto": "npm:2.10.0-RC4"
+    "@kaoto/kaoto": "npm:2.10.0"
     "@kie-tools-core/backend": "npm:10.0.0"
     "@kie-tools-core/editor": "npm:10.0.0"
     "@kie-tools-core/i18n": "npm:10.0.0"
