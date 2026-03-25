@@ -1,4 +1,5 @@
 {
+  "workbench.editor.useModal": "off",
   "kaoto.camelJbang.kubernetesRunArguments": [
     "--cluster-type=minikube",
     "--dev",

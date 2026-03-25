@@ -144,11 +144,7 @@ describe('Maven dependency update pom.xml', function () {
 		});
 	});
 
-	/**
-	 * Temporarily skip the test on because it is really unstable
-	 * TODO: Fix the test
-	 */
-	describe.skip('update manually test', function () {
+	describe('update manually test', function () {
 		before(async function () {
 			// disable auto update on save
 			const settings = await new Workbench().openSettings();

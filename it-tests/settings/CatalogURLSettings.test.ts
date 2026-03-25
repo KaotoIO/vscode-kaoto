@@ -32,11 +32,7 @@ import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame, resetUserS
 import { join } from 'path';
 import { expect } from 'chai';
 
-/**
- * Temporarily skip the test because it is really unstable
- * TODO: Fix the test
- */
-describe.skip('User Settings', function () {
+describe('User Settings', function () {
 	this.timeout(240_000);
 
 	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars');
