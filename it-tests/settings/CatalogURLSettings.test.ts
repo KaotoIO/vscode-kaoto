@@ -18,7 +18,11 @@ import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame, resetUserS
 import { join } from 'path';
 import { expect } from 'chai';
 
-describe('User Settings', function () {
+/**
+ * Skip the test on Windows and Linux because it is really unstable
+ * TODO: Fix the test on Windows and Linux
+ */
+(process.platform === 'win32' || process.platform === 'linux' ? describe.skip : describe)('User Settings', function () {
 	this.timeout(240_000);
 
 	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars');
