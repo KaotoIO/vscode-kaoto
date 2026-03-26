@@ -149,8 +149,8 @@ export class ImportOpenApiCommand extends AbstractNewCamelRouteCommand {
 
 	private async fetchFromUri(): Promise<string | undefined> {
 		const uri = await window.showInputBox({
-			prompt: 'Enter the URL to the OpenAPI specification (YAML or JSON)',
-			placeHolder: 'https://example.com/openapi.yaml',
+			prompt: 'Enter the URL to the OpenAPI specification',
+			placeHolder: 'https://example.com/api-docs',
 			title: 'Import OpenAPI - Enter URL',
 			validateInput: (value) => {
 				if (!value) {
@@ -164,10 +164,6 @@ export class ImportOpenApiCommand extends AbstractNewCamelRouteCommand {
 				}
 				if (url.protocol !== 'http:' && url.protocol !== 'https:') {
 					return 'Only HTTP and HTTPS URLs are supported';
-				}
-				const path = url.pathname.toLowerCase();
-				if (!path.endsWith('.yaml') && !path.endsWith('.yml') && !path.endsWith('.json')) {
-					return 'URL must point to a .yaml, .yml, or .json file';
 				}
 				return undefined;
 			},
@@ -268,16 +264,39 @@ export class ImportOpenApiCommand extends AbstractNewCamelRouteCommand {
 				try {
 					const response = await fetch(url);
 					if (!response.ok) {
-						window.showErrorMessage(`Failed to fetch: ${response.status} ${response.statusText}`);
+						const sanitizedUrl = this.sanitizeUrl(url);
+						window.showErrorMessage(`Failed to fetch: ${response.status} ${response.statusText} (${sanitizedUrl})`);
 						return undefined;
 					}
 					return await response.text();
 				} catch (error) {
-					window.showErrorMessage(`Failed to fetch from URL: ${error instanceof Error ? error.message : String(error)}`);
+					const sanitizedUrl = this.sanitizeUrl(url);
+					window.showErrorMessage(`Failed to fetch from URL: ${error instanceof Error ? error.message : String(error)} (${sanitizedUrl})`);
 					return undefined;
 				}
 			},
 		);
+	}
+
+	/**
+	 * Sanitizes a URL by removing sensitive information (credentials, query parameters, and fragments).
+	 *
+	 * @param url - The URL to sanitize
+	 * @returns Sanitized URL string safe for display in error messages
+	 */
+	private sanitizeUrl(url: string): string {
+		try {
+			const parsedUrl = new URL(url);
+			// Clear sensitive information
+			parsedUrl.username = '';
+			parsedUrl.password = '';
+			parsedUrl.search = '';
+			parsedUrl.hash = '';
+			return parsedUrl.toString();
+		} catch {
+			// If URL parsing fails, return a generic message
+			return 'invalid URL';
+		}
 	}
 
 	// --- Step 2: Select operations ---
