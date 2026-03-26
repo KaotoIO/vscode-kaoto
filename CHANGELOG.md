@@ -2,6 +2,7 @@
 
 - display `*openapi.yml` files in OpenAPI view by default
 - fix JSON OpenAPI files detection and file validation
+- removed file extension restrictions from API URL imports, enabling greater flexibility with various URL formats.
 
 # 2.10.0
 
