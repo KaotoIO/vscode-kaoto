@@ -1005,6 +1005,7 @@
             "additionalProperties": false,
             "default": [
               "*openapi.yaml",
+              "*openapi.yml",
               "*openapi.json"
             ],
             "markdownDescription": "Regular expression to filter files to be displayed in `Kaoto > OpenAPI` view.",

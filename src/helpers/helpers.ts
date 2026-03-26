@@ -48,6 +48,8 @@ export const KAOTO_TESTS_FILES_REGEXP_SETTING_ID: string = 'kaoto.tests.files.re
 
 export const KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID: string = 'kaoto.openapi.files.regexp';
 
+export const DEFAULT_KAOTO_OPENAPI_FILES_REGEXP: string[] = ['*openapi.yaml', '*openapi.yml', '*openapi.json'];
+
 export const KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID: string = 'kaoto.restConfiguration.apicurioRegistryUrl';
 
 export const KAOTO_REST_CUSTOM_MEDIA_TYPES_SETTING_ID: string = 'kaoto.restConfiguration.customMediaTypes';
