@@ -1,3 +1,5 @@
+# 2.10.1
+
 # 2.10.0
 
 - Upgrade default Camel JBang version from 4.16.0 to 4.18.0

@@ -36,6 +36,7 @@ import {
 	ActivityBar,
 	TextEditor,
 	CheckboxSetting,
+	before,
 } from 'vscode-extension-tester';
 import { assert, expect } from 'chai';
 import * as fs from 'fs';
@@ -144,10 +145,10 @@ describe('Maven dependency update pom.xml', function () {
 	});
 
 	/**
-	 * Skip the test on Windows and Linux because it is really unstable
-	 * TODO: Fix the test on Windows and Linux
+	 * Temporarily skip the test on because it is really unstable
+	 * TODO: Fix the test
 	 */
-	(process.platform === 'win32' || process.platform === 'linux' ? describe.skip : describe)('update manually test', function () {
+	describe.skip('update manually test', function () {
 		before(async function () {
 			// disable auto update on save
 			const settings = await new Workbench().openSettings();

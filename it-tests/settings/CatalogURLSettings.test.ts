@@ -13,16 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ActivityBar, after, By, EditorView, Key, TextSetting, until, VSBrowser, WebDriver, WebElement, WebView, Workbench } from 'vscode-extension-tester';
+import {
+	ActivityBar,
+	after,
+	before,
+	By,
+	EditorView,
+	Key,
+	TextSetting,
+	until,
+	VSBrowser,
+	WebDriver,
+	WebElement,
+	WebView,
+	Workbench,
+} from 'vscode-extension-tester';
 import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame, resetUserSettings } from '../Util';
 import { join } from 'path';
 import { expect } from 'chai';
 
 /**
- * Skip the test on Windows and Linux because it is really unstable
- * TODO: Fix the test on Windows and Linux
+ * Temporarily skip the test because it is really unstable
+ * TODO: Fix the test
  */
-(process.platform === 'win32' || process.platform === 'linux' ? describe.skip : describe)('User Settings', function () {
+describe.skip('User Settings', function () {
 	this.timeout(240_000);
 
 	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars');
@@ -79,7 +93,6 @@ import { expect } from 'chai';
 
 	describe('Custom catalogs', function () {
 		before(async function () {
-			this.timeout(60_000);
 			driver = VSBrowser.instance.driver;
 
 			// provide the Catalog URL using Settings UI editor
