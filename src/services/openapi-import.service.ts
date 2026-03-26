@@ -312,7 +312,7 @@ export class OpenApiImportService {
 	 * @throws {OpenApiParseError} If parsing fails
 	 * @throws {OpenApiValidationError} If validation fails
 	 */
-	private parseOpenApiSpec(openApiString: string): OpenApi {
+	parseOpenApiSpec(openApiString: string): OpenApi {
 		try {
 			const spec = parse(openApiString) as OpenApi;
 			this.validateOpenApiSpec(spec);

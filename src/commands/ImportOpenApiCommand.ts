@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { commands, ProgressLocation, QuickPickItem, Uri, window, workspace } from 'vscode';
-import { KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID, KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID } from '../helpers/helpers';
+import { DEFAULT_KAOTO_OPENAPI_FILES_REGEXP, KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID, KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID } from '../helpers/helpers';
 import { ApicurioRegistryService, ApicurioRegistryUrlError, type ApicurioArtifact } from '../services/apicurio-registry.service';
 import { OpenApiImportService, OpenApiParseError, OpenApiValidationError, type ParsedOperation } from '../services/openapi-import.service';
 import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
@@ -116,7 +116,7 @@ export class ImportOpenApiCommand extends AbstractNewCamelRouteCommand {
 	}
 
 	private async fetchFromFile(): Promise<string | undefined> {
-		const filesRegexp: string[] = workspace.getConfiguration().get(KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID) ?? ['*openapi.yaml', '*openapi.json'];
+		const filesRegexp: string[] = workspace.getConfiguration().get(KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID) ?? DEFAULT_KAOTO_OPENAPI_FILES_REGEXP;
 		const globPattern = '{' + filesRegexp.map((r) => '**/' + r).join(',') + '}';
 
 		const matchingFiles = await workspace.findFiles(globPattern);

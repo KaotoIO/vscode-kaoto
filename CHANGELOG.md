@@ -1,5 +1,8 @@
 # 2.10.1
 
+- display `*openapi.yml` files in OpenAPI view by default
+- fix JSON OpenAPI files detection and file validation
+
 # 2.10.0
 
 - Upgrade default Camel JBang version from 4.16.0 to 4.18.0

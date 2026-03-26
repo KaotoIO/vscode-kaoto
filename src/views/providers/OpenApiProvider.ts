@@ -15,12 +15,12 @@
  */
 import { promises as fsPromises } from 'fs';
 import { Disposable, TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
-import { basename, extname, normalize } from 'path';
-import YAML from 'yaml';
+import { basename, normalize } from 'path';
 import { OpenApiFile } from '../openApiTreeItems/OpenApiFile';
 import { OpenApiFolder } from '../openApiTreeItems/OpenApiFolder';
 import { AbstractFolderTreeProvider } from './AbstractFolderTreeProvider';
-import { KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID } from '../../helpers/helpers';
+import { DEFAULT_KAOTO_OPENAPI_FILES_REGEXP, KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID } from '../../helpers/helpers';
+import { OpenApiImportService } from '../../services/openapi-import.service';
 
 export class OpenApiProvider extends AbstractFolderTreeProvider<OpenApiFolder> {
 	public readonly VIEW_ITEM_SHOW_SOURCE_COMMAND_ID: string = 'kaoto.openapi.showSource';
@@ -33,6 +33,7 @@ export class OpenApiProvider extends AbstractFolderTreeProvider<OpenApiFolder> {
 	/** Parsed OpenAPI data cached during filtering to avoid re-reading in toTreeItemForFile */
 	private readonly openApiDataCache = new Map<string, { version: string }>();
 
+	private readonly openApiService = new OpenApiImportService();
 	private configChangeDisposable?: Disposable;
 
 	constructor() {
@@ -42,7 +43,7 @@ export class OpenApiProvider extends AbstractFolderTreeProvider<OpenApiFolder> {
 	}
 
 	protected getFilePattern(): string {
-		const filesRegexp: string[] = workspace.getConfiguration().get(KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID) ?? ['*openapi.yaml', '*openapi.json'];
+		const filesRegexp: string[] = workspace.getConfiguration().get(KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID) ?? DEFAULT_KAOTO_OPENAPI_FILES_REGEXP;
 		return '{' + filesRegexp.map((r) => '**/' + r).join(',') + '}';
 	}
 
@@ -124,7 +125,7 @@ export class OpenApiProvider extends AbstractFolderTreeProvider<OpenApiFolder> {
 
 	/**
 	 * Filter files to only those containing a valid OpenAPI spec.
-	 * Caches parsed OpenAPI data for reuse in toTreeItemForFile.
+	 * Delegates parsing and validation to {@link OpenApiImportService.parseOpenApiSpec}.
 	 */
 	private async filterToOpenApiFiles(files: Uri[]): Promise<Uri[]> {
 		this.openApiDataCache.clear();
@@ -133,12 +134,9 @@ export class OpenApiProvider extends AbstractFolderTreeProvider<OpenApiFolder> {
 				const filepath = normalize(file.fsPath);
 				try {
 					const content = await fsPromises.readFile(filepath, 'utf8');
-					const ext = extname(filepath);
-					const parsed = ext === '.yaml' || ext === '.yml' ? YAML.parse(content) : JSON.parse(content);
-					if (parsed?.openapi) {
-						this.openApiDataCache.set(filepath, { version: parsed.openapi });
-						return file;
-					}
+					const spec = this.openApiService.parseOpenApiSpec(content);
+					this.openApiDataCache.set(filepath, { version: spec.openapi });
+					return file;
 				} catch {
 					// Not a valid OpenAPI file or parse error - skip
 				}
@@ -151,12 +149,8 @@ export class OpenApiProvider extends AbstractFolderTreeProvider<OpenApiFolder> {
 	private async parseOpenApiFile(filepath: string): Promise<OpenApiFile | undefined> {
 		try {
 			const content = await fsPromises.readFile(filepath, 'utf8');
-			const ext = extname(filepath);
-			const parsed = ext === '.yaml' || ext === '.yml' ? YAML.parse(content) : JSON.parse(content);
-			if (parsed?.openapi) {
-				const fileName = basename(filepath);
-				return new OpenApiFile(fileName, filepath, parsed.openapi);
-			}
+			const spec = this.openApiService.parseOpenApiSpec(content);
+			return new OpenApiFile(basename(filepath), filepath, spec.openapi);
 		} catch (error) {
 			console.error(`Error parsing file: ${filepath}`, error);
 		}
