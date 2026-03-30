@@ -99,7 +99,7 @@ jobs:
       - name: Allow unprivileged user namespace
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Run Integration Tests
-        uses: nick-fields/retry@v3.0.2
+        uses: nick-fields/retry@v4.0.0
         with:
           timeout_minutes: 30
           retry_wait_seconds: ${{ inputs.retry-wait-ubuntu }}
@@ -139,7 +139,7 @@ jobs:
       - name: Install test dependencies
         run: yarn install --mode=skip-build
       - name: Run Integration Tests
-        uses: nick-fields/retry@v3.0.2
+        uses: nick-fields/retry@v4.0.0
         with:
           timeout_minutes: 30
           retry_wait_seconds: ${{ inputs.retry-wait-macos }}
@@ -178,7 +178,7 @@ jobs:
       - name: Install test dependencies
         run: yarn install --mode=skip-build
       - name: Run Integration Tests
-        uses: nick-fields/retry@v3.0.2
+        uses: nick-fields/retry@v4.0.0
         with:
           timeout_minutes: 30
           retry_wait_seconds: ${{ inputs.retry-wait-windows }}
