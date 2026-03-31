@@ -29,8 +29,9 @@ export class CamelExportJBangTask extends CamelJBangTask {
 		runtime: string,
 		outputPath: string,
 		cwd: string,
+		kubernetes?: boolean,
 	): Promise<CamelExportJBangTask> {
-		const result = await CamelCommandAPI.export(uri.fsPath, gav, runtime, outputPath, cwd);
+		const result = await CamelCommandAPI.export(uri.fsPath, gav, runtime, outputPath, cwd, kubernetes);
 		return new CamelExportJBangTask(scope, result.execution);
 	}
 }

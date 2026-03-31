@@ -1,35 +1,81 @@
 import { CamelExecutorFactory } from '../CamelExecutorFactory';
-import { CommandArguments, CommandContext, CommandResult } from '../types/ExecutorTypes';
+import { CommandArguments, CommandResult } from '../types/ExecutorTypes';
+import { CamelSettingsHelper } from '../helpers/CamelSettingsHelper';
 
 /**
  * High-level API for executing Camel commands
  * Used by task classes to abstract executor details
+ * Integrates user settings from VS Code configuration
  */
 export class CamelCommandAPI {
 	/**
-	 * Run a Camel integration
+	 * Run a Camel integration with user settings
 	 */
 	static async run(filePath: string, cwd: string, port?: number, additionalArgs: CommandArguments = []): Promise<CommandResult> {
 		const executor = await CamelExecutorFactory.createExecutor();
+		const settingsHelper = new CamelSettingsHelper();
 
-		const args: CommandArguments = this.filterEmptyArgs([`'${filePath}'`, port ? `--management-port=${port}` : '', ...additionalArgs]);
+		// Get user settings
+		const { args: userArgs, conflicts } = await settingsHelper.getRunArguments(filePath, cwd);
+		const { argument: portArg, resolvedPort } = settingsHelper.getPortArgument(port, userArgs);
+		const camelVersionArg = settingsHelper.getCamelVersionArgument(userArgs);
+		const reposArg = settingsHelper.getRedHatMavenRepositoryArgument(userArgs);
 
-		return await executor.execute('run', args, { cwd });
+		// Show conflict warnings
+		await settingsHelper.showConflictWarnings(conflicts);
+
+		// Build final arguments
+		const args: CommandArguments = this.filterEmptyArgs([`'${filePath}'`, portArg, ...userArgs, ...additionalArgs, camelVersionArg, reposArg]);
+
+		const result = await executor.execute('run', args, { cwd });
+		// Override resolved port if we determined it from settings
+		if (portArg) {
+			return {
+				...result,
+				resolvedPort: resolvedPort,
+			};
+		}
+		return result;
 	}
 
 	/**
-	 * Run a Camel integration from source directory
+	 * Run a Camel integration from source directory with user settings
 	 */
 	static async runSourceDir(sourceDir: string, port?: number, additionalArgs: CommandArguments = []): Promise<CommandResult> {
 		const executor = await CamelExecutorFactory.createExecutor();
+		const settingsHelper = new CamelSettingsHelper();
 
-		const args: CommandArguments = this.filterEmptyArgs([`'--source-dir=${sourceDir}'`, port ? `--management-port=${port}` : '', ...additionalArgs]);
+		// Get user settings
+		const { args: userArgs, conflicts } = await settingsHelper.getRunSourceDirArguments(sourceDir);
+		const { argument: portArg, resolvedPort } = settingsHelper.getPortArgument(port, userArgs);
+		const camelVersionArg = settingsHelper.getCamelVersionArgument(userArgs);
+		const reposArg = settingsHelper.getRedHatMavenRepositoryArgument(userArgs);
 
-		return await executor.execute('run', args, { cwd: sourceDir });
+		// Show conflict warnings
+		await settingsHelper.showConflictWarnings(conflicts);
+
+		// Build final arguments
+		const args: CommandArguments = this.filterEmptyArgs([
+			`'--source-dir=${sourceDir}'`,
+			portArg,
+			...userArgs,
+			...additionalArgs,
+			camelVersionArg,
+			reposArg,
+		]);
+
+		const result = await executor.execute('run', args, { cwd: sourceDir });
+		if (portArg) {
+			return {
+				...result,
+				resolvedPort: resolvedPort,
+			};
+		}
+		return result;
 	}
 
 	/**
-	 * Export a Camel integration to Maven project
+	 * Export a Camel integration to Maven project with user settings
 	 */
 	static async export(
 		filePath: string,
@@ -37,19 +83,42 @@ export class CamelCommandAPI {
 		runtime: string,
 		outputPath: string,
 		cwd: string,
+		kubernetes?: boolean,
 		additionalArgs: CommandArguments = [],
 	): Promise<CommandResult> {
 		const executor = await CamelExecutorFactory.createExecutor();
+		const settingsHelper = new CamelSettingsHelper();
 
+		// Get user settings
+		const { args: userArgs, conflicts } = await settingsHelper.getExportArguments(cwd);
+		const camelVersionArg = settingsHelper.getCamelVersionArgument(userArgs);
+		const reposArg = settingsHelper.getRedHatMavenRepositoryArgument(userArgs);
+
+		// Show conflict warnings
+		await settingsHelper.showConflictWarnings(conflicts);
+
+		// Add quarkus-openshift dependency if kubernetes export with quarkus runtime
+		const quarkusOpenshiftDependency = runtime === 'quarkus' && kubernetes ? ['--dependency=mvn:io.quarkus:quarkus-openshift'] : [];
+
+		// Build final arguments
 		const args: CommandArguments = this.filterEmptyArgs([
 			`'${filePath}'`,
 			`--runtime=${runtime}`,
 			`--gav=${gav}`,
 			`--directory=${outputPath}`,
+			...quarkusOpenshiftDependency,
+			...userArgs,
 			...additionalArgs,
+			camelVersionArg,
+			reposArg,
 		]);
 
-		return await executor.execute('export', args, { cwd });
+		// Use 'kubernetes export' if kubernetes flag is true, otherwise 'export'
+		if (kubernetes) {
+			return await executor.execute('kubernetes', ['export', ...args], { cwd });
+		} else {
+			return await executor.execute('export', args, { cwd });
+		}
 	}
 
 	/**
