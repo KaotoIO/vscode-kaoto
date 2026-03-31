@@ -44,7 +44,7 @@ import { ParentItem } from '../views/deploymentTreeItems/ParentItem';
 import { CamelStopJBangTask } from '../tasks/CamelStopJBangTask';
 import { ChildItem } from '../views/deploymentTreeItems/ChildItem';
 import { CamelRouteOperationJBangTask } from '../tasks/CamelRouteOperationJBangTask';
-import { CamelJBang, RouteOperation } from '../helpers/CamelJBang';
+import { RouteOperation } from '../helpers/CamelJBang';
 import { RecommendationCore } from '@redhat-developer/vscode-extension-proposals';
 import { WhatsNewPanel } from './WhatsNewPanel';
 import { satisfies } from 'compare-versions';
@@ -552,20 +552,12 @@ export class ExtensionContextHandler {
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(INTEGRATIONS_RUN_COMMAND_ID, async (integration: Integration) => {
 				const allocatedPort = await portManager.allocatePort();
-				let runTask: CamelRunJBangTask | undefined;
+				const runTask = await CamelRunJBangTask.create(integration.filepath.fsPath, allocatedPort);
 
-				try {
-					runTask = await CamelRunJBangTask.create(integration.filepath.fsPath, allocatedPort);
-					this.synchronizePortTracking(portManager, runTask, allocatedPort);
-					await runTask.execute();
-					await this.sendCommandTrackingEvent(INTEGRATIONS_RUN_COMMAND_ID);
-				} catch (error) {
-					// Release the port that is currently reserved
-					// If synchronizePortTracking succeeded, it may have changed which port is reserved
-					const portToRelease = runTask ? (runTask.definition as CamelJBangTaskDefinition).port : allocatedPort;
-					portManager.releasePort(portToRelease);
-					throw error;
-				}
+				this.synchronizePortTracking(portManager, runTask, allocatedPort);
+
+				await runTask.execute();
+				await this.sendCommandTrackingEvent(INTEGRATIONS_RUN_COMMAND_ID);
 			}),
 		);
 	}
@@ -710,19 +702,11 @@ export class ExtensionContextHandler {
 	private synchronizePortTracking(portManager: PortManager, task: CamelJBangTask, allocatedPort: number): void {
 		const taskDef = task.definition as CamelJBangTaskDefinition;
 		const actualPort = taskDef.port;
+
 		if (actualPort !== allocatedPort) {
-			if (actualPort === CamelJBang.NO_PORT) {
-				portManager.releasePort(allocatedPort);
-				return;
-			}
-			const usedPorts = portManager.getUsedPorts();
-			if (usedPorts.has(actualPort)) {
-				portManager.releasePort(allocatedPort);
-				throw new Error(`Port ${actualPort} is already reserved by another running integration.`);
-			}
 			// User overrode the port in settings, update PortManager to track the actual port
 			portManager.releasePort(allocatedPort);
-			usedPorts.add(actualPort);
+			portManager.getUsedPorts().add(actualPort);
 		}
 	}
 
