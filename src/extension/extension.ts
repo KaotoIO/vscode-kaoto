@@ -26,6 +26,7 @@ import { ExtensionContextHandler } from './ExtensionContextHandler';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { PortManager } from '../helpers/PortManager';
 import { CamelExecutorFactory } from '../executors/CamelExecutorFactory';
+import { CamelLauncherDownloader } from '../services/CamelLauncherDownloader';
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -35,6 +36,11 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Initialize executor factory with extension context
 	CamelExecutorFactory.initialize(context);
+
+	// Pre-download Camel Launcher if configured (non-blocking)
+	ensureCamelLauncherAvailable(context).catch((error) => {
+		KaotoOutputChannel.logError('Background download of Camel Launcher failed', error);
+	});
 
 	const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
 	backendProxy = new VsCodeBackendProxy(context, backendI18n);
@@ -149,6 +155,50 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	KaotoOutputChannel.logInfo('Kaoto extension is successfully setup.');
 	console.log('Kaoto extension is successfully setup.');
+}
+
+/**
+ * Ensure Camel Launcher is available if configured
+ * Downloads it proactively during extension activation
+ */
+async function ensureCamelLauncherAvailable(context: vscode.ExtensionContext): Promise<void> {
+	try {
+		const config = vscode.workspace.getConfiguration();
+		const executorType = config.get<string>('kaoto.executor.type', 'camel-launcher');
+
+		// Only pre-download if using Camel Launcher
+		if (executorType !== 'camel-launcher') {
+			return;
+		}
+
+		const customPath = config.get<string>('kaoto.camelLauncher.path');
+		const autoDownload = config.get<boolean>('kaoto.camelLauncher.autoDownload', true);
+
+		// Skip if using custom path or auto-download is disabled
+		if (customPath || !autoDownload) {
+			if (customPath) {
+				KaotoOutputChannel.logInfo(`Using custom Camel Launcher path: ${customPath}`);
+			}
+			return;
+		}
+
+		// Download Camel Launcher proactively
+		const version = config.get<string>('kaoto.camelLauncher.version', '4.18.1');
+		const storageLocation = config.get<string>('kaoto.camelLauncher.storageLocation');
+
+		KaotoOutputChannel.logInfo(`Pre-downloading Camel Launcher ${version}...`);
+		vscode.window.setStatusBarMessage('$(sync~spin) Kaoto: Downloading Camel Launcher...', 3000);
+
+		const downloader = new CamelLauncherDownloader(context, storageLocation);
+		const launcherPath = await downloader.ensureLauncher(version);
+
+		KaotoOutputChannel.logInfo(`Camel Launcher ${version} ready at: ${launcherPath}`);
+		vscode.window.setStatusBarMessage('$(check) Kaoto: Camel Launcher ready', 3000);
+	} catch (error) {
+		const errorMessage = error instanceof Error ? error.message : String(error);
+		KaotoOutputChannel.logError('Failed to download Camel Launcher during activation', error);
+		vscode.window.showWarningMessage(`Kaoto: Failed to download Camel Launcher: ${errorMessage}. It will be downloaded when first needed.`);
+	}
 }
 
 export async function deactivate() {

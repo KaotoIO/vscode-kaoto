@@ -1173,7 +1173,7 @@
           "kaoto.camelLauncher.version": {
             "type": "string",
             "markdownDescription": "Apache Camel Launcher version to use. The launcher will be automatically downloaded if not found.\n\nIt is recommended to use the same version as your Camel project for compatibility.",
-            "default": "4.18.0",
+            "default": "4.18.1",
             "order": 0
           },
           "kaoto.camelLauncher.path": {

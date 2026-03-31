@@ -68,7 +68,7 @@ export class CamelExecutorFactory {
 			case 'camel-launcher':
 				return {
 					type: 'camel-launcher',
-					version: vscodeConfig.get('kaoto.camelLauncher.version', '4.18.0'),
+					version: vscodeConfig.get('kaoto.camelLauncher.version', '4.18.1'),
 					launcherPath: vscodeConfig.get('kaoto.camelLauncher.path'),
 					autoDownload: vscodeConfig.get('kaoto.camelLauncher.autoDownload', true),
 					storageLocation: vscodeConfig.get('kaoto.camelLauncher.storageLocation'),

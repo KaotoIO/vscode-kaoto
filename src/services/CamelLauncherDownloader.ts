@@ -30,10 +30,10 @@ export class CamelLauncherDownloader {
 	 */
 	async ensureLauncher(version: string): Promise<string> {
 		const launcherDir = this.getLauncherDirectory(version);
-		const launcherExecutable = this.getLauncherExecutable(launcherDir);
 
-		// Check if already downloaded
-		if (fs.existsSync(launcherExecutable)) {
+		// Try to find existing executable
+		let launcherExecutable = this.findLauncherExecutable(launcherDir);
+		if (launcherExecutable) {
 			KaotoOutputChannel.logInfo(`Camel Launcher ${version} already available at: ${launcherExecutable}`);
 			return launcherExecutable;
 		}
@@ -42,9 +42,15 @@ export class CamelLauncherDownloader {
 		KaotoOutputChannel.logInfo(`Downloading Camel Launcher ${version}...`);
 		await this.downloadLauncher(version, launcherDir);
 
-		// Make executable on Unix systems
+		// Find the executable after extraction
+		launcherExecutable = this.findLauncherExecutable(launcherDir);
+		if (!launcherExecutable) {
+			throw new Error(`Camel Launcher executable not found after extraction in ${launcherDir}`);
+		}
+
+		// Make all scripts in bin directory executable on Unix systems
 		if (process.platform !== 'win32') {
-			fs.chmodSync(launcherExecutable, 0o755);
+			this.makeScriptsExecutable(launcherDir);
 		}
 
 		KaotoOutputChannel.logInfo(`Camel Launcher ${version} ready at: ${launcherExecutable}`);
@@ -55,22 +61,43 @@ export class CamelLauncherDownloader {
 	 * Download Camel Launcher from Maven Central
 	 */
 	private async downloadLauncher(version: string, targetDir: string): Promise<void> {
-		const downloadUrl = this.getDownloadUrl(version);
 		const zipPath = path.join(this.storageDir, `camel-launcher-${version}.zip`);
 
-		try {
-			// Download zip file
-			await this.downloadFile(downloadUrl, zipPath);
+		// Try different possible artifact names
+		const urlPatterns = [
+			`${CamelLauncherDownloader.MAVEN_CENTRAL_BASE}/${version}/camel-launcher-${version}-bin.zip`,
+			`${CamelLauncherDownloader.MAVEN_CENTRAL_BASE}/${version}/camel-launcher-${version}.zip`,
+		];
 
-			// Extract zip
-			await this.extractZip(zipPath, targetDir);
+		let lastError: Error | undefined;
 
-			// Clean up zip file
-			fs.unlinkSync(zipPath);
-		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : String(error);
-			throw new Error(`Failed to download Camel Launcher ${version}: ${errorMessage}`);
+		for (const downloadUrl of urlPatterns) {
+			try {
+				KaotoOutputChannel.logInfo(`Trying download URL: ${downloadUrl}`);
+
+				// Download zip file
+				await this.downloadFile(downloadUrl, zipPath);
+
+				// Extract zip
+				await this.extractZip(zipPath, targetDir);
+
+				// Clean up zip file
+				fs.unlinkSync(zipPath);
+
+				return; // Success!
+			} catch (error) {
+				lastError = error instanceof Error ? error : new Error(String(error));
+				KaotoOutputChannel.logWarning(`Failed to download from ${downloadUrl}: ${lastError.message}`);
+
+				// Clean up failed download
+				if (fs.existsSync(zipPath)) {
+					fs.unlinkSync(zipPath);
+				}
+			}
 		}
+
+		// All attempts failed
+		throw new Error(`Failed to download Camel Launcher ${version} from any URL. Last error: ${lastError?.message}`);
 	}
 
 	/**
@@ -118,26 +145,124 @@ export class CamelLauncherDownloader {
 	}
 
 	/**
-	 * Extract zip file
+	 * Extract zip file and flatten nested directory structure
 	 */
-	private extractZip(zipPath: string, targetDir: string): Promise<void> {
+	private async extractZip(zipPath: string, targetDir: string): Promise<void> {
 		return new Promise((resolve, reject) => {
 			if (!fs.existsSync(targetDir)) {
 				fs.mkdirSync(targetDir, { recursive: true });
 			}
 
+			// Extract to temporary directory first
+			const tempDir = path.join(this.storageDir, `temp-${Date.now()}`);
+			fs.mkdirSync(tempDir, { recursive: true });
+
 			fs.createReadStream(zipPath)
-				.pipe(Extract({ path: targetDir }))
-				.on('close', resolve)
+				.pipe(Extract({ path: tempDir }))
+				.on('close', () => {
+					try {
+						// Find the actual content directory (handles nested structure)
+						this.flattenExtractedContent(tempDir, targetDir);
+
+						// Clean up temp directory
+						fs.rmSync(tempDir, { recursive: true, force: true });
+						resolve();
+					} catch (error) {
+						reject(error);
+					}
+				})
 				.on('error', reject);
 		});
 	}
 
 	/**
-	 * Get download URL for specific version
+	 * Flatten extracted content by moving files from nested directory to target
 	 */
-	private getDownloadUrl(version: string): string {
-		return `${CamelLauncherDownloader.MAVEN_CENTRAL_BASE}/${version}/camel-launcher-${version}.zip`;
+	private flattenExtractedContent(tempDir: string, targetDir: string): void {
+		const entries = fs.readdirSync(tempDir, { withFileTypes: true });
+
+		// If there's a single directory, use its contents
+		if (entries.length === 1 && entries[0].isDirectory()) {
+			const nestedDir = path.join(tempDir, entries[0].name);
+			this.moveDirectoryContents(nestedDir, targetDir);
+		} else {
+			// Otherwise move everything directly
+			this.moveDirectoryContents(tempDir, targetDir);
+		}
+	}
+
+	/**
+	 * Move all contents from source to target directory
+	 */
+	private moveDirectoryContents(sourceDir: string, targetDir: string): void {
+		const entries = fs.readdirSync(sourceDir, { withFileTypes: true });
+
+		for (const entry of entries) {
+			const sourcePath = path.join(sourceDir, entry.name);
+			const targetPath = path.join(targetDir, entry.name);
+
+			if (entry.isDirectory()) {
+				fs.mkdirSync(targetPath, { recursive: true });
+				this.moveDirectoryContents(sourcePath, targetPath);
+			} else {
+				fs.copyFileSync(sourcePath, targetPath);
+			}
+		}
+	}
+
+	/**
+	 * Make all scripts in bin directory executable
+	 */
+	private makeScriptsExecutable(launcherDir: string): void {
+		const binDir = this.findBinDirectory(launcherDir);
+		if (!binDir) {
+			KaotoOutputChannel.logWarning('Could not find bin directory to set execute permissions');
+			return;
+		}
+
+		try {
+			const files = fs.readdirSync(binDir);
+			for (const file of files) {
+				const filePath = path.join(binDir, file);
+				if (fs.statSync(filePath).isFile()) {
+					fs.chmodSync(filePath, 0o755);
+					KaotoOutputChannel.logInfo(`Set execute permission for: ${filePath}`);
+				}
+			}
+		} catch (error) {
+			KaotoOutputChannel.logWarning(`Failed to set execute permissions: ${error}`);
+		}
+	}
+
+	/**
+	 * Find bin directory in launcher directory
+	 */
+	private findBinDirectory(launcherDir: string): string | null {
+		const searchDir = (dir: string, depth: number = 0): string | null => {
+			if (depth > 3) {
+				return null;
+			}
+
+			try {
+				const entries = fs.readdirSync(dir, { withFileTypes: true });
+				for (const entry of entries) {
+					if (entry.isDirectory() && entry.name === 'bin') {
+						return path.join(dir, entry.name);
+					}
+					if (entry.isDirectory()) {
+						const found = searchDir(path.join(dir, entry.name), depth + 1);
+						if (found) {
+							return found;
+						}
+					}
+				}
+			} catch (error) {
+				// Ignore errors
+			}
+			return null;
+		};
+
+		return searchDir(launcherDir);
 	}
 
 	/**
@@ -148,12 +273,55 @@ export class CamelLauncherDownloader {
 	}
 
 	/**
-	 * Get launcher executable path
+	 * Find launcher executable by searching the directory tree
 	 */
-	private getLauncherExecutable(launcherDir: string): string {
+	private findLauncherExecutable(launcherDir: string): string | null {
+		if (!fs.existsSync(launcherDir)) {
+			return null;
+		}
+
 		const isWindows = process.platform === 'win32';
-		const executable = isWindows ? 'camel.bat' : 'camel';
-		return path.join(launcherDir, 'bin', executable);
+		// Try multiple possible executable names
+		const executableNames = isWindows ? ['camel.bat', 'camel.cmd'] : ['camel.sh', 'camel'];
+
+		// Search for bin/camel or bin/camel.bat recursively
+		const searchDir = (dir: string, depth: number = 0): string | null => {
+			if (depth > 3) {
+				return null;
+			} // Limit recursion depth
+
+			try {
+				const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+				for (const entry of entries) {
+					const fullPath = path.join(dir, entry.name);
+
+					if (entry.isDirectory()) {
+						// Check if this is a bin directory
+						if (entry.name === 'bin') {
+							// Try each possible executable name
+							for (const execName of executableNames) {
+								const execPath = path.join(fullPath, execName);
+								if (fs.existsSync(execPath)) {
+									return execPath;
+								}
+							}
+						}
+						// Recurse into subdirectories
+						const found = searchDir(fullPath, depth + 1);
+						if (found) {
+							return found;
+						}
+					}
+				}
+			} catch (error) {
+				// Ignore errors reading directories
+			}
+
+			return null;
+		};
+
+		return searchDir(launcherDir);
 	}
 
 	/**
