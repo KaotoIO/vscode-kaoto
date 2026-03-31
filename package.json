@@ -55,6 +55,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-monaco-editor": "0.56.2",
+    "unzipper": "^0.12.3",
     "valid-filename": "4.0.0",
     "wait-on": "^9.0.10",
     "yaml": "^2.9.0"
@@ -1144,6 +1145,56 @@
         }
       },
       {
+        "id": "executor",
+        "title": "Executor",
+        "order": 0,
+        "properties": {
+          "kaoto.executor.type": {
+            "type": "string",
+            "enum": [
+              "jbang",
+              "camel-launcher"
+            ],
+            "enumDescriptions": [
+              "Use JBang to execute Camel commands (requires JBang installation)",
+              "Use Camel Launcher to execute Camel commands (no JBang required)"
+            ],
+            "markdownDescription": "Select the executor type for running Camel integrations.\n\n**JBang**: Traditional approach using JBang CLI (requires JBang installation).\n\n**Camel Launcher**: New approach using standalone Camel Launcher (no JBang required, automatically downloaded).",
+            "default": "camel-launcher",
+            "order": 0
+          }
+        }
+      },
+      {
+        "id": "camel-launcher",
+        "title": "Camel Launcher",
+        "order": 1,
+        "properties": {
+          "kaoto.camelLauncher.version": {
+            "type": "string",
+            "markdownDescription": "Apache Camel Launcher version to use. The launcher will be automatically downloaded if not found.\n\nIt is recommended to use the same version as your Camel project for compatibility.",
+            "default": "4.18.0",
+            "order": 0
+          },
+          "kaoto.camelLauncher.path": {
+            "type": "string",
+            "markdownDescription": "Custom path to Camel Launcher executable. If not specified, the launcher will be automatically downloaded to extension storage.\n\nExample: `/path/to/camel-launcher/bin/camel` (Unix) or `C:\\path\\to\\camel-launcher\\bin\\camel.bat` (Windows)",
+            "order": 1
+          },
+          "kaoto.camelLauncher.autoDownload": {
+            "type": "boolean",
+            "markdownDescription": "Automatically download Camel Launcher if not found. Disable this for offline environments or when using a custom launcher path.",
+            "default": true,
+            "order": 2
+          },
+          "kaoto.camelLauncher.storageLocation": {
+            "type": "string",
+            "markdownDescription": "Custom storage location for downloaded Camel Launcher distributions. If not specified, uses extension global storage.\n\nExample: `/path/to/storage` or `C:\\path\\to\\storage`",
+            "order": 3
+          }
+        }
+      },
+      {
         "id": "maven",
         "title": "Maven Projects",
         "properties": {
@@ -1266,6 +1317,7 @@
     "@types/openapi-v3": "^3.0.0",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "@types/unzipper": "^0",
     "@types/vscode": "^1.100.0",
     "@types/wait-on": "^5.3.4",
     "@typescript-eslint/eslint-plugin": "^8.60.1",

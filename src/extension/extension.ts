@@ -25,12 +25,16 @@ import { VSCodeKaotoChannelApiProducer } from './../webview/VSCodeKaotoChannelAp
 import { ExtensionContextHandler } from './ExtensionContextHandler';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { PortManager } from '../helpers/PortManager';
+import { CamelExecutorFactory } from '../executors/CamelExecutorFactory';
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
 
 export async function activate(context: vscode.ExtensionContext) {
 	KaotoOutputChannel.logInfo('Kaoto extension is alive.');
+
+	// Initialize executor factory with extension context
+	CamelExecutorFactory.initialize(context);
 
 	const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
 	backendProxy = new VsCodeBackendProxy(context, backendI18n);
