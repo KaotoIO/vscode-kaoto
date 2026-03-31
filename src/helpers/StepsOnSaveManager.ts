@@ -45,7 +45,8 @@ export class StepsOnSaveManager {
 
 		KaotoOutputChannel.logInfo(message ?? 'Updating Camel dependencies...');
 		try {
-			await new CamelDependencyUpdateJBangTask(pomPath, docPath).executeAndWaitWithProgress('Updating Camel dependencies in pom.xml');
+			const task = await CamelDependencyUpdateJBangTask.create(pomPath, docPath);
+			await task.executeAndWaitWithProgress('Updating Camel dependencies in pom.xml');
 			vscode.window.setStatusBarMessage(`Kaoto: Camel dependencies in '${pomPath}' successfully updated.`, 5_000);
 			KaotoOutputChannel.logInfo('Camel dependencies update completed successfully.');
 			this.hasStepsByDocPath.set(docPath, false);

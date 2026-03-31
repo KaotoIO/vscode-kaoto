@@ -15,7 +15,7 @@
  */
 import { ShellExecution, TaskScope } from 'vscode';
 import { CamelJBangTask } from './CamelJBangTask';
-import { CamelJBang } from '../helpers/CamelJBang';
+import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 import { basename, dirname } from 'path';
 
 export class CamelRunJBangTask extends CamelJBangTask {
@@ -26,7 +26,7 @@ export class CamelRunJBangTask extends CamelJBangTask {
 	}
 
 	static async create(filePath: string, port?: number): Promise<CamelRunJBangTask> {
-		const { execution, resolvedPort } = await new CamelJBang().run(filePath, dirname(filePath), port);
-		return new CamelRunJBangTask(execution, filePath, resolvedPort);
+		const result = await CamelCommandAPI.run(filePath, dirname(filePath), port);
+		return new CamelRunJBangTask(result.execution, filePath, result.resolvedPort);
 	}
 }

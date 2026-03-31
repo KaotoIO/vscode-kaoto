@@ -619,7 +619,8 @@ export class ExtensionContextHandler {
 
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(DEPLOYMENTS_INTEGRATION_STOP_COMMAND_ID, async (integration: ParentItem) => {
-				await new CamelStopJBangTask(integration.label as string).executeAndWait();
+				const stopTask = await CamelStopJBangTask.create(integration.label as string);
+				await stopTask.executeAndWait();
 				await this.sendCommandTrackingEvent(DEPLOYMENTS_INTEGRATION_STOP_COMMAND_ID);
 			}),
 		);
@@ -645,25 +646,29 @@ export class ExtensionContextHandler {
 		const DEPLOYMENTS_ROUTE_SUSPEND_COMMAND_ID: string = 'kaoto.deployments.route.suspend';
 
 		const startCommand = vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_START_COMMAND_ID, async (route: ChildItem) => {
-			await new CamelRouteOperationJBangTask(RouteOperation.start, route.parentIntegration.label as string, route.label as string).executeAndWait();
+			const task = await CamelRouteOperationJBangTask.create(RouteOperation.start, route.parentIntegration.label as string, route.label as string);
+			await task.executeAndWait();
 			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Started');
 			this.deploymentsProvider.refresh();
 			await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_START_COMMAND_ID);
 		});
 		const stopCommand = vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_STOP_COMMAND_ID, async (route: ChildItem) => {
-			await new CamelRouteOperationJBangTask(RouteOperation.stop, route.parentIntegration.label as string, route.label as string).executeAndWait();
+			const task = await CamelRouteOperationJBangTask.create(RouteOperation.stop, route.parentIntegration.label as string, route.label as string);
+			await task.executeAndWait();
 			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Stopped');
 			this.deploymentsProvider.refresh();
 			await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_STOP_COMMAND_ID);
 		});
 		const resumeCommand = vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_RESUME_COMMAND_ID, async (route: ChildItem) => {
-			await new CamelRouteOperationJBangTask(RouteOperation.resume, route.parentIntegration.label as string, route.label as string).executeAndWait();
+			const task = await CamelRouteOperationJBangTask.create(RouteOperation.resume, route.parentIntegration.label as string, route.label as string);
+			await task.executeAndWait();
 			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Started');
 			this.deploymentsProvider.refresh();
 			await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_RESUME_COMMAND_ID);
 		});
 		const suspendCommand = vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_SUSPEND_COMMAND_ID, async (route: ChildItem) => {
-			await new CamelRouteOperationJBangTask(RouteOperation.suspend, route.parentIntegration.label as string, route.label as string).executeAndWait();
+			const task = await CamelRouteOperationJBangTask.create(RouteOperation.suspend, route.parentIntegration.label as string, route.label as string);
+			await task.executeAndWait();
 			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Suspended');
 			this.deploymentsProvider.refresh();
 			await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_SUSPEND_COMMAND_ID);

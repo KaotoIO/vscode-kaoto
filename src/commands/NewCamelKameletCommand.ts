@@ -39,9 +39,8 @@ export class NewCamelKameletCommand extends AbstractNewCamelRouteCommand {
 						const filePath = this.computeFullPath(targetFolder.fsPath, fileName);
 
 						const wsFolderTarget = wsFolder || this.singleWorkspaceFolder;
-						await new CamelInitJBangTask(path.relative(wsFolderTarget.uri.fsPath, filePath), wsFolderTarget).executeAndWaitWithProgress(
-							NewCamelKameletCommand.PROGRESS_NOTIFICATION_MESSAGE,
-						);
+						const initTask = await CamelInitJBangTask.create(path.relative(wsFolderTarget.uri.fsPath, filePath), wsFolderTarget);
+						await initTask.executeAndWaitWithProgress(NewCamelKameletCommand.PROGRESS_NOTIFICATION_MESSAGE);
 						const targetFileURI = Uri.file(filePath);
 						await this.waitForFileExists(targetFileURI);
 						await commands.executeCommand('kaoto.open', targetFileURI);

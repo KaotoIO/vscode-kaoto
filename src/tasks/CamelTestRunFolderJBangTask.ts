@@ -15,7 +15,7 @@
  */
 import { ShellExecution, TaskScope } from 'vscode';
 import { CamelJBangTask } from './CamelJBangTask';
-import { CamelTestJBang } from '../helpers/CamelTestJBang';
+import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 
 export class CamelTestRunFolderJBangTask extends CamelJBangTask {
 	private constructor(shellExecution: ShellExecution, folderPath: string) {
@@ -24,7 +24,7 @@ export class CamelTestRunFolderJBangTask extends CamelJBangTask {
 	}
 
 	static async create(folderPath: string): Promise<CamelTestRunFolderJBangTask> {
-		const shellExecution = await new CamelTestJBang().runFolder(folderPath);
-		return new CamelTestRunFolderJBangTask(shellExecution, folderPath);
+		const result = await CamelCommandAPI.testRunFolder(folderPath);
+		return new CamelTestRunFolderJBangTask(result.execution, folderPath);
 	}
 }

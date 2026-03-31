@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TaskRevealKind, TaskScope } from 'vscode';
+import { ShellExecution, TaskRevealKind, TaskScope } from 'vscode';
 import { CamelJBangTask } from './CamelJBangTask';
-import { CamelJBang } from '../helpers/CamelJBang';
+import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
+import path from 'path';
 
 export class CamelDependencyUpdateJBangTask extends CamelJBangTask {
-	constructor(pomPath: string, integrationFilePath: string) {
-		super(
-			TaskScope.Workspace,
-			'Update Camel dependencies in pom.xml',
-			new CamelJBang().dependencyUpdate(pomPath, integrationFilePath),
-			true,
-			TaskRevealKind.Silent,
-		);
+	private constructor(shellExecution: ShellExecution) {
+		super(TaskScope.Workspace, 'Update Camel dependencies in pom.xml', shellExecution, true, TaskRevealKind.Silent);
+	}
+
+	static async create(pomPath: string, integrationFilePath: string): Promise<CamelDependencyUpdateJBangTask> {
+		const result = await CamelCommandAPI.dependencyUpdate(pomPath, integrationFilePath, path.dirname(pomPath));
+		return new CamelDependencyUpdateJBangTask(result.execution);
 	}
 }

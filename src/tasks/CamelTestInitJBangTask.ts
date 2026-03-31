@@ -13,12 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CamelTestJBang } from '../helpers/CamelTestJBang';
 import { CamelInitJBangTask } from './CamelInitJBangTask';
 import { WorkspaceFolder, TaskScope } from 'vscode';
+import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 
 export class CamelTestInitJBangTask extends CamelInitJBangTask {
-	constructor(file: string, cwd: string, scope: WorkspaceFolder | TaskScope.Workspace) {
-		super(file, scope, 'Init a Camel Test file with JBang', new CamelTestJBang().init(file, cwd));
+	private cwd: string;
+
+	protected constructor(scope: WorkspaceFolder | TaskScope.Workspace, label: string, shellExecution: any, cwd: string) {
+		super(scope, label, shellExecution);
+		this.cwd = cwd;
+	}
+
+	static async create(
+		file: string,
+		scope: WorkspaceFolder | TaskScope.Workspace,
+		label: string = 'Init a Camel Test file',
+		cwd?: string,
+	): Promise<CamelTestInitJBangTask> {
+		const result = await CamelCommandAPI.testInit(file, cwd);
+		return new CamelTestInitJBangTask(scope, label, result.execution, cwd || '');
 	}
 }

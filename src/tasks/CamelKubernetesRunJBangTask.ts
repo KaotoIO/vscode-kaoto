@@ -16,7 +16,7 @@
 import { ShellExecution, TaskScope } from 'vscode';
 import { CamelJBangTask } from './CamelJBangTask';
 import { basename, dirname } from 'path';
-import { CamelKubernetesJBang } from '../helpers/CamelKubernetesJBang';
+import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 
 export class CamelKubernetesRunJBangTask extends CamelJBangTask {
 	private constructor(shellExecution: ShellExecution, filePath: string) {
@@ -24,7 +24,7 @@ export class CamelKubernetesRunJBangTask extends CamelJBangTask {
 	}
 
 	static async create(filePath: string): Promise<CamelKubernetesRunJBangTask> {
-		const { execution } = await new CamelKubernetesJBang().run(filePath, dirname(filePath));
-		return new CamelKubernetesRunJBangTask(execution, filePath);
+		const result = await CamelCommandAPI.kubernetesRun(filePath, dirname(filePath));
+		return new CamelKubernetesRunJBangTask(result.execution, filePath);
 	}
 }

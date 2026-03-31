@@ -34,9 +34,8 @@ export class NewCamelPipeCommand extends AbstractNewCamelRouteCommand {
 					const filePath = this.computeFullPath(targetFolder.fsPath, fileName);
 
 					const wsFolderTarget = wsFolder || this.singleWorkspaceFolder;
-					await new CamelBindJBangTask(wsFolderTarget, path.relative(wsFolderTarget.uri.fsPath, filePath)).executeAndWaitWithProgress(
-						NewCamelPipeCommand.PROGRESS_NOTIFICATION_MESSAGE,
-					);
+					const task = await CamelBindJBangTask.create(wsFolderTarget, path.relative(wsFolderTarget.uri.fsPath, filePath));
+					await task.executeAndWaitWithProgress(NewCamelPipeCommand.PROGRESS_NOTIFICATION_MESSAGE);
 
 					const targetFileURI = Uri.file(filePath);
 					await this.waitForFileExists(targetFileURI);

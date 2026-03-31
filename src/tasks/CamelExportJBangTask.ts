@@ -15,10 +15,10 @@
  */
 import { ShellExecution, TaskRevealKind, TaskScope, Uri, WorkspaceFolder } from 'vscode';
 import { CamelJBangTask } from './CamelJBangTask';
-import { CamelKubernetesJBang } from '../helpers/CamelKubernetesJBang';
+import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 
 export class CamelExportJBangTask extends CamelJBangTask {
-	constructor(scope: WorkspaceFolder | TaskScope.Workspace, shellExecution: ShellExecution) {
+	private constructor(scope: WorkspaceFolder | TaskScope.Workspace, shellExecution: ShellExecution) {
 		super(scope, 'Create a Camel project', shellExecution, true, TaskRevealKind.Silent);
 	}
 
@@ -30,7 +30,7 @@ export class CamelExportJBangTask extends CamelJBangTask {
 		outputPath: string,
 		cwd: string,
 	): Promise<CamelExportJBangTask> {
-		const shellExecution = await new CamelKubernetesJBang().export(uri, gav, runtime, outputPath, cwd);
-		return new CamelExportJBangTask(scope, shellExecution);
+		const result = await CamelCommandAPI.export(uri.fsPath, gav, runtime, outputPath, cwd);
+		return new CamelExportJBangTask(scope, result.execution);
 	}
 }

@@ -36,9 +36,8 @@ export class NewCamelTestCommand extends AbstractNewCamelRouteCommand {
 					const fileName = this.getFullName(name, this.getDSL().extension);
 					const filePath = this.computeFullPath(targetFolderPath, fileName);
 
-					await new CamelTestInitJBangTask(fileName, targetFolderPath, wsFolderTarget).executeAndWaitWithProgress(
-						NewCamelTestCommand.PROGRESS_NOTIFICATION_MESSAGE,
-					);
+					const task = await CamelTestInitJBangTask.create(fileName, wsFolderTarget, 'Init a Camel Test file', targetFolderPath);
+					await task.executeAndWaitWithProgress(NewCamelTestCommand.PROGRESS_NOTIFICATION_MESSAGE);
 					const targetFileURI = Uri.file(filePath);
 					await this.waitForFileExists(targetFileURI);
 					await commands.executeCommand('vscode.open', targetFileURI);

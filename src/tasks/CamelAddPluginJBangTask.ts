@@ -13,12 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TaskRevealKind, TaskScope } from 'vscode';
+import { ShellExecution, TaskRevealKind, TaskScope } from 'vscode';
 import { CamelJBangTask } from './CamelJBangTask';
-import { CamelJBang } from '../helpers/CamelJBang';
+import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 
 export class CamelAddPluginJBangTask extends CamelJBangTask {
-	constructor(plugin: string) {
-		super(TaskScope.Workspace, 'Add required Camel JBang plugin', new CamelJBang().add(plugin), true, TaskRevealKind.Silent);
+	private constructor(shellExecution: ShellExecution) {
+		super(TaskScope.Workspace, 'Add required Camel JBang plugin', shellExecution, true, TaskRevealKind.Silent);
+	}
+
+	static async create(plugin: string): Promise<CamelAddPluginJBangTask> {
+		const result = await CamelCommandAPI.pluginAdd(plugin);
+		return new CamelAddPluginJBangTask(result.execution);
 	}
 }

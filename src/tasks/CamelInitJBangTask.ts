@@ -15,15 +15,15 @@
  */
 import { ShellExecution, TaskRevealKind, TaskScope, WorkspaceFolder } from 'vscode';
 import { CamelJBangTask } from './CamelJBangTask';
-import { CamelJBang } from '../helpers/CamelJBang';
+import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 
 export class CamelInitJBangTask extends CamelJBangTask {
-	constructor(
-		file: string,
-		scope: WorkspaceFolder | TaskScope.Workspace,
-		label: string = 'Init a Camel file with JBang',
-		shellExecution: ShellExecution = new CamelJBang().init(file),
-	) {
+	protected constructor(scope: WorkspaceFolder | TaskScope.Workspace, label: string, shellExecution: ShellExecution) {
 		super(scope, label, shellExecution, true, TaskRevealKind.Silent);
+	}
+
+	static async create(file: string, scope: WorkspaceFolder | TaskScope.Workspace, label: string = 'Init a Camel file'): Promise<CamelInitJBangTask> {
+		const result = await CamelCommandAPI.init(file);
+		return new CamelInitJBangTask(scope, label, result.execution);
 	}
 }
