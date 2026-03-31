@@ -26,21 +26,30 @@ export class CamelKubernetesJBang extends CamelJBang {
 		return await super.export(uri, gav, runtime, outputPath, cwd, true);
 	}
 
-	public async run(filePattern: string, cwd?: string): Promise<ShellExecution> {
+	public async run(filePattern: string, cwd?: string, _port?: number): Promise<{ execution: ShellExecution; resolvedPort: number }> {
 		const shellExecOptions: ShellExecutionOptions = {
 			cwd: cwd,
 		};
-		return new ShellExecution(
+		const kubernetesRunArgs = this.getKubernetesRunArguments();
+		const camelVersionArg = this.getCamelVersion(kubernetesRunArgs);
+
+		const execution = new ShellExecution(
 			this.jbang,
-			[...this.defaultJbangArgs, 'kubernetes', 'run', filePattern, this.getCamelVersion(), ...this.getKubernetesRunArguments()].filter(function (arg) {
+			[...this.defaultJbangArgs, 'kubernetes', 'run', filePattern, camelVersionArg, ...kubernetesRunArgs].filter(function (arg) {
 				return arg !== undefined && arg !== null && arg !== ''; // remove ALL empty values ("", null, undefined and 0)
 			}), // remove ALL empty values ("", null, undefined and 0)
 			shellExecOptions,
 		);
+
+		// Kubernetes deployments don't use local ports in the same way
+		// Return -1 to indicate no local port monitoring needed
+		return { execution, resolvedPort: -1 };
 	}
 
 	protected getKubernetesRunArguments(): string[] {
 		const kubernetesRunArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID) as string[];
+		// No hardcoded arguments to merge for kubernetes run currently
+		// If needed in the future, use ArgumentConflictDetector.mergeArguments here
 		if (kubernetesRunArgs.length > 0) {
 			return kubernetesRunArgs;
 		} else {

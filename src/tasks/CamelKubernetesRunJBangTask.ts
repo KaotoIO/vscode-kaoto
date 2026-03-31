@@ -24,7 +24,7 @@ export class CamelKubernetesRunJBangTask extends CamelJBangTask {
 	}
 
 	static async create(filePath: string): Promise<CamelKubernetesRunJBangTask> {
-		const shellExecution = await new CamelKubernetesJBang().run(filePath, dirname(filePath));
-		return new CamelKubernetesRunJBangTask(shellExecution, filePath);
+		const { execution } = await new CamelKubernetesJBang().run(filePath, dirname(filePath));
+		return new CamelKubernetesRunJBangTask(execution, filePath);
 	}
 }

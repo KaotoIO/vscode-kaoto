@@ -26,7 +26,7 @@ export class CamelRunSourceDirJBangTask extends CamelJBangTask {
 	}
 
 	static async create(sourceDir: string, port?: number): Promise<CamelRunSourceDirJBangTask> {
-		const shellExecution = await new CamelJBang().runSourceDir(sourceDir, port);
-		return new CamelRunSourceDirJBangTask(shellExecution, sourceDir, port);
+		const { execution, resolvedPort } = await new CamelJBang().runSourceDir(sourceDir, port);
+		return new CamelRunSourceDirJBangTask(execution, sourceDir, resolvedPort);
 	}
 }

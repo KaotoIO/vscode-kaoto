@@ -1,5 +1,7 @@
 # 2.10.2
 
+- fix: allow user to overwrite default run arguments
+
 # 2.10.1
 
 - display `*openapi.yml` files in OpenAPI view by default

@@ -31,6 +31,7 @@ import { execSync } from 'child_process';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { satisfies } from 'compare-versions';
 import { RuntimeMavenInformation } from '@kaoto/kaoto';
+import { ArgumentConflict, ArgumentConflictDetector } from './ArgumentConflictDetector';
 
 export enum RouteOperation {
 	start = 'start',
@@ -70,12 +71,22 @@ export class CamelJBang {
 		// specifying the --directory option with the complete path when it is equal to the current working directory causes issues.
 		// omitting the option (using default '.') works as expected.
 		const directoryArg = arePathsEqual(dirname(uri.fsPath), outputPath) ? '' : `'--directory=${outputPath}'`;
-		const exportArgs = await this.getExportProjectArguments(cwd);
+		const { args: exportArgs, conflicts: exportConflicts } = await this.getExportProjectArguments(cwd);
 		const parentWorkspaceFolder = workspace.getWorkspaceFolder(uri)?.uri.fsPath ?? '';
 
 		const relativeWorkspacePath = uri.fsPath === parentWorkspaceFolder ? '.' : relative(parentWorkspaceFolder, uri.fsPath);
 
 		const quarkusOpenshiftDependency = runtime === 'quarkus' && kubernetes ? ['--dependency=mvn:io.quarkus:quarkus-openshift'] : [];
+
+		// Get camel version and repos arguments with conflict detection
+		const camelVersionArg = this.getCamelVersion(exportArgs);
+		const reposArg = this.getRedHatMavenRepository(exportArgs);
+
+		// Collect all conflicts
+		const allConflicts = [...exportConflicts];
+
+		// Show warnings for all conflicts
+		await this.showConflictWarnings(allConflicts);
 
 		if (this.camelJBangVersion.startsWith('4.12') && isWindows) {
 			window.showInformationMessage(
@@ -83,7 +94,7 @@ export class CamelJBang {
 			);
 			return new ShellExecution(
 				this.jbang,
-				[
+				this.filterEmptyArgs([
 					...this.defaultJbangArgs,
 					kubernetes ? 'kubernetes' : '',
 					'export',
@@ -94,16 +105,14 @@ export class CamelJBang {
 					directoryArg,
 					...quarkusOpenshiftDependency,
 					...exportArgs,
-					this.getCamelVersion(),
-					this.getRedHatMavenRepository(),
-				].filter(function (arg) {
-					return arg !== undefined && arg !== null && arg !== ''; // remove ALL empty values ("", null, undefined and 0)
-				}),
+					camelVersionArg,
+					reposArg,
+				]),
 			);
 		} else {
 			return new ShellExecution(
 				this.jbang,
-				[
+				this.filterEmptyArgs([
 					...this.defaultJbangArgs,
 					kubernetes ? 'kubernetes' : '',
 					'export',
@@ -113,11 +122,9 @@ export class CamelJBang {
 					directoryArg,
 					...quarkusOpenshiftDependency,
 					...exportArgs,
-					this.getCamelVersion(),
-					this.getRedHatMavenRepository(),
-				].filter(function (arg) {
-					return arg !== undefined && arg !== null && arg !== ''; // remove ALL empty values ("", null, undefined and 0)
-				}),
+					camelVersionArg,
+					reposArg,
+				]),
 			);
 		}
 	}
@@ -141,52 +148,46 @@ export class CamelJBang {
 		);
 	}
 
-	public async run(filePath: string, cwd: string, port?: number): Promise<ShellExecution> {
+	public async run(filePath: string, cwd: string, port?: number): Promise<{ execution: ShellExecution; resolvedPort: number }> {
 		const shellExecOptions: ShellExecutionOptions = {
 			cwd: cwd,
 		};
-		const runArgs = await this.getRunArguments(filePath, cwd);
-		const portArg = this.getPortArgument(port);
-		return new ShellExecution(
+		const { args: runArgs, conflicts: runConflicts } = await this.getRunArguments(filePath, cwd);
+		const { argument: portArg, resolvedPort } = this.getPortArgument(port, runArgs);
+		const camelVersionArg = this.getCamelVersion(runArgs);
+		const reposArg = this.getRedHatMavenRepository(runArgs);
+
+		// Show warnings for all conflicts
+		await this.showConflictWarnings(runConflicts);
+
+		const execution = new ShellExecution(
 			this.jbang,
-			[
-				...this.defaultJbangArgs,
-				'run',
-				`'${filePath}'`,
-				'--console',
-				portArg,
-				...runArgs,
-				this.getCamelVersion(),
-				this.getRedHatMavenRepository(),
-			].filter(function (arg) {
-				return arg !== undefined && arg !== null && arg !== ''; // remove ALL empty values ("", null, undefined and 0)
-			}),
+			this.filterEmptyArgs([...this.defaultJbangArgs, 'run', `'${filePath}'`, portArg, ...runArgs, camelVersionArg, reposArg]),
 			shellExecOptions,
 		);
+
+		return { execution, resolvedPort };
 	}
 
-	public async runSourceDir(sourceDir: string, port?: number): Promise<ShellExecution> {
+	public async runSourceDir(sourceDir: string, port?: number): Promise<{ execution: ShellExecution; resolvedPort: number }> {
 		const shellExecOptions: ShellExecutionOptions = {
 			cwd: sourceDir,
 		};
-		const runArgs = await this.getRunSourceDirArguments(sourceDir);
-		const portArg = this.getPortArgument(port);
-		return new ShellExecution(
+		const { args: runArgs, conflicts: runConflicts } = await this.getRunSourceDirArguments(sourceDir);
+		const { argument: portArg, resolvedPort } = this.getPortArgument(port, runArgs);
+		const camelVersionArg = this.getCamelVersion(runArgs);
+		const reposArg = this.getRedHatMavenRepository(runArgs);
+
+		// Show warnings for all conflicts
+		await this.showConflictWarnings(runConflicts);
+
+		const execution = new ShellExecution(
 			this.jbang,
-			[
-				...this.defaultJbangArgs,
-				'run',
-				`'--source-dir=${sourceDir}'`,
-				'--console',
-				portArg,
-				...runArgs,
-				this.getCamelVersion(),
-				this.getRedHatMavenRepository(),
-			].filter(function (arg) {
-				return arg !== undefined && arg !== null && arg !== ''; // remove ALL empty values ("", null, undefined and 0)
-			}),
+			this.filterEmptyArgs([...this.defaultJbangArgs, 'run', `'--source-dir=${sourceDir}'`, portArg, ...runArgs, camelVersionArg, reposArg]),
 			shellExecOptions,
 		);
+
+		return { execution, resolvedPort };
 	}
 
 	public stop(name: string): ShellExecution {
@@ -227,31 +228,95 @@ export class CamelJBang {
 	}
 
 	/**
-	 * Get the port argument for the JBang command.
+	 * Filter out empty arguments (undefined, null, and empty strings).
+	 * @param args - Array of arguments that may contain empty values.
+	 * @returns Filtered array with only non-empty string values.
+	 */
+	private filterEmptyArgs(args: (string | undefined | null)[]): string[] {
+		return args.filter((arg) => arg !== undefined && arg !== null && arg !== '') as string[];
+	}
+
+	/**
+	 * Get the port argument for the JBang command and resolve the actual port number.
 	 *
 	 * Camel JBang 4.14+ uses the management port instead of the regular port.
 	 * From Camel docs:
 	 * --management-port=<managementPort> To use a dedicated port for HTTP management. Default: -1
-	 * @param port - The port to use.
-	 * @returns The port argument.
+	 * @param port - The port to use (code default).
+	 * @param userArgs - User-defined arguments to check for conflicts.
+	 * @returns Object containing the port argument string and the resolved port number.
 	 */
-	protected getPortArgument(port?: number): string {
-		return satisfies(this.camelJBangVersion, '>=4.14') ? `--management-port=${port ?? -1}` : `--port=${port ?? 8080}`;
+	protected getPortArgument(port?: number, userArgs: string[] = []): { argument: string; resolvedPort: number } {
+		// Check if user has defined --management-port or --port
+		const userDefinedPort = ArgumentConflictDetector.extractPortValue(userArgs);
+
+		if (userDefinedPort !== undefined) {
+			// User setting takes priority, don't add code default
+			return { argument: '', resolvedPort: userDefinedPort };
+		}
+
+		// Use code defaults - always use the allocated port, never -1
+		// If no port is provided, we can't monitor the integration
+		const useManagementPort = satisfies(this.camelJBangVersion, '>=4.14');
+		const effectivePort = port ?? 8080; // Fallback to 8080 if no port allocated
+		const argument = useManagementPort ? `--management-port=${effectivePort}` : `--port=${effectivePort}`;
+
+		return { argument, resolvedPort: effectivePort };
 	}
 
-	protected async getExportProjectArguments(cwd: string): Promise<string[]> {
+	/**
+	 * Show warnings for detected argument conflicts
+	 * Logs conflicts to the Kaoto output channel and displays a VS Code notification
+	 * @param conflicts - Array of detected conflicts between code defaults and user settings
+	 */
+	protected async showConflictWarnings(conflicts: ArgumentConflict[]): Promise<void> {
+		if (conflicts.length === 0) {
+			return;
+		}
+
+		const message =
+			`Camel JBang argument conflicts detected (user settings override code defaults):\n` +
+			conflicts.map((c) => `  - ${c.argument}: code="${c.codeValue}" overridden by user="${c.userValue}"`).join('\n');
+
+		KaotoOutputChannel.logWarning(message);
+
+		// Show a single notification for all conflicts
+		const selection = await window.showInformationMessage(
+			`Camel JBang: ${conflicts.length} argument(s) overridden by user settings. Check output for details.`,
+			'View Output',
+		);
+		if (selection === 'View Output') {
+			KaotoOutputChannel.getInstance().show();
+		}
+	}
+
+	protected async getExportProjectArguments(cwd: string): Promise<{ args: string[]; conflicts: ArgumentConflict[] }> {
 		const exportArgs = workspace.getConfiguration().get(KAOTO_MAVEN_CAMEL_JBANG_EXPORT_FOLDER_ARGUMENTS_SETTING_ID) as string[];
-		return await this.handleLocalKameletDirArgument(exportArgs, cwd);
+		const processedArgs = await this.handleLocalKameletDirArgument(exportArgs, cwd);
+		// No hardcoded arguments to merge for export, but return consistent structure
+		return { args: processedArgs, conflicts: [] };
 	}
 
-	protected async getRunArguments(filePath: string, cwd: string): Promise<string[]> {
+	protected async getRunArguments(filePath: string, cwd: string): Promise<{ args: string[]; conflicts: ArgumentConflict[] }> {
 		const runArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID) as string[];
-		return await this.handleLocalKameletDirArgument(await this.handleMissingXslFiles(filePath, runArgs), cwd);
+		const processedArgs = await this.handleLocalKameletDirArgument(await this.handleMissingXslFiles(filePath, runArgs), cwd);
+
+		// Merge with hardcoded --console argument
+		const codeArgs = ['--console'];
+		const result = ArgumentConflictDetector.mergeArguments(codeArgs, processedArgs, 'run');
+
+		return { args: result.merged, conflicts: result.conflicts };
 	}
 
-	protected async getRunSourceDirArguments(cwd: string): Promise<string[]> {
+	protected async getRunSourceDirArguments(cwd: string): Promise<{ args: string[]; conflicts: ArgumentConflict[] }> {
 		const runArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID) as string[];
-		return await this.handleLocalKameletDirArgument(runArgs, cwd);
+		const processedArgs = await this.handleLocalKameletDirArgument(runArgs, cwd);
+
+		// Merge with hardcoded --console argument
+		const codeArgs = ['--console'];
+		const result = ArgumentConflictDetector.mergeArguments(codeArgs, processedArgs, 'runSourceDir');
+
+		return { args: result.merged, conflicts: result.conflicts };
 	}
 
 	protected async handleLocalKameletDirArgument(runArgs: string[], cwd: string): Promise<string[]> {
@@ -292,7 +357,13 @@ export class CamelJBang {
 		}
 	}
 
-	protected getCamelVersion(): string {
+	protected getCamelVersion(userArgs: string[] = []): string {
+		// Check if user has defined --camel-version
+		if (ArgumentConflictDetector.hasArgument(userArgs, 'camel-version')) {
+			// User setting takes priority, don't add code default
+			return '';
+		}
+
 		const camelVersion = workspace.getConfiguration().get('kaoto.camelVersion');
 		if (camelVersion) {
 			return `--camel-version=${camelVersion as string}`;
@@ -301,8 +372,14 @@ export class CamelJBang {
 		}
 	}
 
-	protected getRedHatMavenRepository(): string {
-		if (this.getCamelVersion().includes('redhat')) {
+	protected getRedHatMavenRepository(userArgs: string[] = []): string {
+		// Check if user has defined --repos
+		if (ArgumentConflictDetector.hasArgument(userArgs, 'repos')) {
+			// User setting takes priority, don't add code default
+			return '';
+		}
+
+		if (this.getCamelVersion(userArgs).includes('redhat')) {
 			const url = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID) as string;
 			const reposPlaceholder = this.getCamelGlobalRepos();
 			return url ? `--repos=${reposPlaceholder}${url}` : '';

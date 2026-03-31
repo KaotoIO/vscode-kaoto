@@ -56,7 +56,7 @@ import { AbstractFolderTreeProvider } from '../views/providers/AbstractFolderTre
 import { NewCamelTestCommand } from '../commands/NewCamelTestCommand';
 import { CamelTestRunFolderJBangTask } from '../tasks/CamelTestRunFolderJBangTask';
 import { TestFolder } from '../views/testTreeItems/TestFolder';
-import { CamelJBangTask } from '../tasks/CamelJBangTask';
+import { CamelJBangTask, CamelJBangTaskDefinition } from '../tasks/CamelJBangTask';
 import { CamelTestRunJBangTask } from '../tasks/CamelTestRunJBangTask';
 import { Test } from '../views/testTreeItems/Test';
 import { OpenApiProvider } from '../views/providers/OpenApiProvider';
@@ -518,8 +518,11 @@ export class ExtensionContextHandler {
 
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(INTEGRATIONS_RUN_COMMAND_ID, async (integration: Integration) => {
-				const port = await portManager.allocatePort();
-				const runTask = await CamelRunJBangTask.create(integration.filepath.fsPath, port);
+				const allocatedPort = await portManager.allocatePort();
+				const runTask = await CamelRunJBangTask.create(integration.filepath.fsPath, allocatedPort);
+
+				this.synchronizePortTracking(portManager, runTask, allocatedPort);
+
 				await runTask.execute();
 				await this.sendCommandTrackingEvent(INTEGRATIONS_RUN_COMMAND_ID);
 			}),
@@ -532,8 +535,11 @@ export class ExtensionContextHandler {
 		const INTEGRATIONS_RUN_ALL_WORKSPACES_COMMAND_ID: string = 'kaoto.integrations.run.all.workspaces';
 
 		const runSourceDirTask = async (folderPath: string) => {
-			const port = await portManager.allocatePort();
-			const runTask = await CamelRunSourceDirJBangTask.create(folderPath, port);
+			const allocatedPort = await portManager.allocatePort();
+			const runTask = await CamelRunSourceDirJBangTask.create(folderPath, allocatedPort);
+
+			this.synchronizePortTracking(portManager, runTask, allocatedPort);
+
 			await runTask.execute();
 		};
 
@@ -660,6 +666,26 @@ export class ExtensionContextHandler {
 		const pomFile = await vscode.workspace.findFiles('pom.xml', IntegrationsProvider.EXCLUDE_PATTERN, 1);
 		const hasPom = pomFile.length > 0;
 		await vscode.commands.executeCommand('setContext', 'kaoto.workspaceHasPomXml', hasPom);
+	}
+
+	/**
+	 * Synchronizes the PortManager with the actual port used by a task.
+	 * If the task's actual port differs from the allocated port (due to user override in settings),
+	 * this method releases the allocated port and adds the actual port to the PortManager.
+	 *
+	 * @param portManager - The PortManager instance to synchronize
+	 * @param task - The task whose port should be synchronized
+	 * @param allocatedPort - The port that was originally allocated
+	 */
+	private synchronizePortTracking(portManager: PortManager, task: CamelJBangTask, allocatedPort: number): void {
+		const taskDef = task.definition as CamelJBangTaskDefinition;
+		const actualPort = taskDef.port;
+
+		if (actualPort !== allocatedPort) {
+			// User overrode the port in settings, update PortManager to track the actual port
+			portManager.releasePort(allocatedPort);
+			portManager.getUsedPorts().add(actualPort);
+		}
 	}
 
 	private async sendCommandTrackingEvent(commandId: string) {
