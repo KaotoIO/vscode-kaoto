@@ -127,8 +127,9 @@ Browse integration files, orchestrate running Camel integrations, initialize new
 You can follow [Installation Guide](https://kaoto.io/docs/installation) on a Kaoto official site or steps below:
 
 1. Install **Visual Studio Code**
-2. Install **JBang**
-3. Install the **Kaoto extension** from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-kaoto) or [Open VSX Registry](https://open-vsx.org/extension/redhat/vscode-kaoto)
+2. Install the **Kaoto extension** from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-kaoto) or [Open VSX Registry](https://open-vsx.org/extension/redhat/vscode-kaoto)
+
+> **Note:** The extension automatically downloads and manages Apache Camel Launcher. No additional CLI tools are required for basic functionality. For advanced use cases, you can optionally configure JBang as an alternative executor.
 
 ## Documentation
 
