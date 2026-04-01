@@ -46,6 +46,8 @@ export const isWindows: boolean = process.platform.startsWith('win');
  * Camel JBang class which allows shell execution of different JBang CLI commands
  */
 export class CamelJBang {
+	public static readonly NO_PORT = -1;
+
 	protected readonly camelJBangVersion: string;
 	protected readonly defaultJbangArgs: string[];
 
@@ -79,11 +81,11 @@ export class CamelJBang {
 		const quarkusOpenshiftDependency = runtime === 'quarkus' && kubernetes ? ['--dependency=mvn:io.quarkus:quarkus-openshift'] : [];
 
 		// Get camel version and repos arguments with conflict detection
-		const camelVersionArg = this.getCamelVersion(exportArgs);
-		const reposArg = this.getRedHatMavenRepository(exportArgs);
+		const { argument: camelVersionArg, conflicts: camelVersionConflicts } = this.getCamelVersion(exportArgs, 'export');
+		const { argument: reposArg, conflicts: reposConflicts } = this.getRedHatMavenRepository(exportArgs, 'export');
 
 		// Collect all conflicts
-		const allConflicts = [...exportConflicts];
+		const allConflicts = [...exportConflicts, ...camelVersionConflicts, ...reposConflicts];
 
 		// Show warnings for all conflicts
 		await this.showConflictWarnings(allConflicts);
@@ -153,12 +155,15 @@ export class CamelJBang {
 			cwd: cwd,
 		};
 		const { args: runArgs, conflicts: runConflicts } = await this.getRunArguments(filePath, cwd);
-		const { argument: portArg, resolvedPort } = this.getPortArgument(port, runArgs);
-		const camelVersionArg = this.getCamelVersion(runArgs);
-		const reposArg = this.getRedHatMavenRepository(runArgs);
+		const { argument: portArg, resolvedPort, conflicts: portConflicts } = this.getPortArgument(port, runArgs, 'run');
+		const { argument: camelVersionArg, conflicts: camelVersionConflicts } = this.getCamelVersion(runArgs, 'run');
+		const { argument: reposArg, conflicts: reposConflicts } = this.getRedHatMavenRepository(runArgs, 'run');
+
+		// Collect all conflicts
+		const allConflicts = [...runConflicts, ...portConflicts, ...camelVersionConflicts, ...reposConflicts];
 
 		// Show warnings for all conflicts
-		await this.showConflictWarnings(runConflicts);
+		await this.showConflictWarnings(allConflicts);
 
 		const execution = new ShellExecution(
 			this.jbang,
@@ -174,12 +179,15 @@ export class CamelJBang {
 			cwd: sourceDir,
 		};
 		const { args: runArgs, conflicts: runConflicts } = await this.getRunSourceDirArguments(sourceDir);
-		const { argument: portArg, resolvedPort } = this.getPortArgument(port, runArgs);
-		const camelVersionArg = this.getCamelVersion(runArgs);
-		const reposArg = this.getRedHatMavenRepository(runArgs);
+		const { argument: portArg, resolvedPort, conflicts: portConflicts } = this.getPortArgument(port, runArgs, 'run-source-dir');
+		const { argument: camelVersionArg, conflicts: camelVersionConflicts } = this.getCamelVersion(runArgs, 'run-source-dir');
+		const { argument: reposArg, conflicts: reposConflicts } = this.getRedHatMavenRepository(runArgs, 'run-source-dir');
+
+		// Collect all conflicts
+		const allConflicts = [...runConflicts, ...portConflicts, ...camelVersionConflicts, ...reposConflicts];
 
 		// Show warnings for all conflicts
-		await this.showConflictWarnings(runConflicts);
+		await this.showConflictWarnings(allConflicts);
 
 		const execution = new ShellExecution(
 			this.jbang,
@@ -232,7 +240,7 @@ export class CamelJBang {
 	 * @param args - Array of arguments that may contain empty values.
 	 * @returns Filtered array with only non-empty string values.
 	 */
-	private filterEmptyArgs(args: (string | undefined | null)[]): string[] {
+	protected filterEmptyArgs(args: (string | undefined | null)[]): string[] {
 		return args.filter((arg) => arg !== undefined && arg !== null && arg !== '') as string[];
 	}
 
@@ -244,24 +252,46 @@ export class CamelJBang {
 	 * --management-port=<managementPort> To use a dedicated port for HTTP management. Default: -1
 	 * @param port - The port to use (code default).
 	 * @param userArgs - User-defined arguments to check for conflicts.
-	 * @returns Object containing the port argument string and the resolved port number.
+	 * @param context - Context identifier for conflict reporting.
+	 * @returns Object containing the port argument string, the resolved port number, and any conflicts.
 	 */
-	protected getPortArgument(port?: number, userArgs: string[] = []): { argument: string; resolvedPort: number } {
-		// Check if user has defined --management-port or --port
-		const userDefinedPort = ArgumentConflictDetector.extractPortValue(userArgs);
-
-		if (userDefinedPort !== undefined) {
-			// User setting takes priority, don't add code default
-			return { argument: '', resolvedPort: userDefinedPort };
-		}
-
+	protected getPortArgument(
+		port?: number,
+		userArgs: string[] = [],
+		context: string = 'port',
+	): { argument: string; resolvedPort: number; conflicts: ArgumentConflict[] } {
 		// Use code defaults - always use the allocated port, never -1
 		// If no port is provided, we can't monitor the integration
 		const useManagementPort = satisfies(this.camelJBangVersion, '>=4.14');
 		const effectivePort = port ?? 8080; // Fallback to 8080 if no port allocated
-		const argument = useManagementPort ? `--management-port=${effectivePort}` : `--port=${effectivePort}`;
+		const codeArg = useManagementPort ? `--management-port=${effectivePort}` : `--port=${effectivePort}`;
 
-		return { argument, resolvedPort: effectivePort };
+		const { argument, conflicts } = this.detectAndResolveConflict(codeArg, userArgs, context);
+
+		// Determine the actual port from the effective merged arguments
+		// When useManagementPort is true, prioritize --management-port; otherwise prioritize --port
+		let resolvedPort: number;
+		if (useManagementPort) {
+			// For Camel JBang 4.14+, check management-port first, then fall back to port, then effectivePort
+			const managementPort = ArgumentConflictDetector.getArgumentValue(userArgs, 'management-port');
+			if (managementPort) {
+				resolvedPort = Number.parseInt(managementPort, 10);
+			} else {
+				// If user didn't provide management-port, use the code default (effectivePort)
+				resolvedPort = effectivePort;
+			}
+		} else {
+			// For older versions, check port argument
+			const portValue = ArgumentConflictDetector.getArgumentValue(userArgs, 'port');
+			if (portValue) {
+				resolvedPort = Number.parseInt(portValue, 10);
+			} else {
+				// If user didn't provide port, use the code default (effectivePort)
+				resolvedPort = effectivePort;
+			}
+		}
+
+		return { argument, resolvedPort, conflicts };
 	}
 
 	/**
@@ -279,15 +309,6 @@ export class CamelJBang {
 			conflicts.map((c) => `  - ${c.argument}: code="${c.codeValue}" overridden by user="${c.userValue}"`).join('\n');
 
 		KaotoOutputChannel.logWarning(message);
-
-		// Show a single notification for all conflicts
-		const selection = await window.showInformationMessage(
-			`Camel JBang: ${conflicts.length} argument(s) overridden by user settings. Check output for details.`,
-			'View Output',
-		);
-		if (selection === 'View Output') {
-			KaotoOutputChannel.getInstance().show();
-		}
 	}
 
 	protected async getExportProjectArguments(cwd: string): Promise<{ args: string[]; conflicts: ArgumentConflict[] }> {
@@ -301,21 +322,19 @@ export class CamelJBang {
 		const runArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID) as string[];
 		const processedArgs = await this.handleLocalKameletDirArgument(await this.handleMissingXslFiles(filePath, runArgs), cwd);
 
-		// Merge with hardcoded --console argument
-		const codeArgs = ['--console'];
-		const result = ArgumentConflictDetector.mergeArguments(codeArgs, processedArgs, 'run');
-
-		return { args: result.merged, conflicts: result.conflicts };
+		return this.mergeWithConsoleArgument(processedArgs, 'run');
 	}
 
 	protected async getRunSourceDirArguments(cwd: string): Promise<{ args: string[]; conflicts: ArgumentConflict[] }> {
 		const runArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID) as string[];
 		const processedArgs = await this.handleLocalKameletDirArgument(runArgs, cwd);
 
-		// Merge with hardcoded --console argument
-		const codeArgs = ['--console'];
-		const result = ArgumentConflictDetector.mergeArguments(codeArgs, processedArgs, 'runSourceDir');
+		return this.mergeWithConsoleArgument(processedArgs, 'runSourceDir');
+	}
 
+	private mergeWithConsoleArgument(args: string[], context: string): { args: string[]; conflicts: ArgumentConflict[] } {
+		const codeArgs = ['--console'];
+		const result = ArgumentConflictDetector.mergeArguments(codeArgs, args, context);
 		return { args: result.merged, conflicts: result.conflicts };
 	}
 
@@ -357,35 +376,60 @@ export class CamelJBang {
 		}
 	}
 
-	protected getCamelVersion(userArgs: string[] = []): string {
-		// Check if user has defined --camel-version
-		if (ArgumentConflictDetector.hasArgument(userArgs, 'camel-version')) {
-			// User setting takes priority, don't add code default
-			return '';
-		}
+	/**
+	 * Helper method to detect and resolve argument conflicts
+	 * @param codeArg - The argument from code defaults
+	 * @param userArgs - User-provided arguments
+	 * @param context - Context for conflict detection
+	 * @returns Object with argument (empty if conflict) and conflicts array
+	 */
+	private detectAndResolveConflict(codeArg: string, userArgs: string[], context: string): { argument: string; conflicts: ArgumentConflict[] } {
+		// Use mergeArguments to detect conflicts
+		const { conflicts } = ArgumentConflictDetector.mergeArguments([codeArg], userArgs, context);
 
-		const camelVersion = workspace.getConfiguration().get('kaoto.camelVersion');
-		if (camelVersion) {
-			return `--camel-version=${camelVersion as string}`;
-		} else {
-			return '';
-		}
+		// If there's a conflict, return empty argument (user's takes priority)
+		const argument = conflicts.length > 0 ? '' : codeArg;
+
+		return { argument, conflicts };
 	}
 
-	protected getRedHatMavenRepository(userArgs: string[] = []): string {
-		// Check if user has defined --repos
-		if (ArgumentConflictDetector.hasArgument(userArgs, 'repos')) {
-			// User setting takes priority, don't add code default
-			return '';
+	protected getCamelVersion(userArgs: string[] = [], context: string = 'camel-version'): { argument: string; conflicts: ArgumentConflict[] } {
+		const camelVersion = workspace.getConfiguration().get('kaoto.camelVersion');
+
+		// If no workspace configuration, return empty
+		if (!camelVersion) {
+			return { argument: '', conflicts: [] };
 		}
 
-		if (this.getCamelVersion(userArgs).includes('redhat')) {
-			const url = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID) as string;
-			const reposPlaceholder = this.getCamelGlobalRepos();
-			return url ? `--repos=${reposPlaceholder}${url}` : '';
-		} else {
-			return '';
+		const codeArg = `--camel-version=${camelVersion as string}`;
+
+		return this.detectAndResolveConflict(codeArg, userArgs, context);
+	}
+
+	protected getRedHatMavenRepository(userArgs: string[] = [], context: string = 'repos'): { argument: string; conflicts: ArgumentConflict[] } {
+		// First check if user supplied --camel-version in userArgs
+		let camelVersion = ArgumentConflictDetector.getArgumentValue(userArgs, 'camel-version');
+
+		// If not found in userArgs, fall back to workspace configuration
+		if (!camelVersion) {
+			const workspaceCamelVersion = workspace.getConfiguration().get('kaoto.camelVersion');
+			camelVersion = workspaceCamelVersion ? (workspaceCamelVersion as string) : '';
 		}
+
+		// If no redhat version detected, return empty
+		if (!camelVersion?.includes('redhat')) {
+			return { argument: '', conflicts: [] };
+		}
+
+		const url = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID) as string;
+		if (!url) {
+			return { argument: '', conflicts: [] };
+		}
+
+		const reposPlaceholder = this.getCamelGlobalRepos();
+		const codeArg = `--repos=${reposPlaceholder}${url}`;
+
+		return this.detectAndResolveConflict(codeArg, userArgs, context);
 	}
 
 	protected getCamelGlobalRepos(): string {

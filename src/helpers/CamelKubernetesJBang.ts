@@ -31,19 +31,21 @@ export class CamelKubernetesJBang extends CamelJBang {
 			cwd: cwd,
 		};
 		const kubernetesRunArgs = this.getKubernetesRunArguments();
-		const camelVersionArg = this.getCamelVersion(kubernetesRunArgs);
+		const { argument: camelVersionArg, conflicts: camelVersionConflicts } = this.getCamelVersion(kubernetesRunArgs, 'kubernetes-run');
+		const { argument: reposArg, conflicts: reposConflicts } = this.getRedHatMavenRepository(kubernetesRunArgs, 'kubernetes-run');
+
+		// Show warnings for conflicts
+		await this.showConflictWarnings([...camelVersionConflicts, ...reposConflicts]);
 
 		const execution = new ShellExecution(
 			this.jbang,
-			[...this.defaultJbangArgs, 'kubernetes', 'run', filePattern, camelVersionArg, ...kubernetesRunArgs].filter(function (arg) {
-				return arg !== undefined && arg !== null && arg !== ''; // remove ALL empty values ("", null, undefined and 0)
-			}), // remove ALL empty values ("", null, undefined and 0)
+			this.filterEmptyArgs([...this.defaultJbangArgs, 'kubernetes', 'run', filePattern, camelVersionArg, reposArg, ...kubernetesRunArgs]),
 			shellExecOptions,
 		);
 
 		// Kubernetes deployments don't use local ports in the same way
-		// Return -1 to indicate no local port monitoring needed
-		return { execution, resolvedPort: -1 };
+		// Return NO_PORT to indicate no local port monitoring needed
+		return { execution, resolvedPort: CamelJBang.NO_PORT };
 	}
 
 	protected getKubernetesRunArguments(): string[] {

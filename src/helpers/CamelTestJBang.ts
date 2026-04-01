@@ -47,7 +47,7 @@ export class CamelTestJBang extends CamelJBang {
 		);
 
 		// Test runs don't use ports for monitoring
-		return { execution, resolvedPort: -1 };
+		return { execution, resolvedPort: CamelJBang.NO_PORT };
 	}
 
 	public async runFolder(cwd: string): Promise<ShellExecution> {

@@ -1,3 +1,5 @@
+import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
+
 /**
  * Represents a conflict between code-generated and user-defined arguments
  */
@@ -30,6 +32,9 @@ interface ParsedArgument {
  * Utility class for detecting and resolving argument conflicts in Camel JBang commands
  */
 export class ArgumentConflictDetector {
+	/** Cache for parsed arguments to avoid redundant parsing */
+	private static readonly parsedCache = new WeakMap<string[], Map<string, ParsedArgument>>();
+
 	/**
 	 * Parse a command-line argument into its components
 	 * Handles formats: --arg=value, --arg value, --flag
@@ -64,6 +69,24 @@ export class ArgumentConflictDetector {
 	}
 
 	/**
+	 * Get cached parsed arguments for an array, or parse and cache them
+	 *
+	 * @param args - Array of argument strings
+	 * @returns Map of argument strings to parsed arguments
+	 */
+	private static getCachedParsedArguments(args: string[]): Map<string, ParsedArgument> {
+		let cache = this.parsedCache.get(args);
+		if (!cache) {
+			cache = new Map();
+			for (const arg of args) {
+				cache.set(arg, this.parseArgument(arg));
+			}
+			this.parsedCache.set(args, cache);
+		}
+		return cache;
+	}
+
+	/**
 	 * Check if an argument with the given name exists in the arguments array
 	 *
 	 * @param args - Array of argument strings
@@ -72,10 +95,13 @@ export class ArgumentConflictDetector {
 	 */
 	static hasArgument(args: string[], argName: string): boolean {
 		const normalizedName = argName.toLowerCase().replace(/^-+/, '');
-		return args.some((arg) => {
-			const parsed = this.parseArgument(arg);
-			return parsed.name === normalizedName;
-		});
+		const cache = this.getCachedParsedArguments(args);
+		for (const parsed of cache.values()) {
+			if (parsed.name === normalizedName) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -87,10 +113,10 @@ export class ArgumentConflictDetector {
 	 */
 	static getArgumentValue(args: string[], argName: string): string | undefined {
 		const normalizedName = argName.toLowerCase().replace(/^-+/, '');
+		const cache = this.getCachedParsedArguments(args);
 
-		for (let i = 0; i < args.length; i++) {
-			const parsed = this.parseArgument(args[i]);
-
+		let i = 0;
+		for (const parsed of cache.values()) {
 			if (parsed.name === normalizedName) {
 				// If value is in the same argument (--arg=value)
 				if (parsed.value !== undefined) {
@@ -105,6 +131,7 @@ export class ArgumentConflictDetector {
 				// It's a flag
 				return undefined;
 			}
+			i++;
 		}
 
 		return undefined;
@@ -193,14 +220,22 @@ export class ArgumentConflictDetector {
 		const managementPort = this.getArgumentValue(args, 'management-port');
 		if (managementPort !== undefined) {
 			const port = Number.parseInt(managementPort, 10);
-			return Number.isNaN(port) ? undefined : port;
+			if (Number.isNaN(port)) {
+				KaotoOutputChannel.logWarning(`Invalid port value for --management-port: "${managementPort}". Expected a valid number.`);
+				return undefined;
+			}
+			return port;
 		}
 
 		// Check for --port
 		const portValue = this.getArgumentValue(args, 'port');
 		if (portValue !== undefined) {
 			const port = Number.parseInt(portValue, 10);
-			return Number.isNaN(port) ? undefined : port;
+			if (Number.isNaN(port)) {
+				KaotoOutputChannel.logWarning(`Invalid port value for --port: "${portValue}". Expected a valid number.`);
+				return undefined;
+			}
+			return port;
 		}
 
 		return undefined;
