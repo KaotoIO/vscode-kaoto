@@ -1,5 +1,3 @@
-# 2.11.0
-
 # 2.10.1
 
 - display `*openapi.yml` files in OpenAPI view by default
