@@ -31,20 +31,23 @@ export class CamelTestJBang extends CamelJBang {
 		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'test', 'init', `'${file}'`], shellExecOptions);
 	}
 
-	public async run(filePath: string, cwd: string): Promise<ShellExecution> {
+	public async run(filePath: string, cwd: string, _port?: number): Promise<{ execution: ShellExecution; resolvedPort: number }> {
 		const fileName = path.basename(filePath);
 
 		const shellExecOptions: ShellExecutionOptions = {
 			cwd: cwd,
 		};
 
-		return new ShellExecution(
+		const execution = new ShellExecution(
 			this.jbang,
 			[...this.defaultJbangArgs, 'test', 'run', fileName].filter(function (arg) {
 				return arg !== undefined && arg !== null && arg !== ''; // remove empty string, null and undefined values
 			}),
 			shellExecOptions,
 		);
+
+		// Test runs don't use ports for monitoring
+		return { execution, resolvedPort: CamelJBang.NO_PORT };
 	}
 
 	public async runFolder(cwd: string): Promise<ShellExecution> {

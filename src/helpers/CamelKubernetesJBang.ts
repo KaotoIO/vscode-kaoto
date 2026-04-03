@@ -26,21 +26,32 @@ export class CamelKubernetesJBang extends CamelJBang {
 		return await super.export(uri, gav, runtime, outputPath, cwd, true);
 	}
 
-	public async run(filePattern: string, cwd?: string): Promise<ShellExecution> {
+	public async run(filePattern: string, cwd?: string, _port?: number): Promise<{ execution: ShellExecution; resolvedPort: number }> {
 		const shellExecOptions: ShellExecutionOptions = {
 			cwd: cwd,
 		};
-		return new ShellExecution(
+		const kubernetesRunArgs = this.getKubernetesRunArguments();
+		const { argument: camelVersionArg, conflicts: camelVersionConflicts } = this.getCamelVersion(kubernetesRunArgs, 'kubernetes-run');
+		const { argument: reposArg, conflicts: reposConflicts } = this.getRedHatMavenRepository(kubernetesRunArgs, 'kubernetes-run');
+
+		// Show warnings for conflicts
+		await this.showConflictWarnings([...camelVersionConflicts, ...reposConflicts]);
+
+		const execution = new ShellExecution(
 			this.jbang,
-			[...this.defaultJbangArgs, 'kubernetes', 'run', filePattern, this.getCamelVersion(), ...this.getKubernetesRunArguments()].filter(function (arg) {
-				return arg !== undefined && arg !== null && arg !== ''; // remove ALL empty values ("", null, undefined and 0)
-			}), // remove ALL empty values ("", null, undefined and 0)
+			this.filterEmptyArgs([...this.defaultJbangArgs, 'kubernetes', 'run', filePattern, camelVersionArg, reposArg, ...kubernetesRunArgs]),
 			shellExecOptions,
 		);
+
+		// Kubernetes deployments don't use local ports in the same way
+		// Return NO_PORT to indicate no local port monitoring needed
+		return { execution, resolvedPort: CamelJBang.NO_PORT };
 	}
 
 	protected getKubernetesRunArguments(): string[] {
 		const kubernetesRunArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID) as string[];
+		// No hardcoded arguments to merge for kubernetes run currently
+		// If needed in the future, use ArgumentConflictDetector.mergeArguments here
 		if (kubernetesRunArgs.length > 0) {
 			return kubernetesRunArgs;
 		} else {

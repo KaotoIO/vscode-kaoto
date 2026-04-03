@@ -25,7 +25,7 @@ export class CamelTestRunJBangTask extends CamelJBangTask {
 	}
 
 	static async create(filePath: string): Promise<CamelTestRunJBangTask> {
-		const shellExecution = await new CamelTestJBang().run(filePath, dirname(filePath));
-		return new CamelTestRunJBangTask(shellExecution, filePath);
+		const { execution } = await new CamelTestJBang().run(filePath, dirname(filePath));
+		return new CamelTestRunJBangTask(execution, filePath);
 	}
 }

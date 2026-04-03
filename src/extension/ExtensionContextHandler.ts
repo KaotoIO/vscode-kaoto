@@ -44,7 +44,7 @@ import { ParentItem } from '../views/deploymentTreeItems/ParentItem';
 import { CamelStopJBangTask } from '../tasks/CamelStopJBangTask';
 import { ChildItem } from '../views/deploymentTreeItems/ChildItem';
 import { CamelRouteOperationJBangTask } from '../tasks/CamelRouteOperationJBangTask';
-import { RouteOperation } from '../helpers/CamelJBang';
+import { CamelJBang, RouteOperation } from '../helpers/CamelJBang';
 import { RecommendationCore } from '@redhat-developer/vscode-extension-proposals';
 import { WhatsNewPanel } from './WhatsNewPanel';
 import { satisfies } from 'compare-versions';
@@ -56,7 +56,7 @@ import { AbstractFolderTreeProvider } from '../views/providers/AbstractFolderTre
 import { NewCamelTestCommand } from '../commands/NewCamelTestCommand';
 import { CamelTestRunFolderJBangTask } from '../tasks/CamelTestRunFolderJBangTask';
 import { TestFolder } from '../views/testTreeItems/TestFolder';
-import { CamelJBangTask } from '../tasks/CamelJBangTask';
+import { CamelJBangTask, CamelJBangTaskDefinition } from '../tasks/CamelJBangTask';
 import { CamelTestRunJBangTask } from '../tasks/CamelTestRunJBangTask';
 import { Test } from '../views/testTreeItems/Test';
 import { OpenApiProvider } from '../views/providers/OpenApiProvider';
@@ -518,10 +518,21 @@ export class ExtensionContextHandler {
 
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(INTEGRATIONS_RUN_COMMAND_ID, async (integration: Integration) => {
-				const port = await portManager.allocatePort();
-				const runTask = await CamelRunJBangTask.create(integration.filepath.fsPath, port);
-				await runTask.execute();
-				await this.sendCommandTrackingEvent(INTEGRATIONS_RUN_COMMAND_ID);
+				const allocatedPort = await portManager.allocatePort();
+				let runTask: CamelRunJBangTask | undefined;
+
+				try {
+					runTask = await CamelRunJBangTask.create(integration.filepath.fsPath, allocatedPort);
+					this.synchronizePortTracking(portManager, runTask, allocatedPort);
+					await runTask.execute();
+					await this.sendCommandTrackingEvent(INTEGRATIONS_RUN_COMMAND_ID);
+				} catch (error) {
+					// Release the port that is currently reserved
+					// If synchronizePortTracking succeeded, it may have changed which port is reserved
+					const portToRelease = runTask ? (runTask.definition as CamelJBangTaskDefinition).port : allocatedPort;
+					portManager.releasePort(portToRelease);
+					throw error;
+				}
 			}),
 		);
 	}
@@ -531,46 +542,38 @@ export class ExtensionContextHandler {
 		const INTEGRATIONS_RUN_WORKSPACE_COMMAND_ID: string = 'kaoto.integrations.run.workspace';
 		const INTEGRATIONS_RUN_ALL_WORKSPACES_COMMAND_ID: string = 'kaoto.integrations.run.all.workspaces';
 
-		const runSourceDirTask = async (folderPath: string) => {
-			const port = await portManager.allocatePort();
-			const runTask = await CamelRunSourceDirJBangTask.create(folderPath, port);
-			await runTask.execute();
-		};
-
 		const runFolderCommand = vscode.commands.registerCommand(INTEGRATIONS_RUN_FOLDER_COMMAND_ID, async (folder: Folder) => {
-			await runSourceDirTask(folder.folderUri.fsPath);
+			await this.executeRunSourceDirTask(folder.folderUri.fsPath, portManager);
 			await this.sendCommandTrackingEvent(INTEGRATIONS_RUN_FOLDER_COMMAND_ID);
 		});
 
-		const folders = vscode.workspace.workspaceFolders;
-		const commandId = folders && folders.length > 1 ? INTEGRATIONS_RUN_ALL_WORKSPACES_COMMAND_ID : INTEGRATIONS_RUN_WORKSPACE_COMMAND_ID;
-		const runAllCommand = vscode.commands.registerCommand(commandId, async () => {
-			if (!folders) {
+		const runWorkspaceHandler = async (commandId: string, showMultiWorkspaceMessage: boolean): Promise<void> => {
+			const folders = vscode.workspace.workspaceFolders;
+			if (!folders?.length) {
 				return;
 			}
+
+			const isMultiWorkspace = folders.length > 1;
 			for (const folder of folders) {
-				await runSourceDirTask(folder.uri.fsPath);
+				await this.executeRunSourceDirTask(folder.uri.fsPath, portManager);
 			}
 
-			const storageKey = 'kaoto.showRunAllFoldersMessage';
-			let showInfoMessage = this.context.globalState.get<boolean>(storageKey, true);
-
-			if (showInfoMessage && commandId === INTEGRATIONS_RUN_ALL_WORKSPACES_COMMAND_ID) {
-				const doNotShowAgain = "Don't show again";
-				const ok = 'OK';
-				const result = await vscode.window.showInformationMessage(
-					'You are running multiple workspaces. Each workspace will be run in a separate terminal.',
-					ok,
-					doNotShowAgain,
-				);
-				if (result === doNotShowAgain) {
-					await this.context.globalState.update(storageKey, false);
-				}
+			if (showMultiWorkspaceMessage && isMultiWorkspace) {
+				await this.showMultiWorkspaceInfoMessage();
 			}
+
 			await this.sendCommandTrackingEvent(commandId);
-		});
+		};
 
-		this.context.subscriptions.push(runFolderCommand, runAllCommand);
+		const runWorkspaceCommand = vscode.commands.registerCommand(INTEGRATIONS_RUN_WORKSPACE_COMMAND_ID, async () =>
+			runWorkspaceHandler(INTEGRATIONS_RUN_WORKSPACE_COMMAND_ID, false),
+		);
+
+		const runAllCommand = vscode.commands.registerCommand(INTEGRATIONS_RUN_ALL_WORKSPACES_COMMAND_ID, async () =>
+			runWorkspaceHandler(INTEGRATIONS_RUN_ALL_WORKSPACES_COMMAND_ID, true),
+		);
+
+		this.context.subscriptions.push(runFolderCommand, runWorkspaceCommand, runAllCommand);
 	}
 
 	public registerKubernetesRunCommands() {
@@ -662,6 +665,34 @@ export class ExtensionContextHandler {
 		await vscode.commands.executeCommand('setContext', 'kaoto.workspaceHasPomXml', hasPom);
 	}
 
+	/**
+	 * Synchronizes the PortManager with the actual port used by a task.
+	 * If the task's actual port differs from the allocated port (due to user override in settings),
+	 * this method releases the allocated port and adds the actual port to the PortManager.
+	 *
+	 * @param portManager - The PortManager instance to synchronize
+	 * @param task - The task whose port should be synchronized
+	 * @param allocatedPort - The port that was originally allocated
+	 */
+	private synchronizePortTracking(portManager: PortManager, task: CamelJBangTask, allocatedPort: number): void {
+		const taskDef = task.definition as CamelJBangTaskDefinition;
+		const actualPort = taskDef.port;
+		if (actualPort !== allocatedPort) {
+			if (actualPort === CamelJBang.NO_PORT) {
+				portManager.releasePort(allocatedPort);
+				return;
+			}
+			const usedPorts = portManager.getUsedPorts();
+			if (usedPorts.has(actualPort)) {
+				portManager.releasePort(allocatedPort);
+				throw new Error(`Port ${actualPort} is already reserved by another running integration.`);
+			}
+			// User overrode the port in settings, update PortManager to track the actual port
+			portManager.releasePort(allocatedPort);
+			usedPorts.add(actualPort);
+		}
+	}
+
 	private async sendCommandTrackingEvent(commandId: string) {
 		const telemetryEvent: TelemetryEvent = {
 			type: 'track',
@@ -672,6 +703,52 @@ export class ExtensionContextHandler {
 		};
 		if (this.telemetryService) {
 			await this.telemetryService.send(telemetryEvent);
+		}
+	}
+
+	/**
+	 * Executes a run source directory task for the specified folder path.
+	 * Allocates a port, creates the task, synchronizes port tracking, and executes the task.
+	 *
+	 * @param folderPath - The file system path of the folder to run
+	 * @param portManager - The PortManager instance for port allocation
+	 */
+	private async executeRunSourceDirTask(folderPath: string, portManager: PortManager): Promise<void> {
+		const allocatedPort = await portManager.allocatePort();
+		let runTask: CamelRunSourceDirJBangTask | undefined;
+
+		try {
+			runTask = await CamelRunSourceDirJBangTask.create(folderPath, allocatedPort);
+			this.synchronizePortTracking(portManager, runTask, allocatedPort);
+			await runTask.execute();
+		} catch (error) {
+			// Release the port that is currently reserved
+			// If synchronizePortTracking succeeded, it may have changed which port is reserved
+			const portToRelease = runTask ? (runTask.definition as CamelJBangTaskDefinition).port : allocatedPort;
+			portManager.releasePort(portToRelease);
+			throw error;
+		}
+	}
+
+	/**
+	 * Shows an informational message to the user when running multiple workspaces.
+	 * The message can be dismissed permanently by the user.
+	 */
+	private async showMultiWorkspaceInfoMessage(): Promise<void> {
+		const storageKey = 'kaoto.showRunAllFoldersMessage';
+		const showInfoMessage = this.context.globalState.get<boolean>(storageKey, true);
+
+		if (showInfoMessage) {
+			const doNotShowAgain = "Don't show again";
+			const ok = 'OK';
+			const result = await vscode.window.showInformationMessage(
+				'You are running multiple workspaces. Each workspace will be run in a separate terminal.',
+				ok,
+				doNotShowAgain,
+			);
+			if (result === doNotShowAgain) {
+				await this.context.globalState.update(storageKey, false);
+			}
 		}
 	}
 }
