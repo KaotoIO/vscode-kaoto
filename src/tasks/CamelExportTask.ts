@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 import { ShellExecution, TaskRevealKind, TaskScope, Uri, WorkspaceFolder } from 'vscode';
-import { CamelJBangTask } from './CamelJBangTask';
+import { CamelTask } from './CamelTask';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 
-export class CamelExportJBangTask extends CamelJBangTask {
+export class CamelExportTask extends CamelTask {
 	private constructor(scope: WorkspaceFolder | TaskScope.Workspace, shellExecution: ShellExecution) {
 		super(scope, 'Create a Camel project', shellExecution, true, TaskRevealKind.Silent);
 	}
@@ -30,8 +30,8 @@ export class CamelExportJBangTask extends CamelJBangTask {
 		outputPath: string,
 		cwd: string,
 		kubernetes?: boolean,
-	): Promise<CamelExportJBangTask> {
+	): Promise<CamelExportTask> {
 		const result = await CamelCommandAPI.export(uri.fsPath, gav, runtime, outputPath, cwd, kubernetes);
-		return new CamelExportJBangTask(scope, result.execution);
+		return new CamelExportTask(scope, result.execution);
 	}
 }

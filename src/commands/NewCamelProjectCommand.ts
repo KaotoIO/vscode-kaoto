@@ -15,7 +15,7 @@
  */
 import { commands, QuickPickItem, Uri, window, workspace } from 'vscode';
 import { arePathsEqual } from '../helpers/helpers';
-import { CamelExportJBangTask } from '../tasks/CamelExportJBangTask';
+import { CamelExportTask } from '../tasks/CamelExportTask';
 import { confirmDestructiveActionInSelectedFolder } from '../helpers/modals';
 import path from 'path';
 
@@ -47,7 +47,7 @@ export class NewCamelProjectCommand {
 						return;
 					}
 				}
-				const camelExportJBangTask = await CamelExportJBangTask.create(currentWorkspace, uri, input, runtime, outputFolder.fsPath, cwd, true);
+				const camelExportJBangTask = await CamelExportTask.create(currentWorkspace, uri, input, runtime, outputFolder.fsPath, cwd, true);
 				await camelExportJBangTask.executeAndWaitWithProgress('Creating a new Camel project...');
 
 				// if not exist, init .vscode with tasks.json and launch.json config files

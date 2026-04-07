@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ShellExecution, TaskRevealKind, TaskScope, WorkspaceFolder } from 'vscode';
-import { CamelJBangTask } from './CamelJBangTask';
+import { ShellExecution, TaskScope } from 'vscode';
+import { CamelTask } from './CamelTask';
+import { basename, dirname } from 'path';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 
-export class CamelInitJBangTask extends CamelJBangTask {
-	protected constructor(scope: WorkspaceFolder | TaskScope.Workspace, label: string, shellExecution: ShellExecution) {
-		super(scope, label, shellExecution, true, TaskRevealKind.Silent);
+export class CamelKubernetesRunTask extends CamelTask {
+	private constructor(shellExecution: ShellExecution, filePath: string) {
+		super(TaskScope.Workspace, `Deploying - ${basename(filePath)}`, shellExecution);
 	}
 
-	static async create(file: string, scope: WorkspaceFolder | TaskScope.Workspace, label: string = 'Init a Camel file'): Promise<CamelInitJBangTask> {
-		const result = await CamelCommandAPI.init(file);
-		return new CamelInitJBangTask(scope, label, result.execution);
+	static async create(filePath: string): Promise<CamelKubernetesRunTask> {
+		const result = await CamelCommandAPI.kubernetesRun(filePath, dirname(filePath));
+		return new CamelKubernetesRunTask(result.execution, filePath);
 	}
 }

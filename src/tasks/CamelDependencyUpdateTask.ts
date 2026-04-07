@@ -13,25 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CamelInitJBangTask } from './CamelInitJBangTask';
-import { WorkspaceFolder, TaskScope } from 'vscode';
+import { ShellExecution, TaskRevealKind, TaskScope } from 'vscode';
+import { CamelTask } from './CamelTask';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
+import path from 'path';
 
-export class CamelTestInitJBangTask extends CamelInitJBangTask {
-	private cwd: string;
-
-	protected constructor(scope: WorkspaceFolder | TaskScope.Workspace, label: string, shellExecution: any, cwd: string) {
-		super(scope, label, shellExecution);
-		this.cwd = cwd;
+export class CamelDependencyUpdateTask extends CamelTask {
+	private constructor(shellExecution: ShellExecution) {
+		super(TaskScope.Workspace, 'Update Camel dependencies in pom.xml', shellExecution, true, TaskRevealKind.Silent);
 	}
 
-	static async create(
-		file: string,
-		scope: WorkspaceFolder | TaskScope.Workspace,
-		label: string = 'Init a Camel Test file',
-		cwd?: string,
-	): Promise<CamelTestInitJBangTask> {
-		const result = await CamelCommandAPI.testInit(file, cwd);
-		return new CamelTestInitJBangTask(scope, label, result.execution, cwd || '');
+	static async create(pomPath: string, integrationFilePath: string): Promise<CamelDependencyUpdateTask> {
+		const result = await CamelCommandAPI.dependencyUpdate(pomPath, integrationFilePath, path.dirname(pomPath));
+		return new CamelDependencyUpdateTask(result.execution);
 	}
 }

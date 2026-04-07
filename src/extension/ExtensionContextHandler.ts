@@ -36,28 +36,28 @@ import { NewCamelFileCommand } from '../commands/NewCamelFileCommand';
 import { confirmFileDeleteDialog } from '../helpers/modals';
 import { TelemetryEvent, TelemetryService } from '@redhat-developer/vscode-redhat-telemetry';
 import { NewCamelProjectCommand } from '../commands/NewCamelProjectCommand';
-import { CamelRunJBangTask } from '../tasks/CamelRunJBangTask';
-import { CamelKubernetesRunJBangTask } from '../tasks/CamelKubernetesRunJBangTask';
+import { CamelRunTask } from '../tasks/CamelRunTask';
+import { CamelKubernetesRunTask } from '../tasks/CamelKubernetesRunTask';
 import { DeploymentsProvider } from '../views/providers/DeploymentsProvider';
 import { PortManager } from '../helpers/PortManager';
 import { ParentItem } from '../views/deploymentTreeItems/ParentItem';
-import { CamelStopJBangTask } from '../tasks/CamelStopJBangTask';
+import { CamelStopTask } from '../tasks/CamelStopTask';
 import { ChildItem } from '../views/deploymentTreeItems/ChildItem';
-import { CamelRouteOperationJBangTask } from '../tasks/CamelRouteOperationJBangTask';
+import { CamelRouteOperationTask } from '../tasks/CamelRouteOperationTask';
 import { RouteOperation } from '../types/RouteOperation';
 import { RecommendationCore } from '@redhat-developer/vscode-extension-proposals';
 import { WhatsNewPanel } from './WhatsNewPanel';
 import { satisfies } from 'compare-versions';
 import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
-import { CamelRunSourceDirJBangTask } from '../tasks/CamelRunSourceDirJBangTask';
+import { CamelRunSourceDirTask } from '../tasks/CamelRunSourceDirTask';
 import { Folder } from '../views/integrationTreeItems/Folder';
 import { TestsProvider } from '../views/providers/TestsProvider';
 import { AbstractFolderTreeProvider } from '../views/providers/AbstractFolderTreeProvider';
 import { NewCamelTestCommand } from '../commands/NewCamelTestCommand';
-import { CamelTestRunFolderJBangTask } from '../tasks/CamelTestRunFolderJBangTask';
+import { CamelTestRunFolderTask } from '../tasks/CamelTestRunFolderTask';
 import { TestFolder } from '../views/testTreeItems/TestFolder';
-import { CamelJBangTask, CamelJBangTaskDefinition } from '../tasks/CamelJBangTask';
-import { CamelTestRunJBangTask } from '../tasks/CamelTestRunJBangTask';
+import { CamelTask, CamelTaskDefinition } from '../tasks/CamelTask';
+import { CamelTestRunTask } from '../tasks/CamelTestRunTask';
 import { Test } from '../views/testTreeItems/Test';
 import { OpenApiProvider } from '../views/providers/OpenApiProvider';
 import { ImportOpenApiCommand } from '../commands/ImportOpenApiCommand';
@@ -322,7 +322,7 @@ export class ExtensionContextHandler {
 			const filePath = test.resourceUri?.fsPath as string;
 			const fileName = path.basename(filePath) || 'test';
 
-			await this.executeTestRun([filePath], () => CamelTestRunJBangTask.create(filePath), `Running test: ${fileName}`);
+			await this.executeTestRun([filePath], () => CamelTestRunTask.create(filePath), `Running test: ${fileName}`);
 			await this.sendCommandTrackingEvent(TESTS_RUN_COMMAND_ID);
 		});
 
@@ -337,14 +337,14 @@ export class ExtensionContextHandler {
 				return;
 			}
 
-			await this.executeTestRun(testFilePaths, () => CamelTestRunFolderJBangTask.create(folderPath), `Running tests in: ${folderName}`);
+			await this.executeTestRun(testFilePaths, () => CamelTestRunFolderTask.create(folderPath), `Running tests in: ${folderName}`);
 			await this.sendCommandTrackingEvent(TESTS_RUN_FOLDER_COMMAND_ID);
 		});
 
 		this.context.subscriptions.push(runCommand, runFolderCommand);
 	}
 
-	private async executeTestRun(testFilePaths: string[], createTask: () => Promise<CamelJBangTask>, progressMessage: string): Promise<void> {
+	private async executeTestRun(testFilePaths: string[], createTask: () => Promise<CamelTask>, progressMessage: string): Promise<void> {
 		for (const testPath of testFilePaths) {
 			this.testsProvider.setTestRunning(testPath, true);
 		}
@@ -552,7 +552,7 @@ export class ExtensionContextHandler {
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(INTEGRATIONS_RUN_COMMAND_ID, async (integration: Integration) => {
 				const allocatedPort = await portManager.allocatePort();
-				const runTask = await CamelRunJBangTask.create(integration.filepath.fsPath, allocatedPort);
+				const runTask = await CamelRunTask.create(integration.filepath.fsPath, allocatedPort);
 
 				this.synchronizePortTracking(portManager, runTask, allocatedPort);
 
@@ -606,7 +606,7 @@ export class ExtensionContextHandler {
 
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID, async (integration: Integration) => {
-				const deployTask = await CamelKubernetesRunJBangTask.create(integration.filepath.fsPath);
+				const deployTask = await CamelKubernetesRunTask.create(integration.filepath.fsPath);
 				await deployTask.execute();
 				await this.sendCommandTrackingEvent(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID);
 			}),
@@ -619,7 +619,7 @@ export class ExtensionContextHandler {
 
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(DEPLOYMENTS_INTEGRATION_STOP_COMMAND_ID, async (integration: ParentItem) => {
-				const stopTask = await CamelStopJBangTask.create(integration.label as string);
+				const stopTask = await CamelStopTask.create(integration.label as string);
 				await stopTask.executeAndWait();
 				await this.sendCommandTrackingEvent(DEPLOYMENTS_INTEGRATION_STOP_COMMAND_ID);
 			}),
@@ -646,28 +646,28 @@ export class ExtensionContextHandler {
 		const DEPLOYMENTS_ROUTE_SUSPEND_COMMAND_ID: string = 'kaoto.deployments.route.suspend';
 
 		const startCommand = vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_START_COMMAND_ID, async (route: ChildItem) => {
-			const task = await CamelRouteOperationJBangTask.create(RouteOperation.start, route.parentIntegration.label as string, route.label as string);
+			const task = await CamelRouteOperationTask.create(RouteOperation.start, route.parentIntegration.label as string, route.label as string);
 			await task.executeAndWait();
 			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Started');
 			this.deploymentsProvider.refresh();
 			await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_START_COMMAND_ID);
 		});
 		const stopCommand = vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_STOP_COMMAND_ID, async (route: ChildItem) => {
-			const task = await CamelRouteOperationJBangTask.create(RouteOperation.stop, route.parentIntegration.label as string, route.label as string);
+			const task = await CamelRouteOperationTask.create(RouteOperation.stop, route.parentIntegration.label as string, route.label as string);
 			await task.executeAndWait();
 			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Stopped');
 			this.deploymentsProvider.refresh();
 			await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_STOP_COMMAND_ID);
 		});
 		const resumeCommand = vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_RESUME_COMMAND_ID, async (route: ChildItem) => {
-			const task = await CamelRouteOperationJBangTask.create(RouteOperation.resume, route.parentIntegration.label as string, route.label as string);
+			const task = await CamelRouteOperationTask.create(RouteOperation.resume, route.parentIntegration.label as string, route.label as string);
 			await task.executeAndWait();
 			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Started');
 			this.deploymentsProvider.refresh();
 			await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_RESUME_COMMAND_ID);
 		});
 		const suspendCommand = vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_SUSPEND_COMMAND_ID, async (route: ChildItem) => {
-			const task = await CamelRouteOperationJBangTask.create(RouteOperation.suspend, route.parentIntegration.label as string, route.label as string);
+			const task = await CamelRouteOperationTask.create(RouteOperation.suspend, route.parentIntegration.label as string, route.label as string);
 			await task.executeAndWait();
 			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Suspended');
 			this.deploymentsProvider.refresh();
@@ -704,8 +704,8 @@ export class ExtensionContextHandler {
 	 * @param task - The task whose port should be synchronized
 	 * @param allocatedPort - The port that was originally allocated
 	 */
-	private synchronizePortTracking(portManager: PortManager, task: CamelJBangTask, allocatedPort: number): void {
-		const taskDef = task.definition as CamelJBangTaskDefinition;
+	private synchronizePortTracking(portManager: PortManager, task: CamelTask, allocatedPort: number): void {
+		const taskDef = task.definition as CamelTaskDefinition;
 		const actualPort = taskDef.port;
 
 		if (actualPort !== allocatedPort) {
@@ -737,16 +737,16 @@ export class ExtensionContextHandler {
 	 */
 	private async executeRunSourceDirTask(folderPath: string, portManager: PortManager): Promise<void> {
 		const allocatedPort = await portManager.allocatePort();
-		let runTask: CamelRunSourceDirJBangTask | undefined;
+		let runTask: CamelRunSourceDirTask | undefined;
 
 		try {
-			runTask = await CamelRunSourceDirJBangTask.create(folderPath, allocatedPort);
+			runTask = await CamelRunSourceDirTask.create(folderPath, allocatedPort);
 			this.synchronizePortTracking(portManager, runTask, allocatedPort);
 			await runTask.execute();
 		} catch (error) {
 			// Release the port that is currently reserved
 			// If synchronizePortTracking succeeded, it may have changed which port is reserved
-			const portToRelease = runTask ? (runTask.definition as CamelJBangTaskDefinition).port : allocatedPort;
+			const portToRelease = runTask ? (runTask.definition as CamelTaskDefinition).port : allocatedPort;
 			portManager.releasePort(portToRelease);
 			throw error;
 		}

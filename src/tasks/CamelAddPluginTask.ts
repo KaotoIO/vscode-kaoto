@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 import { ShellExecution, TaskRevealKind, TaskScope } from 'vscode';
-import { CamelJBangTask } from './CamelJBangTask';
-import { RouteOperation } from '../types/RouteOperation';
+import { CamelTask } from './CamelTask';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 
-export class CamelRouteOperationJBangTask extends CamelJBangTask {
-	private constructor(operation: RouteOperation, integration: string, route: string, shellExecution: ShellExecution) {
-		super(TaskScope.Workspace, `${operation} - ${integration}: ${route}`, shellExecution, true, TaskRevealKind.Silent);
+export class CamelAddPluginTask extends CamelTask {
+	private constructor(shellExecution: ShellExecution) {
+		super(TaskScope.Workspace, 'Add required Camel JBang plugin', shellExecution, true, TaskRevealKind.Silent);
 	}
 
-	static async create(operation: RouteOperation, integration: string, route: string): Promise<CamelRouteOperationJBangTask> {
-		const result = await CamelCommandAPI.routeOperation(operation, integration, route);
-		return new CamelRouteOperationJBangTask(operation, integration, route, result.execution);
+	static async create(plugin: string): Promise<CamelAddPluginTask> {
+		const result = await CamelCommandAPI.pluginAdd(plugin);
+		return new CamelAddPluginTask(result.execution);
 	}
 }

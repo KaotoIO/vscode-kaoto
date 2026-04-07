@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 import { ShellExecution, TaskScope } from 'vscode';
-import { CamelJBangTask } from './CamelJBangTask';
-import { basename, dirname } from 'path';
+import { CamelTask } from './CamelTask';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 
-export class CamelTestRunJBangTask extends CamelJBangTask {
-	private constructor(shellExecution: ShellExecution, filePath: string) {
-		super(TaskScope.Workspace, `Running - ${basename(filePath)}`, shellExecution);
+export class CamelTestRunFolderTask extends CamelTask {
+	private constructor(shellExecution: ShellExecution, folderPath: string) {
+		super(TaskScope.Workspace, `Running - ${folderPath}`, shellExecution);
 		this.isBackground = true;
 	}
 
-	static async create(filePath: string): Promise<CamelTestRunJBangTask> {
-		const result = await CamelCommandAPI.testRun(basename(filePath), dirname(filePath));
-		return new CamelTestRunJBangTask(result.execution, filePath);
+	static async create(folderPath: string): Promise<CamelTestRunFolderTask> {
+		const result = await CamelCommandAPI.testRunFolder(folderPath);
+		return new CamelTestRunFolderTask(result.execution, folderPath);
 	}
 }

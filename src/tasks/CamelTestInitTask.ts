@@ -13,22 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ShellExecution, TaskRevealKind, TaskScope, WorkspaceFolder } from 'vscode';
-import { CamelJBangTask } from './CamelJBangTask';
+import { CamelInitTask } from './CamelInitTask';
+import { WorkspaceFolder, TaskScope } from 'vscode';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 
-export class CamelBindJBangTask extends CamelJBangTask {
-	private constructor(scope: WorkspaceFolder | TaskScope.Workspace, shellExecution: ShellExecution) {
-		super(scope, 'Init a Camel file with JBang', shellExecution, true, TaskRevealKind.Silent);
+export class CamelTestInitTask extends CamelInitTask {
+	private cwd: string;
+
+	protected constructor(scope: WorkspaceFolder | TaskScope.Workspace, label: string, shellExecution: any, cwd: string) {
+		super(scope, label, shellExecution);
+		this.cwd = cwd;
 	}
 
 	static async create(
-		scope: WorkspaceFolder | TaskScope.Workspace,
 		file: string,
-		source: string = 'timer-source',
-		sink: string = 'log-sink',
-	): Promise<CamelBindJBangTask> {
-		const result = await CamelCommandAPI.bind(file, source, sink);
-		return new CamelBindJBangTask(scope, result.execution);
+		scope: WorkspaceFolder | TaskScope.Workspace,
+		label: string = 'Init a Camel Test file',
+		cwd?: string,
+	): Promise<CamelTestInitTask> {
+		const result = await CamelCommandAPI.testInit(file, cwd);
+		return new CamelTestInitTask(scope, label, result.execution, cwd || '');
 	}
 }

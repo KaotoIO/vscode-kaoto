@@ -1,5 +1,5 @@
 /**
- * Copyright 2026 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2025 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 import { ShellExecution, TaskScope } from 'vscode';
-import { CamelJBangTask } from './CamelJBangTask';
+import { CamelTask } from './CamelTask';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
+import { basename, dirname } from 'path';
 
-export class CamelTestRunFolderJBangTask extends CamelJBangTask {
-	private constructor(shellExecution: ShellExecution, folderPath: string) {
-		super(TaskScope.Workspace, `Running - ${folderPath}`, shellExecution);
+export class CamelRunTask extends CamelTask {
+	private constructor(shellExecution: ShellExecution, filePath: string, port?: number) {
+		super(TaskScope.Workspace, `Running - ${basename(filePath)}::${port}`, shellExecution, undefined, undefined, port);
+
 		this.isBackground = true;
 	}
 
-	static async create(folderPath: string): Promise<CamelTestRunFolderJBangTask> {
-		const result = await CamelCommandAPI.testRunFolder(folderPath);
-		return new CamelTestRunFolderJBangTask(result.execution, folderPath);
+	static async create(filePath: string, port?: number): Promise<CamelRunTask> {
+		const result = await CamelCommandAPI.run(filePath, dirname(filePath), port);
+		return new CamelRunTask(result.execution, filePath, result.resolvedPort);
 	}
 }

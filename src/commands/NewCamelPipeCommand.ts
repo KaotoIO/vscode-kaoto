@@ -15,7 +15,7 @@
  */
 import { Uri, commands } from 'vscode';
 import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
-import { CamelBindJBangTask } from '../tasks/CamelBindJBangTask';
+import { CamelBindTask } from '../tasks/CamelBindTask';
 import { CamelRouteDSL } from './AbstractCamelCommand';
 import path from 'path';
 
@@ -34,7 +34,7 @@ export class NewCamelPipeCommand extends AbstractNewCamelRouteCommand {
 					const filePath = this.computeFullPath(targetFolder.fsPath, fileName);
 
 					const wsFolderTarget = wsFolder || this.singleWorkspaceFolder;
-					const task = await CamelBindJBangTask.create(wsFolderTarget, path.relative(wsFolderTarget.uri.fsPath, filePath));
+					const task = await CamelBindTask.create(wsFolderTarget, path.relative(wsFolderTarget.uri.fsPath, filePath));
 					await task.executeAndWaitWithProgress(NewCamelPipeCommand.PROGRESS_NOTIFICATION_MESSAGE);
 
 					const targetFileURI = Uri.file(filePath);

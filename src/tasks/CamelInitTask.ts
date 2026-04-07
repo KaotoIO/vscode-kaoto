@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ShellExecution, TaskScope } from 'vscode';
-import { CamelJBangTask } from './CamelJBangTask';
-import { basename } from 'path';
+import { ShellExecution, TaskRevealKind, TaskScope, WorkspaceFolder } from 'vscode';
+import { CamelTask } from './CamelTask';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 
-export class CamelRunSourceDirJBangTask extends CamelJBangTask {
-	private constructor(shellExecution: ShellExecution, sourceDir: string, port?: number) {
-		super(TaskScope.Workspace, `Running - ${basename(sourceDir)}::${port}`, shellExecution, undefined, undefined, port);
-
-		this.isBackground = true;
+export class CamelInitTask extends CamelTask {
+	protected constructor(scope: WorkspaceFolder | TaskScope.Workspace, label: string, shellExecution: ShellExecution) {
+		super(scope, label, shellExecution, true, TaskRevealKind.Silent);
 	}
 
-	static async create(sourceDir: string, port?: number): Promise<CamelRunSourceDirJBangTask> {
-		const result = await CamelCommandAPI.runSourceDir(sourceDir, port);
-		return new CamelRunSourceDirJBangTask(result.execution, sourceDir, result.resolvedPort);
+	static async create(file: string, scope: WorkspaceFolder | TaskScope.Workspace, label: string = 'Init a Camel file'): Promise<CamelInitTask> {
+		const result = await CamelCommandAPI.init(file);
+		return new CamelInitTask(scope, label, result.execution);
 	}
 }

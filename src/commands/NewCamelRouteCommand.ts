@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { commands, QuickPickItem, Uri, window } from 'vscode';
-import { CamelInitJBangTask } from '../tasks/CamelInitJBangTask';
+import { CamelInitTask } from '../tasks/CamelInitTask';
 import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
 import path from 'path';
 
@@ -41,7 +41,7 @@ export class NewCamelRouteCommand extends AbstractNewCamelRouteCommand {
 					const filePath = this.computeFullPath(targetFolder.fsPath, fileName);
 
 					const wsFolderTarget = wsFolder || this.singleWorkspaceFolder;
-					const initTask = await CamelInitJBangTask.create(path.relative(wsFolderTarget.uri.fsPath, filePath), wsFolderTarget);
+					const initTask = await CamelInitTask.create(path.relative(wsFolderTarget.uri.fsPath, filePath), wsFolderTarget);
 					await initTask.executeAndWaitWithProgress(NewCamelRouteCommand.PROGRESS_NOTIFICATION_MESSAGE);
 					const targetFileURI = Uri.file(filePath);
 					await this.waitForFileExists(targetFileURI);
