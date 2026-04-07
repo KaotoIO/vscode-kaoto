@@ -1227,25 +1227,9 @@
         "properties": {
           "kaoto.camelLauncher.version": {
             "type": "string",
-            "markdownDescription": "Apache Camel Launcher version to use. The launcher will be automatically downloaded if not found.\n\nIt is recommended to use the same version as your Camel project for compatibility.",
+            "markdownDescription": "Apache Camel Launcher version to use. The launcher will be automatically downloaded from Maven Central based on the configured Camel catalog version.\n\nIt is recommended to use the same version as your Camel project for compatibility.",
             "default": "4.18.1",
             "order": 0
-          },
-          "kaoto.camelLauncher.path": {
-            "type": "string",
-            "markdownDescription": "Custom path to Camel Launcher executable. If not specified, the launcher will be automatically downloaded to extension storage.\n\nExample: `/path/to/camel-launcher/bin/camel` (Unix) or `C:\\path\\to\\camel-launcher\\bin\\camel.bat` (Windows)",
-            "order": 1
-          },
-          "kaoto.camelLauncher.autoDownload": {
-            "type": "boolean",
-            "markdownDescription": "Automatically download Camel Launcher if not found. Disable this for offline environments or when using a custom launcher path.",
-            "default": true,
-            "order": 2
-          },
-          "kaoto.camelLauncher.storageLocation": {
-            "type": "string",
-            "markdownDescription": "Custom storage location for downloaded Camel Launcher distributions. If not specified, uses extension global storage.\n\nExample: `/path/to/storage` or `C:\\path\\to\\storage`",
-            "order": 3
           }
         }
       },

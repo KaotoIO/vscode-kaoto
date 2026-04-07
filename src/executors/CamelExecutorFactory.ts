@@ -69,9 +69,7 @@ export class CamelExecutorFactory {
 				return {
 					type: 'camel-launcher',
 					version: vscodeConfig.get('kaoto.camelLauncher.version', '4.18.1'),
-					launcherPath: vscodeConfig.get('kaoto.camelLauncher.path'),
-					autoDownload: vscodeConfig.get('kaoto.camelLauncher.autoDownload', true),
-					storageLocation: vscodeConfig.get('kaoto.camelLauncher.storageLocation'),
+					autoDownload: true, // Always auto-download for first iteration
 				} as CamelLauncherExecutorConfig;
 
 			default:
@@ -96,25 +94,17 @@ export class CamelExecutorFactory {
 	}
 
 	/**
-	 * Create Camel Launcher executor with download support
+	 * Create Camel Launcher executor with auto-download
+	 * Always downloads the launcher based on configured version
 	 */
 	private static async createCamelLauncherExecutor(config: CamelLauncherExecutorConfig): Promise<ICamelExecutor> {
-		let launcherPath: string;
-
-		if (config.launcherPath) {
-			// Use custom path
-			launcherPath = config.launcherPath;
-			KaotoOutputChannel.logInfo(`Using custom Camel Launcher: ${launcherPath}`);
-		} else if (config.autoDownload) {
-			// Download launcher
-			if (!this.downloader) {
-				this.downloader = new CamelLauncherDownloader(this.extensionContext, config.storageLocation);
-			}
-			launcherPath = await this.downloader.ensureLauncher(config.version);
-			KaotoOutputChannel.logInfo(`Using downloaded Camel Launcher: ${launcherPath}`);
-		} else {
-			throw new Error('Camel Launcher path not specified and auto-download is disabled');
+		// Always auto-download launcher
+		if (!this.downloader) {
+			this.downloader = new CamelLauncherDownloader(this.extensionContext);
 		}
+
+		const launcherPath = await this.downloader.ensureLauncher(config.version);
+		KaotoOutputChannel.logInfo(`Using Camel Launcher ${config.version}: ${launcherPath}`);
 
 		return new CamelLauncherExecutor(config, launcherPath);
 	}

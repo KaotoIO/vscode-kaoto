@@ -185,25 +185,13 @@ async function ensureCamelLauncherAvailable(context: vscode.ExtensionContext): P
 			return;
 		}
 
-		const customPath = config.get<string>('kaoto.camelLauncher.path');
-		const autoDownload = config.get<boolean>('kaoto.camelLauncher.autoDownload', true);
-
-		// Skip if using custom path or auto-download is disabled
-		if (customPath || !autoDownload) {
-			if (customPath) {
-				KaotoOutputChannel.logInfo(`Using custom Camel Launcher path: ${customPath}`);
-			}
-			return;
-		}
-
-		// Download Camel Launcher proactively
+		// Always auto-download Camel Launcher based on configured version
 		const version = config.get<string>('kaoto.camelLauncher.version', '4.18.1');
-		const storageLocation = config.get<string>('kaoto.camelLauncher.storageLocation');
 
 		KaotoOutputChannel.logInfo(`Pre-downloading Camel Launcher ${version}...`);
 		vscode.window.setStatusBarMessage('$(sync~spin) Kaoto: Downloading Camel Launcher...', 3000);
 
-		const downloader = new CamelLauncherDownloader(context, storageLocation);
+		const downloader = new CamelLauncherDownloader(context);
 		const launcherPath = await downloader.ensureLauncher(version);
 
 		KaotoOutputChannel.logInfo(`Camel Launcher ${version} ready at: ${launcherPath}`);
