@@ -283,6 +283,11 @@
         "category": "Kaoto"
       },
       {
+        "command": "kaoto.selectCamelCatalog",
+        "title": "Select Camel Catalog Version",
+        "category": "Kaoto"
+      },
+      {
         "command": "kaoto.open",
         "title": "Open with Kaoto Graphical Editor for Camel"
       },
@@ -920,12 +925,38 @@
         "id": "kaoto",
         "title": "Kaoto",
         "properties": {
+          "kaoto.camelCatalog.version": {
+            "type": "object",
+            "default": null,
+            "markdownDescription": "Selected Camel catalog version for standalone projects. This setting is workspace-specific and does not apply to Maven projects (which use pom.xml). Use the status bar or command palette to change the catalog version.",
+            "properties": {
+              "version": {
+                "type": "string",
+                "description": "Camel version (e.g., '4.18.0')"
+              },
+              "runtime": {
+                "type": "string",
+                "enum": [
+                  "camel-main",
+                  "spring-boot",
+                  "quarkus"
+                ],
+                "description": "Camel runtime type"
+              }
+            },
+            "required": [
+              "version",
+              "runtime"
+            ],
+            "scope": "resource",
+            "order": 0
+          },
           "kaoto.catalog.url": {
             "type": "string",
             "default": null,
             "markdownDescription": "URL to a Kaoto catalog. For instance `https://raw.githubusercontent.com/KaotoIO/camel-catalog/refs/heads/main/catalog/index.json `. Documentation to generate your own set of catalog is available [here](https://kaoto.io/docs/manual/09_generatingcatalog/). It requires to reopen the Kaoto editors to be effective.",
             "scope": "window",
-            "order": 0
+            "order": 1
           },
           "kaoto.localKameletDirectories": {
             "type": "array",

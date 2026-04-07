@@ -1,5 +1,6 @@
 import { CatalogKind, KaotoEditorChannelApi, RuntimeMavenInformation, StepUpdateAction, Suggestion, SuggestionRequestContext } from '@kaoto/kaoto';
 import { CanvasLayoutDirection, ColorScheme, ISettingsModel, NodeLabelType, NodeToolbarTrigger, SettingsModel } from '@kaoto/kaoto/models';
+import { CatalogLibraryEntry } from '@kaoto/camel-catalog/types';
 import { BackendProxy } from '@kie-tools-core/backend/dist/api';
 import { I18n } from '@kie-tools-core/i18n/dist/core';
 import { DefaultVsCodeKieEditorChannelApiImpl } from '@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl';
@@ -17,6 +18,7 @@ import { CamelJBang } from '../helpers/CamelJBang';
 import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
 import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
 import { getSuggestions } from '../helpers/SuggestionRegistry';
+import { CamelCatalogService } from '../services/CamelCatalogService';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 	private readonly currentEditedDocument: vscode.TextDocument | VsCodeKieEditorCustomDocument;
@@ -41,18 +43,41 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		});
 	}
 
+	/**
+	 * @deprecated Use getVSCodeKaotoSettings().catalogUrl instead
+	 * This method is kept for backward compatibility but now only returns custom catalog URLs.
+	 * For catalog selection, use getVSCodeKaotoSettings().selectedCatalog
+	 */
 	async getCatalogURL(): Promise<string | undefined> {
-		return await vscode.workspace.getConfiguration('kaoto').get('catalog.url');
+		// Check for custom catalog URL setting
+		const customCatalogUrl = vscode.workspace.getConfiguration('kaoto').get<string>('catalog.url');
+		return customCatalogUrl || undefined;
 	}
 
-	async getVSCodeKaotoSettings(): Promise<ISettingsModel> {
-		const catalogUrl = await vscode.workspace.getConfiguration('kaoto').get<Promise<string | null>>('catalog.url');
-		const nodeLabel = await vscode.workspace.getConfiguration('kaoto').get<Promise<NodeLabelType | null>>('nodeLabel');
-		const nodeToolbarTrigger = await vscode.workspace.getConfiguration('kaoto').get<Promise<NodeToolbarTrigger | null>>('nodeToolbarTrigger');
-		const colorThemeSetting = await vscode.workspace.getConfiguration('kaoto').get<Promise<ColorScheme | null>>('colorTheme');
-		const canvasLayoutDirection = await vscode.workspace.getConfiguration('kaoto').get<Promise<CanvasLayoutDirection | null>>('canvasLayoutDirection');
-		const customMediaTypes = await vscode.workspace.getConfiguration('kaoto').get<Promise<string[] | null>>('restConfiguration.customMediaTypes');
-		const apicurioRegistryUrl = await vscode.workspace.getConfiguration('kaoto').get<Promise<string | null>>('restConfiguration.apicurioRegistryUrl');
+	async getVSCodeKaotoSettings(): Promise<ISettingsModel & { selectedCatalog?: CatalogLibraryEntry }> {
+		// Get custom catalog URL if set (takes precedence)
+		const catalogUrl = await vscode.workspace.getConfiguration('kaoto').get<string | null>('catalog.url');
+
+		// Get selected catalog from CamelCatalogService for standalone projects
+		if (!catalogUrl && !(await CamelCatalogService.isMavenProject(this.currentEditedDocument.uri))) {
+			try {
+				const catalogService = CamelCatalogService.getInstance();
+				const catalog = await catalogService.getSelectedCatalog(this.currentEditedDocument.uri);
+				if (catalog) {
+					// TODO
+					await vscode.window.showInformationMessage(`Selected catalog: ${catalog.name}`);
+				}
+			} catch (error) {
+				KaotoOutputChannel.logError('Failed to get selected catalog from CamelCatalogService', error);
+			}
+		}
+
+		const nodeLabel = await vscode.workspace.getConfiguration('kaoto').get<NodeLabelType | null>('nodeLabel');
+		const nodeToolbarTrigger = await vscode.workspace.getConfiguration('kaoto').get<NodeToolbarTrigger | null>('nodeToolbarTrigger');
+		const colorThemeSetting = await vscode.workspace.getConfiguration('kaoto').get<ColorScheme | null>('colorTheme');
+		const canvasLayoutDirection = await vscode.workspace.getConfiguration('kaoto').get<CanvasLayoutDirection | null>('canvasLayoutDirection');
+		const customMediaTypes = await vscode.workspace.getConfiguration('kaoto').get<string[] | null>('restConfiguration.customMediaTypes');
+		const apicurioRegistryUrl = await vscode.workspace.getConfiguration('kaoto').get<string | null>('restConfiguration.apicurioRegistryUrl');
 		const colorTheme = this.getColorSchemeFromVSCode(colorThemeSetting, vscode.window.activeColorTheme);
 
 		const settingsModel: Partial<ISettingsModel> = {

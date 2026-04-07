@@ -27,6 +27,7 @@ import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { PortManager } from '../helpers/PortManager';
 import { CamelExecutorFactory } from '../executors/CamelExecutorFactory';
 import { CamelLauncherDownloader } from '../services/CamelLauncherDownloader';
+import { CamelCatalogService } from '../services/CamelCatalogService';
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -65,6 +66,19 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	const portManager = new PortManager();
+
+	/*
+	 * Initialize Camel Catalog Service
+	 */
+	const catalogService = new CamelCatalogService(context);
+	await catalogService.initialize();
+
+	// Create and register status bar item
+	const catalogStatusBar = catalogService.createStatusBarItem();
+	context.subscriptions.push(catalogStatusBar);
+
+	// Register catalog selection command
+	context.subscriptions.push(vscode.commands.registerCommand('kaoto.selectCamelCatalog', () => catalogService.showCatalogPicker()));
 
 	/*
 	 * init Red Hat Telemetry
