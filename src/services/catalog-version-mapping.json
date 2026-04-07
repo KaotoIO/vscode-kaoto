@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Temporary static mapping of Camel catalog versions to Camel CLI versions and runtimes. This file can be manually edited to adjust mappings. In the future, this mapping will be provided by the camel-catalog package itself.",
+  "mappings": [
+    {
+      "catalogVersion": "4.18.0",
+      "catalogRuntime": "Main",
+      "camelVersion": "4.18.0",
+      "runtime": "camel-main",
+      "comment": "Camel Main 4.18.0 community"
+    },
+    {
+      "catalogVersion": "4.14.5",
+      "catalogRuntime": "Main",
+      "camelVersion": "4.14.5",
+      "runtime": "camel-main",
+      "comment": "Camel Main 4.14.5 community"
+    },
+    {
+      "catalogVersion": "4.14.2.redhat-00019",
+      "catalogRuntime": "Main",
+      "camelVersion": "4.14.2.redhat-00019",
+      "runtime": "camel-main",
+      "comment": "Camel Main 4.14.2 RedHat - adjust camelVersion if launcher build number differs"
+    },
+    {
+      "catalogVersion": "4.10.7.redhat-00009",
+      "catalogRuntime": "Main",
+      "camelVersion": "4.10.7.redhat-00009",
+      "runtime": "camel-main",
+      "comment": "Camel Main 4.10.7 RedHat - adjust camelVersion if launcher build number differs"
+    },
+    {
+      "catalogVersion": "4.8.5.redhat-00008",
+      "catalogRuntime": "Main",
+      "camelVersion": "4.8.5.redhat-00008",
+      "runtime": "camel-main",
+      "comment": "Camel Main 4.8.5 RedHat - adjust camelVersion if launcher build number differs"
+    },
+    {
+      "catalogVersion": "4.4.0.redhat-00046",
+      "catalogRuntime": "Main",
+      "camelVersion": "4.4.0.redhat-00046",
+      "runtime": "camel-main",
+      "comment": "Camel Main 4.4.0 RedHat - adjust camelVersion if launcher build number differs"
+    },
+    {
+      "catalogVersion": "3.32.0",
+      "catalogRuntime": "Quarkus",
+      "camelVersion": "4.18.0",
+      "runtime": "quarkus",
+      "comment": "Camel Quarkus 3.32.0 - maps to Camel 4.18.0 (Quarkus platform BOM version != Camel version)"
+    },
+    {
+      "catalogVersion": "3.27.2",
+      "catalogRuntime": "Quarkus",
+      "camelVersion": "4.14.5",
+      "runtime": "quarkus",
+      "comment": "Camel Quarkus 3.27.2 - maps to Camel 4.14.5 (Quarkus platform BOM version != Camel version)"
+    },
+    {
+      "catalogVersion": "3.27.1.redhat-00004",
+      "catalogRuntime": "Quarkus",
+      "camelVersion": "4.14.2.redhat-00004",
+      "runtime": "quarkus",
+      "comment": "Camel Quarkus 3.27.1 RedHat - adjust camelVersion to match actual Camel version"
+    },
+    {
+      "catalogVersion": "3.20.0.redhat-00010",
+      "catalogRuntime": "Quarkus",
+      "camelVersion": "4.10.7.redhat-00010",
+      "runtime": "quarkus",
+      "comment": "Camel Quarkus 3.20.0 RedHat - adjust camelVersion to match actual Camel version"
+    },
+    {
+      "catalogVersion": "3.15.0.redhat-00010",
+      "catalogRuntime": "Quarkus",
+      "camelVersion": "4.8.5.redhat-00010",
+      "runtime": "quarkus",
+      "comment": "Camel Quarkus 3.15.0 RedHat - adjust camelVersion to match actual Camel version"
+    },
+    {
+      "catalogVersion": "3.8.0.redhat-00018",
+      "catalogRuntime": "Quarkus",
+      "camelVersion": "4.4.0.redhat-00018",
+      "runtime": "quarkus",
+      "comment": "Camel Quarkus 3.8.0 RedHat - adjust camelVersion to match actual Camel version"
+    },
+    {
+      "catalogVersion": "4.18.0",
+      "catalogRuntime": "Spring Boot",
+      "camelVersion": "4.18.0",
+      "runtime": "spring-boot",
+      "comment": "Camel Spring Boot 4.18.0 community"
+    },
+    {
+      "catalogVersion": "4.14.5",
+      "catalogRuntime": "Spring Boot",
+      "camelVersion": "4.14.5",
+      "runtime": "spring-boot",
+      "comment": "Camel Spring Boot 4.14.5 community"
+    },
+    {
+      "catalogVersion": "4.14.2.redhat-00018",
+      "catalogRuntime": "Spring Boot",
+      "camelVersion": "4.14.2.redhat-00018",
+      "runtime": "spring-boot",
+      "comment": "Camel Spring Boot 4.14.2 RedHat - adjust camelVersion if launcher build number differs"
+    },
+    {
+      "catalogVersion": "4.10.7.redhat-00013",
+      "catalogRuntime": "Spring Boot",
+      "camelVersion": "4.10.7.redhat-00013",
+      "runtime": "spring-boot",
+      "comment": "Camel Spring Boot 4.10.7 RedHat - adjust camelVersion if launcher build number differs"
+    },
+    {
+      "catalogVersion": "4.8.5.redhat-00008",
+      "catalogRuntime": "Spring Boot",
+      "camelVersion": "4.8.5.redhat-00008",
+      "runtime": "spring-boot",
+      "comment": "Camel Spring Boot 4.8.5 RedHat - adjust camelVersion if launcher build number differs"
+    }
+  ]
+}

@@ -139,4 +139,106 @@ suite('CamelCatalogService Test Suite', () => {
 		const label = CamelCatalogService.buildDisplayLabelFromSelection(selection);
 		expect(label).to.equal('Quarkus 3.15.0');
 	});
+
+	test('should get Camel version for CLI from catalog (Main)', () => {
+		const catalog: CatalogDefinition = {
+			name: 'Camel Main 4.18.0',
+			version: '4.18.0',
+			runtime: 'Main',
+			fileName: 'camel-main/4.18.0/index-825a64c8dcfd946d5eb88a96e71f6589.json',
+		};
+
+		const camelVersion = catalogService.getCamelVersionForCLI(catalog);
+		expect(camelVersion).to.equal('4.18.0');
+	});
+
+	test('should get Camel version for CLI from catalog (Quarkus with mapping)', () => {
+		const catalog: CatalogDefinition = {
+			name: 'Camel Quarkus 3.32.0',
+			version: '3.32.0',
+			runtime: 'Quarkus',
+			fileName: 'camel-quarkus/3.32.0/index-xxx.json',
+		};
+
+		const camelVersion = catalogService.getCamelVersionForCLI(catalog);
+		// Quarkus 3.32.0 should map to Camel 4.18.0 according to mapping file
+		expect(camelVersion).to.equal('4.18.0');
+	});
+
+	test('should get Camel version for CLI from catalog (RedHat)', () => {
+		const catalog: CatalogDefinition = {
+			name: 'Camel Main 4.14.2.redhat-00019',
+			version: '4.14.2.redhat-00019',
+			runtime: 'Main',
+			fileName: 'camel-main/4.14.2.redhat-00019/index-xxx.json',
+		};
+
+		const camelVersion = catalogService.getCamelVersionForCLI(catalog);
+		expect(camelVersion).to.equal('4.14.2.redhat-00019');
+	});
+
+	test('should return undefined Camel version for undefined catalog', () => {
+		const camelVersion = catalogService.getCamelVersionForCLI(undefined);
+		expect(camelVersion).to.be.undefined;
+	});
+
+	test('should get runtime for CLI from catalog (Main)', () => {
+		const catalog: CatalogDefinition = {
+			name: 'Camel Main 4.18.0',
+			version: '4.18.0',
+			runtime: 'Main',
+			fileName: 'camel-main/4.18.0/index-825a64c8dcfd946d5eb88a96e71f6589.json',
+		};
+
+		const runtime = catalogService.getRuntimeForCLI(catalog);
+		expect(runtime).to.equal('camel-main');
+	});
+
+	test('should get runtime for CLI from catalog (Quarkus)', () => {
+		const catalog: CatalogDefinition = {
+			name: 'Camel Quarkus 3.32.0',
+			version: '3.32.0',
+			runtime: 'Quarkus',
+			fileName: 'camel-quarkus/3.32.0/index-xxx.json',
+		};
+
+		const runtime = catalogService.getRuntimeForCLI(catalog);
+		expect(runtime).to.equal('quarkus');
+	});
+
+	test('should get runtime for CLI from catalog (Spring Boot)', () => {
+		const catalog: CatalogDefinition = {
+			name: 'Camel Spring Boot 4.18.0',
+			version: '4.18.0',
+			runtime: 'Spring Boot',
+			fileName: 'camel-springboot/4.18.0/index-xxx.json',
+		};
+
+		const runtime = catalogService.getRuntimeForCLI(catalog);
+		expect(runtime).to.equal('spring-boot');
+	});
+
+	test('should return undefined runtime for undefined catalog', () => {
+		const runtime = catalogService.getRuntimeForCLI(undefined);
+		expect(runtime).to.be.undefined;
+	});
+
+	test('should get CLI parameters from catalog', () => {
+		const catalog: CatalogDefinition = {
+			name: 'Camel Main 4.18.0',
+			version: '4.18.0',
+			runtime: 'Main',
+			fileName: 'camel-main/4.18.0/index-825a64c8dcfd946d5eb88a96e71f6589.json',
+		};
+
+		const params = catalogService.getCLIParameters(catalog);
+		expect(params.camelVersion).to.equal('4.18.0');
+		expect(params.runtime).to.equal('camel-main');
+	});
+
+	test('should return empty CLI parameters for undefined catalog', () => {
+		const params = catalogService.getCLIParameters(undefined);
+		expect(params.camelVersion).to.be.undefined;
+		expect(params.runtime).to.be.undefined;
+	});
 });

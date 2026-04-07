@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
+import catalogVersionMapping from './catalog-version-mapping.json';
 
 /**
  * Simplified catalog selection stored in settings (only essential data)
@@ -42,6 +43,25 @@ interface GroupedCatalogs {
  */
 interface CatalogQuickPickItem extends vscode.QuickPickItem {
 	catalog?: CatalogDefinition;
+}
+
+/**
+ * Mapping entry for catalog version to Camel CLI version
+ * This is a temporary static mapping that will be replaced by catalog-provided mapping in the future
+ */
+interface CatalogVersionMapping {
+	catalogVersion: string;
+	catalogRuntime: string;
+	camelVersion: string;
+	runtime: 'camel-main' | 'spring-boot' | 'quarkus';
+	comment?: string;
+}
+
+/**
+ * Structure of the catalog version mapping JSON file
+ */
+interface CatalogVersionMappingFile {
+	mappings: CatalogVersionMapping[];
 }
 
 /**
@@ -253,6 +273,81 @@ export class CamelCatalogService {
 		});
 
 		return sorted[0];
+	}
+	/**
+	 * Get the Camel version for CLI from catalog selection
+	 * Uses the static mapping file to handle cases where catalog version != Camel version
+	 * (e.g., Quarkus platform BOM versions, RedHat build number differences)
+	 *
+	 * @param catalog The catalog definition to get Camel version for
+	 * @returns The Camel version to use with --camel-version parameter, or undefined if not found
+	 */
+	public getCamelVersionForCLI(catalog: CatalogDefinition | undefined): string | undefined {
+		if (!catalog) {
+			return undefined;
+		}
+
+		// Load mapping file
+		const mappingData = catalogVersionMapping as CatalogVersionMappingFile;
+
+		// Find matching mapping entry
+		const mapping = mappingData.mappings.find((m) => m.catalogVersion === catalog.version && m.catalogRuntime === catalog.runtime);
+
+		if (mapping) {
+			KaotoOutputChannel.logInfo(`Mapped catalog ${catalog.version} (${catalog.runtime}) to Camel version ${mapping.camelVersion}`);
+			return mapping.camelVersion;
+		}
+
+		// Fallback: use catalog version directly (may not work for all cases)
+		KaotoOutputChannel.logWarning(
+			`No mapping found for catalog ${catalog.version} (${catalog.runtime}), using catalog version as Camel version. ` +
+				`Please update catalog-version-mapping.json if this is incorrect.`,
+		);
+		return catalog.version;
+	}
+
+	/**
+	 * Get the runtime parameter for CLI from catalog selection
+	 * Normalizes the runtime name to the format expected by Camel CLI
+	 *
+	 * @param catalog The catalog definition to get runtime for
+	 * @returns The runtime to use with --runtime parameter, or undefined if not found
+	 */
+	public getRuntimeForCLI(catalog: CatalogDefinition | undefined): string | undefined {
+		if (!catalog) {
+			return undefined;
+		}
+
+		// Load mapping file
+		const mappingData = catalogVersionMapping as CatalogVersionMappingFile;
+
+		// Find matching mapping entry
+		const mapping = mappingData.mappings.find((m) => m.catalogVersion === catalog.version && m.catalogRuntime === catalog.runtime);
+
+		if (mapping) {
+			return mapping.runtime;
+		}
+
+		// Fallback: use normalized runtime
+		return this.normalizeRuntime(catalog.runtime);
+	}
+
+	/**
+	 * Get both Camel version and runtime for CLI from catalog selection
+	 * Convenience method that combines getCamelVersionForCLI and getRuntimeForCLI
+	 *
+	 * @param catalog The catalog definition to get CLI parameters for
+	 * @returns Object with camelVersion and runtime, or empty object if catalog is undefined
+	 */
+	public getCLIParameters(catalog: CatalogDefinition | undefined): { camelVersion?: string; runtime?: string } {
+		if (!catalog) {
+			return {};
+		}
+
+		return {
+			camelVersion: this.getCamelVersionForCLI(catalog),
+			runtime: this.getRuntimeForCLI(catalog),
+		};
 	}
 
 	/**
