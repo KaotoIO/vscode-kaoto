@@ -27,7 +27,7 @@ import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { PortManager } from '../helpers/PortManager';
 import { CamelExecutorFactory } from '../executors/CamelExecutorFactory';
 import { CamelLauncherDownloader } from '../services/CamelLauncherDownloader';
-import { CamelCatalogService } from '../services/CamelCatalogService';
+import { KaotoCatalogService } from '../services/KaotoCatalogService';
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -70,7 +70,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	/*
 	 * Initialize Camel Catalog Service
 	 */
-	const catalogService = new CamelCatalogService(context);
+	const catalogService = new KaotoCatalogService(context);
 	await catalogService.initialize();
 
 	// Create and register status bar item

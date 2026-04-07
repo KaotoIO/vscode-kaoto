@@ -18,7 +18,7 @@ import { CamelJBang } from '../helpers/CamelJBang';
 import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
 import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
 import { getSuggestions } from '../helpers/SuggestionRegistry';
-import { CamelCatalogService } from '../services/CamelCatalogService';
+import { KaotoCatalogService } from '../services/KaotoCatalogService';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 	private readonly currentEditedDocument: vscode.TextDocument | VsCodeKieEditorCustomDocument;
@@ -58,17 +58,17 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		// Get custom catalog URL if set (takes precedence)
 		const catalogUrl = await vscode.workspace.getConfiguration('kaoto').get<string | null>('catalog.url');
 
-		// Get selected catalog from CamelCatalogService for standalone projects
-		if (!catalogUrl && !(await CamelCatalogService.isMavenProject(this.currentEditedDocument.uri))) {
+		// Get selected catalog from KaotoCatalogService for standalone projects
+		if (!catalogUrl && !(await KaotoCatalogService.isMavenProject(this.currentEditedDocument.uri))) {
 			try {
-				const catalogService = CamelCatalogService.getInstance();
+				const catalogService = KaotoCatalogService.getInstance();
 				const catalog = await catalogService.getSelectedCatalog(this.currentEditedDocument.uri);
 				if (catalog) {
 					// TODO
 					await vscode.window.showInformationMessage(`Selected catalog: ${catalog.name}`);
 				}
 			} catch (error) {
-				KaotoOutputChannel.logError('Failed to get selected catalog from CamelCatalogService', error);
+				KaotoOutputChannel.logError('Failed to get selected catalog from KaotoCatalogService', error);
 			}
 		}
 

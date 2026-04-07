@@ -5,11 +5,19 @@ import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import catalogVersionMapping from './catalog-version-mapping.json';
 
 /**
- * Simplified catalog selection stored in settings (only essential data)
+ * Simplified catalog selection stored in settings for integration files (only essential data)
  */
 export interface CatalogSelection {
 	version: string;
 	runtime: 'camel-main' | 'spring-boot' | 'quarkus';
+}
+
+/**
+ * Simplified catalog selection stored in settings for test files (only essential data)
+ */
+export interface CitrusCatalogSelection {
+	version: string;
+	runtime: 'citrus';
 }
 
 /**
@@ -65,10 +73,10 @@ interface CatalogVersionMappingFile {
 }
 
 /**
- * Service for managing Camel catalog selection and operations
+ * Service for managing Kaoto catalog selection and operations (Camel and Citrus)
  */
-export class CamelCatalogService {
-	private static instance: CamelCatalogService;
+export class KaotoCatalogService {
+	private static instance: KaotoCatalogService;
 	private catalogs: CatalogDefinition[] = [];
 	private statusBarItem: vscode.StatusBarItem | undefined;
 	private readonly catalogBasePath: string;
@@ -78,17 +86,17 @@ export class CamelCatalogService {
 		// Path to the catalog directory in node_modules
 		this.catalogBasePath = path.join(context.extensionPath, 'node_modules', '@kaoto', 'camel-catalog', 'dist', 'camel-catalog');
 		this.catalogIndexPath = path.join(this.catalogBasePath, 'index.json');
-		CamelCatalogService.instance = this;
+		KaotoCatalogService.instance = this;
 	}
 
 	/**
 	 * Get the singleton instance
 	 */
-	public static getInstance(): CamelCatalogService {
-		if (!CamelCatalogService.instance) {
-			throw new Error('CamelCatalogService not initialized. Call initialize() first.');
+	public static getInstance(): KaotoCatalogService {
+		if (!KaotoCatalogService.instance) {
+			throw new Error('KaotoCatalogService not initialized. Call initialize() first.');
 		}
-		return CamelCatalogService.instance;
+		return KaotoCatalogService.instance;
 	}
 
 	/**
@@ -107,7 +115,7 @@ export class CamelCatalogService {
 				KaotoOutputChannel.logWarning('No default catalog found');
 			}
 		} catch (error) {
-			KaotoOutputChannel.logError('Failed to initialize CamelCatalogService', error);
+			KaotoOutputChannel.logError('Failed to initialize KaotoCatalogService', error);
 			vscode.window.showErrorMessage('Failed to load Camel catalogs. Some features may not work correctly.');
 		}
 	}
@@ -153,9 +161,11 @@ export class CamelCatalogService {
 	/**
 	 * Normalize runtime name from index.json to simplified format
 	 */
-	private normalizeRuntime(runtime: string): 'camel-main' | 'spring-boot' | 'quarkus' {
+	private normalizeRuntime(runtime: string): 'camel-main' | 'spring-boot' | 'quarkus' | 'citrus' {
 		const normalized = runtime.toLowerCase().replace(/\s+/g, '-');
-		if (normalized.includes('spring')) {
+		if (normalized.includes('citrus')) {
+			return 'citrus';
+		} else if (normalized.includes('spring')) {
 			return 'spring-boot';
 		} else if (normalized.includes('quarkus')) {
 			return 'quarkus';
@@ -179,26 +189,46 @@ export class CamelCatalogService {
 	}
 
 	/**
-	 * Convert CatalogDefinition to CatalogSelection
+	 * Convert CatalogDefinition to CatalogSelection or CitrusCatalogSelection
 	 */
-	private toSelection(catalog: CatalogDefinition): CatalogSelection {
+	private toSelection(catalog: CatalogDefinition): CatalogSelection | CitrusCatalogSelection {
+		const runtime = this.normalizeRuntime(catalog.runtime);
+		if (runtime === 'citrus') {
+			return {
+				version: catalog.version,
+				runtime: 'citrus',
+			};
+		}
 		return {
 			version: catalog.version,
-			runtime: this.normalizeRuntime(catalog.runtime),
+			runtime: runtime as 'camel-main' | 'spring-boot' | 'quarkus',
 		};
 	}
 
 	/**
-	 * Find catalog definition from selection
+	 * Find catalog definition from selection (supports both integration and test catalogs)
 	 */
-	private findCatalogFromSelection(selection: CatalogSelection): CatalogDefinition | undefined {
+	private findCatalogFromSelection(selection: CatalogSelection | CitrusCatalogSelection): CatalogDefinition | undefined {
 		return this.catalogs.find((c) => c.version === selection.version && this.normalizeRuntime(c.runtime) === selection.runtime);
 	}
 
 	/**
-	 * Get the selected catalog for a workspace
+	 * Get the selected catalog for a workspace, or default if none selected
+	 * Automatically determines whether to use integration or test catalog based on file type
 	 */
 	public async getSelectedCatalog(resourceUri?: vscode.Uri): Promise<CatalogDefinition | undefined> {
+		// Determine file type and delegate to appropriate method
+		if (resourceUri && this.isKaotoCitrusTestFile(resourceUri)) {
+			return this.getSelectedTestCatalog(resourceUri);
+		} else {
+			return this.getSelectedIntegrationCatalog(resourceUri);
+		}
+	}
+
+	/**
+	 * Get the selected integration catalog for a workspace, or default if none selected
+	 */
+	public async getSelectedIntegrationCatalog(resourceUri?: vscode.Uri): Promise<CatalogDefinition | undefined> {
 		const config = vscode.workspace.getConfiguration('kaoto', resourceUri);
 		const selection = config.get<CatalogSelection>('camelCatalog.version');
 
@@ -209,22 +239,55 @@ export class CamelCatalogService {
 			}
 		}
 
-		// Return default catalog if no valid selection
-		return this.getDefaultCatalog();
+		// Return default integration catalog
+		return this.getDefaultIntegrationCatalog();
+	}
+
+	/**
+	 * Get the selected test catalog for a workspace, or default if none selected
+	 */
+	public async getSelectedTestCatalog(resourceUri?: vscode.Uri): Promise<CatalogDefinition | undefined> {
+		const config = vscode.workspace.getConfiguration('kaoto', resourceUri);
+		const selection = config.get<CitrusCatalogSelection>('citrusCatalog.version');
+
+		if (selection) {
+			const catalog = this.findCatalogFromSelection(selection);
+			if (catalog) {
+				return catalog;
+			}
+		}
+
+		// Return default test catalog
+		return this.getDefaultTestCatalog();
 	}
 
 	/**
 	 * Set the selected catalog for a workspace
+	 * Automatically determines whether to store as integration or test catalog based on catalog runtime
 	 */
 	public async setSelectedCatalog(catalog: CatalogDefinition, resourceUri?: vscode.Uri): Promise<void> {
+		// Determine if this is a Citrus catalog
+		const isCitrusCatalog = this.normalizeRuntime(catalog.runtime) === 'citrus';
+
+		if (isCitrusCatalog) {
+			await this.setSelectedTestCatalog(catalog, resourceUri);
+		} else {
+			await this.setSelectedIntegrationCatalog(catalog, resourceUri);
+		}
+	}
+
+	/**
+	 * Set the selected integration catalog for a workspace
+	 */
+	public async setSelectedIntegrationCatalog(catalog: CatalogDefinition, resourceUri?: vscode.Uri): Promise<void> {
 		const config = vscode.workspace.getConfiguration('kaoto', resourceUri);
 
 		// Store simplified selection (only version and runtime)
-		const selection = this.toSelection(catalog);
+		const selection = this.toSelection(catalog) as CatalogSelection;
 		await config.update('camelCatalog.version', selection, vscode.ConfigurationTarget.Workspace);
 
-		const displayLabel = CamelCatalogService.buildDisplayLabel(catalog);
-		KaotoOutputChannel.logInfo(`Selected catalog: ${displayLabel}`);
+		const displayLabel = KaotoCatalogService.buildDisplayLabel(catalog);
+		KaotoOutputChannel.logInfo(`Selected integration catalog: ${displayLabel}`);
 
 		// Update status bar immediately with the new catalog
 		if (this.statusBarItem) {
@@ -232,12 +295,15 @@ export class CamelCatalogService {
 			this.statusBarItem.show();
 		}
 
-		// Check if there are any open Kaoto editors
-		const kaotoEditors = vscode.window.visibleTextEditors.filter((editor) => this.isKaotoFile(editor.document.uri));
+		// Check if there are any open Kaoto integration editors
+		const kaotoEditors = vscode.window.visibleTextEditors.filter((editor) => this.isKaotoIntegrationFile(editor.document.uri));
 
-		// Only show notification if there are open Kaoto editors
+		// Only show notification if there are open Kaoto integration editors
 		if (kaotoEditors.length > 0) {
-			const action = await vscode.window.showInformationMessage('Catalog version changed. Reopen Kaoto editors to apply changes.', 'Reload Editors');
+			const action = await vscode.window.showInformationMessage(
+				'Integration catalog version changed. Reopen Kaoto editors to apply changes.',
+				'Reload Editors',
+			);
 
 			if (action === 'Reload Editors') {
 				await this.reloadKaotoEditors();
@@ -246,9 +312,57 @@ export class CamelCatalogService {
 	}
 
 	/**
-	 * Get the default catalog (latest Camel Main RedHat version, or latest Main if no RedHat version available)
+	 * Set the selected test catalog for a workspace
 	 */
-	public getDefaultCatalog(): CatalogDefinition | undefined {
+	public async setSelectedTestCatalog(catalog: CatalogDefinition, resourceUri?: vscode.Uri): Promise<void> {
+		const config = vscode.workspace.getConfiguration('kaoto', resourceUri);
+
+		// Store simplified selection (only version and runtime)
+		const selection = this.toSelection(catalog) as CitrusCatalogSelection;
+		await config.update('citrusCatalog.version', selection, vscode.ConfigurationTarget.Workspace);
+
+		const displayLabel = KaotoCatalogService.buildDisplayLabel(catalog);
+		KaotoOutputChannel.logInfo(`Selected test catalog: ${displayLabel}`);
+
+		// Update status bar immediately with the new catalog
+		if (this.statusBarItem) {
+			this.statusBarItem.text = `$(package) ${displayLabel}`;
+			this.statusBarItem.show();
+		}
+
+		// Check if there are any open Kaoto test editors
+		const kaotoEditors = vscode.window.visibleTextEditors.filter((editor) => this.isKaotoCitrusTestFile(editor.document.uri));
+
+		// Only show notification if there are open Kaoto test editors
+		if (kaotoEditors.length > 0) {
+			const action = await vscode.window.showInformationMessage('Test catalog version changed. Reopen Kaoto editors to apply changes.', 'Reload Editors');
+
+			if (action === 'Reload Editors') {
+				await this.reloadKaotoEditors();
+			}
+		}
+	}
+
+	/**
+	 * Get the default catalog based on file type
+	 * - For test files: latest Citrus catalog
+	 * - For integration files: latest Camel Main RedHat version (or latest Main if no RedHat version available)
+	 */
+	public getDefaultCatalog(resourceUri?: vscode.Uri): CatalogDefinition | undefined {
+		// Check if this is a Citrus test file
+		const isCitrusTest = resourceUri ? this.isKaotoCitrusTestFile(resourceUri) : false;
+
+		if (isCitrusTest) {
+			return this.getDefaultTestCatalog();
+		} else {
+			return this.getDefaultIntegrationCatalog();
+		}
+	}
+
+	/**
+	 * Get the default integration catalog (latest Camel Main RedHat version, or latest Main if no RedHat version available)
+	 */
+	public getDefaultIntegrationCatalog(): CatalogDefinition | undefined {
 		// Find all Main runtime catalogs
 		const mainCatalogs = this.catalogs.filter((c) => c.runtime === 'Main');
 
@@ -273,6 +387,20 @@ export class CamelCatalogService {
 		});
 
 		return sorted[0];
+	}
+
+	/**
+	 * Get the default test catalog (latest Citrus catalog)
+	 */
+	public getDefaultTestCatalog(): CatalogDefinition | undefined {
+		const citrusCatalogs = this.catalogs.filter((c) => c.runtime.toLowerCase() === 'citrus');
+		if (citrusCatalogs.length > 0) {
+			const sorted = citrusCatalogs.sort((a, b) => {
+				return b.version.localeCompare(a.version, undefined, { numeric: true });
+			});
+			return sorted[0];
+		}
+		return undefined;
 	}
 	/**
 	 * Get the Camel version for CLI from catalog selection
@@ -460,7 +588,7 @@ export class CamelCatalogService {
 		}
 
 		// Check if Maven project
-		const isMaven = await CamelCatalogService.isMavenProject(documentUri);
+		const isMaven = await KaotoCatalogService.isMavenProject(documentUri);
 		if (isMaven) {
 			this.statusBarItem.hide();
 			return;
@@ -469,7 +597,7 @@ export class CamelCatalogService {
 		// Get selected catalog and update status bar
 		const selectedCatalog = await this.getSelectedCatalog(documentUri);
 		if (selectedCatalog) {
-			const displayLabel = CamelCatalogService.buildDisplayLabel(selectedCatalog);
+			const displayLabel = KaotoCatalogService.buildDisplayLabel(selectedCatalog);
 			this.statusBarItem.text = `$(package) ${displayLabel}`;
 			this.statusBarItem.show();
 		} else {
@@ -478,11 +606,26 @@ export class CamelCatalogService {
 	}
 
 	/**
-	 * Check if a file is a Kaoto-supported file
+	 * Check if a file is a Kaoto-supported file (integration or test)
 	 */
 	private isKaotoFile(uri: vscode.Uri): boolean {
+		return this.isKaotoIntegrationFile(uri) || this.isKaotoCitrusTestFile(uri);
+	}
+
+	/**
+	 * Check if a file is a Kaoto integration file (camel, kamelet, pipe)
+	 */
+	private isKaotoIntegrationFile(uri: vscode.Uri): boolean {
 		const fileName = path.basename(uri.fsPath);
 		return /\.(camel|kamelet|pipe)\.(yaml|yml)$/.test(fileName) || /-pipe\.(yaml|yml)$/.test(fileName) || /\.camel\.xml$/.test(fileName);
+	}
+
+	/**
+	 * Check if a file is a Kaoto Citrus test file
+	 */
+	private isKaotoCitrusTestFile(uri: vscode.Uri): boolean {
+		const fileName = path.basename(uri.fsPath);
+		return /\.citrus\.(yaml|yml)$/.test(fileName) || /\.citrus[.-](test|it)\.(yaml|yml)$/.test(fileName);
 	}
 
 	/**
@@ -493,10 +636,13 @@ export class CamelCatalogService {
 		const resourceUri = activeEditor?.document.uri;
 
 		// Check if Maven project
-		if (resourceUri && (await CamelCatalogService.isMavenProject(resourceUri))) {
+		if (resourceUri && (await KaotoCatalogService.isMavenProject(resourceUri))) {
 			vscode.window.showInformationMessage('Catalog version is managed by pom.xml in Maven projects.');
 			return;
 		}
+
+		// Determine if current file is a Citrus test file
+		const isCitrusTestFile = resourceUri ? this.isKaotoCitrusTestFile(resourceUri) : false;
 
 		const groupedCatalogs = this.getCatalogsByRuntime();
 		const currentCatalog = await this.getSelectedCatalog(resourceUri);
@@ -505,6 +651,25 @@ export class CamelCatalogService {
 		const items: CatalogQuickPickItem[] = [];
 
 		for (const [runtime, catalogs] of Object.entries(groupedCatalogs)) {
+			// Filter catalogs based on file type:
+			// - For Citrus test files: show ONLY Citrus catalogs
+			// - For integration files: show all catalogs EXCEPT Citrus
+			const filteredCatalogs = catalogs.filter((catalog) => {
+				const isCitrusCatalog = catalog.runtime.toLowerCase() === 'citrus';
+				if (isCitrusTestFile) {
+					// For test files, only show Citrus catalogs
+					return isCitrusCatalog;
+				} else {
+					// For integration files, exclude Citrus catalogs
+					return !isCitrusCatalog;
+				}
+			});
+
+			// Skip runtime group if no catalogs after filtering
+			if (filteredCatalogs.length === 0) {
+				continue;
+			}
+
 			// Add runtime header
 			items.push({
 				label: runtime,
@@ -512,8 +677,8 @@ export class CamelCatalogService {
 			});
 
 			// Add catalog items for this runtime
-			for (const catalog of catalogs) {
-				const displayLabel = CamelCatalogService.buildDisplayLabel(catalog);
+			for (const catalog of filteredCatalogs) {
+				const displayLabel = KaotoCatalogService.buildDisplayLabel(catalog);
 				const isCurrent =
 					currentCatalog?.version === catalog.version && this.normalizeRuntime(currentCatalog.runtime) === this.normalizeRuntime(catalog.runtime);
 				items.push({
@@ -525,7 +690,7 @@ export class CamelCatalogService {
 		}
 
 		const selected = await vscode.window.showQuickPick(items, {
-			placeHolder: 'Select Camel Catalog Version',
+			placeHolder: isCitrusTestFile ? 'Select Citrus Catalog Version' : 'Select Camel Catalog Version',
 			matchOnDescription: true,
 			matchOnDetail: true,
 		});
