@@ -1,9 +1,10 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
-import { findFolderOfPomXml, KAOTO_CAMEL_JBANG_VERSION_SETTING_ID } from './helpers';
+import { findFolderOfPomXml } from './helpers';
 import { satisfies } from 'compare-versions';
 import { CamelDependencyUpdateJBangTask } from '../tasks/CamelDependencyUpdateJBangTask';
+import { KaotoCatalogService } from '../services/KaotoCatalogService';
 
 export class StepsOnSaveManager {
 	private static _instance: StepsOnSaveManager | undefined;
@@ -36,7 +37,11 @@ export class StepsOnSaveManager {
 	}
 
 	public async updateDependencies(docPath: string, pomPath: string, message?: string): Promise<void> {
-		const camelJBangVersion = vscode.workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_VERSION_SETTING_ID) as string;
+		// Get version from catalog service
+		const catalogService = KaotoCatalogService.getInstance();
+		const catalog = catalogService.getDefaultIntegrationCatalog();
+		const camelJBangVersion = catalogService.getCamelVersionForCLI(catalog) || '4.18.0';
+
 		if (satisfies(camelJBangVersion, '<4.14')) {
 			KaotoOutputChannel.logWarning('Camel JBang version is <4.14. Skipping update on save for Camel dependencies in pom.xml.');
 			vscode.window.setStatusBarMessage('Kaoto: Camel JBang version is <4.14. Skipping update on save for Camel dependencies in pom.xml.', 5_000);

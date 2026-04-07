@@ -8,8 +8,8 @@ import { dirname } from 'path';
 import { satisfies } from 'compare-versions';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
 import { ArgumentConflict, ArgumentConflictDetector } from '../../helpers/ArgumentConflictDetector';
+import { KaotoCatalogService } from '../../services/KaotoCatalogService';
 import {
-	KAOTO_CAMEL_JBANG_VERSION_SETTING_ID,
 	KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID,
 	KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID,
 	KAOTO_MAVEN_CAMEL_JBANG_EXPORT_FOLDER_ARGUMENTS_SETTING_ID,
@@ -31,7 +31,10 @@ export class CamelSettingsHelper {
 	private readonly camelVersion: string;
 
 	constructor() {
-		this.camelVersion = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_VERSION_SETTING_ID) as string;
+		// Get version from catalog service
+		const catalogService = KaotoCatalogService.getInstance();
+		const catalog = catalogService.getDefaultIntegrationCatalog();
+		this.camelVersion = catalogService.getCamelVersionForCLI(catalog) || '';
 	}
 
 	/**
@@ -93,7 +96,7 @@ export class CamelSettingsHelper {
 	}
 
 	/**
-	 * Get Camel version argument if configured
+	 * Get Camel version argument from catalog selection
 	 */
 	getCamelVersionArgument(userArgs: string[] = []): string {
 		// Check if user has defined --camel-version
@@ -101,8 +104,12 @@ export class CamelSettingsHelper {
 			return '';
 		}
 
-		const camelVersion = workspace.getConfiguration().get('kaoto.camelVersion');
-		return camelVersion ? `--camel-version=${camelVersion as string}` : '';
+		// Get version from catalog service
+		const catalogService = KaotoCatalogService.getInstance();
+		const catalog = catalogService.getDefaultIntegrationCatalog();
+		const camelVersion = catalogService.getCamelVersionForCLI(catalog);
+
+		return camelVersion ? `--camel-version=${camelVersion}` : '';
 	}
 
 	/**

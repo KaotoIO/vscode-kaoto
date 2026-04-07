@@ -185,8 +185,10 @@ async function ensureCamelLauncherAvailable(context: vscode.ExtensionContext): P
 			return;
 		}
 
-		// Always auto-download Camel Launcher based on configured version
-		const version = config.get<string>('kaoto.camelLauncher.version', '4.18.1');
+		// Get version from catalog service
+		const catalogService = KaotoCatalogService.getInstance();
+		const catalog = catalogService.getDefaultIntegrationCatalog();
+		const version = catalogService.getCamelVersionForCLI(catalog) || '4.18.1';
 
 		KaotoOutputChannel.logInfo(`Pre-downloading Camel Launcher ${version}...`);
 		vscode.window.setStatusBarMessage('$(sync~spin) Kaoto: Downloading Camel Launcher...', 3000);

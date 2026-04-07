@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { assert } from 'chai';
-import { CamelJBang } from '../../helpers/CamelJBang';
+import { MavenRuntimeDetector } from '../../helpers/MavenRuntimeDetector';
 import * as vscode from 'vscode';
 import * as os from 'os';
 import { RuntimeMavenInformation } from '@kaoto/kaoto';
@@ -31,10 +31,10 @@ suite('CamelJbang tests', function () {
 	test('Can retrieve runtime information from Maven context for Quarkus project', async () => {
 		const files = await vscode.workspace.findFiles('camel-maven-quarkus-project/src/main/resources/camel/my-camel-quarkus-route.camel.yaml');
 		assert(files.length === 1, 'For the test, we expect to have a single file in the camel quarkus project');
-		let runtimeInfo = await new CamelJBang().getRuntimeInfoFromMavenContext(files[0].fsPath);
+		let runtimeInfo = await MavenRuntimeDetector.getRuntimeInfoFromMavenContext(files[0].fsPath);
 		if (runtimeInfo === undefined) {
 			// Retry the getRuntimeInfoFromMavenContext if the first attempt fails, it can happen when camel jbang downloads dependencies, eg. when there is a new version of Camel JBang used in the project.
-			runtimeInfo = await new CamelJBang().getRuntimeInfoFromMavenContext(files[0].fsPath);
+			runtimeInfo = await MavenRuntimeDetector.getRuntimeInfoFromMavenContext(files[0].fsPath);
 		}
 		const expected: RuntimeMavenInformation = {
 			runtime: 'quarkus',
@@ -52,7 +52,7 @@ suite('CamelJbang tests', function () {
 	test('Can retrieve runtime information from Maven context for Spring Boot project', async () => {
 		const files = await vscode.workspace.findFiles('camel-maven-springboot-project/src/main/resources/camel/my-camel-spring-boot-route.camel.yaml');
 		assert(files.length === 1, 'For the test, we expect to have a single file in the camel spring boot project');
-		const runtimeInfo = await new CamelJBang().getRuntimeInfoFromMavenContext(files[0].fsPath);
+		const runtimeInfo = await MavenRuntimeDetector.getRuntimeInfoFromMavenContext(files[0].fsPath);
 		const expected: RuntimeMavenInformation = {
 			runtime: 'spring-boot',
 			camelVersion: '4.13.0',
@@ -67,7 +67,7 @@ suite('CamelJbang tests', function () {
 	test('Can retrieve runtime information from Maven context for Main project', async () => {
 		const files = await vscode.workspace.findFiles('camel-maven-main-project/src/main/resources/camel/my-camel-main-route.camel.yaml');
 		assert(files.length === 1, 'For the test, we expect to have a single file in the camel main project');
-		const runtimeInfo = await new CamelJBang().getRuntimeInfoFromMavenContext(files[0].fsPath);
+		const runtimeInfo = await MavenRuntimeDetector.getRuntimeInfoFromMavenContext(files[0].fsPath);
 		const expected: RuntimeMavenInformation = {
 			runtime: 'main',
 			camelVersion: '4.13.0',
@@ -78,7 +78,7 @@ suite('CamelJbang tests', function () {
 	test('Return undefined when calling getRuntimeInfoFromMavenContext on a file not in a Maven project', async () => {
 		const files = await vscode.workspace.findFiles('my.yaml');
 		assert(files.length === 1, 'For the test, we expect to have a single file named my.yaml in the workspace');
-		const runtimeInfo = await new CamelJBang().getRuntimeInfoFromMavenContext(files[0].fsPath);
+		const runtimeInfo = await MavenRuntimeDetector.getRuntimeInfoFromMavenContext(files[0].fsPath);
 		assert(runtimeInfo === undefined, 'on a non-Maven Project, we should have undefined returned');
 	});
 });

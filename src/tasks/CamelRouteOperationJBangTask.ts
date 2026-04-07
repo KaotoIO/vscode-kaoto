@@ -15,7 +15,7 @@
  */
 import { ShellExecution, TaskRevealKind, TaskScope } from 'vscode';
 import { CamelJBangTask } from './CamelJBangTask';
-import { RouteOperation } from '../helpers/CamelJBang';
+import { RouteOperation } from '../types/RouteOperation';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 
 export class CamelRouteOperationJBangTask extends CamelJBangTask {

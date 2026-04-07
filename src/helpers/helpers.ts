@@ -26,8 +26,6 @@ import fs from 'fs';
 
 export const KAOTO_FILE_PATH_GLOB: string = '**/*.{yml,yaml,xml}';
 
-export const KAOTO_CAMEL_JBANG_VERSION_SETTING_ID: string = 'kaoto.camelJbang.version';
-
 export const KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID: string = 'kaoto.camelJbang.runArguments';
 
 export const KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID: string = 'kaoto.camelJbang.runFolderOrWorkspaceArguments';

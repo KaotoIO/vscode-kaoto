@@ -14,7 +14,7 @@ import { ResourceContentService } from '@kie-tools-core/workspace/dist/api';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
-import { CamelJBang } from '../helpers/CamelJBang';
+import { MavenRuntimeDetector } from '../helpers/MavenRuntimeDetector';
 import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
 import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
 import { getSuggestions } from '../helpers/SuggestionRegistry';
@@ -246,7 +246,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 	}
 
 	async getRuntimeInfoFromMavenContext(): Promise<RuntimeMavenInformation | undefined> {
-		return new CamelJBang().getRuntimeInfoFromMavenContext(this.currentEditedDocument.uri.fsPath);
+		return MavenRuntimeDetector.getRuntimeInfoFromMavenContext(this.currentEditedDocument.uri.fsPath);
 	}
 
 	async onStepUpdated(action: StepUpdateAction, stepType: CatalogKind, stepName: string): Promise<void> {

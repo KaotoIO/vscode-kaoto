@@ -6,6 +6,7 @@ import { CamelLauncherDownloader } from '../services/CamelLauncherDownloader';
 import { AnyExecutorConfig, JBangExecutorConfig, CamelLauncherExecutorConfig } from './types/ExecutorConfig';
 import { ExecutorType } from './types/ExecutorTypes';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
+import { KaotoCatalogService } from '../services/KaotoCatalogService';
 
 /**
  * Factory for creating executor instances
@@ -52,24 +53,30 @@ export class CamelExecutorFactory {
 
 	/**
 	 * Load configuration from VS Code settings
+	 * Version is determined from catalog selection
 	 */
 	private static loadConfiguration(): AnyExecutorConfig {
 		const vscodeConfig = vscode.workspace.getConfiguration();
 		const executorType = vscodeConfig.get<ExecutorType>('kaoto.executor.type', 'camel-launcher');
 
+		// Get version from catalog service
+		const catalogService = KaotoCatalogService.getInstance();
+		const catalog = catalogService.getDefaultIntegrationCatalog();
+		const version = catalogService.getCamelVersionForCLI(catalog) || '4.18.1';
+
 		switch (executorType) {
 			case 'jbang':
 				return {
 					type: 'jbang',
-					version: vscodeConfig.get('kaoto.camelJbang.version', '4.18.0'),
+					version: version,
 					jbangPath: vscodeConfig.get('kaoto.camelJbang.path'),
 				} as JBangExecutorConfig;
 
 			case 'camel-launcher':
 				return {
 					type: 'camel-launcher',
-					version: vscodeConfig.get('kaoto.camelLauncher.version', '4.18.1'),
-					autoDownload: true, // Always auto-download for first iteration
+					version: version,
+					autoDownload: true, // Always auto-download
 				} as CamelLauncherExecutorConfig;
 
 			default:

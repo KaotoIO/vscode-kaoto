@@ -44,7 +44,7 @@ import { ParentItem } from '../views/deploymentTreeItems/ParentItem';
 import { CamelStopJBangTask } from '../tasks/CamelStopJBangTask';
 import { ChildItem } from '../views/deploymentTreeItems/ChildItem';
 import { CamelRouteOperationJBangTask } from '../tasks/CamelRouteOperationJBangTask';
-import { RouteOperation } from '../helpers/CamelJBang';
+import { RouteOperation } from '../types/RouteOperation';
 import { RecommendationCore } from '@redhat-developer/vscode-extension-proposals';
 import { WhatsNewPanel } from './WhatsNewPanel';
 import { satisfies } from 'compare-versions';
