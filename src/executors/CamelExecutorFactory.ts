@@ -69,7 +69,7 @@ export class CamelExecutorFactory {
 				return {
 					type: 'jbang',
 					version: version,
-					jbangPath: vscodeConfig.get('kaoto.camelJbang.path'),
+					jbangPath: vscodeConfig.get('kaoto.executor.path'),
 				} as JBangExecutorConfig;
 
 			case 'camel-launcher':

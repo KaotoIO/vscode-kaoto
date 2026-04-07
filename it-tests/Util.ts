@@ -42,8 +42,6 @@ import {
 	WebView,
 } from 'vscode-extension-tester';
 
-export const CATALOG_VERSION_ID = 'kaoto.camelJbang.version';
-
 /**
  * Checks if the terminal view has the specified texts in the given textArray.
  * @param driver The WebDriver instance to use.
