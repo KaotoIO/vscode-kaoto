@@ -31,12 +31,14 @@ export interface ProcessedArguments {
  */
 export class CamelSettingsHelper {
 	private readonly camelVersion: string;
+	private readonly runtime: string;
 
 	constructor() {
-		// Get version from catalog service
+		// Get version and runtime from catalog service
 		const catalogService = KaotoCatalogService.getInstance();
 		const catalog = catalogService.getDefaultIntegrationCatalog();
 		this.camelVersion = catalogService.getCamelVersionForCLI(catalog) || '';
+		this.runtime = catalogService.getRuntimeForCLI(catalog) || '';
 	}
 
 	/**
@@ -120,6 +122,18 @@ export class CamelSettingsHelper {
 		const camelVersion = catalogService.getCamelVersionForCLI(catalog);
 
 		return camelVersion ? `--camel-version=${camelVersion}` : '';
+	}
+
+	/**
+	 * Get runtime argument from catalog selection
+	 */
+	getRuntimeArgument(userArgs: string[] = []): string {
+		// Check if user has defined --runtime
+		if (ArgumentConflictDetector.hasArgument(userArgs, 'runtime')) {
+			return '';
+		}
+
+		return this.runtime ? `--runtime=${this.runtime}` : '';
 	}
 
 	/**

@@ -18,6 +18,7 @@ export class CamelCommandAPI {
 		// Get user settings
 		const { args: userArgs, conflicts } = await settingsHelper.getRunArguments(filePath, cwd);
 		const { argument: portArg, resolvedPort } = settingsHelper.getPortArgument(port, userArgs);
+		const runtimeArg = settingsHelper.getRuntimeArgument(userArgs);
 		const camelVersionArg = await settingsHelper.getCamelVersionArgument(userArgs);
 		const reposArg = await settingsHelper.getRedHatMavenRepositoryArgument(userArgs);
 
@@ -25,7 +26,7 @@ export class CamelCommandAPI {
 		await settingsHelper.showConflictWarnings(conflicts);
 
 		// Build final arguments
-		const args: CommandArguments = this.filterEmptyArgs([`'${filePath}'`, portArg, ...userArgs, ...additionalArgs, camelVersionArg, reposArg]);
+		const args: CommandArguments = this.filterEmptyArgs([`'${filePath}'`, portArg, runtimeArg, ...userArgs, ...additionalArgs, camelVersionArg, reposArg]);
 
 		const result = await executor.execute('run', args, { cwd });
 		// Override resolved port if we determined it from settings
@@ -48,6 +49,7 @@ export class CamelCommandAPI {
 		// Get user settings
 		const { args: userArgs, conflicts } = await settingsHelper.getRunSourceDirArguments(sourceDir);
 		const { argument: portArg, resolvedPort } = settingsHelper.getPortArgument(port, userArgs);
+		const runtimeArg = settingsHelper.getRuntimeArgument(userArgs);
 		const camelVersionArg = await settingsHelper.getCamelVersionArgument(userArgs);
 		const reposArg = await settingsHelper.getRedHatMavenRepositoryArgument(userArgs);
 
@@ -58,6 +60,7 @@ export class CamelCommandAPI {
 		const args: CommandArguments = this.filterEmptyArgs([
 			`'--source-dir=${sourceDir}'`,
 			portArg,
+			runtimeArg,
 			...userArgs,
 			...additionalArgs,
 			camelVersionArg,
