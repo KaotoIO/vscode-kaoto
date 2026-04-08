@@ -19,7 +19,7 @@ import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 
 export class CamelAddPluginTask extends CamelTask {
 	private constructor(shellExecution: ShellExecution) {
-		super(TaskScope.Workspace, 'Add required Camel JBang plugin', shellExecution, true, TaskRevealKind.Silent);
+		super(TaskScope.Workspace, 'Add required Camel plugin', shellExecution, true, TaskRevealKind.Silent);
 	}
 
 	static async create(plugin: string): Promise<CamelAddPluginTask> {

@@ -207,7 +207,7 @@ export class CamelSettingsHelper {
 
 	/**
 	 * Handle missing XSL files in run arguments
-	 * Mainly in ZSH shell there is problem when Camel JBang is executed with non existing files
+	 * Mainly in ZSH shell there is problem when Camel is executed with non existing files
 	 * added using '*.xsl' file pattern - it is caused by null glob option disabled by default for ZSH shell
 	 */
 	private async handleMissingXslFiles(filePath: string, runArgs: string[]): Promise<string[]> {

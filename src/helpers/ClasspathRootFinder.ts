@@ -21,7 +21,7 @@ import vscode from 'vscode';
  * @param camelRouteFile
  * @returns The classpath root for the corresponding Camel Route file.
  *          In Maven-based project, it is searching for the closest src/main/resources folder.
- *          If not found, it supposed that it is a Camel JBang project and so that it is a flat classpath, using the parent folder of the Camel route.
+ *          If not found, it supposed that it is a Camel project and so that it is a flat classpath, using the parent folder of the Camel route.
  */
 export function findClasspathRoot(camelRouteFile: vscode.Uri): string {
 	const camelRoutePath = camelRouteFile.fsPath;

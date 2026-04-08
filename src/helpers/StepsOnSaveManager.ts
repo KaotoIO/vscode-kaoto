@@ -40,12 +40,12 @@ export class StepsOnSaveManager {
 		// Get version from catalog service
 		const catalogService = KaotoCatalogService.getInstance();
 		const catalog = catalogService.getDefaultIntegrationCatalog();
-		const camelJBangVersion = catalogService.getCamelVersionForCLI(catalog) || '4.18.0';
+		const camelVersion = catalogService.getCamelVersionForCLI(catalog) || '4.18.0';
 
-		if (satisfies(camelJBangVersion, '<4.14')) {
-			KaotoOutputChannel.logWarning('Camel JBang version is <4.14. Skipping update on save for Camel dependencies in pom.xml.');
-			vscode.window.setStatusBarMessage('Kaoto: Camel JBang version is <4.14. Skipping update on save for Camel dependencies in pom.xml.', 5_000);
-			return; // skip update on save for Camel JBang <4.14
+		if (satisfies(camelVersion, '<4.14')) {
+			KaotoOutputChannel.logWarning('Camel version is <4.14. Skipping update on save for Camel dependencies in pom.xml.');
+			vscode.window.setStatusBarMessage('Kaoto: Camel version is <4.14. Skipping update on save for Camel dependencies in pom.xml.', 5_000);
+			return; // skip update on save for Camel <4.14
 		}
 
 		KaotoOutputChannel.logInfo(message ?? 'Updating Camel dependencies...');

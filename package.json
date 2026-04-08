@@ -98,7 +98,7 @@
     },
     "virtualWorkspaces": {
       "supported": "limited",
-      "description": "In virtual workspaces, actions which requires Camel JBang CLI cannot be working because of missing Shell Execution environment."
+      "description": "In virtual workspaces, actions which requires Camel CLI cannot be working because of missing Shell Execution environment."
     }
   },
   "contributes": {
@@ -1189,7 +1189,7 @@
           },
           "kaoto.executor.redHatMavenRepository.global": {
             "type": "boolean",
-            "markdownDescription": "The `#repos` placeholder will be added by default to use also repositories defined in global Camel JBang configuration file.\n\n**Note**: The placeholder is available for versions `3.20.7/3.21` onwards.",
+            "markdownDescription": "The `#repos` placeholder will be added by default to use also repositories defined in global Camel configuration file.\n\n**Note**: The placeholder is available for versions `3.20.7/3.21` onwards.",
             "default": true,
             "order": 5
           },
@@ -1200,7 +1200,7 @@
               "type": "string"
             },
             "additionalProperties": false,
-            "markdownDescription": "User defined arguments to be applied at every deploy (See [Camel JBang Kubernetes](https://camel.apache.org/manual/camel-jbang-kubernetes.html)). In case of spaces, the values needs to be enclosed with quotes.\n\n**User settings take priority:** If you define `--camel-version`, your value will override the extension's default from `#kaoto.camelVersion#`. Warnings will be shown in the output when conflicts are detected.\n\nBeware that `--disable-auto`, which is provided by default, requires Camel 4.11+.",
+            "markdownDescription": "User defined arguments to be applied at every deploy (See [Camel Kubernetes plugin](https://camel.apache.org/manual/camel-jbang-kubernetes.html)). In case of spaces, the values needs to be enclosed with quotes.\n\n**User settings take priority:** If you define `--camel-version`, your value will override the extension's default from `#kaoto.camelVersion#`. Warnings will be shown in the output when conflicts are detected.\n\nBeware that `--disable-auto`, which is provided by default, requires Camel 4.11+.",
             "default": [
               "--cluster-type=openshift",
               "--disable-auto",

@@ -81,7 +81,7 @@ export class NewCamelProjectCommand {
 	/**
 	 * Maven GAV validation
 	 * 	- no empty name
-	 *  - Have 2 double-dots (similar check than Camel JBang)
+	 *  - Have 2 double-dots (similar check than Camel)
 	 *  - following mostly recommendations from Maven Central for name rules
 	 *
 	 * @param name
