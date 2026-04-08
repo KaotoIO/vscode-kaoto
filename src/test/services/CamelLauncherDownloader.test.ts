@@ -182,5 +182,26 @@ suite('CamelLauncherDownloader Tests', () => {
 		} else {
 			assert.equal(result, camelPath);
 		}
+
+		test('Should detect RedHat build versions', () => {
+			// Access private method through any cast for testing
+			const downloaderAny = downloader as any;
+
+			assert.isTrue(downloaderAny.isRedHatBuild('4.14.2.redhat-00006'));
+			assert.isTrue(downloaderAny.isRedHatBuild('4.14.2.redhat-00019'));
+			assert.isFalse(downloaderAny.isRedHatBuild('4.18.0'));
+			assert.isFalse(downloaderAny.isRedHatBuild('4.14.5'));
+		});
+
+		test('Should use RedHat Maven repository for RedHat builds', () => {
+			// Access private method through any cast for testing
+			const downloaderAny = downloader as any;
+
+			const redhatUrl = downloaderAny.getMavenBaseUrl('4.14.2.redhat-00006');
+			const communityUrl = downloaderAny.getMavenBaseUrl('4.18.0');
+
+			assert.include(redhatUrl, 'maven.repository.redhat.com');
+			assert.include(communityUrl, 'repo1.maven.org');
+		});
 	});
 });

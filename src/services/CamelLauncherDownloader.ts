@@ -11,6 +11,7 @@ import { Extract } from 'unzipper';
  */
 export class CamelLauncherDownloader {
 	private static readonly MAVEN_CENTRAL_BASE = 'https://repo1.maven.org/maven2/org/apache/camel/camel-launcher';
+	private static readonly REDHAT_MAVEN_BASE = 'https://maven.repository.redhat.com/ga/org/apache/camel/camel-launcher';
 	private readonly storageDir: string;
 
 	constructor(context?: ExtensionContext, customStorageDir?: string) {
@@ -58,16 +59,28 @@ export class CamelLauncherDownloader {
 	}
 
 	/**
-	 * Download Camel Launcher from Maven Central
+	 * Check if version is a RedHat build
+	 */
+	private isRedHatBuild(version: string): boolean {
+		return version.includes('.redhat-');
+	}
+
+	/**
+	 * Get Maven repository base URL for the version
+	 */
+	private getMavenBaseUrl(version: string): string {
+		return this.isRedHatBuild(version) ? CamelLauncherDownloader.REDHAT_MAVEN_BASE : CamelLauncherDownloader.MAVEN_CENTRAL_BASE;
+	}
+
+	/**
+	 * Download Camel Launcher from appropriate Maven repository (Maven Central or RedHat)
 	 */
 	private async downloadLauncher(version: string, targetDir: string): Promise<void> {
 		const zipPath = path.join(this.storageDir, `camel-launcher-${version}.zip`);
+		const mavenBaseUrl = this.getMavenBaseUrl(version);
 
 		// Try different possible artifact names
-		const urlPatterns = [
-			`${CamelLauncherDownloader.MAVEN_CENTRAL_BASE}/${version}/camel-launcher-${version}-bin.zip`,
-			`${CamelLauncherDownloader.MAVEN_CENTRAL_BASE}/${version}/camel-launcher-${version}.zip`,
-		];
+		const urlPatterns = [`${mavenBaseUrl}/${version}/camel-launcher-${version}-bin.zip`, `${mavenBaseUrl}/${version}/camel-launcher-${version}.zip`];
 
 		let lastError: Error | undefined;
 
