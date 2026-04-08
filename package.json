@@ -738,22 +738,22 @@
         {
           "command": "kaoto.integrations.run.workspace",
           "group": "navigation@1",
-          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount == 1 && !kaoto.workspaceHasPomXml"
+          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.executorAvailable && workspaceFolderCount == 1 && !kaoto.workspaceHasPomXml"
         },
         {
           "command": "kaoto.integrations.run.all.workspaces",
           "group": "navigation@1",
-          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 1"
+          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.executorAvailable && workspaceFolderCount > 1"
         },
         {
           "submenu": "kaoto.new.file",
           "group": "navigation@2",
-          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 0"
+          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.executorAvailable && workspaceFolderCount > 0"
         },
         {
           "command": "kaoto.camel.jbang.export.workspace",
           "group": "navigation@3",
-          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount == 1 && !kaoto.workspaceHasPomXml"
+          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.executorAvailable && workspaceFolderCount == 1 && !kaoto.workspaceHasPomXml"
         },
         {
           "command": "kaoto.integrations.refresh",
@@ -773,7 +773,7 @@
         {
           "command": "kaoto.citrus.jbang.init.test",
           "group": "navigation@1",
-          "when": "view == kaoto.tests && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 0"
+          "when": "view == kaoto.tests && !virtualWorkspace && kaoto.executorAvailable && workspaceFolderCount > 0"
         },
         {
           "command": "kaoto.tests.clearResults",
@@ -794,12 +794,12 @@
       "view/item/context": [
         {
           "command": "kaoto.integrations.run.folder",
-          "when": "view == kaoto.integrations && viewItem == folder && !virtualWorkspace && kaoto.jbangAvailable",
+          "when": "view == kaoto.integrations && viewItem == folder && !virtualWorkspace && kaoto.executorAvailable",
           "group": "inline@1"
         },
         {
           "command": "kaoto.camel.jbang.export.folder",
-          "when": "view == kaoto.integrations && viewItem == folder && !virtualWorkspace && kaoto.jbangAvailable",
+          "when": "view == kaoto.integrations && viewItem == folder && !virtualWorkspace && kaoto.executorAvailable",
           "group": "inline@2"
         },
         {
@@ -814,22 +814,22 @@
         },
         {
           "command": "kaoto.integrations.updateDependencies",
-          "when": "view == kaoto.integrations && viewItem == integration-maven-child && !virtualWorkspace && kaoto.jbangAvailable",
+          "when": "view == kaoto.integrations && viewItem == integration-maven-child && !virtualWorkspace && kaoto.executorAvailable",
           "group": "navigation@3"
         },
         {
           "command": "kaoto.integrations.run",
-          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child) && !virtualWorkspace && kaoto.jbangAvailable",
+          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child) && !virtualWorkspace && kaoto.executorAvailable",
           "group": "inline@1"
         },
         {
           "command": "kaoto.integrations.kubernetes.run",
-          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child) && !virtualWorkspace && kaoto.jbangAvailable",
+          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child) && !virtualWorkspace && kaoto.executorAvailable",
           "group": "inline@2"
         },
         {
           "command": "kaoto.camel.jbang.export",
-          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child) && !virtualWorkspace && kaoto.jbangAvailable",
+          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child) && !virtualWorkspace && kaoto.executorAvailable",
           "group": "inline@3"
         },
         {
@@ -874,12 +874,12 @@
         },
         {
           "command": "kaoto.tests.run",
-          "when": "view == kaoto.tests && viewItem =~ /^citrus-test-file(-passed|-failed)?$/ && kaoto.jbangAvailable",
+          "when": "view == kaoto.tests && viewItem =~ /^citrus-test-file(-passed|-failed)?$/ && kaoto.executorAvailable",
           "group": "inline@1"
         },
         {
           "command": "kaoto.tests.run.folder",
-          "when": "view == kaoto.tests && viewItem == test-folder && kaoto.jbangAvailable",
+          "when": "view == kaoto.tests && viewItem == test-folder && kaoto.executorAvailable",
           "group": "inline@1"
         },
         {
@@ -905,7 +905,7 @@
       {
         "view": "kaoto.integrations",
         "contents": "In order to start with Apache Camel, you can create a standalone Camel File.\n[Camel File...](command:kaoto.new.camel.file)\nTo learn more about Apache Camel [read docs](https://camel.apache.org/docs/).",
-        "when": "!virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 0"
+        "when": "!virtualWorkspace && kaoto.executorAvailable && workspaceFolderCount > 0"
       },
       {
         "view": "kaoto.integrations",
@@ -920,7 +920,7 @@
       {
         "view": "kaoto.tests",
         "contents": "In order to start with Citrus, you can create a new Citrus Test file.\n[New Citrus Test...](command:kaoto.citrus.jbang.init.test)\nTo learn more about Camel Testing [read docs](https://camel.apache.org/manual/camel-jbang-test.html).",
-        "when": "!virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 0"
+        "when": "!virtualWorkspace && kaoto.executorAvailable && workspaceFolderCount > 0"
       }
     ],
     "configuration": [

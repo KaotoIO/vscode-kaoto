@@ -52,56 +52,44 @@ suite('CamelLauncherDownloader Tests', () => {
 		const version = '4.18.0';
 		const launcherDir = path.join(testStoragePath, `camel-launcher-${version}`);
 
-		// Create the directory structure
-		const binDir = path.join(launcherDir, 'bin');
-		fs.mkdirSync(binDir, { recursive: true });
+		// Create the directory structure with JAR and script
+		fs.mkdirSync(launcherDir, { recursive: true });
 
-		const execName = process.platform === 'win32' ? 'camel.cmd' : 'camel';
-		const execPath = path.join(binDir, execName);
-		fs.writeFileSync(execPath, '#!/bin/bash\necho "test"');
+		// Create JAR file
+		const jarPath = path.join(launcherDir, `camel-launcher-${version}.jar`);
+		fs.writeFileSync(jarPath, 'fake jar content');
+
+		// Create script
+		const scriptName = process.platform === 'win32' ? 'camel.bat' : 'camel.sh';
+		const scriptPath = path.join(launcherDir, scriptName);
+		fs.writeFileSync(scriptPath, '#!/bin/bash\necho "test"');
 
 		// Should return cached path without downloading
 		const result = await downloader.ensureLauncher(version);
 
-		assert.equal(result, execPath);
+		assert.equal(result, scriptPath);
 	});
 
-	test('Should find launcher executable in bin directory', async () => {
+	test('Should find launcher script in directory', async () => {
 		const version = '4.18.0';
 		const launcherDir = path.join(testStoragePath, `camel-launcher-${version}`);
 
-		// Create the directory structure with bin/camel
-		const binDir = path.join(launcherDir, 'bin');
-		fs.mkdirSync(binDir, { recursive: true });
+		// Create the directory structure
+		fs.mkdirSync(launcherDir, { recursive: true });
 
-		const execName = process.platform === 'win32' ? 'camel.cmd' : 'camel';
-		const execPath = path.join(binDir, execName);
-		fs.writeFileSync(execPath, '#!/bin/bash\necho "test"');
+		// Create JAR file
+		const jarPath = path.join(launcherDir, `camel-launcher-${version}.jar`);
+		fs.writeFileSync(jarPath, 'fake jar content');
 
-		// Should find the executable
+		// Create script
+		const scriptName = process.platform === 'win32' ? 'camel.bat' : 'camel.sh';
+		const scriptPath = path.join(launcherDir, scriptName);
+		fs.writeFileSync(scriptPath, '#!/bin/bash\necho "test"');
+
+		// Should find the script
 		const result = await downloader.ensureLauncher(version);
 
-		assert.equal(result, execPath);
-		assert.isTrue(fs.existsSync(result));
-	});
-
-	test('Should handle nested directory structure', async () => {
-		const version = '4.18.0';
-		const launcherDir = path.join(testStoragePath, `camel-launcher-${version}`);
-
-		// Create nested structure: camel-launcher-4.18.0/nested/bin/camel
-		const nestedDir = path.join(launcherDir, 'nested');
-		const binDir = path.join(nestedDir, 'bin');
-		fs.mkdirSync(binDir, { recursive: true });
-
-		const execName = process.platform === 'win32' ? 'camel.cmd' : 'camel';
-		const execPath = path.join(binDir, execName);
-		fs.writeFileSync(execPath, '#!/bin/bash\necho "test"');
-
-		// Should find the executable even in nested structure
-		const result = await downloader.ensureLauncher(version);
-
-		assert.equal(result, execPath);
+		assert.equal(result, scriptPath);
 		assert.isTrue(fs.existsSync(result));
 	});
 
@@ -162,46 +150,49 @@ suite('CamelLauncherDownloader Tests', () => {
 		}
 	});
 
-	test('Should prefer camel.cmd on Windows and camel on Unix', async () => {
+	test('Should prefer camel.bat on Windows and camel.sh on Unix', async () => {
 		const version = '4.18.0';
 		const launcherDir = path.join(testStoragePath, `camel-launcher-${version}`);
-		const binDir = path.join(launcherDir, 'bin');
-		fs.mkdirSync(binDir, { recursive: true });
+		fs.mkdirSync(launcherDir, { recursive: true });
 
-		// Create both executables
-		const camelPath = path.join(binDir, 'camel');
-		const camelCmdPath = path.join(binDir, 'camel.cmd');
-		fs.writeFileSync(camelPath, '#!/bin/bash\necho "test"');
-		fs.writeFileSync(camelCmdPath, '@echo off\necho "test"');
+		// Create JAR file
+		const jarPath = path.join(launcherDir, `camel-launcher-${version}.jar`);
+		fs.writeFileSync(jarPath, 'fake jar content');
+
+		// Create both scripts
+		const shPath = path.join(launcherDir, 'camel.sh');
+		const batPath = path.join(launcherDir, 'camel.bat');
+		fs.writeFileSync(shPath, '#!/bin/bash\necho "test"');
+		fs.writeFileSync(batPath, '@echo off\necho "test"');
 
 		const result = await downloader.ensureLauncher(version);
 
-		// Should prefer platform-specific executable
+		// Should prefer platform-specific script
 		if (process.platform === 'win32') {
-			assert.equal(result, camelCmdPath);
+			assert.equal(result, batPath);
 		} else {
-			assert.equal(result, camelPath);
+			assert.equal(result, shPath);
 		}
+	});
 
-		test('Should detect RedHat build versions', () => {
-			// Access private method through any cast for testing
-			const downloaderAny = downloader as any;
+	test('Should detect RedHat build versions', () => {
+		// Access private method through any cast for testing
+		const downloaderAny = downloader as any;
 
-			assert.isTrue(downloaderAny.isRedHatBuild('4.14.2.redhat-00006'));
-			assert.isTrue(downloaderAny.isRedHatBuild('4.14.2.redhat-00019'));
-			assert.isFalse(downloaderAny.isRedHatBuild('4.18.0'));
-			assert.isFalse(downloaderAny.isRedHatBuild('4.14.5'));
-		});
+		assert.isTrue(downloaderAny.isRedHatBuild('4.14.2.redhat-00006'));
+		assert.isTrue(downloaderAny.isRedHatBuild('4.14.2.redhat-00019'));
+		assert.isFalse(downloaderAny.isRedHatBuild('4.18.0'));
+		assert.isFalse(downloaderAny.isRedHatBuild('4.14.5'));
+	});
 
-		test('Should use RedHat Maven repository for RedHat builds', () => {
-			// Access private method through any cast for testing
-			const downloaderAny = downloader as any;
+	test('Should use RedHat Maven repository for RedHat builds', () => {
+		// Access private method through any cast for testing
+		const downloaderAny = downloader as any;
 
-			const redhatUrl = downloaderAny.getMavenBaseUrl('4.14.2.redhat-00006');
-			const communityUrl = downloaderAny.getMavenBaseUrl('4.18.0');
+		const redhatUrl = downloaderAny.getMavenBaseUrl('4.14.2.redhat-00006');
+		const communityUrl = downloaderAny.getMavenBaseUrl('4.18.0');
 
-			assert.include(redhatUrl, 'maven.repository.redhat.com');
-			assert.include(communityUrl, 'repo1.maven.org');
-		});
+		assert.include(redhatUrl, 'maven.repository.redhat.com');
+		assert.include(communityUrl, 'repo1.maven.org');
 	});
 });

@@ -156,7 +156,6 @@ export class ExtensionContextHandler {
 
 	public async checkJbangOnPath(): Promise<boolean> {
 		const jbangExec = await verifyJBangExists();
-		await vscode.commands.executeCommand('setContext', 'kaoto.jbangAvailable', jbangExec); // store availability in VS Code context
 		if (!jbangExec) {
 			const jbangInstallationLink: string = 'https://www.jbang.dev/documentation/jbang/latest/installation.html';
 			const msg: string = `JBang is missing on a system PATH. Please follow instructions below and install JBang. [JBang Installation Guide](${jbangInstallationLink}).`;
@@ -170,6 +169,10 @@ export class ExtensionContextHandler {
 			return false;
 		}
 		return true;
+	}
+
+	public async setExecutorAvailable(available: boolean): Promise<void> {
+		await vscode.commands.executeCommand('setContext', 'kaoto.executorAvailable', available);
 	}
 
 	public async checkJBangTrustedSources() {

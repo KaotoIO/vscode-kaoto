@@ -182,9 +182,15 @@ async function ensureExecutorAvailable(context: vscode.ExtensionContext, context
 				await contextHandler.checkCamelJBangPlugins();
 				KaotoOutputChannel.logInfo('JBang is ready');
 				vscode.window.setStatusBarMessage('$(check) Kaoto: JBang ready', 3000);
+
+				// Set executor available context for Camel JBang
+				await contextHandler.setExecutorAvailable(true);
 			} else {
 				KaotoOutputChannel.logWarning('JBang not found on PATH');
 				vscode.window.setStatusBarMessage('$(warning) Kaoto: JBang not found', 5000);
+
+				// Disable/hide extension actions dependant on a Camel executor
+				await contextHandler.setExecutorAvailable(false);
 			}
 		} else if (executorType === 'camel-launcher') {
 			// Camel Launcher download with status bar feedback
@@ -200,11 +206,17 @@ async function ensureExecutorAvailable(context: vscode.ExtensionContext, context
 
 			KaotoOutputChannel.logInfo(`Camel Launcher ${version} ready at: ${launcherPath}`);
 			vscode.window.setStatusBarMessage('$(check) Kaoto: Camel Launcher ready', 3000);
+
+			// Set executor available context for Camel Launcher
+			await contextHandler.setExecutorAvailable(true);
 		}
 	} catch (error) {
 		const errorMessage = error instanceof Error ? error.message : String(error);
 		KaotoOutputChannel.logError('Failed to setup executor', error);
 		vscode.window.showWarningMessage(`Kaoto: Failed to setup executor: ${errorMessage}. It will be configured when first needed.`);
+
+		// Disable/hide extension actions dependant on a Camel executor
+		await contextHandler.setExecutorAvailable(false);
 	}
 }
 
