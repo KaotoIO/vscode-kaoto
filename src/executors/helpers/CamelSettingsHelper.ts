@@ -9,6 +9,7 @@ import { satisfies } from 'compare-versions';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
 import { ArgumentConflict, ArgumentConflictDetector } from '../../helpers/ArgumentConflictDetector';
 import { KaotoCatalogService } from '../../services/KaotoCatalogService';
+import { CamelExecutorFactory } from '../CamelExecutorFactory';
 import {
 	KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID,
 	KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID,
@@ -98,14 +99,22 @@ export class CamelSettingsHelper {
 
 	/**
 	 * Get Camel version argument from catalog selection
+	 * Note: For Camel Launcher executor, this returns empty string since version is baked into the JAR
 	 */
-	getCamelVersionArgument(userArgs: string[] = []): string {
+	async getCamelVersionArgument(userArgs: string[] = []): Promise<string> {
 		// Check if user has defined --camel-version
 		if (ArgumentConflictDetector.hasArgument(userArgs, 'camel-version')) {
 			return '';
 		}
 
-		// Get version from catalog service
+		// For Camel Launcher, don't add --camel-version since the JAR is version-specific
+		const executor = await CamelExecutorFactory.createExecutor();
+		const config = executor.getConfig();
+		if (config.type === 'camel-launcher') {
+			return '';
+		}
+
+		// Get version from catalog service (for JBang executor)
 		const catalogService = KaotoCatalogService.getInstance();
 		const catalog = catalogService.getDefaultIntegrationCatalog();
 		const camelVersion = catalogService.getCamelVersionForCLI(catalog);
@@ -116,14 +125,15 @@ export class CamelSettingsHelper {
 	/**
 	 * Get Red Hat Maven repository argument if needed
 	 */
-	getRedHatMavenRepositoryArgument(userArgs: string[] = []): string {
+	async getRedHatMavenRepositoryArgument(userArgs: string[] = []): Promise<string> {
 		// Check if user has defined --repos
 		if (ArgumentConflictDetector.hasArgument(userArgs, 'repos')) {
 			return '';
 		}
 
-		const camelVersionArg = this.getCamelVersionArgument(userArgs);
-		if (camelVersionArg.includes('redhat')) {
+		// Check if we're using a RedHat version by looking at the actual Camel version
+		// (not the --camel-version argument, which may be empty for Camel Launcher)
+		if (this.camelVersion.includes('redhat')) {
 			const url = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID) as string;
 			const reposPlaceholder = this.getCamelGlobalRepos();
 			return url ? `--repos=${reposPlaceholder}${url}` : '';

@@ -95,5 +95,3 @@ suite('CamelCommandBuilder Tests', () => {
 		assert.deepEqual(result.execution.options?.env, { TEST_VAR: 'value' });
 	});
 });
-
-// Made with Bob

@@ -49,33 +49,33 @@ suite('CamelSettingsHelper Tests', () => {
 		assert.equal(result.resolvedPort, 9090);
 	});
 
-	test('Should get Camel version argument from configuration', () => {
-		const result = helper.getCamelVersionArgument();
+	test('Should get Camel version argument from configuration', async () => {
+		const result = await helper.getCamelVersionArgument();
 
 		// May return version if configured in test environment, or empty string
 		// Just verify it returns a string
 		assert.isString(result);
 	});
 
-	test('Should not add Camel version when user already defined it', () => {
+	test('Should not add Camel version when user already defined it', async () => {
 		const userArgs = ['--camel-version=4.17.0'];
-		const result = helper.getCamelVersionArgument(userArgs);
+		const result = await helper.getCamelVersionArgument(userArgs);
 
 		// Should return empty string to avoid conflict
 		assert.equal(result, '');
 	});
 
-	test('Should get Red Hat Maven repository argument based on version', () => {
-		const result = helper.getRedHatMavenRepositoryArgument();
+	test('Should get Red Hat Maven repository argument based on version', async () => {
+		const result = await helper.getRedHatMavenRepositoryArgument();
 
 		// May return repos URL if redhat version is configured, or empty string
 		// Just verify it returns a string
 		assert.isString(result);
 	});
 
-	test('Should not add repos when user already defined it', () => {
+	test('Should not add repos when user already defined it', async () => {
 		const userArgs = ['--repos=https://custom.repo.com'];
-		const result = helper.getRedHatMavenRepositoryArgument(userArgs);
+		const result = await helper.getRedHatMavenRepositoryArgument(userArgs);
 
 		// Should return empty string to avoid conflict
 		assert.equal(result, '');
@@ -99,5 +99,3 @@ suite('CamelSettingsHelper Tests', () => {
 		assert.equal(result.argument, '');
 	});
 });
-
-// Made with Bob

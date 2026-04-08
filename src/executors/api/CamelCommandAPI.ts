@@ -18,8 +18,8 @@ export class CamelCommandAPI {
 		// Get user settings
 		const { args: userArgs, conflicts } = await settingsHelper.getRunArguments(filePath, cwd);
 		const { argument: portArg, resolvedPort } = settingsHelper.getPortArgument(port, userArgs);
-		const camelVersionArg = settingsHelper.getCamelVersionArgument(userArgs);
-		const reposArg = settingsHelper.getRedHatMavenRepositoryArgument(userArgs);
+		const camelVersionArg = await settingsHelper.getCamelVersionArgument(userArgs);
+		const reposArg = await settingsHelper.getRedHatMavenRepositoryArgument(userArgs);
 
 		// Show conflict warnings
 		await settingsHelper.showConflictWarnings(conflicts);
@@ -48,8 +48,8 @@ export class CamelCommandAPI {
 		// Get user settings
 		const { args: userArgs, conflicts } = await settingsHelper.getRunSourceDirArguments(sourceDir);
 		const { argument: portArg, resolvedPort } = settingsHelper.getPortArgument(port, userArgs);
-		const camelVersionArg = settingsHelper.getCamelVersionArgument(userArgs);
-		const reposArg = settingsHelper.getRedHatMavenRepositoryArgument(userArgs);
+		const camelVersionArg = await settingsHelper.getCamelVersionArgument(userArgs);
+		const reposArg = await settingsHelper.getRedHatMavenRepositoryArgument(userArgs);
 
 		// Show conflict warnings
 		await settingsHelper.showConflictWarnings(conflicts);
@@ -91,8 +91,8 @@ export class CamelCommandAPI {
 
 		// Get user settings
 		const { args: userArgs, conflicts } = await settingsHelper.getExportArguments(cwd);
-		const camelVersionArg = settingsHelper.getCamelVersionArgument(userArgs);
-		const reposArg = settingsHelper.getRedHatMavenRepositoryArgument(userArgs);
+		const camelVersionArg = await settingsHelper.getCamelVersionArgument(userArgs);
+		const reposArg = await settingsHelper.getRedHatMavenRepositoryArgument(userArgs);
 
 		// Show conflict warnings
 		await settingsHelper.showConflictWarnings(conflicts);
