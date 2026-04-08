@@ -17,6 +17,7 @@ import {
 	KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID,
 	KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID,
 	resolvePaths,
+	normalizeVersionForSemver,
 } from '../../helpers/helpers';
 
 export interface ProcessedArguments {
@@ -88,7 +89,7 @@ export class CamelSettingsHelper {
 		}
 
 		// Use code defaults - always use the allocated port, never -1
-		const useManagementPort = satisfies(this.camelVersion, '>=4.14');
+		const useManagementPort = satisfies(normalizeVersionForSemver(this.camelVersion), '>=4.14');
 		const effectivePort = port ?? 8080;
 		const argument = useManagementPort ? `--management-port=${effectivePort}` : `--port=${effectivePort}`;
 

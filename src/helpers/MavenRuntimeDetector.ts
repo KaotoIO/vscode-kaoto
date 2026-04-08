@@ -4,7 +4,7 @@ import { RuntimeMavenInformation } from '@kaoto/kaoto';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
 import { CamelExecutorFactory } from '../executors/CamelExecutorFactory';
-import { findFolderOfPomXml } from './helpers';
+import { findFolderOfPomXml, normalizeVersionForSemver } from './helpers';
 import { DEFAULT_CAMEL_VERSION } from '../constants';
 
 /**
@@ -29,7 +29,7 @@ export class MavenRuntimeDetector {
 
 			let camelVersionToUse: string;
 			// This ensures versions lower than 4.13 fall back; 4.13 or newer use the configured version.
-			if (satisfies(camelVersion, '>=4.13')) {
+			if (satisfies(normalizeVersionForSemver(camelVersion), '>=4.13')) {
 				camelVersionToUse = camelVersion;
 			} else {
 				// Fallback to 4.13.0 for older versions

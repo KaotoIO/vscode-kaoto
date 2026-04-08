@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
-import { findFolderOfPomXml } from './helpers';
+import { findFolderOfPomXml, normalizeVersionForSemver } from './helpers';
 import { satisfies } from 'compare-versions';
 import { CamelDependencyUpdateTask } from '../tasks/CamelDependencyUpdateTask';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
@@ -43,7 +43,7 @@ export class StepsOnSaveManager {
 		const catalog = catalogService.getDefaultIntegrationCatalog();
 		const camelVersion = catalogService.getCamelVersionForCLI(catalog) || DEFAULT_CAMEL_VERSION;
 
-		if (satisfies(camelVersion, '<4.14')) {
+		if (satisfies(normalizeVersionForSemver(camelVersion), '<4.14')) {
 			KaotoOutputChannel.logWarning('Camel version is <4.14. Skipping update on save for Camel dependencies in pom.xml.');
 			vscode.window.setStatusBarMessage('Kaoto: Camel version is <4.14. Skipping update on save for Camel dependencies in pom.xml.', 5_000);
 			return; // skip update on save for Camel <4.14

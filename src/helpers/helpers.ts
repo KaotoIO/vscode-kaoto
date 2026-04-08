@@ -47,6 +47,25 @@ export const KAOTO_TESTS_FILES_REGEXP_SETTING_ID: string = 'kaoto.tests.files.re
 export const KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID: string = 'kaoto.openapi.files.regexp';
 
 export const DEFAULT_KAOTO_OPENAPI_FILES_REGEXP: string[] = ['*openapi.yaml', '*openapi.yml', '*openapi.json'];
+/**
+ * Normalizes a Camel version string for semver comparison by removing RedHat build suffixes.
+ * RedHat versions like "4.14.2.redhat-00006" are converted to "4.14.2" for semver compatibility
+ * with the compare-versions library's satisfies() function.
+ *
+ * NOTE: This is ONLY for semver comparisons. The actual version with RedHat suffix is still
+ * used for downloading artifacts and in CLI commands.
+ *
+ * @param version - The version string to normalize (e.g., "4.14.2.redhat-00006" or "4.18.0")
+ * @returns The normalized version string suitable for semver comparison (e.g., "4.14.2" or "4.18.0")
+ *
+ * @example
+ * normalizeVersionForSemver("4.14.2.redhat-00006") // Returns "4.14.2"
+ * normalizeVersionForSemver("4.18.0") // Returns "4.18.0"
+ */
+export function normalizeVersionForSemver(version: string): string {
+	// Remove RedHat build suffix (e.g., ".redhat-00006") for semver comparison only
+	return version.replace(/\.redhat-\d+$/, '');
+}
 
 export const KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID: string = 'kaoto.restConfiguration.apicurioRegistryUrl';
 
