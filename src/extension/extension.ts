@@ -155,17 +155,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	await contextHandler.showWhatsNewIfNeeded();
 
 	/*
-	 * check JBang is available on a system PATH
+	 * Check executor-specific requirements
 	 */
-	const jbang = await contextHandler.checkJbangOnPath();
-
-	/*
-	 * check JBang Trusted Sources and plugins are configured
-	 */
-	if (jbang) {
-		await contextHandler.checkJBangTrustedSources();
-		await contextHandler.checkCamelJBangPlugins();
-	}
+	await ensureExecutorAvailable(contextHandler);
 
 	KaotoOutputChannel.logInfo('Kaoto extension is successfully setup.');
 	console.log('Kaoto extension is successfully setup.');
@@ -203,6 +195,31 @@ async function ensureCamelLauncherAvailable(context: vscode.ExtensionContext): P
 		KaotoOutputChannel.logError('Failed to download Camel Launcher during activation', error);
 		vscode.window.showWarningMessage(`Kaoto: Failed to download Camel Launcher: ${errorMessage}. It will be downloaded when first needed.`);
 	}
+}
+
+/**
+ * Ensure executor-specific requirements are met
+ * Checks JBang availability if using JBang executor
+ */
+async function ensureExecutorAvailable(contextHandler: ExtensionContextHandler): Promise<void> {
+	const config = vscode.workspace.getConfiguration();
+	const executorType = config.get<string>('kaoto.executor.type', 'camel-launcher');
+
+	if (executorType === 'jbang') {
+		/*
+		 * check JBang is available on a system PATH
+		 */
+		const jbang = await contextHandler.checkJbangOnPath();
+
+		/*
+		 * check JBang Trusted Sources and plugins are configured
+		 */
+		if (jbang) {
+			await contextHandler.checkJBangTrustedSources();
+			await contextHandler.checkCamelJBangPlugins();
+		}
+	}
+	// Note: Camel Launcher download is handled non-blocking at extension start
 }
 
 export async function deactivate() {
