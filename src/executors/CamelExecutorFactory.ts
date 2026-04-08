@@ -7,6 +7,7 @@ import { AnyExecutorConfig, JBangExecutorConfig, CamelLauncherExecutorConfig } f
 import { ExecutorType } from './types/ExecutorTypes';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
+import { DEFAULT_CAMEL_VERSION } from '../constants';
 
 /**
  * Factory for creating executor instances
@@ -62,7 +63,7 @@ export class CamelExecutorFactory {
 		// Get version from catalog service
 		const catalogService = KaotoCatalogService.getInstance();
 		const catalog = catalogService.getDefaultIntegrationCatalog();
-		const version = catalogService.getCamelVersionForCLI(catalog) || '4.18.1';
+		const version = catalogService.getCamelVersionForCLI(catalog) || DEFAULT_CAMEL_VERSION;
 
 		switch (executorType) {
 			case 'jbang':

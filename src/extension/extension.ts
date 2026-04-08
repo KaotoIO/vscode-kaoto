@@ -28,6 +28,7 @@ import { PortManager } from '../helpers/PortManager';
 import { CamelExecutorFactory } from '../executors/CamelExecutorFactory';
 import { CamelLauncherDownloader } from '../services/CamelLauncherDownloader';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
+import { DEFAULT_CAMEL_VERSION } from '../constants';
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -189,7 +190,7 @@ async function ensureExecutorAvailable(context: vscode.ExtensionContext, context
 			// Camel Launcher download with status bar feedback
 			const catalogService = KaotoCatalogService.getInstance();
 			const catalog = catalogService.getDefaultIntegrationCatalog();
-			const version = catalogService.getCamelVersionForCLI(catalog) || '4.18.1';
+			const version = catalogService.getCamelVersionForCLI(catalog) || DEFAULT_CAMEL_VERSION;
 
 			KaotoOutputChannel.logInfo(`Downloading Camel Launcher ${version}...`);
 			vscode.window.setStatusBarMessage('$(sync~spin) Kaoto: Downloading Camel Launcher...', 3000);

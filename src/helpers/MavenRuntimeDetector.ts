@@ -5,6 +5,7 @@ import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
 import { CamelExecutorFactory } from '../executors/CamelExecutorFactory';
 import { findFolderOfPomXml } from './helpers';
+import { DEFAULT_CAMEL_VERSION } from '../constants';
 
 /**
  * Utility for detecting Maven runtime information from pom.xml
@@ -24,7 +25,7 @@ export class MavenRuntimeDetector {
 			// Get Camel version from catalog service
 			const catalogService = KaotoCatalogService.getInstance();
 			const catalog = catalogService.getDefaultIntegrationCatalog();
-			const camelVersion = catalogService.getCamelVersionForCLI(catalog) || '4.18.0';
+			const camelVersion = catalogService.getCamelVersionForCLI(catalog) || DEFAULT_CAMEL_VERSION;
 
 			let camelVersionToUse: string;
 			// This ensures versions lower than 4.13 fall back; 4.13 or newer use the configured version.

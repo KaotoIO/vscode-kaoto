@@ -5,6 +5,7 @@ import { findFolderOfPomXml } from './helpers';
 import { satisfies } from 'compare-versions';
 import { CamelDependencyUpdateTask } from '../tasks/CamelDependencyUpdateTask';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
+import { DEFAULT_CAMEL_VERSION } from '../constants';
 
 export class StepsOnSaveManager {
 	private static _instance: StepsOnSaveManager | undefined;
@@ -40,7 +41,7 @@ export class StepsOnSaveManager {
 		// Get version from catalog service
 		const catalogService = KaotoCatalogService.getInstance();
 		const catalog = catalogService.getDefaultIntegrationCatalog();
-		const camelVersion = catalogService.getCamelVersionForCLI(catalog) || '4.18.0';
+		const camelVersion = catalogService.getCamelVersionForCLI(catalog) || DEFAULT_CAMEL_VERSION;
 
 		if (satisfies(camelVersion, '<4.14')) {
 			KaotoOutputChannel.logWarning('Camel version is <4.14. Skipping update on save for Camel dependencies in pom.xml.');
