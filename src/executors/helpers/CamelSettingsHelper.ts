@@ -30,21 +30,37 @@ export interface ProcessedArguments {
  * Helper class for processing Camel settings and arguments
  */
 export class CamelSettingsHelper {
-	private readonly camelVersion: string;
-	private readonly runtime: string;
+	private camelVersion: string = '';
+	private runtime: string = '';
+	private initialized: boolean = false;
 
 	constructor() {
-		// Get version and runtime from catalog service
+		// Version and runtime will be initialized lazily when needed
+	}
+
+	/**
+	 * Initialize version and runtime from catalog service
+	 * This is called lazily to support async catalog retrieval
+	 */
+	private async initialize(resourceUri?: Uri): Promise<void> {
+		if (this.initialized) {
+			return;
+		}
+
 		const catalogService = KaotoCatalogService.getInstance();
-		const catalog = catalogService.getDefaultIntegrationCatalog();
+		const catalog = await catalogService.getSelectedIntegrationCatalog(resourceUri);
 		this.camelVersion = catalogService.getCamelVersionForCLI(catalog) || '';
 		this.runtime = catalogService.getRuntimeForCLI(catalog) || '';
+		this.initialized = true;
 	}
 
 	/**
 	 * Get processed run arguments with user settings
 	 */
 	async getRunArguments(filePath: string, cwd: string): Promise<ProcessedArguments> {
+		// Initialize catalog-based settings
+		await this.initialize(Uri.file(filePath));
+
 		const runArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID) as string[];
 		const xslFilteredArgs = await this.handleMissingXslFiles(filePath, runArgs);
 		const processedArgs = await this.handleLocalKameletDirArgument(xslFilteredArgs, cwd);
@@ -60,6 +76,9 @@ export class CamelSettingsHelper {
 	 * Get processed run source directory arguments with user settings
 	 */
 	async getRunSourceDirArguments(cwd: string): Promise<ProcessedArguments> {
+		// Initialize catalog-based settings (use cwd as resource)
+		await this.initialize(Uri.file(cwd));
+
 		const runArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID) as string[];
 		const processedArgs = await this.handleLocalKameletDirArgument(runArgs, cwd);
 
@@ -116,12 +135,11 @@ export class CamelSettingsHelper {
 			return '';
 		}
 
-		// Get version from catalog service (for JBang executor)
-		const catalogService = KaotoCatalogService.getInstance();
-		const catalog = catalogService.getDefaultIntegrationCatalog();
-		const camelVersion = catalogService.getCamelVersionForCLI(catalog);
+		// Ensure initialization has happened
+		await this.initialize();
 
-		return camelVersion ? `--camel-version=${camelVersion}` : '';
+		// Use the camelVersion from lazy initialization (for JBang executor)
+		return this.camelVersion ? `--camel-version=${this.camelVersion}` : '';
 	}
 
 	/**

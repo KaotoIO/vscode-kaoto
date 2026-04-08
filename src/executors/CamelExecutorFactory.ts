@@ -31,7 +31,7 @@ export class CamelExecutorFactory {
 	 * Create executor based on configuration
 	 */
 	static async createExecutor(): Promise<ICamelExecutor> {
-		const config = this.loadConfiguration();
+		const config = await this.loadConfiguration();
 
 		// Reset cache if configuration changed
 		if (this.hasConfigChanged(config)) {
@@ -56,13 +56,13 @@ export class CamelExecutorFactory {
 	 * Load configuration from VS Code settings
 	 * Version is determined from catalog selection
 	 */
-	private static loadConfiguration(): AnyExecutorConfig {
+	private static async loadConfiguration(): Promise<AnyExecutorConfig> {
 		const vscodeConfig = vscode.workspace.getConfiguration();
 		const executorType = vscodeConfig.get<ExecutorType>('kaoto.executor.type', 'camel-launcher');
 
-		// Get version from catalog service
+		// Get version from catalog service - use selected catalog, not default
 		const catalogService = KaotoCatalogService.getInstance();
-		const catalog = catalogService.getDefaultIntegrationCatalog();
+		const catalog = await catalogService.getSelectedIntegrationCatalog();
 		const version = catalogService.getCamelVersionForCLI(catalog) || DEFAULT_CAMEL_VERSION;
 
 		switch (executorType) {

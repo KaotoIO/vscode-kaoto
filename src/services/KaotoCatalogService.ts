@@ -630,15 +630,16 @@ export class KaotoCatalogService {
 
 	/**
 	 * Show the catalog picker QuickPick
+	 * @returns true if a catalog was selected, false if cancelled or no selection made
 	 */
-	public async showCatalogPicker(): Promise<void> {
+	public async showCatalogPicker(): Promise<boolean> {
 		const activeEditor = vscode.window.activeTextEditor;
 		const resourceUri = activeEditor?.document.uri;
 
 		// Check if Maven project
 		if (resourceUri && (await KaotoCatalogService.isMavenProject(resourceUri))) {
 			vscode.window.showInformationMessage('Catalog version is managed by pom.xml in Maven projects.');
-			return;
+			return false;
 		}
 
 		// Determine if current file is a Citrus test file
@@ -698,7 +699,10 @@ export class KaotoCatalogService {
 		if (selected && selected.catalog) {
 			const catalog = selected.catalog;
 			await this.setSelectedCatalog(catalog, resourceUri);
+			return true; // Catalog was selected
 		}
+
+		return false; // No selection made (cancelled or closed)
 	}
 
 	/**

@@ -38,9 +38,9 @@ export class StepsOnSaveManager {
 	}
 
 	public async updateDependencies(docPath: string, pomPath: string, message?: string): Promise<void> {
-		// Get version from catalog service
+		// Get version from catalog service - use selected catalog
 		const catalogService = KaotoCatalogService.getInstance();
-		const catalog = catalogService.getDefaultIntegrationCatalog();
+		const catalog = await catalogService.getSelectedIntegrationCatalog();
 		const camelVersion = catalogService.getCamelVersionForCLI(catalog) || DEFAULT_CAMEL_VERSION;
 
 		if (satisfies(normalizeVersionForSemver(camelVersion), '<4.14')) {

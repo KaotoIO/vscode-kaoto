@@ -22,9 +22,9 @@ export class MavenRuntimeDetector {
 		}
 
 		try {
-			// Get Camel version from catalog service
+			// Get Camel version from catalog service - use selected catalog
 			const catalogService = KaotoCatalogService.getInstance();
-			const catalog = catalogService.getDefaultIntegrationCatalog();
+			const catalog = await catalogService.getSelectedIntegrationCatalog();
 			const camelVersion = catalogService.getCamelVersionForCLI(catalog) || DEFAULT_CAMEL_VERSION;
 
 			let camelVersionToUse: string;

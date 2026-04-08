@@ -73,9 +73,6 @@ export async function activate(context: vscode.ExtensionContext) {
 	const catalogStatusBar = catalogService.createStatusBarItem();
 	context.subscriptions.push(catalogStatusBar);
 
-	// Register catalog selection command
-	context.subscriptions.push(vscode.commands.registerCommand('kaoto.selectCamelCatalog', () => catalogService.showCatalogPicker()));
-
 	/*
 	 * init Red Hat Telemetry
 	 */
@@ -83,6 +80,23 @@ export async function activate(context: vscode.ExtensionContext) {
 	telemetryService = await redhatService.getTelemetryService();
 
 	const contextHandler = new ExtensionContextHandler(context, kieEditorStore, telemetryService);
+
+	// Register catalog selection command with executor initialization
+	// Must be registered after contextHandler is created
+	context.subscriptions.push(
+		vscode.commands.registerCommand('kaoto.selectCamelCatalog', async () => {
+			const catalogSelected = await catalogService.showCatalogPicker();
+
+			// Only trigger executor initialization if a catalog was actually selected
+			if (catalogSelected) {
+				// Trigger executor initialization in background after catalog selection
+				// This ensures the new catalog version's executor (JAR/JBang) is downloaded if needed
+				ensureExecutorAvailable(context, contextHandler, true).catch((error) => {
+					KaotoOutputChannel.logError('Failed to initialize executor after catalog selection', error);
+				});
+			}
+		}),
+	);
 
 	/*
 	 * Ensure executor is available (non-blocking)
@@ -164,9 +178,22 @@ export async function activate(context: vscode.ExtensionContext) {
 /**
  * Ensure executor is available and configured
  * Handles both JBang and Camel Launcher setup with status bar feedback
+ * @param context - Extension context
+ * @param contextHandler - Extension context handler
+ * @param forceReinitialize - Force re-initialization even if executor is already available
  */
-async function ensureExecutorAvailable(context: vscode.ExtensionContext, contextHandler: ExtensionContextHandler): Promise<void> {
+export async function ensureExecutorAvailable(
+	context: vscode.ExtensionContext,
+	contextHandler: ExtensionContextHandler,
+	forceReinitialize: boolean = false,
+): Promise<void> {
 	try {
+		// Reset executor cache if force re-initialization is requested
+		if (forceReinitialize) {
+			CamelExecutorFactory.resetExecutor();
+			KaotoOutputChannel.logInfo('Executor cache reset for re-initialization');
+		}
+
 		const config = vscode.workspace.getConfiguration();
 		const executorType = config.get<string>('kaoto.executor.type', 'camel-launcher');
 
@@ -195,7 +222,7 @@ async function ensureExecutorAvailable(context: vscode.ExtensionContext, context
 		} else if (executorType === 'camel-launcher') {
 			// Camel Launcher download with status bar feedback
 			const catalogService = KaotoCatalogService.getInstance();
-			const catalog = catalogService.getDefaultIntegrationCatalog();
+			const catalog = await catalogService.getSelectedIntegrationCatalog();
 			const version = catalogService.getCamelVersionForCLI(catalog) || DEFAULT_CAMEL_VERSION;
 
 			KaotoOutputChannel.logInfo(`Downloading Camel Launcher ${version}...`);
