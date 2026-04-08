@@ -553,36 +553,37 @@ export class KaotoCatalogService {
 
 	/**
 	 * Update the status bar item text and visibility
+	 * Status bar is visible when:
+	 * - A Kaoto editor is actively open/focused
+	 * - The workspace is not a Maven project
 	 */
 	private async updateStatusBar(): Promise<void> {
 		if (!this.statusBarItem) {
 			return;
 		}
 
-		// Check for active text editor first
-		const activeEditor = vscode.window.activeTextEditor;
+		// Try to get document URI from the ACTIVE/FOCUSED Kaoto editor only
 		let documentUri: vscode.Uri | undefined;
 
-		if (activeEditor) {
-			documentUri = activeEditor.document.uri;
-		} else {
-			// Check for active custom editor (webview) via tab groups
-			const activeTab = vscode.window.tabGroups.activeTabGroup?.activeTab;
-			if (activeTab && activeTab.input instanceof vscode.TabInputCustom) {
-				documentUri = activeTab.input.uri;
+		// Check if the active tab is a Kaoto editor (webview)
+		const activeTab = vscode.window.tabGroups.activeTabGroup.activeTab;
+		if (activeTab?.input && typeof activeTab.input === 'object' && activeTab.input !== null && 'uri' in activeTab.input) {
+			const tabUri = (activeTab.input as { uri: vscode.Uri }).uri;
+			if (this.isKaotoFile(tabUri)) {
+				documentUri = tabUri;
 			}
 		}
 
-		// If no active editor or tab, hide status bar
+		// Fallback: Check for active text editor (source code view is focused)
 		if (!documentUri) {
-			this.statusBarItem.hide();
-			return;
+			const activeEditor = vscode.window.activeTextEditor;
+			if (activeEditor && this.isKaotoFile(activeEditor.document.uri)) {
+				documentUri = activeEditor.document.uri;
+			}
 		}
 
-		// Check if current file is a Kaoto file
-		const isKaotoFile = this.isKaotoFile(documentUri);
-		if (!isKaotoFile) {
-			// For non-Kaoto files, hide the status bar
+		// If no active Kaoto editor found, hide status bar
+		if (!documentUri) {
 			this.statusBarItem.hide();
 			return;
 		}
@@ -590,18 +591,33 @@ export class KaotoCatalogService {
 		// Check if Maven project
 		const isMaven = await KaotoCatalogService.isMavenProject(documentUri);
 		if (isMaven) {
+			KaotoOutputChannel.logInfo('Status bar: Maven project detected, hiding status bar');
 			this.statusBarItem.hide();
 			return;
 		}
 
-		// Get selected catalog and update status bar
+		// Get selected catalog (or default if none selected) and update status bar
 		const selectedCatalog = await this.getSelectedCatalog(documentUri);
 		if (selectedCatalog) {
 			const displayLabel = KaotoCatalogService.buildDisplayLabel(selectedCatalog);
 			this.statusBarItem.text = `$(package) ${displayLabel}`;
+			this.statusBarItem.tooltip = 'Select Camel Catalog Version';
+			this.statusBarItem.command = 'kaoto.selectCamelCatalog';
 			this.statusBarItem.show();
 		} else {
-			this.statusBarItem.hide();
+			// If no catalog found (shouldn't happen), log warning but still show with default
+			KaotoOutputChannel.logWarning('No catalog found for Kaoto file, using default');
+			const defaultCatalog = this.getDefaultCatalog(documentUri);
+			if (defaultCatalog) {
+				const displayLabel = KaotoCatalogService.buildDisplayLabel(defaultCatalog);
+				this.statusBarItem.text = `$(package) ${displayLabel}`;
+				this.statusBarItem.tooltip = 'Select Camel Catalog Version';
+				this.statusBarItem.command = 'kaoto.selectCamelCatalog';
+				this.statusBarItem.show();
+			} else {
+				KaotoOutputChannel.logWarning('Status bar: No catalog available, hiding');
+				this.statusBarItem.hide();
+			}
 		}
 	}
 
