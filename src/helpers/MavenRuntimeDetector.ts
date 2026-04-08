@@ -3,16 +3,16 @@ import { satisfies } from 'compare-versions';
 import { RuntimeMavenInformation } from '@kaoto/kaoto';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
+import { CamelExecutorFactory } from '../executors/CamelExecutorFactory';
 import { findFolderOfPomXml } from './helpers';
 
 /**
- * Utility for detecting Maven runtime information using Camel JBang
+ * Utility for detecting Maven runtime information from pom.xml
  */
 export class MavenRuntimeDetector {
 	/**
-	 * Get runtime information from Maven context using Camel JBang
-	 * This uses JBang directly (not through the executor abstraction) as it's a utility function
-	 * for detecting existing Maven project configuration
+	 * Get runtime information from Maven context using the configured executor
+	 * This uses the Camel CLI to detect existing Maven project configuration
 	 */
 	public static async getRuntimeInfoFromMavenContext(integrationFilePath: string): Promise<RuntimeMavenInformation | undefined> {
 		const folderOfPomXml = findFolderOfPomXml(integrationFilePath);
@@ -26,16 +26,31 @@ export class MavenRuntimeDetector {
 			const catalog = catalogService.getDefaultIntegrationCatalog();
 			const camelVersion = catalogService.getCamelVersionForCLI(catalog) || '4.18.0';
 
-			let camelJbangVersionToUse: string;
+			let camelVersionToUse: string;
 			// This ensures versions lower than 4.13 fall back; 4.13 or newer use the configured version.
 			if (satisfies(camelVersion, '>=4.13')) {
-				camelJbangVersionToUse = camelVersion;
+				camelVersionToUse = camelVersion;
 			} else {
 				// Fallback to 4.13.0 for older versions
-				camelJbangVersionToUse = '4.13.0';
+				camelVersionToUse = '4.13.0';
 			}
 
-			const response: string = execSync(`jbang '-Dcamel.jbang.version=${camelJbangVersionToUse}' camel@apache/camel dependency runtime --json pom.xml`, {
+			// Get executor configuration to build the correct command
+			const executor = await CamelExecutorFactory.createExecutor();
+			const config = executor.getConfig();
+
+			// Build command string based on executor type
+			let fullCommand: string;
+			if (config.type === 'jbang') {
+				const jbangPath = (config as any).jbangPath || 'jbang';
+				fullCommand = `${jbangPath} -Dcamel.jbang.version=${camelVersionToUse} camel@apache/camel dependency runtime --json pom.xml`;
+			} else {
+				// For camel-launcher, get the launcher path from the executor
+				const launcherPath = (executor as any).launcherPath;
+				fullCommand = `${launcherPath} dependency runtime --json pom.xml`;
+			}
+
+			const response: string = execSync(fullCommand, {
 				stdio: 'pipe',
 				cwd: folderOfPomXml,
 			}).toString();

@@ -33,7 +33,7 @@ suite('CamelJbang tests', function () {
 		assert(files.length === 1, 'For the test, we expect to have a single file in the camel quarkus project');
 		let runtimeInfo = await MavenRuntimeDetector.getRuntimeInfoFromMavenContext(files[0].fsPath);
 		if (runtimeInfo === undefined) {
-			// Retry the getRuntimeInfoFromMavenContext if the first attempt fails, it can happen when camel jbang downloads dependencies, eg. when there is a new version of Camel JBang used in the project.
+			// Retry the getRuntimeInfoFromMavenContext if the first attempt fails, it can happen when the Camel CLI downloads dependencies, eg. when there is a new version of Camel used in the project.
 			runtimeInfo = await MavenRuntimeDetector.getRuntimeInfoFromMavenContext(files[0].fsPath);
 		}
 		const expected: RuntimeMavenInformation = {
