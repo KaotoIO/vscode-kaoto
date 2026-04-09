@@ -61,7 +61,14 @@ export class ExternalFileChangeWatcher implements vscode.Disposable {
 	}
 
 	private async handleFileChange(): Promise<void> {
-		const content = await fs.readFile(this.docUri.fsPath, 'utf8');
+		let content: string;
+		try {
+			content = await fs.readFile(this.docUri.fsPath, 'utf8');
+		} catch {
+			// File may have been deleted or renamed; ignore this event
+			this.lastSelfSavedContent = undefined;
+			return;
+		}
 		// If this content matches what VS Code just saved, the file change originated from
 		// VS Code itself — no need to reload the editor.
 		if (this.lastSelfSavedContent !== undefined && this.lastSelfSavedContent === content) {
