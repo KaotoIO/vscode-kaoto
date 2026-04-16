@@ -865,10 +865,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/camel-catalog@npm:^0.4.3":
-  version: 0.4.3
-  resolution: "@kaoto/camel-catalog@npm:0.4.3"
-  checksum: 10/8518905573c7d677791bbf8d7ef61993a874cd1361ba160e221bfe663081fd1ed9506497c52aafa539e42262963cb9f549fffc98e9dc5b0e81e1f77f3175f901
+"@kaoto/camel-catalog@npm:^0.4.4":
+  version: 0.4.4
+  resolution: "@kaoto/camel-catalog@npm:0.4.4"
+  checksum: 10/3c1eada821ab9460a4ad83f020bb02b2ebd008ccd95270611aab64a522d1d3d6a4b01931b1a77dc347371e4be934b67bdb005165cf70eb68cec5e4ca23e20a46
   languageName: node
   linkType: hard
 
@@ -890,9 +890,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/kaoto@npm:2.10.0":
-  version: 2.10.0
-  resolution: "@kaoto/kaoto@npm:2.10.0"
+"@kaoto/kaoto@npm:2.11.0-RC1":
+  version: 2.11.0-RC1
+  resolution: "@kaoto/kaoto@npm:2.11.0-RC1"
   dependencies:
     "@carbon/icons-react": "npm:^11.67.0"
     "@carbon/react": "npm:^1.102.0"
@@ -911,18 +911,20 @@ __metadata:
     monaco-editor: "npm:^0.50.0"
     react-markdown: "npm:^10.0.0"
     react-router-dom: "npm:^7.6.4"
+    react-virtuoso: "npm:^4.18.1"
     remark-gfm: "npm:^4.0.1"
     simple-zustand-devtools: "npm:^1.1.0"
     ts-markdown: "npm:^1.2.0"
+    use-sync-external-store: "npm:^1.6.0"
     usehooks-ts: "npm:^3.0.0"
     uuid: "npm:^10.0.0"
     xml-formatter: "npm:^3.6.5"
     xml-name-validator: "npm:^5.0.0"
     yaml: "npm:^2.3.2"
     zundo: "npm:^2.3.0"
-    zustand: "npm:^4.3.9"
+    zustand: "npm:^5.0.11"
   peerDependencies:
-    "@kaoto/camel-catalog": ^0.4.3
+    "@kaoto/camel-catalog": ^0.4.4
     "@patternfly/patternfly": ^6.4.0
     "@patternfly/react-code-editor": ^6.4.0
     "@patternfly/react-core": ^6.4.0
@@ -930,10 +932,10 @@ __metadata:
     "@patternfly/react-table": ^6.4.0
     "@patternfly/react-topology": ^6.4.0
     monaco-yaml: ^5.1.1
-    react: ^19.2.1
-    react-dom: ^19.2.1
+    react: ^19.2.4
+    react-dom: ^19.2.4
     react-monaco-editor: ^0.56.0
-  checksum: 10/541ae057b9db3bd09ed407b8046c99767ba7e2bff7a7a2bbaaafb84875f76cfcb054eee2d123cf53ad3bc5aa0ed276e3c58c79a12ce9d5f86557e97601cd0ee0
+  checksum: 10/3fe5219efc92c15981408b19f36b0c9fe511acb4f08d44a61fc366b7cbe4f6044fcf108844b72a517ec895501b6d5e9177c3558a0385a2a97eeff87364151f4c
   languageName: node
   linkType: hard
 
@@ -11163,6 +11165,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-virtuoso@npm:^4.18.1":
+  version: 4.18.5
+  resolution: "react-virtuoso@npm:4.18.5"
+  peerDependencies:
+    react: ">=16 || >=17 || >= 18 || >= 19"
+    react-dom: ">=16 || >=17 || >= 18 || >=19"
+  checksum: 10/47791f5bdf3961eed492122333eaeec6718d5e9d9611d0d4cb4c1024890bbc7f37ef5dfee3c003c6722c1fba6d8ee29a5b8eeda156163a6a7fbefbd548a4ac6d
+  languageName: node
+  linkType: hard
+
 "react@npm:19.2.1":
   version: 19.2.1
   resolution: "react@npm:19.2.1"
@@ -13295,12 +13307,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:1.2.0":
-  version: 1.2.0
-  resolution: "use-sync-external-store@npm:1.2.0"
+"use-sync-external-store@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "use-sync-external-store@npm:1.6.0"
   peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: 10/a676216affc203876bd47981103f201f28c2731361bb186367e12d287a7566763213a8816910c6eb88265eccd4c230426eb783d64c373c4a180905be8820ed8e
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10/b40ad2847ba220695bff2d4ba4f4d60391c0fb4fb012faa7a4c18eb38b69181936f5edc55a522c4d20a788d1a879b73c3810952c9d0fd128d01cb3f22042c09e
   languageName: node
   linkType: hard
 
@@ -13454,8 +13466,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto/camel-catalog": "npm:^0.4.3"
-    "@kaoto/kaoto": "npm:2.10.0"
+    "@kaoto/camel-catalog": "npm:^0.4.4"
+    "@kaoto/kaoto": "npm:2.11.0-RC1"
     "@kie-tools-core/backend": "npm:10.0.0"
     "@kie-tools-core/editor": "npm:10.0.0"
     "@kie-tools-core/i18n": "npm:10.0.0"
@@ -14023,15 +14035,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zustand@npm:^4.3.9":
-  version: 4.5.2
-  resolution: "zustand@npm:4.5.2"
-  dependencies:
-    use-sync-external-store: "npm:1.2.0"
+"zustand@npm:^5.0.11":
+  version: 5.0.12
+  resolution: "zustand@npm:5.0.12"
   peerDependencies:
-    "@types/react": ">=16.8"
+    "@types/react": ">=18.0.0"
     immer: ">=9.0.6"
-    react: ">=16.8"
+    react: ">=18.0.0"
+    use-sync-external-store: ">=1.2.0"
   peerDependenciesMeta:
     "@types/react":
       optional: true
@@ -14039,7 +14050,9 @@ __metadata:
       optional: true
     react:
       optional: true
-  checksum: 10/9e9e92ce7378c5de1d7682f4f10340a1c07a81b673ad0a125b59883a6ade3f2bf39eac6ccc5b05630f9df6ed925291f681592db59ccd3815685c2e83f67c8525
+    use-sync-external-store:
+      optional: true
+  checksum: 10/b84c85fc4133ec5ee05c11d0f2f3dff0f7537d9d0f1d3475a8e5a92f42ee1ba6d38039e09baf510075eb738e3d55018a635b3fa7db07c94e8d5717104abab9e5
   languageName: node
   linkType: hard
 
