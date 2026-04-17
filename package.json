@@ -1201,7 +1201,7 @@
             "filenamePattern": "*.camel.xml"
           },
           {
-            "filenamePattern": "*.citrus{.yaml,.test.yaml,.it.yaml,.test.yaml,.it.yaml}"
+            "filenamePattern": "*{.citrus,.citrus.test,.citrus.it,.citrus-test,.citrus-it}.yaml"
           }
         ]
       }
