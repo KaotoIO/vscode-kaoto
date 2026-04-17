@@ -17,6 +17,7 @@ import { expect } from 'chai';
 import { join } from 'path';
 import { after, EditorView, TreeItem, ViewControl, ViewItemAction, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
 import {
+	collapseItemsInsideTreeStructuredView,
 	expandViews,
 	getKaotoViewControl,
 	getTreeItem,
@@ -46,6 +47,8 @@ describe('Deployments View', function () {
 		deploymentsSection = await control.kaotoView?.getContent().getSection('Deployments');
 		integrationsSection = await control.kaotoView?.getContent().getSection('Integrations');
 		await expandViews(control.kaotoView, 'Deployments', 'Integrations');
+
+		await collapseItemsInsideTreeStructuredView(integrationsSection);
 	});
 
 	after(async function () {
@@ -83,28 +86,48 @@ describe('Deployments View', function () {
 
 			routeManipulations.forEach((rm) => {
 				it(`click '${rm.button}' on ${p.route}`, async function () {
-					const route = await getTreeItem(driver, deploymentsSection, p.route);
-					expect(route).to.not.be.undefined;
-
-					const btn = await getTreeItemActionButton(kaotoViewContainer, route as TreeItem, rm.button);
-					await btn?.click();
-					await driver.sleep(1_000); // wait for the button to be clicked
+					await clickRouteActionButton(rm.button);
 
 					await waitUntilTerminalHasText(driver, [`${rm.state} ${p.route}`], 1_000, 20_000);
 					await waitUntilRouteHasState(rm.state);
-
-					const buttons = (await route?.getActionButtons()) as ViewItemAction[];
-					const buttonsLabels = await Promise.all(buttons.map((btn) => btn.getLabel()));
-					expect(buttonsLabels).to.has.members(rm.allowedButtons);
+					await waitUntilRouteHasButtons(rm.allowedButtons);
 				});
 			});
 		});
 
-		async function waitUntilRouteHasState(state: string, interval = 500, timeout = 10_000): Promise<void> {
+		async function clickRouteActionButton(action: string, timeout = 15_000): Promise<void> {
+			let clicked = false;
+			await driver.wait(
+				async () => {
+					try {
+						const route = await getTreeItem(driver, deploymentsSection, p.route, 5_000);
+						expect(route).to.not.be.undefined;
+
+						await route?.click();
+						const btn = await getTreeItemActionButton(kaotoViewContainer, route as TreeItem, action, 2_000);
+						expect(btn, `'${action}' action button should be available for ${p.route}`).to.not.be.undefined;
+
+						await btn?.click();
+						clicked = true;
+						return true;
+					} catch (err) {
+						return false;
+					}
+				},
+				timeout,
+				`Timeout: failed to click '${action}' on ${p.route}`,
+				500,
+			);
+
+			expect(clicked, `Failed to click '${action}' on ${p.route}`).to.be.true;
+			await driver.sleep(1_000);
+		}
+
+		async function waitUntilRouteHasState(state: string, interval = 500, timeout = 15_000): Promise<void> {
 			await driver.wait(
 				async function () {
 					try {
-						const route = await getTreeItem(driver, deploymentsSection, p.route);
+						const route = await getTreeItem(driver, deploymentsSection, p.route, 5_000);
 						expect(route).to.not.be.undefined;
 						const description = await route?.getDescription();
 						return description?.startsWith(state);
@@ -116,6 +139,31 @@ describe('Deployments View', function () {
 				`Timeout: route is not in an expected state - "${state}"`,
 				interval,
 			);
+		}
+
+		async function waitUntilRouteHasButtons(expectedButtons: string[], interval = 500, timeout = 15_000): Promise<void> {
+			let buttonsLabels: string[] = [];
+			await driver.wait(
+				async function () {
+					try {
+						const route = await getTreeItem(driver, deploymentsSection, p.route, 5_000);
+						expect(route).to.not.be.undefined;
+
+						await route?.click();
+						const buttons = (await route?.getActionButtons()) as ViewItemAction[];
+						buttonsLabels = await Promise.all(buttons.map((btn) => btn.getLabel()));
+						return expectedButtons.every((button) => buttonsLabels.includes(button)) && buttonsLabels.length === expectedButtons.length;
+					} catch (err) {
+						buttonsLabels = [];
+						return false;
+					}
+				},
+				timeout,
+				`Timeout: route action buttons ${expectedButtons.join(', ')} were not visible. Actual: ${buttonsLabels.join(', ')}`,
+				interval,
+			);
+
+			expect(buttonsLabels).to.have.members(expectedButtons);
 		}
 	});
 });
