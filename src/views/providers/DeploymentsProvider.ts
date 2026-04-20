@@ -15,6 +15,7 @@
  */
 import { EventEmitter, tasks, TreeDataProvider, TreeItem, TreeItemCollapsibleState, workspace } from 'vscode';
 import { basename } from 'path'; // NOSONAR
+import { KAOTO_VIEWS_REFRESH_INTERVAL_SETTING_ID } from '../../constants';
 import { PortManager } from '../../helpers/PortManager';
 import { CamelTaskDefinition } from '../../tasks/CamelTask';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
@@ -26,8 +27,6 @@ import { ChildItem } from '../deploymentTreeItems/ChildItem';
 export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 	private readonly _onDidChangeTreeData = new EventEmitter<TreeItem | undefined | null | void>();
 	readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
-
-	private static readonly SETTINGS_REFRESH_INTERVAL = 'kaoto.deployments.refresh.interval';
 
 	private readonly CONTEXT_LOCALHOST_ITEM = 'root-localhost';
 	private readonly CONTEXT_INTEGRATION_LOCALHOST_ITEM = 'parent-localhost';
@@ -42,7 +41,7 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 		this.startAutoRefresh();
 
 		workspace.onDidChangeConfiguration((e) => {
-			if (e.affectsConfiguration(DeploymentsProvider.SETTINGS_REFRESH_INTERVAL)) {
+			if (e.affectsConfiguration(KAOTO_VIEWS_REFRESH_INTERVAL_SETTING_ID)) {
 				this.updateIntervalFromSettings();
 			}
 		});
@@ -156,7 +155,7 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 	}
 
 	private getRefreshInterval(): number {
-		return workspace.getConfiguration().get(DeploymentsProvider.SETTINGS_REFRESH_INTERVAL, 5000);
+		return workspace.getConfiguration().get(KAOTO_VIEWS_REFRESH_INTERVAL_SETTING_ID, 5000);
 	}
 
 	private updateIntervalFromSettings() {

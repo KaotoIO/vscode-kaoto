@@ -41,6 +41,16 @@ export class CamelTaskFactory {
 	}
 
 	/**
+	 * Creates a background long-running task that does NOT pop open the terminal panel.
+	 * The terminal is still accessible via the Tasks panel; it is only revealed automatically
+	 * when the user explicitly opens it or when a follow-up error notification is shown.
+	 * Used for infrastructure service tasks where silent startup is preferred.
+	 */
+	static createBackgroundSilent(label: string, result: CommandResult): CamelTask {
+		return CamelTaskFactory.create({ label, lifecycle: TaskLifecycle.Background, reveal: TaskRevealKind.Silent }, result);
+	}
+
+	/**
 	 * Creates a task with full control over presentation options.
 	 */
 	static create(options: CamelTaskOptions, result: CommandResult): CamelTask {
