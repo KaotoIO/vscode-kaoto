@@ -1,6 +1,9 @@
 # 2.12.0
 
 - Add launch config for a simple run of exported Camel (Maven) Application
+- Add `Infrastructure` section into Kaoto view (experimental)
+  - list running infrastructure services
+  - start/stop/restart infrastructure service
 
 # 2.11.0
 
