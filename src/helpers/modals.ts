@@ -24,7 +24,7 @@ import { window } from 'vscode';
 export async function confirmFileDeleteDialog(filename: string) {
 	const message = `Are you sure you want to delete '${filename}'?`;
 	const continueOption = 'Delete';
-	return await window.showWarningMessage(message, { modal: true }, continueOption);
+	return await confirmDialog(message, continueOption);
 }
 
 /**
@@ -38,5 +38,25 @@ export async function confirmFileDeleteDialog(filename: string) {
 export async function confirmDestructiveActionInSelectedFolder(outputPath: string) {
 	const message = `Files in the folder: ${outputPath} WILL BE DELETED before project creation, continue?`;
 	const continueOption = 'Continue';
+	return await confirmDialog(message, continueOption);
+}
+
+/**
+ * Shows a modal asking for user confirmation of stopping an infrastructure service.
+ * VS Code automatically provides a 'Cancel' option which return `undefined`.
+ * The continue option will return the string `Stop`.
+ * The function will return `undefined` if the user cancels the operation.
+ *
+ * @param serviceName name of the service to be stopped.
+ *
+ * @returns string | undefined
+ */
+export async function confirmINfrastructureServiceStop(serviceName: string) {
+	const message = `Stop infrastructure service "${serviceName}"?`;
+	const continueOption = 'Stop';
+	return await confirmDialog(message, continueOption);
+}
+
+async function confirmDialog(message: string, continueOption: string) {
 	return await window.showWarningMessage(message, { modal: true }, continueOption);
 }
