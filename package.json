@@ -83,6 +83,11 @@
     "workspaceContains:**/*-pipe.yaml",
     "workspaceContains:**/*-pipe.yml",
     "workspaceContains:**/*.camel.xml",
+    "workspaceContains:**/*.citrus.yaml",
+    "workspaceContains:**/*.citrus.test.yaml",
+    "workspaceContains:**/*.citrus.it.yaml",
+    "workspaceContains:**/*.citrus-test.yaml",
+    "workspaceContains:**/*.citrus-it.yaml",
     "onStartupFinished"
   ],
   "capabilities": {
@@ -1194,6 +1199,9 @@
           },
           {
             "filenamePattern": "*.camel.xml"
+          },
+          {
+            "filenamePattern": "*{.citrus,.citrus.test,.citrus.it,.citrus-test,.citrus-it}.yaml"
           }
         ]
       }
