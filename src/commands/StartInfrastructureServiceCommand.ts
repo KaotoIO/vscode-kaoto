@@ -25,6 +25,16 @@ export class StartInfrastructureServiceCommand {
 
 	constructor(private readonly infrastructureProvider: InfrastructureProvider) {}
 
+	private getServiceTargetUrl(service: { url?: string; port?: number }): string | undefined {
+		return service.url ?? (service.port ? `http://localhost:${service.port}` : undefined);
+	}
+
+	private showServiceAlreadyRunningMessage(serviceName: string, target?: string): void {
+		vscode.window.showInformationMessage(
+			target ? `Infrastructure service "${serviceName}" is already running at ${target}.` : `Infrastructure service "${serviceName}" is already running.`,
+		);
+	}
+
 	public async execute(): Promise<void> {
 		try {
 			const services = await this.infrastructureProvider.ensureAvailableServicesLoaded();
@@ -33,7 +43,7 @@ export class StartInfrastructureServiceCommand {
 				return;
 			}
 
-			const picked = await vscode.window.showQuickPick(
+			const selectedService = await vscode.window.showQuickPick(
 				services.map((service) => ({
 					label: service.name,
 					description: service.description,
@@ -44,12 +54,48 @@ export class StartInfrastructureServiceCommand {
 				},
 			);
 
-			if (!picked) {
+			if (!selectedService) {
+				return;
+			}
+
+			// Fast check: in-memory state first
+			const existingService = this.infrastructureProvider.getRunningService(selectedService.label);
+			if (existingService) {
+				const target = this.getServiceTargetUrl(existingService);
+				this.showServiceAlreadyRunningMessage(selectedService.label, target);
+				return;
+			}
+
+			// Slower check: CLI state (only if not in memory)
+			const cliRunningService = await vscode.window.withProgress(
+				{
+					location: vscode.ProgressLocation.Notification,
+					title: `Checking if ${selectedService.label} is already running...`,
+					cancellable: false,
+				},
+				async () => this.infrastructureProvider.getCliRunningService(selectedService.label),
+			);
+
+			if (cliRunningService) {
+				// Register the external service
+				this.infrastructureProvider.registerRunningService({
+					name: cliRunningService.name,
+					description: cliRunningService.description ?? selectedService.description,
+					port: cliRunningService.port,
+					url: cliRunningService.url,
+					args: [],
+					terminalName: `${cliRunningService.name} (external)`,
+					status: 'running',
+					isExternal: true,
+				});
+
+				const target = this.getServiceTargetUrl(cliRunningService);
+				this.showServiceAlreadyRunningMessage(selectedService.label, target);
 				return;
 			}
 
 			const portValue = await vscode.window.showInputBox({
-				title: `Configure ${picked.label}`,
+				title: `Configure ${selectedService.label}`,
 				prompt: 'Enter a port number or leave EMPTY to use the default',
 				ignoreFocusOut: true,
 				validateInput: (value) => {
@@ -66,20 +112,9 @@ export class StartInfrastructureServiceCommand {
 
 			const args = [...new CamelInfraJBang().getConfiguredDefaultArgs()];
 			const port = portValue ? Number(portValue) : undefined;
-			const existingService = this.infrastructureProvider.getRunningService(picked.label);
-
-			if (existingService) {
-				const target = existingService.url ?? (existingService.port ? `http://localhost:${existingService.port}` : undefined);
-				vscode.window.showInformationMessage(
-					target
-						? `Infrastructure service "${picked.label}" is already running at ${target}.`
-						: `Infrastructure service "${picked.label}" is already running.`,
-				);
-				return;
-			}
 
 			const runTask = CamelInfraRunJBangTask.create(
-				picked.label,
+				selectedService.label,
 				{
 					port,
 					args,
@@ -88,11 +123,20 @@ export class StartInfrastructureServiceCommand {
 			);
 
 			await runTask.execute();
+
+			// Final check before registration to prevent race condition
+			const finalCheck = this.infrastructureProvider.getRunningService(selectedService.label);
+			if (finalCheck) {
+				const target = this.getServiceTargetUrl(finalCheck);
+				this.showServiceAlreadyRunningMessage(selectedService.label, target);
+				return;
+			}
+
 			this.infrastructureProvider.registerRunningService({
-				name: picked.label,
-				description: picked.description,
+				name: selectedService.label,
+				description: selectedService.description,
 				port,
-				url: port ? `http://localhost:${port}` : undefined,
+				url: this.getServiceTargetUrl({ port }),
 				args,
 				terminalName: runTask.name,
 				status: 'starting',

@@ -54,6 +54,7 @@ export class InfrastructureProvider implements TreeDataProvider<TreeItem>, Dispo
 	}
 
 	async getChildren(): Promise<TreeItem[]> {
+		await this.refreshRunningServicesFromCli(false);
 		this.updateContexts();
 		return Array.from(this.runningServices.values())
 			.sort((a, b) => a.name.localeCompare(b.name))
@@ -132,6 +133,16 @@ export class InfrastructureProvider implements TreeDataProvider<TreeItem>, Dispo
 		return this.runningServices.get(name);
 	}
 
+	async getCliRunningService(name: string): Promise<InfraRunningServiceDetails | undefined> {
+		try {
+			const runningByName = await this.fetchRunningServicesByName();
+			return runningByName.get(name);
+		} catch (error) {
+			KaotoOutputChannel.logWarning(`[InfrastructureProvider] Unable to fetch CLI running services: ${String(error)}`);
+			return undefined;
+		}
+	}
+
 	getAvailableServices(): InfraServiceDefinition[] {
 		return Array.from(this.availableServices.values());
 	}
@@ -164,15 +175,12 @@ export class InfrastructureProvider implements TreeDataProvider<TreeItem>, Dispo
 		);
 	}
 
-	private async refreshRunningServicesFromCli(): Promise<void> {
-		if (this.runningServices.size === 0) {
-			return;
-		}
-
+	private async refreshRunningServicesFromCli(fireChangeEvent: boolean = true): Promise<void> {
 		try {
 			const runningByName = await this.fetchRunningServicesByName();
 			let changed = false;
 
+			// Update existing tracked services
 			for (const [name, currentService] of this.runningServices.entries()) {
 				const cliService = runningByName.get(name);
 				if (!cliService) {
@@ -189,8 +197,26 @@ export class InfrastructureProvider implements TreeDataProvider<TreeItem>, Dispo
 				changed = true;
 			}
 
+			// Register new external services not yet tracked
+			for (const [name, cliService] of runningByName.entries()) {
+				if (!this.runningServices.has(name)) {
+					this.runningServices.set(name, {
+						name: cliService.name,
+						description: cliService.description,
+						port: cliService.port,
+						url: cliService.url,
+						args: [],
+						terminalName: `${cliService.name} (external)`,
+						status: 'running',
+						isExternal: true,
+					});
+					changed = true;
+					KaotoOutputChannel.logInfo(`[InfrastructureProvider] Discovered external service: ${name}`);
+				}
+			}
+
 			this.updateAutoRefreshState();
-			if (changed) {
+			if (changed && fireChangeEvent) {
 				this._onDidChangeTreeData.fire();
 			}
 		} catch (error) {
