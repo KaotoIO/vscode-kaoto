@@ -66,9 +66,9 @@ export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
 	protected context: vscode.ExtensionContext;
 
-	protected testsProvider: TestsProvider;
-	protected deploymentsProvider: DeploymentsProvider;
-	protected openApiProvider: OpenApiProvider;
+	protected testsProvider!: TestsProvider;
+	protected deploymentsProvider!: DeploymentsProvider;
+	protected openApiProvider!: OpenApiProvider;
 
 	constructor(
 		context: vscode.ExtensionContext,
