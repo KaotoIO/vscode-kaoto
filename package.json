@@ -920,7 +920,7 @@
         },
         {
           "command": "kaoto.infrastructure.stop",
-          "when": "view == kaoto.infrastructure && viewItem == infrastructure-service",
+          "when": "view == kaoto.infrastructure && viewItem =~ /^infrastructure-service(-external)?$/",
           "group": "inline@1"
         },
         {

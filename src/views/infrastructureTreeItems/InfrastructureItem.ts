@@ -24,25 +24,30 @@ export interface RunningInfrastructureService {
 	args: string[];
 	terminalName: string;
 	status: 'starting' | 'running' | 'stopping';
+	isExternal?: boolean;
 }
 
 export class InfrastructureItem extends TreeItem {
 	constructor(public readonly service: RunningInfrastructureService) {
 		super(service.name, TreeItemCollapsibleState.None);
-		this.contextValue = 'infrastructure-service';
+		this.contextValue = service.isExternal ? 'infrastructure-service-external' : 'infrastructure-service';
 		this.iconPath = new ThemeIcon(service.status === 'running' ? 'server-environment' : 'loading~spin');
+
+		const externalLabel = service.isExternal ? ' (external)' : '';
 		this.description =
 			service.status === 'starting'
 				? service.port
-					? `Starting on :${service.port}`
-					: 'Starting...'
+					? `Starting on :${service.port}${externalLabel}`
+					: `Starting...${externalLabel}`
 				: service.status === 'stopping'
 					? service.port
-						? `Stopping on :${service.port}`
-						: 'Stopping...'
+						? `Stopping on :${service.port}${externalLabel}`
+						: `Stopping...${externalLabel}`
 					: service.port
-						? `:${service.port}`
-						: service.description;
+						? `:${service.port}${externalLabel}`
+						: service.description
+							? `${service.description}${externalLabel}`
+							: externalLabel.trim();
 		this.tooltip = [
 			service.status === 'starting' ? 'Status: Starting' : service.status === 'stopping' ? 'Status: Stopping' : 'Status: Running',
 			service.description ? `Service: ${service.description}` : `Service: ${service.name}`,
