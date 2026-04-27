@@ -33,7 +33,7 @@ import {
 } from '../helpers/helpers';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { NewCamelFileCommand } from '../commands/NewCamelFileCommand';
-import { confirmFileDeleteDialog, confirmINfrastructureServiceStop } from '../helpers/modals';
+import { confirmFileDeleteDialog, confirmInfrastructureServiceStop } from '../helpers/modals';
 import { TelemetryEvent, TelemetryService } from '@redhat-developer/vscode-redhat-telemetry';
 import { NewCamelProjectCommand } from '../commands/NewCamelProjectCommand';
 import { CamelRunJBangTask } from '../tasks/CamelRunJBangTask';
@@ -691,20 +691,28 @@ export class ExtensionContextHandler {
 		});
 
 		const stopCommand = vscode.commands.registerCommand(INFRASTRUCTURE_STOP_COMMAND_ID, async (item: InfrastructureItem) => {
-			const confirmation = await confirmINfrastructureServiceStop(item.service.name);
+			// CRITICAL: Capture service name at the VERY START before ANY async operation
+			// This prevents issues when tree refreshes (triggered by other stop operations) invalidate the item reference
+			const serviceName = item?.service?.name;
+
+			if (!serviceName) {
+				KaotoOutputChannel.logWarning('[Infrastructure] Stop command called with invalid item');
+				return;
+			}
+
+			const confirmation = await confirmInfrastructureServiceStop(serviceName);
 
 			if (confirmation !== 'Stop') {
 				return;
 			}
 
-			this.infrastructureProvider.markServiceStopping(item.service.name);
 			try {
-				await new CamelInfraStopJBangTask(item.service.name).executeAndWait();
-				this.infrastructureProvider.unregisterRunningService(item.service.name);
+				await new CamelInfraStopJBangTask(serviceName).executeAndWait();
+				this.infrastructureProvider.unregisterRunningService(serviceName);
 				await this.sendCommandTrackingEvent(INFRASTRUCTURE_STOP_COMMAND_ID);
 			} catch (error) {
-				this.infrastructureProvider.updateRunningService(item.service.name, { status: 'running' });
-				throw error;
+				KaotoOutputChannel.logError(`[Infrastructure] Failed to stop service "${serviceName}"`, error);
+				vscode.window.showErrorMessage(`Failed to stop ${serviceName}: ${String(error)}`);
 			}
 		});
 

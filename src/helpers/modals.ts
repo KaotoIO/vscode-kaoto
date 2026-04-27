@@ -51,7 +51,7 @@ export async function confirmDestructiveActionInSelectedFolder(outputPath: strin
  *
  * @returns string | undefined
  */
-export async function confirmINfrastructureServiceStop(serviceName: string) {
+export async function confirmInfrastructureServiceStop(serviceName: string) {
 	const message = `Stop infrastructure service "${serviceName}"?`;
 	const continueOption = 'Stop';
 	return await confirmDialog(message, continueOption);
