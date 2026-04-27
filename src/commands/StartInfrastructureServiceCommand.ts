@@ -38,10 +38,19 @@ export class StartInfrastructureServiceCommand {
 	}
 
 	public async execute(): Promise<void> {
+		// Prevent starting a new service if one is already being started
+		if (this.infrastructureProvider.isServiceStarting()) {
+			return;
+		}
+
 		try {
+			// Set the starting flag to disable the button
+			this.infrastructureProvider.setStartingService(true);
+
 			const services = await this.infrastructureProvider.ensureAvailableServicesLoaded();
 			if (services.length === 0) {
 				vscode.window.showInformationMessage('No infrastructure services are available from Camel JBang infra.');
+				this.infrastructureProvider.setStartingService(false);
 				return;
 			}
 
@@ -57,6 +66,7 @@ export class StartInfrastructureServiceCommand {
 			);
 
 			if (!selectedService) {
+				this.infrastructureProvider.setStartingService(false);
 				return;
 			}
 
@@ -73,11 +83,13 @@ export class StartInfrastructureServiceCommand {
 					);
 
 					if (action === 'Cancel' || !action) {
+						this.infrastructureProvider.setStartingService(false);
 						return;
 					}
 
 					if (action === 'Use Existing') {
 						// Already registered, just return
+						this.infrastructureProvider.setStartingService(false);
 						return;
 					}
 
@@ -166,6 +178,7 @@ export class StartInfrastructureServiceCommand {
 			});
 
 			if (portValue === undefined) {
+				this.infrastructureProvider.setStartingService(false);
 				return;
 			}
 
@@ -182,6 +195,9 @@ export class StartInfrastructureServiceCommand {
 			);
 
 			await runTask.execute();
+
+			// Clear the starting flag after task is executed - the service is now starting in background
+			this.infrastructureProvider.setStartingService(false);
 
 			// Final check before registration to prevent race condition
 			const finalCheck = this.infrastructureProvider.getRunningService(selectedService.label);
@@ -211,6 +227,9 @@ export class StartInfrastructureServiceCommand {
 				KaotoOutputChannel.logError('[Infrastructure] Failed to start infrastructure service.', error);
 				vscode.window.showWarningMessage(`Unable to start infrastructure service: ${errorMessage}`);
 			}
+
+			// Clear the starting flag on error
+			this.infrastructureProvider.setStartingService(false);
 		}
 	}
 }

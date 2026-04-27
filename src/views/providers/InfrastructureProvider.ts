@@ -33,6 +33,7 @@ export class InfrastructureProvider implements TreeDataProvider<TreeItem>, Dispo
 	private refreshInterval: number;
 	private autoRefreshHandle?: NodeJS.Timeout;
 	private readonly disposables: Disposable[] = [];
+	private isStartingService = false;
 
 	constructor() {
 		this.refreshInterval = this.getRefreshInterval();
@@ -153,6 +154,16 @@ export class InfrastructureProvider implements TreeDataProvider<TreeItem>, Dispo
 	private updateContexts(): void {
 		void commands.executeCommand('setContext', 'kaoto.infrastructureCatalogLoaded', this.servicesLoaded);
 		void commands.executeCommand('setContext', 'kaoto.infrastructureRunning', this.runningServices.size > 0);
+		void commands.executeCommand('setContext', 'kaoto.infrastructureStarting', this.isStartingService);
+	}
+
+	setStartingService(isStarting: boolean): void {
+		this.isStartingService = isStarting;
+		this.updateContexts();
+	}
+
+	isServiceStarting(): boolean {
+		return this.isStartingService;
 	}
 
 	private registerLifecycleListeners(): void {

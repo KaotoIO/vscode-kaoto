@@ -505,7 +505,8 @@
         "command": "kaoto.infrastructure.start",
         "title": "Start Infra Service...",
         "category": "Kaoto",
-        "icon": "$(add)"
+        "icon": "$(add)",
+        "enablement": "!kaoto.infrastructureStarting"
       },
       {
         "command": "kaoto.infrastructure.refresh",
