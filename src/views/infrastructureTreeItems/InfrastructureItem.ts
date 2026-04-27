@@ -30,7 +30,17 @@ export interface RunningInfrastructureService {
 export class InfrastructureItem extends TreeItem {
 	constructor(public readonly service: RunningInfrastructureService) {
 		super(service.name, TreeItemCollapsibleState.None);
-		this.contextValue = service.isExternal ? 'infrastructure-service-external' : 'infrastructure-service';
+
+		// Build context value with availability flags
+		let contextValue = service.isExternal ? 'infrastructure-service-external' : 'infrastructure-service';
+		if (service.url) {
+			contextValue += '-has-url';
+		}
+		if (service.port) {
+			contextValue += '-has-port';
+		}
+		this.contextValue = contextValue;
+
 		this.iconPath = new ThemeIcon(service.status === 'running' ? 'server-environment' : 'loading~spin');
 
 		const externalLabel = service.isExternal ? ' (external)' : '';
