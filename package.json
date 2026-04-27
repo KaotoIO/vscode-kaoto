@@ -526,6 +526,16 @@
         "icon": "$(terminal)"
       },
       {
+        "command": "kaoto.infrastructure.copyUrl",
+        "title": "Copy URL",
+        "category": "Kaoto"
+      },
+      {
+        "command": "kaoto.infrastructure.copyPort",
+        "title": "Copy Port",
+        "category": "Kaoto"
+      },
+      {
         "command": "kaoto.openapi.refresh",
         "title": "Refresh",
         "category": "Kaoto",
@@ -739,6 +749,14 @@
         {
           "command": "kaoto.infrastructure.logs",
           "when": "false"
+        },
+        {
+          "command": "kaoto.infrastructure.copyUrl",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.infrastructure.copyPort",
+          "when": "false"
         }
       ],
       "editor/title": [
@@ -920,13 +938,23 @@
         },
         {
           "command": "kaoto.infrastructure.stop",
-          "when": "view == kaoto.infrastructure && viewItem =~ /^infrastructure-service(-external)?$/",
+          "when": "view == kaoto.infrastructure && viewItem =~ /^infrastructure-service.*/",
           "group": "inline@1"
         },
         {
           "command": "kaoto.infrastructure.logs",
-          "when": "view == kaoto.infrastructure && viewItem == infrastructure-service",
+          "when": "view == kaoto.infrastructure && viewItem =~ /^infrastructure-service(?!-external).*/",
           "group": "inline@2"
+        },
+        {
+          "command": "kaoto.infrastructure.copyUrl",
+          "when": "view == kaoto.infrastructure && viewItem =~ /.*-has-url.*/",
+          "group": "navigation@1"
+        },
+        {
+          "command": "kaoto.infrastructure.copyPort",
+          "when": "view == kaoto.infrastructure && viewItem =~ /.*-has-port.*/",
+          "group": "navigation@2"
         },
         {
           "command": "kaoto.openapi.showSource",

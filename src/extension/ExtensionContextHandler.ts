@@ -681,6 +681,8 @@ export class ExtensionContextHandler {
 		const INFRASTRUCTURE_START_COMMAND_ID = 'kaoto.infrastructure.start';
 		const INFRASTRUCTURE_STOP_COMMAND_ID = 'kaoto.infrastructure.stop';
 		const INFRASTRUCTURE_LOGS_COMMAND_ID = 'kaoto.infrastructure.logs';
+		const INFRASTRUCTURE_COPY_URL_COMMAND_ID = 'kaoto.infrastructure.copyUrl';
+		const INFRASTRUCTURE_COPY_PORT_COMMAND_ID = 'kaoto.infrastructure.copyPort';
 
 		const startInfrastructureServiceCommand = new StartInfrastructureServiceCommand(this.infrastructureProvider);
 		const startCommand = vscode.commands.registerCommand(INFRASTRUCTURE_START_COMMAND_ID, async () => {
@@ -717,7 +719,27 @@ export class ExtensionContextHandler {
 			await this.sendCommandTrackingEvent(INFRASTRUCTURE_LOGS_COMMAND_ID);
 		});
 
-		this.context.subscriptions.push(startCommand, stopCommand, logsCommand);
+		const copyUrlCommand = vscode.commands.registerCommand(INFRASTRUCTURE_COPY_URL_COMMAND_ID, async (item: InfrastructureItem) => {
+			if (item.service.url) {
+				await vscode.env.clipboard.writeText(item.service.url);
+				vscode.window.showInformationMessage(`URL copied to clipboard: ${item.service.url}`);
+				await this.sendCommandTrackingEvent(INFRASTRUCTURE_COPY_URL_COMMAND_ID);
+			} else {
+				vscode.window.showWarningMessage(`No URL available for service "${item.service.name}"`);
+			}
+		});
+
+		const copyPortCommand = vscode.commands.registerCommand(INFRASTRUCTURE_COPY_PORT_COMMAND_ID, async (item: InfrastructureItem) => {
+			if (item.service.port) {
+				await vscode.env.clipboard.writeText(item.service.port.toString());
+				vscode.window.showInformationMessage(`Port copied to clipboard: ${item.service.port}`);
+				await this.sendCommandTrackingEvent(INFRASTRUCTURE_COPY_PORT_COMMAND_ID);
+			} else {
+				vscode.window.showWarningMessage(`No port available for service "${item.service.name}"`);
+			}
+		});
+
+		this.context.subscriptions.push(startCommand, stopCommand, logsCommand, copyUrlCommand, copyPortCommand);
 	}
 
 	public async hideIntegrationsViewButtonsForMavenProjects() {
