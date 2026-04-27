@@ -111,13 +111,15 @@ export class InfrastructureProvider implements TreeDataProvider<TreeItem>, Dispo
 		void this.waitForRunningService(service.name);
 	}
 
-	updateRunningService(name: string, partial: Partial<RunningInfrastructureService>): void {
+	updateRunningService(name: string, partial: Partial<RunningInfrastructureService>, skipRefresh: boolean = false): void {
 		const current = this.runningServices.get(name);
 		if (!current) {
 			return;
 		}
 		this.runningServices.set(name, { ...current, ...partial });
-		this.refresh();
+		if (!skipRefresh) {
+			this.refresh();
+		}
 	}
 
 	unregisterRunningService(name: string): void {
