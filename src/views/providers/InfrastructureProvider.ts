@@ -186,19 +186,30 @@ export class InfrastructureProvider implements TreeDataProvider<TreeItem>, Dispo
 			const runningByName = await this.fetchRunningServicesByName();
 			let changed = false;
 
-			// Update existing tracked services
+			// Update existing tracked services and remove those no longer running
 			for (const [name, currentService] of this.runningServices.entries()) {
 				const cliService = runningByName.get(name);
 				if (!cliService) {
+					// Service is tracked but not running in CLI
+					// Only remove external services immediately - managed services might still be starting
+					if (currentService.isExternal) {
+						this.runningServices.delete(name);
+						changed = true;
+						KaotoOutputChannel.logInfo(`[InfrastructureProvider] Removed external service "${name}" - no longer running`);
+					}
+					// For managed services in 'starting' status, keep them - they'll be handled by waitForRunningService timeout
+					// For managed services in 'running' or 'stopping' status, keep them - they'll be cleaned up by task end handler
 					continue;
 				}
 
+				// Update service details but preserve isExternal flag and other managed properties
 				this.runningServices.set(name, {
 					...currentService,
 					description: cliService.description ?? currentService.description,
 					port: cliService.port ?? currentService.port,
 					url: cliService.url ?? currentService.url,
 					status: 'running',
+					// Keep isExternal as it was - don't change managed services to external
 				});
 				changed = true;
 			}

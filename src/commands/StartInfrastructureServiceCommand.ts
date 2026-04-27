@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { exec } from 'child_process';
 import * as vscode from 'vscode';
 import { CamelInfraJBang } from '../helpers/CamelInfraJBang';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
@@ -62,12 +63,69 @@ export class StartInfrastructureServiceCommand {
 			// Fast check: in-memory state first
 			const existingService = this.infrastructureProvider.getRunningService(selectedService.label);
 			if (existingService) {
-				const target = this.getServiceTargetUrl(existingService);
-				this.showServiceAlreadyRunningMessage(selectedService.label, target);
-				return;
+				// If it's an external service, give user options to stop and restart
+				if (existingService.isExternal) {
+					const action = await vscode.window.showWarningMessage(
+						`Infrastructure service "${selectedService.label}" is already running externally at ${this.getServiceTargetUrl(existingService) || 'unknown location'}. What would you like to do?`,
+						'Use Existing',
+						'Stop and Restart',
+						'Cancel',
+					);
+
+					if (action === 'Cancel' || !action) {
+						return;
+					}
+
+					if (action === 'Use Existing') {
+						// Already registered, just return
+						return;
+					}
+
+					// User chose "Stop and Restart" - stop the external service first
+					try {
+						await vscode.window.withProgress(
+							{
+								location: vscode.ProgressLocation.Notification,
+								title: `Stopping external ${selectedService.label}...`,
+								cancellable: false,
+							},
+							async () => {
+								const stopTask = new CamelInfraJBang().stop(selectedService.label);
+								const command = typeof stopTask.command === 'string' ? stopTask.command : (stopTask.command?.value ?? 'jbang');
+								const args = stopTask.args?.map((arg) => (typeof arg === 'string' ? arg : arg.value)).join(' ') ?? '';
+
+								await new Promise<void>((resolve, reject) => {
+									exec(`${command} ${args}`, (error, stdout, stderr) => {
+										if (error) {
+											reject(new Error(stderr || error.message));
+											return;
+										}
+										resolve();
+									});
+								});
+							},
+						);
+
+						// Wait a moment for the service to fully stop
+						await new Promise((resolve) => setTimeout(resolve, 1000));
+
+						// Remove from tracked services
+						this.infrastructureProvider.unregisterRunningService(selectedService.label);
+					} catch (error) {
+						KaotoOutputChannel.logError(`[Infrastructure] Failed to stop external service "${selectedService.label}"`, error);
+						vscode.window.showErrorMessage(`Failed to stop external service: ${String(error)}`);
+						return;
+					}
+				} else {
+					// It's a managed service already running
+					const target = this.getServiceTargetUrl(existingService);
+					this.showServiceAlreadyRunningMessage(selectedService.label, target);
+					return;
+				}
 			}
 
-			// Slower check: CLI state (only if not in memory)
+			// Slower check: CLI state (only if not in memory and not already handled above)
+			// This catches services that are running but haven't been discovered by auto-refresh yet
 			const cliRunningService = await vscode.window.withProgress(
 				{
 					location: vscode.ProgressLocation.Notification,
@@ -78,7 +136,7 @@ export class StartInfrastructureServiceCommand {
 			);
 
 			if (cliRunningService) {
-				// Register the external service
+				// Service is running but not yet tracked - register it and trigger the same flow
 				this.infrastructureProvider.registerRunningService({
 					name: cliRunningService.name,
 					description: cliRunningService.description ?? selectedService.description,
@@ -90,9 +148,9 @@ export class StartInfrastructureServiceCommand {
 					isExternal: true,
 				});
 
-				const target = this.getServiceTargetUrl(cliRunningService);
-				this.showServiceAlreadyRunningMessage(selectedService.label, target);
-				return;
+				// Now recursively call execute to handle it through the normal flow
+				// This will trigger the dialog we added above
+				return this.execute();
 			}
 
 			const portValue = await vscode.window.showInputBox({
