@@ -19,6 +19,7 @@ import { CamelInfraJBang } from '../helpers/CamelInfraJBang';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { CamelInfraRunJBangTask } from '../tasks/CamelInfraRunJBangTask';
 import { InfrastructureProvider } from '../views/providers/InfrastructureProvider';
+import { DockerErrorDetector } from '../helpers/DockerErrorDetector';
 
 export class StartInfrastructureServiceCommand {
 	public static readonly ID_COMMAND = 'kaoto.infrastructure.start';
@@ -142,8 +143,16 @@ export class StartInfrastructureServiceCommand {
 				status: 'starting',
 			});
 		} catch (error) {
-			KaotoOutputChannel.logError('[Infrastructure] Failed to start infrastructure service.', error);
-			vscode.window.showWarningMessage(`Unable to start infrastructure service: ${String(error)}`);
+			const errorMessage = String(error);
+			const dockerError = DockerErrorDetector.detectDockerError(errorMessage);
+
+			if (dockerError) {
+				KaotoOutputChannel.logError('[Infrastructure] Docker environment error', error);
+				vscode.window.showErrorMessage(dockerError.userMessage);
+			} else {
+				KaotoOutputChannel.logError('[Infrastructure] Failed to start infrastructure service.', error);
+				vscode.window.showWarningMessage(`Unable to start infrastructure service: ${errorMessage}`);
+			}
 		}
 	}
 }

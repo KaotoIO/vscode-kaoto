@@ -19,6 +19,7 @@ import { commands, Disposable, Event, EventEmitter, tasks, TreeDataProvider, Tre
 import { CamelInfraJBang, InfraRunningServiceDetails, InfraServiceDefinition } from '../../helpers/CamelInfraJBang';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
 import { InfrastructureItem, RunningInfrastructureService } from '../infrastructureTreeItems/InfrastructureItem';
+import { DockerErrorDetector } from '../../helpers/DockerErrorDetector';
 
 export class InfrastructureProvider implements TreeDataProvider<TreeItem>, Disposable {
 	private static readonly SETTINGS_REFRESH_INTERVAL = 'kaoto.views.refresh.interval';
@@ -170,7 +171,12 @@ export class InfrastructureProvider implements TreeDataProvider<TreeItem>, Dispo
 					return;
 				}
 
-				void this.reconcileServiceAfterTaskEnd(matchingService.name);
+				// Check if task failed with non-zero exit code
+				if (event.exitCode !== undefined && event.exitCode !== 0) {
+					void this.handleTaskFailure(matchingService.name, event.exitCode);
+				} else {
+					void this.reconcileServiceAfterTaskEnd(matchingService.name);
+				}
 			}),
 		);
 	}
@@ -249,11 +255,38 @@ export class InfrastructureProvider implements TreeDataProvider<TreeItem>, Dispo
 
 			this.unregisterRunningService(name);
 		} catch (error) {
-			KaotoOutputChannel.logWarning(
-				`[InfrastructureProvider] Unable to reconcile infrastructure service "${name}" after task termination: ${String(error)}`,
-			);
+			const errorMessage = String(error);
+			const dockerError = DockerErrorDetector.detectDockerError(errorMessage);
+
+			if (dockerError) {
+				KaotoOutputChannel.logError(`[InfrastructureProvider] Docker environment error for service "${name}"`, error);
+				window.showErrorMessage(dockerError.userMessage);
+			} else {
+				KaotoOutputChannel.logWarning(
+					`[InfrastructureProvider] Unable to reconcile infrastructure service "${name}" after task termination: ${errorMessage}`,
+				);
+			}
 			this.refresh();
 		}
+	}
+
+	private async handleTaskFailure(name: string, exitCode: number): Promise<void> {
+		KaotoOutputChannel.logWarning(`[InfrastructureProvider] Task for service "${name}" failed with exit code ${exitCode}`);
+
+		// When infrastructure task fails with exit code 1, it's commonly due to Docker not being available
+		// Show Docker error message to help users understand the requirement
+		if (exitCode === 1) {
+			const dockerError = DockerErrorDetector.detectDockerError('Could not find a valid Docker environment');
+			if (dockerError) {
+				KaotoOutputChannel.logError(
+					`[InfrastructureProvider] Infrastructure service "${name}" failed to start. This is commonly caused by Docker not being available.`,
+				);
+				window.showErrorMessage(`Failed to start ${name}: ${dockerError.userMessage}`);
+			}
+		}
+
+		// Remove the service from running services
+		this.unregisterRunningService(name);
 	}
 
 	private async fetchRunningServicesByName(): Promise<Map<string, InfraRunningServiceDetails>> {
