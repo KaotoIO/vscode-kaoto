@@ -90,7 +90,7 @@ export class InfrastructureProvider implements TreeDataProvider<TreeItem>, Dispo
 				},
 			);
 
-			const services = new CamelInfraJBang().parseAvailableServices(output);
+			const services = new CamelInfraJBang().extractAvailableServices(output);
 			this.availableServices.clear();
 			for (const service of services) {
 				this.availableServices.set(service.name, service);
@@ -315,7 +315,7 @@ export class InfrastructureProvider implements TreeDataProvider<TreeItem>, Dispo
 
 	private async fetchRunningServicesByName(): Promise<Map<string, InfraRunningServiceDetails>> {
 		const output = await this.executeShellExecution(new CamelInfraJBang().ps());
-		const runningServices = new CamelInfraJBang().parseRunningServices(output);
+		const runningServices = new CamelInfraJBang().extractRunningServices(output);
 		return new Map<string, InfraRunningServiceDetails>(runningServices.map((service) => [service.name, service]));
 	}
 
