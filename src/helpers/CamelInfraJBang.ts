@@ -17,6 +17,7 @@
 import { ShellExecution, ShellExecutionOptions, workspace } from 'vscode';
 import { CamelJBang } from './CamelJBang';
 import { KAOTO_CAMEL_JBANG_INFRA_ARGUMENTS_SETTING_ID } from './helpers';
+import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 
 export interface InfraServiceDefinition {
 	name: string;
@@ -72,8 +73,14 @@ export class CamelInfraJBang extends CamelJBang {
 		return Array.isArray(args) ? args : [];
 	}
 
-	public parseAvailableServices(output: string): InfraServiceDefinition[] {
-		const parsed = JSON.parse(output) as Array<{ name?: string; alias?: string; description?: string; aliasImplementation?: string }>;
+	public extractAvailableServices(output: string): InfraServiceDefinition[] {
+		let parsed: Array<{ name?: string; alias?: string; description?: string; aliasImplementation?: string }>;
+		try {
+			parsed = JSON.parse(output);
+		} catch (error) {
+			KaotoOutputChannel.logError('Failed to parse available services JSON. Raw output: ' + output, error);
+			return [];
+		}
 		const services: InfraServiceDefinition[] = [];
 
 		for (const service of parsed) {
@@ -96,21 +103,26 @@ export class CamelInfraJBang extends CamelJBang {
 		return services.sort((a, b) => a.name.localeCompare(b.name));
 	}
 
-	public parseRunningServices(output: string): InfraRunningServiceDetails[] {
-		const parsed = JSON.parse(output) as Array<{
+	public extractRunningServices(output: string): InfraRunningServiceDetails[] {
+		let parsed: Array<{
 			name?: string;
 			alias?: string;
 			description?: string;
 			serviceData?: Record<string, unknown>;
 		}>;
+		try {
+			parsed = JSON.parse(output);
+		} catch (error) {
+			KaotoOutputChannel.logError('Failed to parse running services JSON. Raw output: ' + output, error);
+			return [];
+		}
 
 		const services: InfraRunningServiceDetails[] = [];
 		for (const service of parsed) {
-			const identifiers = [service.alias, service.name]
-				.filter((value): value is string => typeof value === 'string' && value.trim().length > 0)
-				.map((value) => value.trim());
+			// Use alias if present, otherwise fall back to name
+			const identifier = service.alias?.trim() || service.name?.trim();
 
-			if (identifiers.length === 0) {
+			if (!identifier) {
 				continue;
 			}
 
@@ -119,16 +131,14 @@ export class CamelInfraJBang extends CamelJBang {
 			const port = this.extractPort(serviceData);
 			const url = host && port ? `http://${host}:${port}` : undefined;
 
-			for (const identifier of new Set(identifiers)) {
-				services.push({
-					name: identifier,
-					description: service.description?.trim() || undefined,
-					host,
-					port,
-					url,
-					serviceData,
-				});
-			}
+			services.push({
+				name: identifier,
+				description: service.description?.trim() || undefined,
+				host,
+				port,
+				url,
+				serviceData,
+			});
 		}
 
 		return services.sort((a, b) => a.name.localeCompare(b.name));
@@ -156,7 +166,9 @@ export class CamelInfraJBang extends CamelJBang {
 				continue;
 			}
 
-			const match = value.match(/:(\d+)(?:\/|$)/);
+			// Matches port numbers in URLs like "http://host:8080" or "host:8080/path"
+			// Captures digits after a colon, followed by either a slash or end of string
+			const match = /:(\d+)(?:\/|$)/.exec(value);
 			if (match) {
 				return Number(match[1]);
 			}
@@ -180,7 +192,9 @@ export class CamelInfraJBang extends CamelJBang {
 				continue;
 			}
 
-			const match = value.match(/^(?:[a-z]+:\/\/)?([^:/\s]+):\d+/i);
+			// Matches hostnames in URLs like "http://hostname:8080" or "hostname:8080"
+			// Captures the hostname part (excluding protocol, port, and whitespace)
+			const match = /^(?:[a-z]+:\/\/)?([^:/\s]+):\d+/i.exec(value);
 			if (match) {
 				return match[1];
 			}
