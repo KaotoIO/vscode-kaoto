@@ -526,7 +526,7 @@ export async function expandViews(kaotoView: SideBarView | undefined, ...views: 
 export async function getKaotoViewControl(): Promise<{ kaotoViewContainer: ViewControl | undefined; kaotoView: SideBarView | undefined }> {
 	const kaotoViewContainer = await new ActivityBar().getViewControl('Kaoto');
 	const kaotoView = await kaotoViewContainer?.openView();
-	await collapseViews(kaotoView, 'Integrations', 'Deployments', 'OpenAPI', 'Tests', 'Help & Feedback');
+	await collapseViews(kaotoView, 'Integrations', 'Deployments', 'OpenAPI', 'Tests', 'Infrastructure', 'Help & Feedback');
 	return { kaotoViewContainer, kaotoView };
 }
 
