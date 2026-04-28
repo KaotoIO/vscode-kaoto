@@ -40,7 +40,7 @@ export abstract class AbstractFolderTreeProvider<TFolder extends IFolderTreeItem
 	readonly onDidChangeTreeData: Event<TreeItemType> = this._onDidChangeTreeData.event;
 
 	protected fileWatcher!: FileSystemWatcher;
-	protected filePattern: string;
+	protected filePattern!: string;
 
 	/** Debounce timer for refresh operations */
 	private refreshDebounceTimer?: NodeJS.Timeout;
