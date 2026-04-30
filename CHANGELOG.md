@@ -1,6 +1,9 @@
 # 2.11.0
 
 - Upgrade default Camel JBang version from 4.18.0 to 4.19.0
+- Add `Infrastructure` section into Kaoto view
+  - list running infrastructure services
+  - start/stop/restart infrastructure service
 
 # 2.10.2
 

@@ -27,7 +27,7 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 	private readonly _onDidChangeTreeData = new EventEmitter<TreeItem | undefined | null | void>();
 	readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
-	private static readonly SETTINGS_REFRESH_INTERVAL = 'kaoto.deployments.refresh.interval';
+	private static readonly SETTINGS_REFRESH_INTERVAL = 'kaoto.views.refresh.interval';
 
 	private readonly CONTEXT_LOCALHOST_ITEM = 'root-localhost';
 	private readonly CONTEXT_INTEGRATION_LOCALHOST_ITEM = 'parent-localhost';
