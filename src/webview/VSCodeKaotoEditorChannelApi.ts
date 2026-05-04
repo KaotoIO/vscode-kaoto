@@ -192,7 +192,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 				options as vscode.QuickPickOptions,
 			);
 		} catch (ex) {
-			const errorMessage = `Cannot get a user selection: ${ex.message}`;
+			const errorMessage = `Cannot get a user selection: ${(ex as Error).message}`;
 			vscode.window.showErrorMessage(errorMessage);
 			KaotoOutputChannel.logError(errorMessage, ex);
 			return undefined;
