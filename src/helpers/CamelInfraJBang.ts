@@ -129,7 +129,7 @@ export class CamelInfraJBang extends CamelJBang {
 			const serviceData = service.serviceData;
 			const host = this.extractHost(serviceData);
 			const port = this.extractPort(serviceData);
-			const url = host && port ? `http://${host}:${port}` : undefined;
+			const url = host && port ? `${host}:${port}` : undefined;
 
 			services.push({
 				name: identifier,

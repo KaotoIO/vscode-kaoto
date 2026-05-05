@@ -28,7 +28,7 @@ export class StartInfrastructureServiceCommand {
 	constructor(private readonly infrastructureProvider: InfrastructureProvider) {}
 
 	private getServiceTargetUrl(service: { url?: string; port?: number }): string | undefined {
-		return service.url ?? (service.port ? `http://localhost:${service.port}` : undefined);
+		return service.url ?? (service.port ? `localhost:${service.port}` : undefined);
 	}
 
 	private showServiceAlreadyRunningMessage(serviceName: string, target?: string): void {
