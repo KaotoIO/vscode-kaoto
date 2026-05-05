@@ -130,6 +130,15 @@ You can follow [Installation Guide](https://kaoto.io/docs/installation) on a Kao
 2. Install **JBang**
 3. Install the **Kaoto extension** from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-kaoto) or [Open VSX Registry](https://open-vsx.org/extension/redhat/vscode-kaoto)
 
+### Requirements for Infrastructure Services
+
+To use the **Infrastructure Services** feature (e.g., running Kafka, databases, etc.), you need a container runtime:
+
+- **Docker** or **Podman** must be installed and running
+- The container runtime must be accessible from the command line
+
+If you don't have a container runtime installed, we recommend [Podman Desktop](https://podman-desktop.io) as a free, open-source alternative to Docker Desktop.
+
 ## Documentation
 
 Learn more about Kaoto and how to use it effectively:
