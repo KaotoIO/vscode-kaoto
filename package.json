@@ -985,6 +985,7 @@
               "runtime"
             ],
             "scope": "resource",
+            "additionalProperties": false,
             "order": 2
           },
           "kaoto.localKameletDirectories": {

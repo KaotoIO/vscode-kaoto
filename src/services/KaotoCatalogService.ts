@@ -562,25 +562,7 @@ export class KaotoCatalogService {
 			return;
 		}
 
-		// Try to get document URI from the ACTIVE/FOCUSED Kaoto editor only
-		let documentUri: vscode.Uri | undefined;
-
-		// Check if the active tab is a Kaoto editor (webview)
-		const activeTab = vscode.window.tabGroups.activeTabGroup.activeTab;
-		if (activeTab?.input && typeof activeTab.input === 'object' && activeTab.input !== null && 'uri' in activeTab.input) {
-			const tabUri = (activeTab.input as { uri: vscode.Uri }).uri;
-			if (this.isKaotoFile(tabUri)) {
-				documentUri = tabUri;
-			}
-		}
-
-		// Fallback: Check for active text editor (source code view is focused)
-		if (!documentUri) {
-			const activeEditor = vscode.window.activeTextEditor;
-			if (activeEditor && this.isKaotoFile(activeEditor.document.uri)) {
-				documentUri = activeEditor.document.uri;
-			}
-		}
+		const documentUri = this.getActiveKaotoDocumentUri();
 
 		// If no active Kaoto editor found, hide status bar
 		if (!documentUri) {
@@ -622,6 +604,26 @@ export class KaotoCatalogService {
 	}
 
 	/**
+	 * Get the active Kaoto document URI from either the focused webview tab or text editor
+	 */
+	private getActiveKaotoDocumentUri(): vscode.Uri | undefined {
+		const activeTab = vscode.window.tabGroups.activeTabGroup.activeTab;
+		if (activeTab?.input && typeof activeTab.input === 'object' && activeTab.input !== null && 'uri' in activeTab.input) {
+			const tabUri = (activeTab.input as { uri: vscode.Uri }).uri;
+			if (this.isKaotoFile(tabUri)) {
+				return tabUri;
+			}
+		}
+
+		const activeEditor = vscode.window.activeTextEditor;
+		if (activeEditor && this.isKaotoFile(activeEditor.document.uri)) {
+			return activeEditor.document.uri;
+		}
+
+		return undefined;
+	}
+
+	/**
 	 * Check if a file is a Kaoto-supported file (integration or test)
 	 */
 	private isKaotoFile(uri: vscode.Uri): boolean {
@@ -649,8 +651,7 @@ export class KaotoCatalogService {
 	 * @returns true if a catalog was selected, false if cancelled or no selection made
 	 */
 	public async showCatalogPicker(): Promise<boolean> {
-		const activeEditor = vscode.window.activeTextEditor;
-		const resourceUri = activeEditor?.document.uri;
+		const resourceUri = this.getActiveKaotoDocumentUri();
 
 		// Check if Maven project
 		if (resourceUri && (await KaotoCatalogService.isMavenProject(resourceUri))) {

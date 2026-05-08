@@ -316,6 +316,64 @@ suite('KaotoCatalogService Test Suite', () => {
 		expect(params.runtime).to.be.undefined;
 	});
 
+	suite('Active Kaoto document resolution', () => {
+		let originalActiveTextEditorDescriptor: PropertyDescriptor | undefined;
+		let originalActiveTabDescriptor: PropertyDescriptor | undefined;
+
+		setup(() => {
+			originalActiveTextEditorDescriptor = Object.getOwnPropertyDescriptor(vscode.window, 'activeTextEditor');
+			originalActiveTabDescriptor = Object.getOwnPropertyDescriptor(vscode.window.tabGroups.activeTabGroup, 'activeTab');
+
+			Object.defineProperty(vscode.window, 'activeTextEditor', {
+				configurable: true,
+				get: () => undefined,
+			});
+			Object.defineProperty(vscode.window.tabGroups.activeTabGroup, 'activeTab', {
+				configurable: true,
+				get: () => undefined,
+			});
+		});
+
+		teardown(() => {
+			if (originalActiveTextEditorDescriptor) {
+				Object.defineProperty(vscode.window, 'activeTextEditor', originalActiveTextEditorDescriptor);
+			}
+			if (originalActiveTabDescriptor) {
+				Object.defineProperty(vscode.window.tabGroups.activeTabGroup, 'activeTab', originalActiveTabDescriptor);
+			}
+		});
+
+		test('should prefer active Kaoto webview tab for Citrus test files', () => {
+			const testFileUri = vscode.Uri.file('/path/to/test.citrus.yaml');
+
+			Object.defineProperty(vscode.window.tabGroups.activeTabGroup, 'activeTab', {
+				configurable: true,
+				get: () =>
+					({
+						input: { uri: testFileUri },
+					}) as vscode.Tab,
+			});
+
+			const activeUri = catalogService['getActiveKaotoDocumentUri']();
+			expect(activeUri?.fsPath).to.equal(testFileUri.fsPath);
+		});
+
+		test('should fall back to active text editor when no Kaoto webview tab is active', () => {
+			const integrationFileUri = vscode.Uri.file('/path/to/route.camel.yaml');
+
+			Object.defineProperty(vscode.window, 'activeTextEditor', {
+				configurable: true,
+				get: () =>
+					({
+						document: { uri: integrationFileUri },
+					}) as vscode.TextEditor,
+			});
+
+			const activeUri = catalogService['getActiveKaotoDocumentUri']();
+			expect(activeUri?.fsPath).to.equal(integrationFileUri.fsPath);
+		});
+	});
+
 	suite('Separate Integration and Test Catalog Storage', () => {
 		test('should store integration and test catalogs separately', async () => {
 			// Get an integration catalog (Main)
