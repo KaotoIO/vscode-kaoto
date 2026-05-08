@@ -58,7 +58,6 @@ export class CamelLauncherDownloader {
 			KaotoOutputChannel.logInfo(`Set execute permission for: ${launcherExecutable}`);
 		}
 
-		KaotoOutputChannel.logInfo(`Camel Launcher ${version} ready at: ${launcherExecutable}`);
 		return launcherExecutable;
 	}
 
