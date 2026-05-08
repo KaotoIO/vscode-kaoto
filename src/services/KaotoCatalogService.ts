@@ -162,7 +162,7 @@ export class KaotoCatalogService {
 	 * Normalize runtime name from index.json to simplified format
 	 */
 	private normalizeRuntime(runtime: string): 'camel-main' | 'spring-boot' | 'quarkus' | 'citrus' {
-		const normalized = runtime.toLowerCase().replace(/\s+/g, '-');
+		const normalized = runtime.toLowerCase().replaceAll(/\s+/g, '-');
 		if (normalized.includes('citrus')) {
 			return 'citrus';
 		} else if (normalized.includes('spring')) {
@@ -184,7 +184,12 @@ export class KaotoCatalogService {
 	 * Build display label from catalog selection
 	 */
 	public static buildDisplayLabelFromSelection(selection: CatalogSelection): string {
-		const runtimeDisplay = selection.runtime === 'camel-main' ? 'Camel Main' : selection.runtime === 'spring-boot' ? 'Spring Boot' : 'Quarkus';
+		const runtimeDisplayMap: Record<CatalogSelection['runtime'], string> = {
+			'camel-main': 'Camel Main',
+			'spring-boot': 'Spring Boot',
+			quarkus: 'Quarkus',
+		};
+		const runtimeDisplay = runtimeDisplayMap[selection.runtime] || selection.runtime;
 		return `${runtimeDisplay} ${selection.version}`;
 	}
 
@@ -201,7 +206,7 @@ export class KaotoCatalogService {
 		}
 		return {
 			version: catalog.version,
-			runtime: runtime as 'camel-main' | 'spring-boot' | 'quarkus',
+			runtime: runtime,
 		};
 	}
 
@@ -280,6 +285,13 @@ export class KaotoCatalogService {
 	 * Set the selected integration catalog for a workspace
 	 */
 	public async setSelectedIntegrationCatalog(catalog: CatalogDefinition, resourceUri?: vscode.Uri): Promise<void> {
+		// Get the current catalog before making changes
+		const previousCatalog = await this.getSelectedIntegrationCatalog(resourceUri);
+
+		// Check if the catalog is actually changing
+		const isCatalogChanging =
+			previousCatalog?.version !== catalog.version || this.normalizeRuntime(previousCatalog.runtime) !== this.normalizeRuntime(catalog.runtime);
+
 		const config = vscode.workspace.getConfiguration('kaoto', resourceUri);
 
 		// Store simplified selection (only version and runtime)
@@ -295,18 +307,16 @@ export class KaotoCatalogService {
 			this.statusBarItem.show();
 		}
 
-		// Check if there are any open Kaoto integration editors
-		const kaotoEditors = vscode.window.visibleTextEditors.filter((editor) => this.isKaotoIntegrationFile(editor.document.uri));
+		// Get the currently active Kaoto editor
+		const activeKaotoUri = this.getActiveKaotoDocumentUri();
+		const isActiveKaotoIntegration = activeKaotoUri && this.isKaotoIntegrationFile(activeKaotoUri);
 
-		// Only show notification if there are open Kaoto integration editors
-		if (kaotoEditors.length > 0) {
-			const action = await vscode.window.showInformationMessage(
-				'Integration catalog version changed. Reopen Kaoto editors to apply changes.',
-				'Reload Editors',
-			);
+		// Only show notification if catalog actually changed and there is an active Kaoto integration editor
+		if (isCatalogChanging && isActiveKaotoIntegration) {
+			const action = await vscode.window.showInformationMessage('Integration catalog version changed. Reopen editor to apply changes.', 'Reopen');
 
-			if (action === 'Reload Editors') {
-				await this.reloadKaotoEditors();
+			if (action === 'Reopen') {
+				await this.reopenCurrentEditor(activeKaotoUri);
 			}
 		}
 	}
@@ -315,6 +325,13 @@ export class KaotoCatalogService {
 	 * Set the selected test catalog for a workspace
 	 */
 	public async setSelectedTestCatalog(catalog: CatalogDefinition, resourceUri?: vscode.Uri): Promise<void> {
+		// Get the current catalog before making changes
+		const previousCatalog = await this.getSelectedTestCatalog(resourceUri);
+
+		// Check if the catalog is actually changing
+		const isCatalogChanging =
+			previousCatalog?.version !== catalog.version || this.normalizeRuntime(previousCatalog.runtime) !== this.normalizeRuntime(catalog.runtime);
+
 		const config = vscode.workspace.getConfiguration('kaoto', resourceUri);
 
 		// Store simplified selection (only version and runtime)
@@ -330,15 +347,16 @@ export class KaotoCatalogService {
 			this.statusBarItem.show();
 		}
 
-		// Check if there are any open Kaoto test editors
-		const kaotoEditors = vscode.window.visibleTextEditors.filter((editor) => this.isKaotoCitrusTestFile(editor.document.uri));
+		// Get the currently active Kaoto editor
+		const activeKaotoUri = this.getActiveKaotoDocumentUri();
+		const isActiveKaotoTest = activeKaotoUri && this.isKaotoCitrusTestFile(activeKaotoUri);
 
-		// Only show notification if there are open Kaoto test editors
-		if (kaotoEditors.length > 0) {
-			const action = await vscode.window.showInformationMessage('Test catalog version changed. Reopen Kaoto editors to apply changes.', 'Reload Editors');
+		// Only show notification if catalog actually changed and there is an active Kaoto test editor
+		if (isCatalogChanging && isActiveKaotoTest) {
+			const action = await vscode.window.showInformationMessage('Test catalog version changed. Reopen editor to apply changes.', 'Reopen');
 
-			if (action === 'Reload Editors') {
-				await this.reloadKaotoEditors();
+			if (action === 'Reopen') {
+				await this.reopenCurrentEditor(activeKaotoUri);
 			}
 		}
 	}
@@ -375,14 +393,14 @@ export class KaotoCatalogService {
 
 		if (redhatCatalogs.length > 0) {
 			// Sort RedHat versions by version (descending) and return the latest
-			const sorted = redhatCatalogs.sort((a, b) => {
+			const sorted = redhatCatalogs.toSorted((a, b) => {
 				return b.version.localeCompare(a.version, undefined, { numeric: true });
 			});
 			return sorted[0];
 		}
 
 		// If no RedHat versions, fall back to latest Main version
-		const sorted = mainCatalogs.sort((a, b) => {
+		const sorted = mainCatalogs.toSorted((a, b) => {
 			return b.version.localeCompare(a.version, undefined, { numeric: true });
 		});
 
@@ -395,7 +413,7 @@ export class KaotoCatalogService {
 	public getDefaultTestCatalog(): CatalogDefinition | undefined {
 		const citrusCatalogs = this.catalogs.filter((c) => c.runtime.toLowerCase() === 'citrus');
 		if (citrusCatalogs.length > 0) {
-			const sorted = citrusCatalogs.sort((a, b) => {
+			const sorted = citrusCatalogs.toSorted((a, b) => {
 				return b.version.localeCompare(a.version, undefined, { numeric: true });
 			});
 			return sorted[0];
@@ -422,7 +440,6 @@ export class KaotoCatalogService {
 		const mapping = mappingData.mappings.find((m) => m.catalogVersion === catalog.version && m.catalogRuntime === catalog.runtime);
 
 		if (mapping) {
-			KaotoOutputChannel.logInfo(`Mapped catalog ${catalog.version} (${catalog.runtime}) to Camel version ${mapping.camelVersion}`);
 			return mapping.camelVersion;
 		}
 
@@ -523,26 +540,14 @@ export class KaotoCatalogService {
 			vscode.workspace.onDidChangeWorkspaceFolders(() => {
 				void this.updateStatusBar();
 			}),
-		);
-
-		// Listen for configuration changes
-		this.context.subscriptions.push(
 			vscode.workspace.onDidChangeConfiguration((e) => {
 				if (e.affectsConfiguration('kaoto.camelCatalog.version')) {
 					void this.updateStatusBar();
 				}
 			}),
-		);
-
-		// Listen for active editor changes to update status bar visibility
-		this.context.subscriptions.push(
 			vscode.window.onDidChangeActiveTextEditor(() => {
 				void this.updateStatusBar();
 			}),
-		);
-
-		// Listen for tab changes to detect custom editor (webview) activation
-		this.context.subscriptions.push(
 			vscode.window.tabGroups.onDidChangeTabGroups(() => {
 				void this.updateStatusBar();
 			}),
@@ -635,7 +640,7 @@ export class KaotoCatalogService {
 	 */
 	private isKaotoIntegrationFile(uri: vscode.Uri): boolean {
 		const fileName = path.basename(uri.fsPath);
-		return /\.(camel|kamelet|pipe)\.(yaml|yml)$/.test(fileName) || /-pipe\.(yaml|yml)$/.test(fileName) || /\.camel\.xml$/.test(fileName);
+		return /\.(camel|kamelet|pipe)\.(yaml|yml)$/.test(fileName) || /-pipe\.(yaml|yml)$/.test(fileName) || fileName.endsWith('.camel.xml');
 	}
 
 	/**
@@ -713,7 +718,7 @@ export class KaotoCatalogService {
 			matchOnDetail: true,
 		});
 
-		if (selected && selected.catalog) {
+		if (selected?.catalog) {
 			const catalog = selected.catalog;
 			await this.setSelectedCatalog(catalog, resourceUri);
 			return true; // Catalog was selected
@@ -723,15 +728,24 @@ export class KaotoCatalogService {
 	}
 
 	/**
-	 * Reload all open Kaoto editors
+	 * Reopen the current editor (close and open again)
+	 * This is used to apply catalog version changes to the active editor
 	 */
-	private async reloadKaotoEditors(): Promise<void> {
-		const kaotoEditors = vscode.window.visibleTextEditors.filter((editor) => this.isKaotoFile(editor.document.uri));
-
-		for (const editor of kaotoEditors) {
-			const uri = editor.document.uri;
+	private async reopenCurrentEditor(uri: vscode.Uri): Promise<void> {
+		try {
+			// Close the current editor
 			await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
+
+			// Small delay to ensure the editor is fully closed
+			await new Promise((resolve) => setTimeout(resolve, 100));
+
+			// Reopen the editor
 			await vscode.commands.executeCommand('vscode.open', uri);
+
+			KaotoOutputChannel.logInfo(`Reopened editor for ${uri.fsPath}`);
+		} catch (error) {
+			KaotoOutputChannel.logError(`Failed to reopen editor for ${uri.fsPath}`, error);
+			vscode.window.showErrorMessage('Failed to reopen editor. Please close and reopen manually.');
 		}
 	}
 
