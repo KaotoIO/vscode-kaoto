@@ -943,7 +943,9 @@
             "properties": {
               "version": {
                 "type": "string",
-                "description": "Camel version (e.g., '4.18.0')"
+                "pattern": "^\\d+\\.\\d+\\.\\d+(\\.redhat-\\d+)?$",
+                "patternErrorMessage": "Version must be in format: X.Y.Z or X.Y.Z.redhat-NNNNN (e.g., '4.18.0' or '4.14.2.redhat-00019')",
+                "description": "Camel version - must match an available catalog version. Use status bar to select from available versions."
               },
               "runtime": {
                 "type": "string",
@@ -970,7 +972,9 @@
             "properties": {
               "version": {
                 "type": "string",
-                "description": "Citrus version (e.g., '4.9.4')"
+                "pattern": "^\\d+\\.\\d+\\.\\d+$",
+                "patternErrorMessage": "Version must be in format: X.Y.Z (e.g., '4.9.4')",
+                "description": "Citrus version - must match an available catalog version. Use status bar to select from available versions."
               },
               "runtime": {
                 "type": "string",

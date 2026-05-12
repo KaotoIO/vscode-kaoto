@@ -269,6 +269,22 @@ export class KaotoCatalogService {
 			if (catalog) {
 				return catalog;
 			}
+			// Warn user about invalid catalog selection
+			KaotoOutputChannel.logWarning(
+				`Invalid Camel catalog version in settings: ${selection.version} (${selection.runtime}). ` +
+					`This version is not available in the catalog. Using default catalog instead. ` +
+					`Use the status bar or command palette to select a valid version.`,
+			);
+			vscode.window
+				.showWarningMessage(
+					`Kaoto: Invalid catalog version "${selection.version}" (${selection.runtime}). Using default instead.`,
+					'Select Valid Version',
+				)
+				.then((choice) => {
+					if (choice === 'Select Valid Version') {
+						vscode.commands.executeCommand('kaoto.selectCamelCatalog');
+					}
+				});
 		}
 
 		// Return default integration catalog
@@ -287,6 +303,22 @@ export class KaotoCatalogService {
 			if (catalog) {
 				return catalog;
 			}
+			// Warn user about invalid catalog selection
+			KaotoOutputChannel.logWarning(
+				`Invalid Citrus catalog version in settings: ${selection.version} (${selection.runtime}). ` +
+					`This version is not available in the catalog. Using default catalog instead. ` +
+					`Use the status bar or command palette to select a valid version.`,
+			);
+			vscode.window
+				.showWarningMessage(
+					`Kaoto: Invalid Citrus catalog version "${selection.version}" (${selection.runtime}). Using default instead.`,
+					'Select Valid Version',
+				)
+				.then((choice) => {
+					if (choice === 'Select Valid Version') {
+						vscode.commands.executeCommand('kaoto.selectCamelCatalog');
+					}
+				});
 		}
 
 		// Return default test catalog
