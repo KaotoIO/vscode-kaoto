@@ -25,24 +25,20 @@ import { Editor, KogitoEditorEnvelopeContext, KogitoEditorEnvelopeContextType } 
 import { EditorEnvelopeView, EditorEnvelopeViewApi } from '@kie-tools-core/editor/dist/envelope/EditorEnvelopeView';
 import { EditorEnvelopeI18nContext, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from '@kie-tools-core/editor/dist/envelope/i18n';
 import { I18nDictionariesProvider } from '@kie-tools-core/i18n/dist/react-components';
-import { createRef, FunctionComponent, RefObject, useCallback } from 'react';
+import { createRef, RefObject, useCallback } from 'react';
 
-interface KogitoEditorEnvelopeAppProps {
-	callback: (ref: RefObject<EditorEnvelopeViewApi<Editor> | null>) => void;
+interface KogitoEditorEnvelopeAppProps<E extends Editor = Editor> {
+	callback: (ref: RefObject<EditorEnvelopeViewApi<E> | null>) => void;
 	context: KogitoEditorEnvelopeContextType<any>;
 	showKeyBindingsOverlay: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export const KogitoEditorEnvelopeApp: FunctionComponent<KogitoEditorEnvelopeAppProps> = ({
-	callback,
-	context,
-	showKeyBindingsOverlay,
-}: KogitoEditorEnvelopeAppProps) => {
+export const KogitoEditorEnvelopeApp = <E extends Editor = Editor>({ callback, context, showKeyBindingsOverlay }: KogitoEditorEnvelopeAppProps<E>) => {
 	const editorEnvelopeViewRef = createRef<EditorEnvelopeViewApi<Editor>>();
 
 	const onMountFn = useCallback(() => {
-		callback(editorEnvelopeViewRef);
+		callback(editorEnvelopeViewRef as RefObject<EditorEnvelopeViewApi<E> | null>);
 	}, []);
 
 	return (

@@ -64,14 +64,18 @@ export class KogitoEditorEnvelope<
 
 	private renderView(container: HTMLElement): Promise<() => EditorEnvelopeViewApi<E>> {
 		return new Promise<() => EditorEnvelopeViewApi<E>>((resolve) => {
-			const callback = (ref: RefObject<EditorEnvelopeViewApi<E>>) => {
+			const callback = (ref: RefObject<EditorEnvelopeViewApi<E> | null>) => {
 				resolve(() => ref.current!);
 			};
 
 			setTimeout(() => {
 				const root = createRoot(container);
 				root.render(
-					<KogitoEditorEnvelopeApp callback={callback} context={this.context} showKeyBindingsOverlay={this.keyboardShortcutsService.isEnabled()} />,
+					<KogitoEditorEnvelopeApp<E>
+						callback={callback}
+						context={this.context}
+						showKeyBindingsOverlay={this.keyboardShortcutsService.isEnabled()}
+					/>,
 				);
 			}, 0);
 		});
