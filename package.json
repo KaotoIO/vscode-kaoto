@@ -55,7 +55,7 @@
     "react-dom": "19.2.1",
     "react-monaco-editor": "0.56.2",
     "valid-filename": "4.0.0",
-    "wait-on": "^9.0.5",
+    "wait-on": "^9.0.10",
     "yaml": "^2.9.0"
   },
   "icon": "icon.png",
