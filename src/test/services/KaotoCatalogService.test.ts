@@ -5,6 +5,9 @@ import { KaotoCatalogService, CatalogDefinition, CatalogSelection } from '../../
 suite('KaotoCatalogService Test Suite', () => {
 	let catalogService: KaotoCatalogService;
 	let context: vscode.ExtensionContext;
+	let originalGetConfiguration: typeof vscode.workspace.getConfiguration;
+	let originalShowWarningMessage: typeof vscode.window.showWarningMessage;
+	let originalFetch: typeof globalThis.fetch;
 
 	suiteSetup(async () => {
 		// Get the extension context
@@ -17,14 +20,103 @@ suite('KaotoCatalogService Test Suite', () => {
 	});
 
 	setup(async () => {
+		originalGetConfiguration = vscode.workspace.getConfiguration;
+		originalShowWarningMessage = vscode.window.showWarningMessage;
+		originalFetch = globalThis.fetch;
 		catalogService = new KaotoCatalogService(context);
 		await catalogService.initialize();
+	});
+
+	teardown(() => {
+		Object.defineProperty(vscode.workspace, 'getConfiguration', {
+			value: originalGetConfiguration,
+			configurable: true,
+		});
+		Object.defineProperty(vscode.window, 'showWarningMessage', {
+			value: originalShowWarningMessage,
+			configurable: true,
+		});
+		Object.defineProperty(globalThis, 'fetch', {
+			value: originalFetch,
+			configurable: true,
+		});
 	});
 
 	test('should load catalogs from index.json', () => {
 		const catalogs = catalogService.getCatalogs();
 		expect(catalogs).to.be.an('array');
 		expect(catalogs.length).to.be.greaterThan(0);
+	});
+
+	test('should load catalogs from custom URL when kaoto.catalog.url is configured', async () => {
+		const remoteCatalogs: CatalogDefinition[] = [
+			{
+				name: 'Camel Main 9.9.9',
+				version: '9.9.9',
+				runtime: 'Main',
+				fileName: 'camel-main/9.9.9/index.json',
+			},
+		];
+
+		Object.defineProperty(vscode.workspace, 'getConfiguration', {
+			value: () =>
+				({
+					get: (key: string) => (key === 'catalog.url' ? 'https://example.com/catalog/index.json' : undefined),
+				}) as vscode.WorkspaceConfiguration,
+			configurable: true,
+		});
+
+		Object.defineProperty(globalThis, 'fetch', {
+			value: async () =>
+				({
+					ok: true,
+					json: async () => ({
+						definitions: remoteCatalogs,
+						version: 1,
+						name: 'remote-catalog',
+					}),
+				}) as Response,
+			configurable: true,
+		});
+
+		catalogService = new KaotoCatalogService(context);
+		await catalogService.initialize();
+
+		expect(catalogService.getCatalogs()).to.deep.equal(remoteCatalogs);
+	});
+
+	test('should fallback to local catalogs when custom URL fetch fails', async () => {
+		const warningMessages: string[] = [];
+		Object.defineProperty(vscode.window, 'showWarningMessage', {
+			value: async (message: string) => {
+				warningMessages.push(message);
+				return undefined;
+			},
+			configurable: true,
+		});
+
+		Object.defineProperty(vscode.workspace, 'getConfiguration', {
+			value: () =>
+				({
+					get: (key: string) => (key === 'catalog.url' ? 'https://example.com/catalog/index.json' : undefined),
+				}) as vscode.WorkspaceConfiguration,
+			configurable: true,
+		});
+
+		Object.defineProperty(globalThis, 'fetch', {
+			value: async () => {
+				throw new Error('network failure');
+			},
+			configurable: true,
+		});
+
+		catalogService = new KaotoCatalogService(context);
+		await catalogService.initialize();
+
+		expect(catalogService.getCatalogs().length).to.be.greaterThan(0);
+		expect(warningMessages).to.have.lengthOf(1);
+		expect(warningMessages[0]).to.include('kaoto.catalog.url');
+		expect(warningMessages[0]).to.include('Falling back to local node_modules catalog');
 	});
 
 	test('should group catalogs by runtime', () => {

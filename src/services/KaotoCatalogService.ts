@@ -121,9 +121,36 @@ export class KaotoCatalogService {
 	}
 
 	/**
-	 * Load catalogs from the index.json file
+	 * Load catalogs from custom URL when configured, otherwise from local index.json
 	 */
+	private getCustomCatalogUrl(): string | undefined {
+		return vscode.workspace.getConfiguration('kaoto').get<string | null>('catalog.url')?.trim() || undefined;
+	}
+
 	private async loadCatalogs(): Promise<void> {
+		const customCatalogUrl = this.getCustomCatalogUrl();
+
+		if (customCatalogUrl) {
+			try {
+				const response = await fetch(customCatalogUrl);
+
+				if (!response.ok) {
+					throw new Error(`HTTP ${response.status} ${response.statusText}`.trim());
+				}
+
+				const catalogIndex = (await response.json()) as CatalogIndex;
+				this.catalogs = catalogIndex.definitions || [];
+				KaotoOutputChannel.logInfo(`Loaded catalog index from custom URL: ${customCatalogUrl}`);
+				return;
+			} catch (error) {
+				const errorMessage = error instanceof Error ? error.message : String(error);
+				KaotoOutputChannel.logWarning(`Failed to load catalog index from custom URL ${customCatalogUrl}: ${errorMessage}`);
+				void vscode.window.showWarningMessage(
+					`Failed to fetch Kaoto catalog from setting "kaoto.catalog.url". Falling back to local node_modules catalog. ${errorMessage}`,
+				);
+			}
+		}
+
 		try {
 			const indexContent = await fs.promises.readFile(this.catalogIndexPath, 'utf-8');
 			const catalogIndex: CatalogIndex = JSON.parse(indexContent);
@@ -514,13 +541,6 @@ export class KaotoCatalogService {
 	}
 
 	/**
-	 * Validate if a catalog definition is valid
-	 */
-	private isValidCatalog(catalog: CatalogDefinition): boolean {
-		return this.catalogs.some((c) => c.name === catalog.name && c.version === catalog.version && c.runtime === catalog.runtime);
-	}
-
-	/**
 	 * Create and show the status bar item
 	 */
 	public createStatusBarItem(): vscode.StatusBarItem {
@@ -541,7 +561,12 @@ export class KaotoCatalogService {
 				void this.updateStatusBar();
 			}),
 			vscode.workspace.onDidChangeConfiguration((e) => {
-				if (e.affectsConfiguration('kaoto.camelCatalog.version')) {
+				if (
+					e.affectsConfiguration('kaoto.camelCatalog.version') ||
+					e.affectsConfiguration('kaoto.citrusCatalog.version') ||
+					e.affectsConfiguration('kaoto.catalog.url')
+				) {
+					void this.loadCatalogs();
 					void this.updateStatusBar();
 				}
 			}),
@@ -662,6 +687,10 @@ export class KaotoCatalogService {
 		if (resourceUri && (await KaotoCatalogService.isMavenProject(resourceUri))) {
 			vscode.window.showInformationMessage('Catalog version is managed by pom.xml in Maven projects.');
 			return false;
+		}
+
+		if (this.getCustomCatalogUrl()) {
+			await this.loadCatalogs();
 		}
 
 		// Determine if current file is a Citrus test file
