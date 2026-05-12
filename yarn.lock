@@ -3621,14 +3621,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.15.0":
-  version: 1.15.1
-  resolution: "axios@npm:1.15.1"
+"axios@npm:^1.16.0":
+  version: 1.16.0
+  resolution: "axios@npm:1.16.0"
   dependencies:
-    follow-redirects: "npm:^1.15.11"
+    follow-redirects: "npm:^1.16.0"
     form-data: "npm:^4.0.5"
     proxy-from-env: "npm:^2.1.0"
-  checksum: 10/bfa286e29d1866695426b45c9a25ef21975669e500a8511a01e2fe5b9c4f734906701266d214b562dc525e463bae2bbba24c8e9e10c214f0d4f4c669e9372a7f
+  checksum: 10/cf8b521ff732c21550b38c8739aef556ea5e14b268468bb89e4307416ab262b462e582474e810963a3d61c2392ab47ad35c11d05eff027de7c97113bc7411623
   languageName: node
   linkType: hard
 
@@ -6568,16 +6568,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.15.11":
-  version: 1.15.11
-  resolution: "follow-redirects@npm:1.15.11"
-  peerDependenciesMeta:
-    debug:
-      optional: true
-  checksum: 10/07372fd74b98c78cf4d417d68d41fdaa0be4dcacafffb9e67b1e3cf090bc4771515e65020651528faab238f10f9b9c0d9707d6c1574a6c0387c5de1042cde9ba
-  languageName: node
-  linkType: hard
-
 "follow-redirects@npm:^1.15.6":
   version: 1.15.9
   resolution: "follow-redirects@npm:1.15.9"
@@ -6585,6 +6575,16 @@ __metadata:
     debug:
       optional: true
   checksum: 10/e3ab42d1097e90d28b913903841e6779eb969b62a64706a3eb983e894a5db000fbd89296f45f08885a0e54cd558ef62e81be1165da9be25a6c44920da10f424c
+  languageName: node
+  linkType: hard
+
+"follow-redirects@npm:^1.16.0":
+  version: 1.16.0
+  resolution: "follow-redirects@npm:1.16.0"
+  peerDependenciesMeta:
+    debug:
+      optional: true
+  checksum: 10/3fbe3d80b3b544c22705d837aa5d4a0d07a740d913534a2620b0a004c610af4148e3b58723536dd099aaa1c9d3a155964bde9665d6e5cb331460809a1fc572fd
   languageName: node
   linkType: hard
 
@@ -8193,9 +8193,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"joi@npm:^18.1.2":
-  version: 18.1.2
-  resolution: "joi@npm:18.1.2"
+"joi@npm:^18.2.1":
+  version: 18.2.1
+  resolution: "joi@npm:18.2.1"
   dependencies:
     "@hapi/address": "npm:^5.1.1"
     "@hapi/formula": "npm:^3.0.2"
@@ -8204,7 +8204,7 @@ __metadata:
     "@hapi/tlds": "npm:^1.1.1"
     "@hapi/topo": "npm:^6.0.2"
     "@standard-schema/spec": "npm:^1.1.0"
-  checksum: 10/a045c12e1f2326406ad004af09545cb037d153eac8c4c76ada8a671a0c4abccc051e31ea72b4b78d5cf5bce01ed287ae3db3182944278746f45e75142030f9e6
+  checksum: 10/1525745571b0b0c60fdb51a8cb6f2e5717241b04314872259f68e10ea729e456d2d4883812013fc03913b03eb2b6cbca9d40d144bbd29e7b02fb57797edb0357
   languageName: node
   linkType: hard
 
@@ -13584,7 +13584,7 @@ __metadata:
     typescript: "npm:^5.9.3"
     valid-filename: "npm:4.0.0"
     vscode-extension-tester: "npm:^8.23.0"
-    wait-on: "npm:^9.0.5"
+    wait-on: "npm:^9.0.10"
     web-worker: "npm:^1.5.0"
     webpack: "npm:5.106.2"
     webpack-cli: "npm:7.0.2"
@@ -13601,18 +13601,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wait-on@npm:^9.0.5":
-  version: 9.0.5
-  resolution: "wait-on@npm:9.0.5"
+"wait-on@npm:^9.0.10":
+  version: 9.0.10
+  resolution: "wait-on@npm:9.0.10"
   dependencies:
-    axios: "npm:^1.15.0"
-    joi: "npm:^18.1.2"
+    axios: "npm:^1.16.0"
+    joi: "npm:^18.2.1"
     lodash: "npm:^4.18.1"
     minimist: "npm:^1.2.8"
     rxjs: "npm:^7.8.2"
   bin:
     wait-on: bin/wait-on
-  checksum: 10/34d7119ff5f18376fba90e12beaf213d59ae64f3de8b11a05bce66178b6641c348f287a3202b41b2db43ae198187393b13fffb069c84650a45e21ec8869a639f
+  checksum: 10/948c17eef62155b33e1d2194e897b0a90a033096d53928299993fc3c184d2fc365fb30bcef2a31129812c678759336b2f5078ad7905c262f30312097cadb6d25
   languageName: node
   linkType: hard
 
