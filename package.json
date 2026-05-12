@@ -8,8 +8,8 @@
   "preview": false,
   "license": "Apache-2.0",
   "kaoto": {
-    "defaultCamelVersion": "4.18.1",
-    "defaultCamelJbangVersion": "4.18.1"
+    "defaultCamelVersion": "4.18.2",
+    "defaultCamelJbangVersion": "4.18.2"
   },
   "repository": {
     "type": "git",
