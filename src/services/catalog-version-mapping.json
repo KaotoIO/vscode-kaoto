@@ -5,65 +5,65 @@
     {
       "catalogVersion": "4.18.0",
       "catalogRuntime": "Main",
-      "camelVersion": "4.18.2",
+      "executorVersion": "4.18.2",
       "runtime": "camel-main",
       "comment": "Camel Main 4.18.0 community"
     },
     {
       "catalogVersion": "4.14.5",
       "catalogRuntime": "Main",
-      "camelVersion": "4.14.5",
+      "executorVersion": "4.14.5",
       "runtime": "camel-main",
       "comment": "Camel Main 4.14.5 community"
     },
     {
       "catalogVersion": "4.14.2.redhat-00019",
       "catalogRuntime": "Main",
-      "camelVersion": "4.14.2.redhat-00006",
+      "executorVersion": "4.14.2.redhat-00006",
       "runtime": "camel-main",
-      "comment": "Camel Main 4.14.2 RedHat - adjust camelVersion if launcher build number differs"
+      "comment": "Camel Main 4.14.2 RedHat - adjust executorVersion if launcher build number differs"
     },
     {
       "catalogVersion": "3.32.0",
       "catalogRuntime": "Quarkus",
-      "camelVersion": "4.18.1",
+      "executorVersion": "4.18.1",
       "runtime": "quarkus",
       "comment": "Camel Quarkus 3.32.0 - maps to Camel 4.18.0 (Quarkus platform BOM version != Camel version)"
     },
     {
       "catalogVersion": "3.27.2",
       "catalogRuntime": "Quarkus",
-      "camelVersion": "4.14.5",
+      "executorVersion": "4.14.5",
       "runtime": "quarkus",
       "comment": "Camel Quarkus 3.27.2 - maps to Camel 4.14.5 (Quarkus platform BOM version != Camel version)"
     },
     {
       "catalogVersion": "3.27.1.redhat-00004",
       "catalogRuntime": "Quarkus",
-      "camelVersion": "4.14.2.redhat-00006",
+      "executorVersion": "4.14.2.redhat-00006",
       "runtime": "quarkus",
-      "comment": "Camel Quarkus 3.27.1 RedHat - adjust camelVersion to match actual Camel version"
+      "comment": "Camel Quarkus 3.27.1 RedHat - adjust executorVersion to match actual Camel version"
     },
     {
       "catalogVersion": "4.18.0",
       "catalogRuntime": "Spring Boot",
-      "camelVersion": "4.18.1",
+      "executorVersion": "4.18.1",
       "runtime": "spring-boot",
       "comment": "Camel Spring Boot 4.18.0 community"
     },
     {
       "catalogVersion": "4.14.5",
       "catalogRuntime": "Spring Boot",
-      "camelVersion": "4.14.5",
+      "executorVersion": "4.14.5",
       "runtime": "spring-boot",
       "comment": "Camel Spring Boot 4.14.5 community"
     },
     {
       "catalogVersion": "4.14.2.redhat-00018",
       "catalogRuntime": "Spring Boot",
-      "camelVersion": "4.14.2.redhat-00006",
+      "executorVersion": "4.14.2.redhat-00006",
       "runtime": "spring-boot",
-      "comment": "Camel Spring Boot 4.14.2 RedHat - adjust camelVersion if launcher build number differs"
+      "comment": "Camel Spring Boot 4.14.2 RedHat - adjust executorVersion if launcher build number differs"
     }
   ]
 }

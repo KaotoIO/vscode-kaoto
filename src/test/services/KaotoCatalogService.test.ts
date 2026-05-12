@@ -398,13 +398,13 @@ suite('KaotoCatalogService Test Suite', () => {
 		};
 
 		const params = catalogService.getCLIParameters(catalog);
-		expect(params.camelVersion).to.equal('4.18.0');
+		expect(params.executorVersion).to.equal('4.18.0');
 		expect(params.runtime).to.equal('camel-main');
 	});
 
 	test('should return empty CLI parameters for undefined catalog', () => {
 		const params = catalogService.getCLIParameters(undefined);
-		expect(params.camelVersion).to.be.undefined;
+		expect(params.executorVersion).to.be.undefined;
 		expect(params.runtime).to.be.undefined;
 	});
 

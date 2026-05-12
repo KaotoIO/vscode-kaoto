@@ -60,7 +60,7 @@ interface CatalogQuickPickItem extends vscode.QuickPickItem {
 interface CatalogVersionMapping {
 	catalogVersion: string;
 	catalogRuntime: string;
-	camelVersion: string;
+	executorVersion: string;
 	runtime: 'camel-main' | 'spring-boot' | 'quarkus';
 	comment?: string;
 }
@@ -467,7 +467,7 @@ export class KaotoCatalogService {
 		const mapping = mappingData.mappings.find((m) => m.catalogVersion === catalog.version && m.catalogRuntime === catalog.runtime);
 
 		if (mapping) {
-			return mapping.camelVersion;
+			return mapping.executorVersion;
 		}
 
 		// Fallback: use catalog version directly (may not work for all cases)
@@ -509,15 +509,15 @@ export class KaotoCatalogService {
 	 * Convenience method that combines getCamelVersionForCLI and getRuntimeForCLI
 	 *
 	 * @param catalog The catalog definition to get CLI parameters for
-	 * @returns Object with camelVersion and runtime, or empty object if catalog is undefined
+	 * @returns Object with executorVersion and runtime, or empty object if catalog is undefined
 	 */
-	public getCLIParameters(catalog: CatalogDefinition | undefined): { camelVersion?: string; runtime?: string } {
+	public getCLIParameters(catalog: CatalogDefinition | undefined): { executorVersion?: string; runtime?: string } {
 		if (!catalog) {
 			return {};
 		}
 
 		return {
-			camelVersion: this.getCamelVersionForCLI(catalog),
+			executorVersion: this.getCamelVersionForCLI(catalog),
 			runtime: this.getRuntimeForCLI(catalog),
 		};
 	}
