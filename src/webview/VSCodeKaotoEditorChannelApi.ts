@@ -167,6 +167,22 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		}
 	}
 
+	/**
+	 * Check if a file with the specified name exists in the classpath root directory
+	 * @param fileName - The name of the file to check for
+	 * @returns Promise<boolean> - true if the file exists, false otherwise
+	 */
+	async isResourceExist(relativePath: string): Promise<boolean> {
+		const classpathRoot: string = findClasspathRoot(this.currentEditedDocument.uri);
+		try {
+			const targetFile = path.resolve(classpathRoot, relativePath);
+			await vscode.workspace.fs.stat(vscode.Uri.file(targetFile));
+			return true;
+		} catch (ex) {
+			return false;
+		}
+	}
+
 	async askUserForFileSelection(include: string, exclude?: string, options?: Record<string, unknown>): Promise<string[] | string | undefined> {
 		try {
 			const workspaceFolder = vscode.workspace.getWorkspaceFolder(this.currentEditedDocument.uri);

@@ -56,4 +56,12 @@ suite.skip('Channel API', () => {
 	test('get content with invalid path return undefined', async () => {
 		assert.fail('Not yet implemented');
 	});
+
+	test('isResourceExist returns true when file exists in current directory', async () => {
+		assert.fail('Not yet implemented');
+	});
+
+	test('isResourceExist returns false when file does not exist in current directory', async () => {
+		assert.fail('Not yet implemented');
+	});
 });
