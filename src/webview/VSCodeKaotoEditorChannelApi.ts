@@ -79,7 +79,8 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		if (kaotoMetadatafile !== undefined) {
 			try {
 				const kaotoMetadataFileContent = new TextDecoder().decode(await vscode.workspace.fs.readFile(kaotoMetadatafile));
-				return JSON.parse(kaotoMetadataFileContent)[key]; // in case the key i snot present, should we look to other potential .kaoto files that could contain the information?
+				const result = JSON.parse(kaotoMetadataFileContent)[key]; // in case the key i snot present, should we look to other potential .kaoto files that could contain the information?
+				return this.normalizeMetadataFilePaths(result) as T;
 			} catch (ex) {
 				KaotoOutputChannel.logError(`Error when trying to get Metadata for key: ${key}`, ex);
 				// Should we look to other potential .kaoto files and ignore one which is invalid?
@@ -187,7 +188,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 			kaotoMetadataFile ??= await this.findKaotoMetadataToCreate();
 			return await vscode.window.showQuickPick(
 				files.map((f) => {
-					return path.relative(path.dirname(kaotoMetadataFile.fsPath), f.fsPath);
+					return this.toForwardSlash(path.relative(path.dirname(kaotoMetadataFile.fsPath), f.fsPath));
 				}),
 				options as vscode.QuickPickOptions,
 			);
@@ -242,6 +243,44 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 			const parentFolder = path.basename(path.dirname(this.currentEditedDocument.uri.fsPath));
 			return vscode.Uri.file(path.join(parentFolder, '.kaoto'));
 		}
+	}
+
+	/**
+	 * Forward slashes are the standard path separator in URIs and XSD schemaLocation references.
+	 * On Windows, Node.js path APIs (e.g. path.relative()) return backslash separators instead,
+	 * which breaks schema resolution for xs:include/xs:import. This normalizes Windows paths
+	 * to the standard separator at the API boundary. On Linux/macOS this is a no-op.
+	 *
+	 * Applied to {@link askUserForFileSelection} output and {@link getMetadata} filePath arrays.
+	 * Not needed for {@link getResourceContent} / {@link saveResourceContent} / {@link deleteResource}
+	 * because `path.resolve()` accepts both separator styles on all platforms.
+	 */
+	private toForwardSlash(filePath: string): string {
+		return filePath.replaceAll('\\', '/');
+	}
+
+	/**
+	 * Existing .kaoto metadata files on Windows may have backslash paths persisted in filePath arrays.
+	 * This normalizes them on read so that previously saved projects work after the forward-slash fix
+	 * without requiring users to re-attach their schema files.
+	 */
+	private normalizeMetadataFilePaths(value: unknown): unknown {
+		if (value === null || value === undefined || typeof value !== 'object') {
+			return value;
+		}
+		if (Array.isArray(value)) {
+			return value.map((v) => this.normalizeMetadataFilePaths(v));
+		}
+		const obj = value as Record<string, unknown>;
+		const result: Record<string, unknown> = {};
+		for (const [k, v] of Object.entries(obj)) {
+			if (k === 'filePath' && Array.isArray(v)) {
+				result[k] = v.map((p) => (typeof p === 'string' ? this.toForwardSlash(p) : p));
+			} else {
+				result[k] = this.normalizeMetadataFilePaths(v);
+			}
+		}
+		return result;
 	}
 
 	private getColorSchemeFromVSCode(colorSchemaSetting: ColorScheme | null | undefined, activeColorTheme: vscode.ColorTheme): ColorScheme {
