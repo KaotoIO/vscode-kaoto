@@ -168,8 +168,8 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 	}
 
 	/**
-	 * Check if a file with the specified name exists in the classpath root directory
-	 * @param fileName - The name of the file to check for
+	 * Check if a file exists at the specified relative path from the classpath root directory
+	 * @param relativePath - The relative path (including filename) from the classpath root
 	 * @returns Promise<boolean> - true if the file exists, false otherwise
 	 */
 	async isResourceExist(relativePath: string): Promise<boolean> {
