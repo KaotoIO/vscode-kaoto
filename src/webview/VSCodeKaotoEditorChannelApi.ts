@@ -56,29 +56,33 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 
 	async getVSCodeKaotoSettings(): Promise<ISettingsModel & { selectedCatalog?: CatalogLibraryEntry }> {
 		// Get custom catalog URL if set (takes precedence)
-		const catalogUrl = await vscode.workspace.getConfiguration('kaoto').get<string | null>('catalog.url');
+		const catalogUrl = vscode.workspace.getConfiguration('kaoto').get<string | null>('catalog.url');
+
+		let selectedCatalog: CatalogLibraryEntry | undefined;
 
 		// Get selected catalog from KaotoCatalogService for standalone projects
-		if (!catalogUrl && !(await KaotoCatalogService.isMavenProject(this.currentEditedDocument.uri))) {
+		if (!(await KaotoCatalogService.isMavenProject(this.currentEditedDocument.uri))) {
 			try {
 				const catalogService = KaotoCatalogService.getInstance();
 				const catalog = await catalogService.getSelectedCatalog(this.currentEditedDocument.uri);
 				if (catalog) {
-					// TODO
-					await vscode.window.showInformationMessage(`Selected catalog: ${catalog.name}`);
+					selectedCatalog = catalog;
+					vscode.window.showInformationMessage(`Selected catalog: ${catalog.name}`);
 				}
 			} catch (error) {
 				KaotoOutputChannel.logError('Failed to get selected catalog from KaotoCatalogService', error);
 			}
 		}
 
-		const nodeLabel = await vscode.workspace.getConfiguration('kaoto').get<NodeLabelType | null>('nodeLabel');
-		const nodeToolbarTrigger = await vscode.workspace.getConfiguration('kaoto').get<NodeToolbarTrigger | null>('nodeToolbarTrigger');
-		const colorThemeSetting = await vscode.workspace.getConfiguration('kaoto').get<ColorScheme | null>('colorTheme');
-		const canvasLayoutDirection = await vscode.workspace.getConfiguration('kaoto').get<CanvasLayoutDirection | null>('canvasLayoutDirection');
-		const customMediaTypes = await vscode.workspace.getConfiguration('kaoto').get<string[] | null>('restConfiguration.customMediaTypes');
-		const apicurioRegistryUrl = await vscode.workspace.getConfiguration('kaoto').get<string | null>('restConfiguration.apicurioRegistryUrl');
+		const nodeLabel = vscode.workspace.getConfiguration('kaoto').get<NodeLabelType | null>('nodeLabel');
+		const nodeToolbarTrigger = vscode.workspace.getConfiguration('kaoto').get<NodeToolbarTrigger | null>('nodeToolbarTrigger');
+		const colorThemeSetting = vscode.workspace.getConfiguration('kaoto').get<ColorScheme | null>('colorTheme');
+		const canvasLayoutDirection = vscode.workspace.getConfiguration('kaoto').get<CanvasLayoutDirection | null>('canvasLayoutDirection');
+		const customMediaTypes = vscode.workspace.getConfiguration('kaoto').get<string[] | null>('restConfiguration.customMediaTypes');
+		const apicurioRegistryUrl = vscode.workspace.getConfiguration('kaoto').get<string | null>('restConfiguration.apicurioRegistryUrl');
 		const colorTheme = this.getColorSchemeFromVSCode(colorThemeSetting, vscode.window.activeColorTheme);
+
+		const isCitrusFile = selectedCatalog?.runtime === 'citrus';
 
 		const settingsModel: Partial<ISettingsModel> = {
 			catalogUrl: catalogUrl ?? '',
