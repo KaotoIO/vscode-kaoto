@@ -54,11 +54,12 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		return customCatalogUrl || undefined;
 	}
 
-	async getVSCodeKaotoSettings(): Promise<ISettingsModel & { selectedCatalog?: CatalogLibraryEntry }> {
+	async getVSCodeKaotoSettings(): Promise<ISettingsModel> {
 		// Get custom catalog URL if set (takes precedence)
 		const catalogUrl = vscode.workspace.getConfiguration('kaoto').get<string | null>('catalog.url');
 
-		let selectedCatalog: CatalogLibraryEntry | undefined;
+		let runtimeCatalogName: string | undefined;
+		let testingCatalogName: string | undefined;
 
 		// Get selected catalog from KaotoCatalogService for standalone projects
 		if (!(await KaotoCatalogService.isMavenProject(this.currentEditedDocument.uri))) {
@@ -66,7 +67,16 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 				const catalogService = KaotoCatalogService.getInstance();
 				const catalog = await catalogService.getSelectedCatalog(this.currentEditedDocument.uri);
 				if (catalog) {
-					selectedCatalog = catalog;
+					// Use the catalog name directly from index.json (e.g., "Camel Main 4.14.7" or "Citrus 4.10.1")
+					// Check runtime to determine if it's a testing catalog (Citrus) or runtime catalog
+					const isCitrusCatalog = catalog.runtime.toLowerCase() === 'citrus';
+
+					if (isCitrusCatalog) {
+						testingCatalogName = catalog.name; // TODO
+					} else {
+						runtimeCatalogName = catalog.name; // TODO
+					}
+
 					vscode.window.showInformationMessage(`Selected catalog: ${catalog.name}`);
 				}
 			} catch (error) {
@@ -82,8 +92,6 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		const apicurioRegistryUrl = vscode.workspace.getConfiguration('kaoto').get<string | null>('restConfiguration.apicurioRegistryUrl');
 		const colorTheme = this.getColorSchemeFromVSCode(colorThemeSetting, vscode.window.activeColorTheme);
 
-		const isCitrusFile = selectedCatalog?.runtime === 'citrus';
-
 		const settingsModel: Partial<ISettingsModel> = {
 			catalogUrl: catalogUrl ?? '',
 			nodeLabel: nodeLabel ?? NodeLabelType.Description,
@@ -94,6 +102,9 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 				apicurioRegistryUrl: apicurioRegistryUrl ?? '',
 				customMediaTypes: customMediaTypes ?? [],
 			},
+			// TODO
+			// runtimeCatalogName: runtimeCatalogName,
+			// testingCatalogName: testingCatalogName,
 		};
 
 		return new SettingsModel(settingsModel);

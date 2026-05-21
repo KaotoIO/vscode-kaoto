@@ -936,60 +936,18 @@
             "scope": "window",
             "order": 0
           },
-          "kaoto.camelCatalog.version": {
-            "type": "object",
+          "kaoto.runtimeCatalogName": {
+            "type": "string",
             "default": null,
-            "markdownDescription": "⚠️ **WORKSPACE-ONLY SETTING** - This setting only works in Workspace/Folder settings, not User settings.\n\nSelected Camel catalog version for integration files in standalone projects. Does not apply to Maven projects (which use pom.xml). Use the status bar or command palette to change the catalog version.",
-            "properties": {
-              "version": {
-                "type": "string",
-                "pattern": "^\\d+\\.\\d+\\.\\d+(\\.redhat-\\d+)?$",
-                "patternErrorMessage": "Version must be in format: X.Y.Z or X.Y.Z.redhat-NNNNN (e.g., '4.18.0' or '4.14.2.redhat-00019')",
-                "description": "Camel version - must match an available catalog version. Use status bar to select from available versions."
-              },
-              "runtime": {
-                "type": "string",
-                "enum": [
-                  "camel-main",
-                  "spring-boot",
-                  "quarkus"
-                ],
-                "description": "Camel runtime type (e.g., 'camel-main', 'spring-boot', 'quarkus')"
-              }
-            },
-            "required": [
-              "version",
-              "runtime"
-            ],
+            "markdownDescription": "⚠️ **WORKSPACE-ONLY SETTING** - This setting only works in Workspace/Folder settings, not User settings.\n\nSelected runtime catalog name for integration files (e.g., 'Camel Main 4.14.7', 'Camel Quarkus 3.35.0'). Use the status bar or command palette to select from available catalogs.",
             "scope": "resource",
-            "additionalProperties": false,
             "order": 1
           },
-          "kaoto.citrusCatalog.version": {
-            "type": "object",
+          "kaoto.testingCatalogName": {
+            "type": "string",
             "default": null,
-            "markdownDescription": "⚠️ **WORKSPACE-ONLY SETTING** - This setting only works in Workspace/Folder settings, not User settings.\n\nSelected Citrus catalog version for test files in standalone projects. Does not apply to Maven projects. Use the status bar or command palette to change the catalog version.",
-            "properties": {
-              "version": {
-                "type": "string",
-                "pattern": "^\\d+\\.\\d+\\.\\d+$",
-                "patternErrorMessage": "Version must be in format: X.Y.Z (e.g., '4.9.4')",
-                "description": "Citrus version - must match an available catalog version. Use status bar to select from available versions."
-              },
-              "runtime": {
-                "type": "string",
-                "enum": [
-                  "citrus"
-                ],
-                "description": "Citrus runtime type (e.g., 'citrus')"
-              }
-            },
-            "required": [
-              "version",
-              "runtime"
-            ],
+            "markdownDescription": "⚠️ **WORKSPACE-ONLY SETTING** - This setting only works in Workspace/Folder settings, not User settings.\n\nSelected testing catalog name for test files (e.g., 'Citrus 4.10.1'). Use the status bar or command palette to select from available catalogs.",
             "scope": "resource",
-            "additionalProperties": false,
             "order": 2
           },
           "kaoto.localKameletDirectories": {

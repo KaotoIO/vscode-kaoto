@@ -5,22 +5,6 @@ import { CatalogLibrary, CatalogLibraryEntry } from '@kaoto/camel-catalog/types'
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 
 /**
- * Simplified catalog selection stored in settings for integration files (only essential data)
- */
-export interface CatalogSelection {
-	version: string;
-	runtime: 'camel-main' | 'spring-boot' | 'quarkus';
-}
-
-/**
- * Simplified catalog selection stored in settings for test files (only essential data)
- */
-export interface CitrusCatalogSelection {
-	version: string;
-	runtime: 'citrus';
-}
-
-/**
  * Grouped catalogs by runtime type
  */
 interface GroupedCatalogs {
@@ -170,40 +154,10 @@ export class KaotoCatalogService {
 	}
 
 	/**
-	 * Build display label from catalog selection
+	 * Find catalog definition by name (e.g., "Camel Main 4.14.7" or "Citrus 4.10.1")
 	 */
-	public static buildDisplayLabelFromSelection(selection: CatalogSelection): string {
-		const runtimeDisplayMap: Record<CatalogSelection['runtime'], string> = {
-			'camel-main': 'Camel Main',
-			'spring-boot': 'Spring Boot',
-			quarkus: 'Quarkus',
-		};
-		const runtimeDisplay = runtimeDisplayMap[selection.runtime] || selection.runtime;
-		return `${runtimeDisplay} ${selection.version}`;
-	}
-
-	/**
-	 * Convert CatalogLibraryEntry to CatalogSelection or CitrusCatalogSelection
-	 */
-	private toSelection(catalog: CatalogLibraryEntry): CatalogSelection | CitrusCatalogSelection {
-		const runtime = this.normalizeRuntime(catalog.runtime);
-		if (runtime === 'citrus') {
-			return {
-				version: catalog.version,
-				runtime: 'citrus',
-			};
-		}
-		return {
-			version: catalog.version,
-			runtime: runtime,
-		};
-	}
-
-	/**
-	 * Find catalog definition from selection (supports both integration and test catalogs)
-	 */
-	private findCatalogFromSelection(selection: CatalogSelection | CitrusCatalogSelection): CatalogLibraryEntry | undefined {
-		return this.catalogs.find((c) => c.version === selection.version && this.normalizeRuntime(c.runtime) === selection.runtime);
+	private findCatalogByName(name: string): CatalogLibraryEntry | undefined {
+		return this.catalogs.find((c) => c.name === name);
 	}
 
 	/**
@@ -224,26 +178,23 @@ export class KaotoCatalogService {
 	 */
 	public async getSelectedIntegrationCatalog(resourceUri?: vscode.Uri): Promise<CatalogLibraryEntry | undefined> {
 		const config = vscode.workspace.getConfiguration('kaoto', resourceUri);
-		const selection = config.get<CatalogSelection>('camelCatalog.version');
 
-		if (selection) {
-			const catalog = this.findCatalogFromSelection(selection);
+		const catalogName = config.get<string>('runtimeCatalogName');
+		if (catalogName) {
+			const catalog = this.findCatalogByName(catalogName);
 			if (catalog) {
 				return catalog;
 			}
-			// Warn user about invalid catalog selection
+			// Warn user about invalid catalog name
 			KaotoOutputChannel.logWarning(
-				`Invalid Camel catalog version in settings: ${selection.version} (${selection.runtime}). ` +
-					`This version is not available in the catalog. Using default catalog instead. ` +
-					`Use the status bar or command palette to select a valid version.`,
+				`Invalid runtime catalog name in settings: "${catalogName}". ` +
+					`This catalog is not available. Using default catalog instead. ` +
+					`Use the status bar or command palette to select a valid catalog.`,
 			);
 			vscode.window
-				.showWarningMessage(
-					`Kaoto: Invalid catalog version "${selection.version}" (${selection.runtime}). Using default instead.`,
-					'Select Valid Version',
-				)
+				.showWarningMessage(`Kaoto: Invalid runtime catalog name "${catalogName}". Using default instead.`, 'Select Valid Catalog')
 				.then((choice) => {
-					if (choice === 'Select Valid Version') {
+					if (choice === 'Select Valid Catalog') {
 						vscode.commands.executeCommand('kaoto.selectCamelCatalog');
 					}
 				});
@@ -258,26 +209,23 @@ export class KaotoCatalogService {
 	 */
 	public async getSelectedTestCatalog(resourceUri?: vscode.Uri): Promise<CatalogLibraryEntry | undefined> {
 		const config = vscode.workspace.getConfiguration('kaoto', resourceUri);
-		const selection = config.get<CitrusCatalogSelection>('citrusCatalog.version');
 
-		if (selection) {
-			const catalog = this.findCatalogFromSelection(selection);
+		const catalogName = config.get<string>('testingCatalogName');
+		if (catalogName) {
+			const catalog = this.findCatalogByName(catalogName);
 			if (catalog) {
 				return catalog;
 			}
-			// Warn user about invalid catalog selection
+			// Warn user about invalid catalog name
 			KaotoOutputChannel.logWarning(
-				`Invalid Citrus catalog version in settings: ${selection.version} (${selection.runtime}). ` +
-					`This version is not available in the catalog. Using default catalog instead. ` +
-					`Use the status bar or command palette to select a valid version.`,
+				`Invalid testing catalog name in settings: "${catalogName}". ` +
+					`This catalog is not available. Using default catalog instead. ` +
+					`Use the status bar or command palette to select a valid catalog.`,
 			);
 			vscode.window
-				.showWarningMessage(
-					`Kaoto: Invalid Citrus catalog version "${selection.version}" (${selection.runtime}). Using default instead.`,
-					'Select Valid Version',
-				)
+				.showWarningMessage(`Kaoto: Invalid testing catalog name "${catalogName}". Using default instead.`, 'Select Valid Catalog')
 				.then((choice) => {
-					if (choice === 'Select Valid Version') {
+					if (choice === 'Select Valid Catalog') {
 						vscode.commands.executeCommand('kaoto.selectCamelCatalog');
 					}
 				});
@@ -315,9 +263,8 @@ export class KaotoCatalogService {
 
 		const config = vscode.workspace.getConfiguration('kaoto', resourceUri);
 
-		// Store simplified selection (only version and runtime)
-		const selection = this.toSelection(catalog) as CatalogSelection;
-		await config.update('camelCatalog.version', selection, vscode.ConfigurationTarget.Workspace);
+		// Store using simplified string-based setting (catalog name from index.json)
+		await config.update('runtimeCatalogName', catalog.name, vscode.ConfigurationTarget.Workspace);
 
 		const displayLabel = KaotoCatalogService.buildDisplayLabel(catalog);
 		KaotoOutputChannel.logInfo(`Selected integration catalog: ${displayLabel}`);
@@ -355,9 +302,8 @@ export class KaotoCatalogService {
 
 		const config = vscode.workspace.getConfiguration('kaoto', resourceUri);
 
-		// Store simplified selection (only version and runtime)
-		const selection = this.toSelection(catalog) as CitrusCatalogSelection;
-		await config.update('citrusCatalog.version', selection, vscode.ConfigurationTarget.Workspace);
+		// Store using simplified string-based setting (catalog name from index.json)
+		await config.update('testingCatalogName', catalog.name, vscode.ConfigurationTarget.Workspace);
 
 		const displayLabel = KaotoCatalogService.buildDisplayLabel(catalog);
 		KaotoOutputChannel.logInfo(`Selected test catalog: ${displayLabel}`);
@@ -538,8 +484,8 @@ export class KaotoCatalogService {
 			}),
 			vscode.workspace.onDidChangeConfiguration((e) => {
 				if (
-					e.affectsConfiguration('kaoto.camelCatalog.version') ||
-					e.affectsConfiguration('kaoto.citrusCatalog.version') ||
+					e.affectsConfiguration('kaoto.runtimeCatalogName') ||
+					e.affectsConfiguration('kaoto.testingCatalogName') ||
 					e.affectsConfiguration('kaoto.catalog.url')
 				) {
 					void this.loadCatalogs();

@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import * as vscode from 'vscode';
 import { CatalogLibraryEntry } from '@kaoto/camel-catalog/types';
-import { KaotoCatalogService, CatalogSelection } from '../../services/KaotoCatalogService';
+import { KaotoCatalogService } from '../../services/KaotoCatalogService';
 import { initializeKaotoCatalogService, getExtensionContext } from '../helpers/TestSetup';
 
 suite('KaotoCatalogService Test Suite', () => {
@@ -152,7 +152,7 @@ suite('KaotoCatalogService Test Suite', () => {
 			expect(defaultCatalog?.runtime.toLowerCase()).to.equal('citrus');
 
 			// Should be the latest version
-			const sorted = citrusCatalogs.sort((a, b) => {
+			const sorted = citrusCatalogs.toSorted((a, b) => {
 				return b.version.localeCompare(a.version, undefined, { numeric: true });
 			});
 			expect(defaultCatalog?.version).to.equal(sorted[0].version);
@@ -278,36 +278,6 @@ suite('KaotoCatalogService Test Suite', () => {
 
 		const label = KaotoCatalogService.buildDisplayLabel(catalog);
 		expect(label).to.equal('Camel Main 4.18.0');
-	});
-
-	test('should build display label from catalog selection', () => {
-		const selection: CatalogSelection = {
-			version: '4.18.0',
-			runtime: 'camel-main',
-		};
-
-		const label = KaotoCatalogService.buildDisplayLabelFromSelection(selection);
-		expect(label).to.equal('Camel Main 4.18.0');
-	});
-
-	test('should build display label for Spring Boot selection', () => {
-		const selection: CatalogSelection = {
-			version: '4.8.0',
-			runtime: 'spring-boot',
-		};
-
-		const label = KaotoCatalogService.buildDisplayLabelFromSelection(selection);
-		expect(label).to.equal('Spring Boot 4.8.0');
-	});
-
-	test('should build display label for Quarkus selection', () => {
-		const selection: CatalogSelection = {
-			version: '3.15.0',
-			runtime: 'quarkus',
-		};
-
-		const label = KaotoCatalogService.buildDisplayLabelFromSelection(selection);
-		expect(label).to.equal('Quarkus 3.15.0');
 	});
 
 	test('should get Camel version for CLI from catalog (Main with executorVersion)', () => {
