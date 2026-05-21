@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
+import { CatalogLibrary, CatalogLibraryEntry } from '@kaoto/camel-catalog/types';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
-import catalogVersionMapping from './catalog-version-mapping.json';
 
 /**
  * Simplified catalog selection stored in settings for integration files (only essential data)
@@ -21,55 +21,17 @@ export interface CitrusCatalogSelection {
 }
 
 /**
- * Full catalog definition from index.json
- */
-export interface CatalogDefinition {
-	name: string;
-	version: string;
-	runtime: string;
-	fileName: string;
-}
-
-/**
- * Catalog index structure from index.json
- */
-interface CatalogIndex {
-	definitions: CatalogDefinition[];
-	version: number;
-	name: string;
-}
-
-/**
  * Grouped catalogs by runtime type
  */
 interface GroupedCatalogs {
-	[runtime: string]: CatalogDefinition[];
+	[runtime: string]: CatalogLibraryEntry[];
 }
 
 /**
  * Extended QuickPickItem with catalog data
  */
 interface CatalogQuickPickItem extends vscode.QuickPickItem {
-	catalog?: CatalogDefinition;
-}
-
-/**
- * Mapping entry for catalog version to Camel CLI version
- * This is a temporary static mapping that will be replaced by catalog-provided mapping in the future
- */
-interface CatalogVersionMapping {
-	catalogVersion: string;
-	catalogRuntime: string;
-	executorVersion: string;
-	runtime: 'camel-main' | 'spring-boot' | 'quarkus';
-	comment?: string;
-}
-
-/**
- * Structure of the catalog version mapping JSON file
- */
-interface CatalogVersionMappingFile {
-	mappings: CatalogVersionMapping[];
+	catalog?: CatalogLibraryEntry;
 }
 
 /**
@@ -77,7 +39,7 @@ interface CatalogVersionMappingFile {
  */
 export class KaotoCatalogService {
 	private static instance: KaotoCatalogService;
-	private catalogs: CatalogDefinition[] = [];
+	private catalogs: CatalogLibraryEntry[] = [];
 	private statusBarItem: vscode.StatusBarItem | undefined;
 	private readonly catalogBasePath: string;
 	private readonly catalogIndexPath: string;
@@ -138,7 +100,7 @@ export class KaotoCatalogService {
 					throw new Error(`HTTP ${response.status} ${response.statusText}`.trim());
 				}
 
-				const catalogIndex = (await response.json()) as CatalogIndex;
+				const catalogIndex = (await response.json()) as CatalogLibrary;
 				this.catalogs = catalogIndex.definitions || [];
 				KaotoOutputChannel.logInfo(`Loaded catalog index from custom URL: ${customCatalogUrl}`);
 				return;
@@ -153,7 +115,7 @@ export class KaotoCatalogService {
 
 		try {
 			const indexContent = await fs.promises.readFile(this.catalogIndexPath, 'utf-8');
-			const catalogIndex: CatalogIndex = JSON.parse(indexContent);
+			const catalogIndex: CatalogLibrary = JSON.parse(indexContent);
 			this.catalogs = catalogIndex.definitions || [];
 		} catch (error) {
 			KaotoOutputChannel.logError(`Failed to load catalog index from ${this.catalogIndexPath}`, error);
@@ -164,7 +126,7 @@ export class KaotoCatalogService {
 	/**
 	 * Get all available catalogs
 	 */
-	public getCatalogs(): CatalogDefinition[] {
+	public getCatalogs(): CatalogLibraryEntry[] {
 		return [...this.catalogs];
 	}
 
@@ -203,7 +165,7 @@ export class KaotoCatalogService {
 	/**
 	 * Build display label from catalog definition
 	 */
-	public static buildDisplayLabel(catalog: CatalogDefinition): string {
+	public static buildDisplayLabel(catalog: CatalogLibraryEntry): string {
 		return `Camel ${catalog.runtime} ${catalog.version}`;
 	}
 
@@ -221,9 +183,9 @@ export class KaotoCatalogService {
 	}
 
 	/**
-	 * Convert CatalogDefinition to CatalogSelection or CitrusCatalogSelection
+	 * Convert CatalogLibraryEntry to CatalogSelection or CitrusCatalogSelection
 	 */
-	private toSelection(catalog: CatalogDefinition): CatalogSelection | CitrusCatalogSelection {
+	private toSelection(catalog: CatalogLibraryEntry): CatalogSelection | CitrusCatalogSelection {
 		const runtime = this.normalizeRuntime(catalog.runtime);
 		if (runtime === 'citrus') {
 			return {
@@ -240,7 +202,7 @@ export class KaotoCatalogService {
 	/**
 	 * Find catalog definition from selection (supports both integration and test catalogs)
 	 */
-	private findCatalogFromSelection(selection: CatalogSelection | CitrusCatalogSelection): CatalogDefinition | undefined {
+	private findCatalogFromSelection(selection: CatalogSelection | CitrusCatalogSelection): CatalogLibraryEntry | undefined {
 		return this.catalogs.find((c) => c.version === selection.version && this.normalizeRuntime(c.runtime) === selection.runtime);
 	}
 
@@ -248,7 +210,7 @@ export class KaotoCatalogService {
 	 * Get the selected catalog for a workspace, or default if none selected
 	 * Automatically determines whether to use integration or test catalog based on file type
 	 */
-	public async getSelectedCatalog(resourceUri?: vscode.Uri): Promise<CatalogDefinition | undefined> {
+	public async getSelectedCatalog(resourceUri?: vscode.Uri): Promise<CatalogLibraryEntry | undefined> {
 		// Determine file type and delegate to appropriate method
 		if (resourceUri && this.isKaotoCitrusTestFile(resourceUri)) {
 			return this.getSelectedTestCatalog(resourceUri);
@@ -260,7 +222,7 @@ export class KaotoCatalogService {
 	/**
 	 * Get the selected integration catalog for a workspace, or default if none selected
 	 */
-	public async getSelectedIntegrationCatalog(resourceUri?: vscode.Uri): Promise<CatalogDefinition | undefined> {
+	public async getSelectedIntegrationCatalog(resourceUri?: vscode.Uri): Promise<CatalogLibraryEntry | undefined> {
 		const config = vscode.workspace.getConfiguration('kaoto', resourceUri);
 		const selection = config.get<CatalogSelection>('camelCatalog.version');
 
@@ -294,7 +256,7 @@ export class KaotoCatalogService {
 	/**
 	 * Get the selected test catalog for a workspace, or default if none selected
 	 */
-	public async getSelectedTestCatalog(resourceUri?: vscode.Uri): Promise<CatalogDefinition | undefined> {
+	public async getSelectedTestCatalog(resourceUri?: vscode.Uri): Promise<CatalogLibraryEntry | undefined> {
 		const config = vscode.workspace.getConfiguration('kaoto', resourceUri);
 		const selection = config.get<CitrusCatalogSelection>('citrusCatalog.version');
 
@@ -329,7 +291,7 @@ export class KaotoCatalogService {
 	 * Set the selected catalog for a workspace
 	 * Automatically determines whether to store as integration or test catalog based on catalog runtime
 	 */
-	public async setSelectedCatalog(catalog: CatalogDefinition, resourceUri?: vscode.Uri): Promise<void> {
+	public async setSelectedCatalog(catalog: CatalogLibraryEntry, resourceUri?: vscode.Uri): Promise<void> {
 		// Determine if this is a Citrus catalog
 		const isCitrusCatalog = this.normalizeRuntime(catalog.runtime) === 'citrus';
 
@@ -343,7 +305,7 @@ export class KaotoCatalogService {
 	/**
 	 * Set the selected integration catalog for a workspace
 	 */
-	public async setSelectedIntegrationCatalog(catalog: CatalogDefinition, resourceUri?: vscode.Uri): Promise<void> {
+	public async setSelectedIntegrationCatalog(catalog: CatalogLibraryEntry, resourceUri?: vscode.Uri): Promise<void> {
 		// Get the current catalog before making changes
 		const previousCatalog = await this.getSelectedIntegrationCatalog(resourceUri);
 
@@ -383,7 +345,7 @@ export class KaotoCatalogService {
 	/**
 	 * Set the selected test catalog for a workspace
 	 */
-	public async setSelectedTestCatalog(catalog: CatalogDefinition, resourceUri?: vscode.Uri): Promise<void> {
+	public async setSelectedTestCatalog(catalog: CatalogLibraryEntry, resourceUri?: vscode.Uri): Promise<void> {
 		// Get the current catalog before making changes
 		const previousCatalog = await this.getSelectedTestCatalog(resourceUri);
 
@@ -425,7 +387,7 @@ export class KaotoCatalogService {
 	 * - For test files: latest Citrus catalog
 	 * - For integration files: latest Camel Main RedHat version (or latest Main if no RedHat version available)
 	 */
-	public getDefaultCatalog(resourceUri?: vscode.Uri): CatalogDefinition | undefined {
+	public getDefaultCatalog(resourceUri?: vscode.Uri): CatalogLibraryEntry | undefined {
 		// Check if this is a Citrus test file
 		const isCitrusTest = resourceUri ? this.isKaotoCitrusTestFile(resourceUri) : false;
 
@@ -439,7 +401,7 @@ export class KaotoCatalogService {
 	/**
 	 * Get the default integration catalog (latest Camel Main RedHat version, or latest Main if no RedHat version available)
 	 */
-	public getDefaultIntegrationCatalog(): CatalogDefinition | undefined {
+	public getDefaultIntegrationCatalog(): CatalogLibraryEntry | undefined {
 		// Find all Main runtime catalogs
 		const mainCatalogs = this.catalogs.filter((c) => c.runtime === 'Main');
 
@@ -469,7 +431,7 @@ export class KaotoCatalogService {
 	/**
 	 * Get the default test catalog (latest Citrus catalog)
 	 */
-	public getDefaultTestCatalog(): CatalogDefinition | undefined {
+	public getDefaultTestCatalog(): CatalogLibraryEntry | undefined {
 		const citrusCatalogs = this.catalogs.filter((c) => c.runtime.toLowerCase() === 'citrus');
 		if (citrusCatalogs.length > 0) {
 			const sorted = citrusCatalogs.toSorted((a, b) => {
@@ -481,32 +443,24 @@ export class KaotoCatalogService {
 	}
 	/**
 	 * Get the Camel version for CLI from catalog selection
-	 * Uses the static mapping file to handle cases where catalog version != Camel version
-	 * (e.g., Quarkus platform BOM versions, RedHat build number differences)
+	 * Uses the executorVersion field from the catalog definition
+	 * (handles cases where catalog version != Camel version, e.g., Quarkus platform BOM versions, RedHat build numbers)
 	 *
 	 * @param catalog The catalog definition to get Camel version for
 	 * @returns The Camel version to use with --camel-version parameter, or undefined if not found
 	 */
-	public getCamelVersionForCLI(catalog: CatalogDefinition | undefined): string | undefined {
+	public getCamelVersionForCLI(catalog: CatalogLibraryEntry | undefined): string | undefined {
 		if (!catalog) {
 			return undefined;
 		}
 
-		// Load mapping file
-		const mappingData = catalogVersionMapping as CatalogVersionMappingFile;
-
-		// Find matching mapping entry
-		const mapping = mappingData.mappings.find((m) => m.catalogVersion === catalog.version && m.catalogRuntime === catalog.runtime);
-
-		if (mapping) {
-			return mapping.executorVersion;
+		// Use executorVersion from catalog if available, otherwise fall back to catalog version
+		if (catalog.executorVersion) {
+			return catalog.executorVersion;
 		}
 
-		// Fallback: use catalog version directly (may not work for all cases)
-		KaotoOutputChannel.logWarning(
-			`No mapping found for catalog ${catalog.version} (${catalog.runtime}), using catalog version as Camel version. ` +
-				`Please update catalog-version-mapping.json if this is incorrect.`,
-		);
+		// Fallback: use catalog version directly
+		KaotoOutputChannel.logWarning(`No executorVersion found for catalog ${catalog.version} (${catalog.runtime}), using catalog version as Camel version.`);
 		return catalog.version;
 	}
 
@@ -517,22 +471,12 @@ export class KaotoCatalogService {
 	 * @param catalog The catalog definition to get runtime for
 	 * @returns The runtime to use with --runtime parameter, or undefined if not found
 	 */
-	public getRuntimeForCLI(catalog: CatalogDefinition | undefined): string | undefined {
+	public getRuntimeForCLI(catalog: CatalogLibraryEntry | undefined): string | undefined {
 		if (!catalog) {
 			return undefined;
 		}
 
-		// Load mapping file
-		const mappingData = catalogVersionMapping as CatalogVersionMappingFile;
-
-		// Find matching mapping entry
-		const mapping = mappingData.mappings.find((m) => m.catalogVersion === catalog.version && m.catalogRuntime === catalog.runtime);
-
-		if (mapping) {
-			return mapping.runtime;
-		}
-
-		// Fallback: use normalized runtime
+		// Use normalized runtime
 		return this.normalizeRuntime(catalog.runtime);
 	}
 
@@ -543,7 +487,7 @@ export class KaotoCatalogService {
 	 * @param catalog The catalog definition to get CLI parameters for
 	 * @returns Object with executorVersion and runtime, or empty object if catalog is undefined
 	 */
-	public getCLIParameters(catalog: CatalogDefinition | undefined): { executorVersion?: string; runtime?: string } {
+	public getCLIParameters(catalog: CatalogLibraryEntry | undefined): { executorVersion?: string; runtime?: string } {
 		if (!catalog) {
 			return {};
 		}

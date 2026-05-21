@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import * as vscode from 'vscode';
-import { KaotoCatalogService, CatalogDefinition, CatalogSelection } from '../../services/KaotoCatalogService';
+import { CatalogLibraryEntry } from '@kaoto/camel-catalog/types';
+import { KaotoCatalogService, CatalogSelection } from '../../services/KaotoCatalogService';
 import { initializeKaotoCatalogService, getExtensionContext } from '../helpers/TestSetup';
 
 suite('KaotoCatalogService Test Suite', () => {
@@ -47,12 +48,13 @@ suite('KaotoCatalogService Test Suite', () => {
 	});
 
 	test('should load catalogs from custom URL when kaoto.catalog.url is configured', async () => {
-		const remoteCatalogs: CatalogDefinition[] = [
+		const remoteCatalogs: CatalogLibraryEntry[] = [
 			{
 				name: 'Camel Main 9.9.9',
 				version: '9.9.9',
 				runtime: 'Main',
 				fileName: 'camel-main/9.9.9/index.json',
+				executorVersion: '9.9.9',
 			},
 		];
 
@@ -266,11 +268,12 @@ suite('KaotoCatalogService Test Suite', () => {
 	});
 
 	test('should build display label from catalog definition', () => {
-		const catalog: CatalogDefinition = {
+		const catalog: CatalogLibraryEntry = {
 			name: 'Camel Main 4.18.0',
 			version: '4.18.0',
 			runtime: 'Main',
 			fileName: 'camel-main/4.18.0/index-825a64c8dcfd946d5eb88a96e71f6589.json',
+			executorVersion: '4.18.0',
 		};
 
 		const label = KaotoCatalogService.buildDisplayLabel(catalog);
@@ -307,43 +310,45 @@ suite('KaotoCatalogService Test Suite', () => {
 		expect(label).to.equal('Quarkus 3.15.0');
 	});
 
-	test('should get Camel version for CLI from catalog (Main)', () => {
-		const catalog: CatalogDefinition = {
+	test('should get Camel version for CLI from catalog (Main with executorVersion)', () => {
+		const catalog: CatalogLibraryEntry = {
 			name: 'Camel Main 4.18.0',
 			version: '4.18.0',
 			runtime: 'Main',
 			fileName: 'camel-main/4.18.0/index-825a64c8dcfd946d5eb88a96e71f6589.json',
+			executorVersion: '4.18.0',
 		};
 
 		const camelVersion = catalogService.getCamelVersionForCLI(catalog);
 		expect(camelVersion).to.equal('4.18.0');
 	});
 
-	test('should get Camel version for CLI from catalog (Quarkus with mapping)', () => {
-		const catalog: CatalogDefinition = {
+	test('should get Camel version for CLI from catalog (Quarkus with executorVersion)', () => {
+		const catalog: CatalogLibraryEntry = {
 			name: 'Camel Quarkus 3.32.0',
 			version: '3.32.0',
 			runtime: 'Quarkus',
 			fileName: 'camel-quarkus/3.32.0/index-xxx.json',
+			executorVersion: '4.18.0',
 		};
 
 		const camelVersion = catalogService.getCamelVersionForCLI(catalog);
-		// Quarkus 3.32.0 should map to Camel 4.18.0 according to mapping file
+		// Quarkus 3.32.0 should use executorVersion 4.18.0
 		expect(camelVersion).to.equal('4.18.0');
 	});
 
-	test('should get Camel version for CLI from catalog (RedHat)', () => {
-		const catalog: CatalogDefinition = {
-			name: 'Camel Main 4.14.2.redhat-00019',
-			version: '4.14.2.redhat-00019',
+	test('should get Camel version for CLI from catalog (RedHat with executorVersion)', () => {
+		const catalog: CatalogLibraryEntry = {
+			name: 'Camel Main 4.18.1.redhat-00019',
+			version: '4.18.1.redhat-00019',
 			runtime: 'Main',
-			fileName: 'camel-main/4.14.2.redhat-00019/index-xxx.json',
+			fileName: 'camel-main/4.18.1.redhat-00019/index-xxx.json',
+			executorVersion: '4.18.1.redhat-00016',
 		};
 
 		const camelVersion = catalogService.getCamelVersionForCLI(catalog);
-		// Should return a version string (either from mapping or fallback to catalog version)
-		expect(camelVersion).to.be.a('string');
-		expect(camelVersion).to.match(/^4\.14\.2\.redhat-\d+$/);
+		// Should use executorVersion which differs from catalog version
+		expect(camelVersion).to.equal('4.18.1.redhat-00016');
 	});
 
 	test('should return undefined Camel version for undefined catalog', () => {
@@ -352,11 +357,12 @@ suite('KaotoCatalogService Test Suite', () => {
 	});
 
 	test('should get runtime for CLI from catalog (Main)', () => {
-		const catalog: CatalogDefinition = {
+		const catalog: CatalogLibraryEntry = {
 			name: 'Camel Main 4.18.0',
 			version: '4.18.0',
 			runtime: 'Main',
 			fileName: 'camel-main/4.18.0/index-825a64c8dcfd946d5eb88a96e71f6589.json',
+			executorVersion: '4.18.0',
 		};
 
 		const runtime = catalogService.getRuntimeForCLI(catalog);
@@ -364,11 +370,12 @@ suite('KaotoCatalogService Test Suite', () => {
 	});
 
 	test('should get runtime for CLI from catalog (Quarkus)', () => {
-		const catalog: CatalogDefinition = {
+		const catalog: CatalogLibraryEntry = {
 			name: 'Camel Quarkus 3.32.0',
 			version: '3.32.0',
 			runtime: 'Quarkus',
 			fileName: 'camel-quarkus/3.32.0/index-xxx.json',
+			executorVersion: '4.18.0',
 		};
 
 		const runtime = catalogService.getRuntimeForCLI(catalog);
@@ -376,11 +383,12 @@ suite('KaotoCatalogService Test Suite', () => {
 	});
 
 	test('should get runtime for CLI from catalog (Spring Boot)', () => {
-		const catalog: CatalogDefinition = {
+		const catalog: CatalogLibraryEntry = {
 			name: 'Camel Spring Boot 4.18.0',
 			version: '4.18.0',
 			runtime: 'Spring Boot',
 			fileName: 'camel-springboot/4.18.0/index-xxx.json',
+			executorVersion: '4.18.0',
 		};
 
 		const runtime = catalogService.getRuntimeForCLI(catalog);
@@ -393,11 +401,12 @@ suite('KaotoCatalogService Test Suite', () => {
 	});
 
 	test('should get CLI parameters from catalog', () => {
-		const catalog: CatalogDefinition = {
+		const catalog: CatalogLibraryEntry = {
 			name: 'Camel Main 4.18.0',
 			version: '4.18.0',
 			runtime: 'Main',
 			fileName: 'camel-main/4.18.0/index-825a64c8dcfd946d5eb88a96e71f6589.json',
+			executorVersion: '4.18.0',
 		};
 
 		const params = catalogService.getCLIParameters(catalog);
