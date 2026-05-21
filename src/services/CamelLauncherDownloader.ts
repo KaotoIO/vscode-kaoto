@@ -30,35 +30,28 @@ export class CamelLauncherDownloader {
 	/**
 	 * Ensure Camel Launcher is available, downloading if necessary
 	 * @param version - Camel version to download
-	 * @returns Path to the camel launcher executable script
+	 * @returns Path to the camel launcher JAR file
 	 */
 	async ensureLauncher(version: string): Promise<string> {
 		const launcherDir = this.getLauncherDirectory(version);
+		const jarPath = path.join(launcherDir, `camel-launcher-${version}.jar`);
 
-		// Try to find existing executable
-		let launcherExecutable = this.findLauncherExecutable(launcherDir);
-		if (launcherExecutable) {
-			KaotoOutputChannel.logInfo(`Camel Launcher ${version} already available at: ${launcherExecutable}`);
-			return launcherExecutable;
+		// Check if JAR already exists
+		if (fs.existsSync(jarPath)) {
+			KaotoOutputChannel.logInfo(`Camel Launcher ${version} already available at: ${jarPath}`);
+			return jarPath;
 		}
 
-		// Download JAR and setup scripts
+		// Download JAR
 		KaotoOutputChannel.logInfo(`Downloading Camel Launcher ${version}...`);
 		await this.downloadLauncher(version, launcherDir);
 
-		// Find the executable after setup
-		launcherExecutable = this.findLauncherExecutable(launcherDir);
-		if (!launcherExecutable) {
-			throw new Error(`Camel Launcher executable not found after setup in ${launcherDir}`);
+		// Verify JAR was downloaded
+		if (!fs.existsSync(jarPath)) {
+			throw new Error(`Camel Launcher JAR not found after download in ${launcherDir}`);
 		}
 
-		// Make script executable on Unix systems
-		if (process.platform !== 'win32') {
-			fs.chmodSync(launcherExecutable, 0o755);
-			KaotoOutputChannel.logInfo(`Set execute permission for: ${launcherExecutable}`);
-		}
-
-		return launcherExecutable;
+		return jarPath;
 	}
 
 	/**
@@ -76,7 +69,7 @@ export class CamelLauncherDownloader {
 	}
 
 	/**
-	 * Download Camel Launcher JAR from appropriate Maven repository and setup scripts
+	 * Download Camel Launcher JAR from appropriate Maven repository
 	 */
 	private async downloadLauncher(version: string, targetDir: string): Promise<void> {
 		const jarPath = path.join(targetDir, `camel-launcher-${version}.jar`);
@@ -96,38 +89,6 @@ export class CamelLauncherDownloader {
 			KaotoOutputChannel.logInfo(`JAR downloaded successfully to: ${jarPath}`);
 		} catch (error) {
 			throw new Error(`Failed to download Camel Launcher ${version} from ${downloadUrl}: ${error instanceof Error ? error.message : String(error)}`);
-		}
-
-		// Copy launcher scripts from extension resources
-		await this.setupLauncherScripts(targetDir);
-	}
-
-	/**
-	 * Copy launcher scripts from extension resources to target directory
-	 */
-	private async setupLauncherScripts(targetDir: string): Promise<void> {
-		const resourcesDir = path.join(this.extensionPath, 'resources', 'camel-launcher');
-
-		// Copy camel.sh for Unix systems
-		const shScriptSource = path.join(resourcesDir, 'camel.sh');
-		const shScriptTarget = path.join(targetDir, 'camel.sh');
-
-		if (fs.existsSync(shScriptSource)) {
-			fs.copyFileSync(shScriptSource, shScriptTarget);
-			KaotoOutputChannel.logInfo(`Copied camel.sh to: ${shScriptTarget}`);
-		} else {
-			KaotoOutputChannel.logWarning(`camel.sh not found at: ${shScriptSource}`);
-		}
-
-		// Copy camel.bat for Windows
-		const batScriptSource = path.join(resourcesDir, 'camel.bat');
-		const batScriptTarget = path.join(targetDir, 'camel.bat');
-
-		if (fs.existsSync(batScriptSource)) {
-			fs.copyFileSync(batScriptSource, batScriptTarget);
-			KaotoOutputChannel.logInfo(`Copied camel.bat to: ${batScriptTarget}`);
-		} else {
-			KaotoOutputChannel.logWarning(`camel.bat not found at: ${batScriptSource}`);
 		}
 	}
 
@@ -180,25 +141,6 @@ export class CamelLauncherDownloader {
 	 */
 	private getLauncherDirectory(version: string): string {
 		return path.join(this.storageDir, `camel-launcher-${version}`);
-	}
-
-	/**
-	 * Find launcher executable script in the directory
-	 */
-	private findLauncherExecutable(launcherDir: string): string | null {
-		if (!fs.existsSync(launcherDir)) {
-			return null;
-		}
-
-		const isWindows = process.platform === 'win32';
-		const scriptName = isWindows ? 'camel.bat' : 'camel.sh';
-		const scriptPath = path.join(launcherDir, scriptName);
-
-		if (fs.existsSync(scriptPath)) {
-			return scriptPath;
-		}
-
-		return null;
 	}
 
 	/**

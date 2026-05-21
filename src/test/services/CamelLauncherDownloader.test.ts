@@ -48,29 +48,24 @@ suite('CamelLauncherDownloader Tests', () => {
 		fs.rmSync(newStoragePath, { recursive: true, force: true });
 	});
 
-	test('Should return cached path if launcher already exists', async () => {
+	test('Should return cached JAR path if launcher already exists', async () => {
 		const version = '4.18.0';
 		const launcherDir = path.join(testStoragePath, `camel-launcher-${version}`);
 
-		// Create the directory structure with JAR and script
+		// Create the directory structure with JAR
 		fs.mkdirSync(launcherDir, { recursive: true });
 
 		// Create JAR file
 		const jarPath = path.join(launcherDir, `camel-launcher-${version}.jar`);
 		fs.writeFileSync(jarPath, 'fake jar content');
 
-		// Create script
-		const scriptName = process.platform === 'win32' ? 'camel.bat' : 'camel.sh';
-		const scriptPath = path.join(launcherDir, scriptName);
-		fs.writeFileSync(scriptPath, '#!/bin/bash\necho "test"');
-
-		// Should return cached path without downloading
+		// Should return cached JAR path without downloading
 		const result = await downloader.ensureLauncher(version);
 
-		assert.equal(result, scriptPath);
+		assert.equal(result, jarPath);
 	});
 
-	test('Should find launcher script in directory', async () => {
+	test('Should find launcher JAR in directory', async () => {
 		const version = '4.18.0';
 		const launcherDir = path.join(testStoragePath, `camel-launcher-${version}`);
 
@@ -81,15 +76,10 @@ suite('CamelLauncherDownloader Tests', () => {
 		const jarPath = path.join(launcherDir, `camel-launcher-${version}.jar`);
 		fs.writeFileSync(jarPath, 'fake jar content');
 
-		// Create script
-		const scriptName = process.platform === 'win32' ? 'camel.bat' : 'camel.sh';
-		const scriptPath = path.join(launcherDir, scriptName);
-		fs.writeFileSync(scriptPath, '#!/bin/bash\necho "test"');
-
-		// Should find the script
+		// Should find the JAR
 		const result = await downloader.ensureLauncher(version);
 
-		assert.equal(result, scriptPath);
+		assert.equal(result, jarPath);
 		assert.isTrue(fs.existsSync(result));
 	});
 
@@ -150,7 +140,7 @@ suite('CamelLauncherDownloader Tests', () => {
 		}
 	});
 
-	test('Should prefer camel.bat on Windows and camel.sh on Unix', async () => {
+	test('Should return JAR path directly', async () => {
 		const version = '4.18.0';
 		const launcherDir = path.join(testStoragePath, `camel-launcher-${version}`);
 		fs.mkdirSync(launcherDir, { recursive: true });
@@ -159,20 +149,11 @@ suite('CamelLauncherDownloader Tests', () => {
 		const jarPath = path.join(launcherDir, `camel-launcher-${version}.jar`);
 		fs.writeFileSync(jarPath, 'fake jar content');
 
-		// Create both scripts
-		const shPath = path.join(launcherDir, 'camel.sh');
-		const batPath = path.join(launcherDir, 'camel.bat');
-		fs.writeFileSync(shPath, '#!/bin/bash\necho "test"');
-		fs.writeFileSync(batPath, '@echo off\necho "test"');
-
 		const result = await downloader.ensureLauncher(version);
 
-		// Should prefer platform-specific script
-		if (process.platform === 'win32') {
-			assert.equal(result, batPath);
-		} else {
-			assert.equal(result, shPath);
-		}
+		// Should return JAR path directly (not wrapper script)
+		assert.equal(result, jarPath);
+		assert.isTrue(result.endsWith('.jar'));
 	});
 
 	test('Should detect RedHat build versions', () => {

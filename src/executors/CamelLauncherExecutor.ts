@@ -9,23 +9,24 @@ import { CamelLauncherExecutorConfig } from './types/ExecutorConfig';
 
 /**
  * Camel Launcher executor implementation
+ * Executes Camel Launcher JAR directly using java -jar
  */
 export class CamelLauncherExecutor extends BaseExecutor {
-	private readonly launcherPath: string;
+	private readonly jarPath: string;
 
-	constructor(config: CamelLauncherExecutorConfig, launcherPath: string) {
-		// Configure builder for Camel Launcher (no prefix args needed)
+	constructor(config: CamelLauncherExecutorConfig, jarPath: string) {
+		// Configure builder to execute JAR using java -jar
 		const commandBuilder = new CamelCommandBuilder({
-			executable: launcherPath,
-			prefixArgs: [], // Camel Launcher doesn't need prefix arguments
+			executable: 'java',
+			prefixArgs: ['-jar', jarPath],
 		});
 
 		super(config, commandBuilder);
-		this.launcherPath = launcherPath;
+		this.jarPath = jarPath;
 	}
 
 	async isAvailable(): Promise<boolean> {
-		// Check if the launcher executable exists
-		return existsSync(this.launcherPath);
+		// Check if the launcher JAR exists
+		return existsSync(this.jarPath);
 	}
 }

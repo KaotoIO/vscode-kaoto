@@ -111,10 +111,10 @@ export class CamelExecutorFactory {
 			this.downloader = new CamelLauncherDownloader(this.extensionContext);
 		}
 
-		const launcherPath = await this.downloader.ensureLauncher(config.version);
-		KaotoOutputChannel.logInfo(`Using Camel Launcher ${config.version}: ${launcherPath}`);
+		const jarPath = await this.downloader.ensureLauncher(config.version);
+		KaotoOutputChannel.logInfo(`Using Camel Launcher ${config.version}: ${jarPath}`);
 
-		return new CamelLauncherExecutor(config, launcherPath);
+		return new CamelLauncherExecutor(config, jarPath);
 	}
 
 	/**
