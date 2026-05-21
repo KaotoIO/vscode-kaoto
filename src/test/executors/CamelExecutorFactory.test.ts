@@ -3,11 +3,15 @@ import * as vscode from 'vscode';
 import { CamelExecutorFactory } from '../../executors/CamelExecutorFactory';
 import { JBangExecutor } from '../../executors/JBangExecutor';
 import { CamelLauncherExecutor } from '../../executors/CamelLauncherExecutor';
+import { initializeKaotoCatalogService } from '../helpers/TestSetup';
 
 suite('CamelExecutorFactory Tests', () => {
 	let originalConfig: vscode.WorkspaceConfiguration;
 
-	suiteSetup(() => {
+	suiteSetup(async () => {
+		// Initialize KaotoCatalogService for tests
+		await initializeKaotoCatalogService();
+
 		// Store original configuration
 		originalConfig = vscode.workspace.getConfiguration();
 	});

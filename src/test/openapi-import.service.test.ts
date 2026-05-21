@@ -751,7 +751,9 @@ suite('Pet Store OpenAPI Integration', function () {
 	});
 
 	test('should parse pet-store.openapi.json and generate REST DSL + Routes', async function () {
-		const petStoreJson = await fs.readFile(path.join(__dirname, '../../../src/test/stubs', 'pet-store.openapi.json'), 'utf-8');
+		// Read from source directory since stubs are not compiled
+		// From out/test/src/test/ we need to go up to workspace root, then into src/test/stubs
+		const petStoreJson = await fs.readFile(path.join(__dirname, '../../../../src/test/stubs', 'pet-store.openapi.json'), 'utf-8');
 
 		const result = await service.parseOpenApi(petStoreJson, {
 			shouldGenerateRest: true,

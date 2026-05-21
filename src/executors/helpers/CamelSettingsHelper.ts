@@ -111,7 +111,9 @@ export class CamelSettingsHelper {
 		}
 
 		// Use code defaults - always use the allocated port, never -1
-		const useManagementPort = satisfies(normalizeVersionForSemver(this.camelVersion), '>=4.14');
+		// Default to --management-port if version is not set or >= 4.14
+		const normalizedVersion = normalizeVersionForSemver(this.camelVersion);
+		const useManagementPort = !normalizedVersion || satisfies(normalizedVersion, '>=4.14');
 		const effectivePort = port ?? 8080;
 		const argument = useManagementPort ? `--management-port=${effectivePort}` : `--port=${effectivePort}`;
 

@@ -1,9 +1,15 @@
 import { assert } from 'chai';
 import { CamelSettingsHelper } from '../../executors/helpers/CamelSettingsHelper';
 import * as path from 'path';
+import { initializeKaotoCatalogService } from '../helpers/TestSetup';
 
 suite('CamelSettingsHelper Tests', () => {
 	let helper: CamelSettingsHelper;
+
+	suiteSetup(async () => {
+		// Initialize KaotoCatalogService for tests
+		await initializeKaotoCatalogService();
+	});
 
 	setup(() => {
 		helper = new CamelSettingsHelper();
