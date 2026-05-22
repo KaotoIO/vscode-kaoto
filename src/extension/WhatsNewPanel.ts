@@ -28,7 +28,7 @@ export class WhatsNewPanel {
 			const bytes = await vscode.workspace.fs.readFile(indexMdUri);
 			const markdown = new TextDecoder('utf-8').decode(bytes);
 
-			const htmlContent: string = (await vscode.commands.executeCommand('markdown.api.render', markdown)) as string;
+			const htmlContent: string = await vscode.commands.executeCommand('markdown.api.render', markdown);
 
 			const panel = vscode.window.createWebviewPanel(
 				'kaoto.whatsNew',
