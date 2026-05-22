@@ -855,12 +855,12 @@
         },
         {
           "command": "kaoto.tests.showSource",
-          "when": "view == kaoto.tests && viewItem =~ /^citrus-test-file/ || viewItem == jbang-properties-file",
+          "when": "view == kaoto.tests && viewItem =~ /^citrus-test-file/ || viewItem == testing-properties-file",
           "group": "navigation@1"
         },
         {
           "command": "kaoto.tests.delete",
-          "when": "view == kaoto.tests && (viewItem =~ /^citrus-test-file/ || viewItem == test-folder || viewItem == jbang-properties-file || viewItem =~ /^test-folder-maven/)",
+          "when": "view == kaoto.tests && (viewItem =~ /^citrus-test-file/ || viewItem == test-folder || viewItem == testing-properties-file || viewItem =~ /^test-folder-maven/)",
           "group": "navigation@2"
         },
         {
@@ -997,7 +997,8 @@
               "*.citrus.it.yaml",
               "*.citrus-test.yaml",
               "*.citrus-it.yaml",
-              "jbang.properties"
+              "jbang.properties",
+              "citrus-application.properties"
             ],
             "markdownDescription": "Regular expression to filter files to be displayed in `Kaoto > Tests` view.",
             "scope": "window",

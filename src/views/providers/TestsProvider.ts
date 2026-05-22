@@ -72,13 +72,13 @@ export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
 	protected async toTreeItemForFile(file: Uri, isUnderMavenRoot: boolean, _isTopLevelWithinWorkspace: boolean): Promise<TreeItem> {
 		const fileName = basename(file.fsPath);
 
-		// Handle jbang.properties files - simple tree item with default icon
-		if (fileName === 'jbang.properties') {
+		// Handle testing properties files - simple tree item with default icon
+		if (fileName === 'jbang.properties' || fileName === 'citrus-application.properties') {
 			const item = new TreeItem(fileName, TreeItemCollapsibleState.None);
 			item.resourceUri = file;
 			item.tooltip = file.fsPath;
 			item.command = { command: 'vscode.open', title: 'Open File', arguments: [file] };
-			item.contextValue = 'jbang-properties-file';
+			item.contextValue = 'testing-properties-file';
 			return item;
 		}
 
@@ -147,13 +147,13 @@ export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
 	}
 
 	/**
-	 * Find all test files under a specific folder path (excludes jbang.properties)
+	 * Find all test files under a specific folder path (excludes testing properties)
 	 * @param folderPath The folder path to search in
 	 * @returns Array of test file paths
 	 */
 	async getTestFilesInFolder(folderPath: string): Promise<string[]> {
 		const folderUri = Uri.file(folderPath);
-		// Use TEST_FILE_PATTERN to only get actual test files, not jbang.properties
+		// Use TEST_FILE_PATTERN to only get actual test files, not testing properties
 		const pattern = new RelativePattern(folderUri, TestsProvider.TEST_FILE_PATTERN);
 		const files = await workspace.findFiles(pattern, this.getExcludePattern());
 		return files.map((file) => file.fsPath);
