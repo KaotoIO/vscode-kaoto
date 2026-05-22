@@ -76,6 +76,10 @@ describe('User Settings', function () {
 		},
 	};
 
+	before(function () {
+		driver = VSBrowser.instance.driver;
+	});
+
 	after(async function () {
 		if (kaotoWebview !== undefined) {
 			try {
@@ -87,10 +91,9 @@ describe('User Settings', function () {
 		await new EditorView().closeAllEditors();
 	});
 
-	describe('Custom catalogs', function () {
+	// skipped until we switch to status bar catalog selector, because of already missing Camel Catalog dropdown selector in Kaoto editor UI
+	describe.skip('Custom catalogs', function () {
 		before(async function () {
-			driver = VSBrowser.instance.driver;
-
 			// provide the Catalog URL using Settings UI editor
 			const settings = await new Workbench().openSettings();
 			const textSetting = await driver.wait(
@@ -123,6 +126,7 @@ describe('User Settings', function () {
 			kaotoWebview = (await openAndSwitchToKaotoFrame(WORKSPACE_FOLDER, 'my.camel.yaml', driver, true)).kaotoWebview;
 			await checkTopologyLoaded(driver);
 		});
+
 		after(async function () {
 			if (kaotoWebview !== undefined) {
 				try {
@@ -191,7 +195,8 @@ describe('User Settings', function () {
 			await switchBackCatalogToGalleryViewAndClose(catalogWindow);
 		});
 
-		it(`Select 'community' catalog and check "Red Hat" components are not available`, async function () {
+		// skipped until we switch to status bar catalog selector, because of already missing Camel Catalog dropdown selector in Kaoto editor UI
+		it.skip(`Select 'community' catalog and check "Red Hat" components are not available`, async function () {
 			this.timeout(90_000);
 
 			// expand dropdown
