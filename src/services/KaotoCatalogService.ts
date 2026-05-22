@@ -29,8 +29,8 @@ export class KaotoCatalogService {
 	private readonly catalogIndexPath: string;
 
 	constructor(private readonly context: vscode.ExtensionContext) {
-		// Path to the catalog directory in node_modules
-		this.catalogBasePath = path.join(context.extensionPath, 'node_modules', '@kaoto', 'camel-catalog', 'dist', 'camel-catalog');
+		// Path to the catalog directory copied by webpack during build
+		this.catalogBasePath = path.join(context.extensionPath, 'dist', 'webview', 'editors', 'kaoto', 'camel-catalog');
 		this.catalogIndexPath = path.join(this.catalogBasePath, 'index.json');
 		KaotoCatalogService.instance = this;
 	}
