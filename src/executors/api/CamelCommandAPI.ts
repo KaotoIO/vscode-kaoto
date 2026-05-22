@@ -1,6 +1,7 @@
 import { CamelExecutorFactory } from '../CamelExecutorFactory';
 import { CommandArguments, CommandResult } from '../types/ExecutorTypes';
 import { CamelSettingsHelper } from '../helpers/CamelSettingsHelper';
+import { TestFolderResolver } from '../../helpers/TestFolderResolver';
 
 /**
  * High-level API for executing Camel commands
@@ -212,11 +213,13 @@ export class CamelCommandAPI {
 
 	/**
 	 * Run all Camel tests in a folder
+	 * Automatically resolves to the actual test folder if the provided path is not a test folder
 	 */
 	static async testRunFolder(folderPath: string): Promise<CommandResult> {
 		const executor = await CamelExecutorFactory.createExecutor();
+		const testFolder = await TestFolderResolver.resolveTestFolder(folderPath);
 		const args: CommandArguments = ['run', '*'];
-		return await executor.execute('test', args, { cwd: folderPath });
+		return await executor.execute('test', args, { cwd: testFolder });
 	}
 
 	/**
