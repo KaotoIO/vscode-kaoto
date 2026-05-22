@@ -49,7 +49,7 @@ const commonConfig = (env) => {
 
 	const devtool = sourceMaps
 		? {
-				devtool: 'inline-source-map',
+				devtool: 'eval-source-map',
 			}
 		: {};
 
