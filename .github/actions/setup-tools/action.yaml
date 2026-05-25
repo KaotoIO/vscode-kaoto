@@ -32,23 +32,33 @@ runs:
         node-version: ${{ inputs.node-version }}
         cache: ${{ inputs.cache }}
         cache-dependency-path: ${{ inputs.cache-dependency-path }}
+
     - uses: actions/setup-node@v6
       if: ${{ inputs.cache != '' && inputs.cache-dependency-path == '' }}
       with:
         node-version: ${{ inputs.node-version }}
         cache: ${{ inputs.cache }}
+
     - uses: actions/setup-node@v6
       if: ${{ inputs.cache == '' }}
       with:
         node-version: ${{ inputs.node-version }}
         package-manager-cache: false
+
     - uses: actions/setup-java@v5
       with:
         distribution: temurin
         java-version: ${{ inputs.java-version }}
-    - name: Setup JBang
-      if: ${{ inputs.install-jbang == 'true' }}
+
+    - name: Setup JBang (Linux, macOS)
+      if: ${{ runner.os != 'Windows' && inputs.install-jbang == 'true' }}
       uses: jbangdev/setup-jbang@v0.1.1
+
+    - name: Setup JBang (Windows)
+      if: ${{ runner.os == 'Windows' && inputs.install-jbang == 'true' }}
+      shell: pwsh
+      run: choco install jbang
+
     - name: Setup JBang properties
       if: ${{ inputs.install-jbang == 'true' }}
       shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
@@ -58,18 +68,22 @@ runs:
       if: ${{ inputs.install-jbang == 'true' }}
       shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
       run: jbang trust add https://github.com/apache/camel/
+
     - name: Add Camel Trusted Source to JBang - Citrus
       if: ${{ inputs.install-jbang == 'true' }}
       shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
       run: jbang trust add https://github.com/citrusframework/citrus/
+
     - name: List Camel Trusted Sources
       if: ${{ inputs.install-jbang == 'true' }}
       shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
       run: jbang trust list
+
     - name: Add Kubernetes plugin to Camel JBang
       if: ${{ inputs.install-jbang == 'true' }}
       shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
       run: jbang camel@apache/camel plugin add kubernetes
+
     - name: Add Test plugin to Camel JBang
       if: ${{ inputs.install-jbang == 'true' }}
       shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
