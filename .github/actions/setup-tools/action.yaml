@@ -53,10 +53,19 @@ runs:
       if: ${{ inputs.install-jbang == 'true' }}
       shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
       run: jbang properties@jbangdev
-    - name: Add Camel Trusted Source to JBang
+
+    - name: Add Camel Trusted Source to JBang - Camel
       if: ${{ inputs.install-jbang == 'true' }}
       shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
       run: jbang trust add https://github.com/apache/camel/
+    - name: Add Camel Trusted Source to JBang - Citrus
+      if: ${{ inputs.install-jbang == 'true' }}
+      shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+      run: jbang trust add https://github.com/citrusframework/citrus/
+    - name: List Camel Trusted Sources
+      if: ${{ inputs.install-jbang == 'true' }}
+      shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+      run: jbang trust list
     - name: Add Kubernetes plugin to Camel JBang
       if: ${{ inputs.install-jbang == 'true' }}
       shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
