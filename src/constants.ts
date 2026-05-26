@@ -9,10 +9,10 @@ import packageJson from '../package.json';
  * Default Camel version used as fallback when catalog service cannot determine version
  * This value is defined in package.json under "kaoto.defaultCamelVersion"
  */
-export const DEFAULT_CAMEL_VERSION = packageJson.kaoto?.defaultCamelVersion || '4.18.2';
+export const DEFAULT_CAMEL_VERSION = packageJson.kaoto?.defaultCamelVersion;
 
 /**
  * Default Camel JBang version used for JBang executor
  * This value is defined in package.json under "kaoto.defaultCamelJbangVersion"
  */
-export const DEFAULT_CAMEL_JBANG_VERSION = packageJson.kaoto?.defaultCamelJbangVersion || '4.18.2';
+export const DEFAULT_CAMEL_JBANG_VERSION = packageJson.kaoto?.defaultCamelJbangVersion;
