@@ -81,6 +81,20 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const contextHandler = new ExtensionContextHandler(context, kieEditorStore, telemetryService);
 
+	// Register configuration change listener for executor type
+	context.subscriptions.push(
+		vscode.workspace.onDidChangeConfiguration(async (event) => {
+			if (event.affectsConfiguration('kaoto.executor.type')) {
+				KaotoOutputChannel.logInfo('Executor type configuration changed, validating requirements...');
+
+				// Force re-initialization of executor with new type
+				ensureExecutorAvailable(context, contextHandler, true).catch((error) => {
+					KaotoOutputChannel.logError('Failed to initialize executor after catalog selection', error);
+				});
+			}
+		}),
+	);
+
 	// Register catalog selection command with executor initialization
 	// Must be registered after contextHandler is created
 	context.subscriptions.push(
