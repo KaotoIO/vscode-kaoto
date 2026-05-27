@@ -18,7 +18,7 @@ export class JBangExecutor extends BaseExecutor {
 		// Configure builder for JBang - always use default JBang version from package.json
 		const commandBuilder = new CamelCommandBuilder({
 			executable: jbangPath,
-			prefixArgs: ['--verbose', `-Dcamel.jbang.version=${DEFAULT_CAMEL_JBANG_VERSION}`, 'camel@apache/camel'],
+			prefixArgs: [`-Dcamel.jbang.version=${DEFAULT_CAMEL_JBANG_VERSION}`, 'camel@apache/camel'],
 		});
 
 		super(config, commandBuilder);
