@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import * as path from 'path';
 import * as fs from 'fs';
-import { CamelLauncherDownloader } from '../../services/CamelLauncherDownloader';
+import { CamelLauncherDownloader, LauncherNotFoundError } from '../../services/CamelLauncherDownloader';
 
 suite('CamelLauncherDownloader Tests', () => {
 	let downloader: CamelLauncherDownloader;
@@ -135,8 +135,8 @@ suite('CamelLauncherDownloader Tests', () => {
 			await downloader.ensureLauncher(version);
 			assert.fail('Should have thrown an error');
 		} catch (error) {
-			assert.instanceOf(error, Error);
-			assert.include((error as Error).message, 'Failed to download');
+			assert.instanceOf(error, LauncherNotFoundError);
+			assert.include(error.message, 'is not available');
 		}
 	});
 
