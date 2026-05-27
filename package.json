@@ -936,20 +936,6 @@
             "scope": "window",
             "order": 0
           },
-          "kaoto.runtimeCatalogName": {
-            "type": "string",
-            "default": null,
-            "markdownDescription": "⚠️ **WORKSPACE-ONLY SETTING** - This setting only works in Workspace/Folder settings, not User settings.\n\nSelected runtime catalog name for integration files (e.g., 'Camel Main 4.14.7', 'Camel Quarkus 3.35.0'). Use the status bar or command palette to select from available catalogs.",
-            "scope": "resource",
-            "order": 1
-          },
-          "kaoto.testingCatalogName": {
-            "type": "string",
-            "default": null,
-            "markdownDescription": "⚠️ **WORKSPACE-ONLY SETTING** - This setting only works in Workspace/Folder settings, not User settings.\n\nSelected testing catalog name for test files (e.g., 'Citrus 4.10.1'). Use the status bar or command palette to select from available catalogs.",
-            "scope": "resource",
-            "order": 2
-          },
           "kaoto.localKameletDirectories": {
             "type": "array",
             "items": {
@@ -1220,6 +1206,26 @@
             "additionalProperties": false,
             "markdownDescription": "These values are available in Rest DSL Consumes/Produces fields. Add media type (e.g. `application/vnd.api+json`).",
             "default": null,
+            "order": 1
+          }
+        }
+      },
+      {
+        "id": "advanced",
+        "title": "Advanced",
+        "properties": {
+          "kaoto.runtimeCatalogName": {
+            "type": "string",
+            "default": null,
+            "markdownDescription": "⚠️ **WORKSPACE-ONLY SETTING** - This setting only works in Workspace/Folder settings, not User settings.\n\nSelected runtime catalog name for integration files (e.g., 'Camel Main 4.14.7', 'Camel Quarkus 3.35.0').\n\n**Note**: Use the status bar or command palette to select from available catalogs.",
+            "scope": "resource",
+            "order": 0
+          },
+          "kaoto.testingCatalogName": {
+            "type": "string",
+            "default": null,
+            "markdownDescription": "⚠️ **WORKSPACE-ONLY SETTING** - This setting only works in Workspace/Folder settings, not User settings.\n\nSelected testing catalog name for test files (e.g., 'Citrus 4.10.1').\n\n**Note**: Use the status bar or command palette to select from available catalogs.",
+            "scope": "resource",
             "order": 1
           }
         }
