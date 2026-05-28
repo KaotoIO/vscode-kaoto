@@ -282,9 +282,20 @@ export async function ensureExecutorAvailable(
 			await contextHandler.setExecutorAvailable(true);
 		}
 	} catch (error) {
-		const errorMessage = error instanceof Error ? error.message : String(error);
-		KaotoOutputChannel.logError('Failed to setup executor', error);
-		vscode.window.showWarningMessage(`Kaoto: Failed to setup executor: ${errorMessage}. It will be configured when first needed.`);
+		// Import LauncherNotFoundError type check
+		const isLauncherNotFound = error instanceof Error && error.name === 'LauncherNotFoundError';
+
+		if (isLauncherNotFound) {
+			// User-friendly message for 404 errors
+			const errorMessage = error instanceof Error ? error.message : String(error);
+			KaotoOutputChannel.logWarning(errorMessage);
+			vscode.window.showWarningMessage(errorMessage);
+		} else {
+			// Generic error handling for other failures
+			const errorMessage = error instanceof Error ? error.message : String(error);
+			KaotoOutputChannel.logError('Failed to setup executor', error);
+			vscode.window.showWarningMessage(`Failed to setup executor: ${errorMessage}. It will be configured when first needed.`);
+		}
 
 		// Disable/hide extension actions dependant on a Camel executor
 		await contextHandler.setExecutorAvailable(false);

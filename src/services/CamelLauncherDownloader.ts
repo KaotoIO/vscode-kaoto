@@ -6,20 +6,26 @@ import { ExtensionContext } from 'vscode';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 
 /**
+ * Error thrown when Camel Launcher version is not found (404)
+ */
+export class LauncherNotFoundError extends Error {
+	constructor(version: string, url: string) {
+		super(`Camel Launcher ${version} is not available. ` + `This version may not exist in the repository. ` + `Attempted URL: ${url}`);
+		this.name = 'LauncherNotFoundError';
+	}
+}
+
+/**
  * Service for downloading and managing Camel Launcher JAR distributions
  */
 export class CamelLauncherDownloader {
 	private static readonly MAVEN_CENTRAL_BASE = 'https://repo1.maven.org/maven2/org/apache/camel/camel-launcher';
 	private static readonly REDHAT_MAVEN_BASE = 'https://maven.repository.redhat.com/ga/org/apache/camel/camel-launcher';
 	private readonly storageDir: string;
-	private readonly extensionPath: string;
 
 	constructor(context?: ExtensionContext, customStorageDir?: string) {
 		// Use custom storage dir, extension global storage, or fallback to temp
 		this.storageDir = customStorageDir || context?.globalStorageUri.fsPath || path.join(os.tmpdir(), 'vscode-kaoto-camel-launcher');
-
-		// Store extension path for accessing bundled resources
-		this.extensionPath = context?.extensionPath || '';
 
 		// Ensure storage directory exists
 		if (!fs.existsSync(this.storageDir)) {
@@ -88,6 +94,11 @@ export class CamelLauncherDownloader {
 			await this.downloadFile(downloadUrl, jarPath);
 			KaotoOutputChannel.logInfo(`JAR downloaded successfully to: ${jarPath}`);
 		} catch (error) {
+			// Handle 404 errors with a specific error type
+			if (error instanceof Error && error.message.includes('HTTP 404')) {
+				throw new LauncherNotFoundError(version, downloadUrl);
+			}
+			// For other errors, throw with details
 			throw new Error(`Failed to download Camel Launcher ${version} from ${downloadUrl}: ${error instanceof Error ? error.message : String(error)}`);
 		}
 	}
