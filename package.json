@@ -580,6 +580,10 @@
       ],
       "commandPalette": [
         {
+          "command": "kaoto.selectCamelCatalog",
+          "when": "false"
+        },
+        {
           "command": "kaoto.open",
           "when": "false"
         },
@@ -932,7 +936,7 @@
           "kaoto.catalog.url": {
             "type": "string",
             "default": null,
-            "markdownDescription": "URL to a Kaoto catalog. For instance `https://raw.githubusercontent.com/KaotoIO/camel-catalog/refs/heads/main/catalog/index.json `. Documentation to generate your own set of catalog is available [here](https://kaoto.io/docs/manual/09_generatingcatalog/).\n\nIt requires to reopen the Kaoto editors to be effective.\n\n**Note**: Use the Kaoto editor status bar or command palette to select from a custom catalogs.",
+            "markdownDescription": "URL to a Kaoto catalog. For instance `https://raw.githubusercontent.com/KaotoIO/camel-catalog/refs/heads/main/catalog/index.json `. Documentation to generate your own set of catalog is available [here](https://kaoto.io/docs/manual/09_generatingcatalog/).\n\nIt requires to reopen the Kaoto editors to be effective.\n\n**Note**: Use the Kaoto editor status bar to select from a custom catalogs.",
             "scope": "window",
             "order": 0
           },
@@ -1217,14 +1221,14 @@
           "kaoto.runtimeCatalogName": {
             "type": "string",
             "default": null,
-            "markdownDescription": "⚠️ **WORKSPACE-ONLY SETTING** - This setting only works in Workspace/Folder settings, not User settings.\n\nSelected runtime catalog name for integration files (e.g., 'Camel Main 4.14.7', 'Camel Quarkus 3.35.0').\n\n**Note**: Use the status bar or command palette to select from available catalogs.",
+            "markdownDescription": "⚠️ **WORKSPACE-ONLY SETTING** - This setting only works in Workspace/Folder settings, not User settings.\n\nSelected runtime catalog name for integration files (e.g., 'Camel Main 4.14.7', 'Camel Quarkus 3.35.0').\n\n**Note**: Use the status bar to select from available catalogs.",
             "scope": "resource",
             "order": 0
           },
           "kaoto.testingCatalogName": {
             "type": "string",
             "default": null,
-            "markdownDescription": "⚠️ **WORKSPACE-ONLY SETTING** - This setting only works in Workspace/Folder settings, not User settings.\n\nSelected testing catalog name for test files (e.g., 'Citrus 4.10.1').\n\n**Note**: Use the status bar or command palette to select from available catalogs.",
+            "markdownDescription": "⚠️ **WORKSPACE-ONLY SETTING** - This setting only works in Workspace/Folder settings, not User settings.\n\nSelected testing catalog name for test files (e.g., 'Citrus 4.10.1').\n\n**Note**: Use the status bar to select from available catalogs.",
             "scope": "resource",
             "order": 1
           }
