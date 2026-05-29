@@ -111,6 +111,7 @@ const commonConfig = (env) => {
 				constants: require.resolve('constants-browserify'),
 				path: require.resolve('path-browserify'),
 				os: require.resolve('os-browserify/browser'),
+				https: false,
 				fs: false,
 				child_process: false,
 				net: false,
