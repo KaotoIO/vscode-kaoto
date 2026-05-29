@@ -38,10 +38,14 @@ export class StepsOnSaveManager {
 	}
 
 	public async updateDependencies(docPath: string, pomPath: string, message?: string): Promise<void> {
+		// Get executor type from VS Code settings to avoid circular dependency
+		const vscodeConfig = vscode.workspace.getConfiguration();
+		const executorType = vscodeConfig.get<string>('kaoto.executor.type');
+
 		// Get version from catalog service - use selected catalog
 		const catalogService = KaotoCatalogService.getInstance();
 		const catalog = await catalogService.getSelectedIntegrationCatalog();
-		const camelVersion = catalogService.getCamelVersionForCLI(catalog) || DEFAULT_CAMEL_VERSION;
+		const camelVersion = catalogService.getCamelVersionForCLI(catalog, executorType) || DEFAULT_CAMEL_VERSION;
 
 		if (satisfies(normalizeVersionForSemver(camelVersion), '<4.14')) {
 			KaotoOutputChannel.logWarning('Camel version is <4.14. Skipping update on save for Camel dependencies in pom.xml.');

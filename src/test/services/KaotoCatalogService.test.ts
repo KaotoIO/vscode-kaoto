@@ -280,7 +280,7 @@ suite('KaotoCatalogService Test Suite', () => {
 		expect(label).to.equal('Camel Main 4.18.0');
 	});
 
-	test('should get Camel version for CLI from catalog (Main with executorVersion)', () => {
+	test('should get Camel version for CLI from catalog (Main with executorVersion) - JBang', () => {
 		const catalog: CatalogLibraryEntry = {
 			name: 'Camel Main 4.18.0',
 			version: '4.18.0',
@@ -289,11 +289,26 @@ suite('KaotoCatalogService Test Suite', () => {
 			executorVersion: '4.18.0',
 		};
 
-		const camelVersion = catalogService.getCamelVersionForCLI(catalog);
+		const camelVersion = catalogService.getCamelVersionForCLI(catalog, 'jbang');
+		// JBang should use catalog version for --camel-version flag
 		expect(camelVersion).to.equal('4.18.0');
 	});
 
-	test('should get Camel version for CLI from catalog (Quarkus with executorVersion)', () => {
+	test('should get Camel version for CLI from catalog (Main with executorVersion) - Camel Launcher', () => {
+		const catalog: CatalogLibraryEntry = {
+			name: 'Camel Main 4.18.0',
+			version: '4.18.0',
+			runtime: 'Main',
+			fileName: 'camel-main/4.18.0/index-825a64c8dcfd946d5eb88a96e71f6589.json',
+			executorVersion: '4.18.0',
+		};
+
+		const camelVersion = catalogService.getCamelVersionForCLI(catalog, 'camel-launcher');
+		// Camel Launcher should use executorVersion for JAR download
+		expect(camelVersion).to.equal('4.18.0');
+	});
+
+	test('should get Camel version for CLI from catalog (Quarkus with executorVersion) - JBang', () => {
 		const catalog: CatalogLibraryEntry = {
 			name: 'Camel Quarkus 3.32.0',
 			version: '3.32.0',
@@ -302,12 +317,26 @@ suite('KaotoCatalogService Test Suite', () => {
 			executorVersion: '4.18.0',
 		};
 
-		const camelVersion = catalogService.getCamelVersionForCLI(catalog);
-		// Quarkus 3.32.0 should use executorVersion 4.18.0
+		const camelVersion = catalogService.getCamelVersionForCLI(catalog, 'jbang');
+		// JBang should use catalog version (3.32.0) for --camel-version flag
+		expect(camelVersion).to.equal('3.32.0');
+	});
+
+	test('should get Camel version for CLI from catalog (Quarkus with executorVersion) - Camel Launcher', () => {
+		const catalog: CatalogLibraryEntry = {
+			name: 'Camel Quarkus 3.32.0',
+			version: '3.32.0',
+			runtime: 'Quarkus',
+			fileName: 'camel-quarkus/3.32.0/index-xxx.json',
+			executorVersion: '4.18.0',
+		};
+
+		const camelVersion = catalogService.getCamelVersionForCLI(catalog, 'camel-launcher');
+		// Camel Launcher should use executorVersion (4.18.0) for JAR download
 		expect(camelVersion).to.equal('4.18.0');
 	});
 
-	test('should get Camel version for CLI from catalog (RedHat with executorVersion)', () => {
+	test('should get Camel version for CLI from catalog (RedHat with executorVersion) - JBang', () => {
 		const catalog: CatalogLibraryEntry = {
 			name: 'Camel Main 4.18.1.redhat-00019',
 			version: '4.18.1.redhat-00019',
@@ -316,8 +345,22 @@ suite('KaotoCatalogService Test Suite', () => {
 			executorVersion: '4.18.1.redhat-00016',
 		};
 
-		const camelVersion = catalogService.getCamelVersionForCLI(catalog);
-		// Should use executorVersion which differs from catalog version
+		const camelVersion = catalogService.getCamelVersionForCLI(catalog, 'jbang');
+		// JBang should use catalog version for --camel-version flag
+		expect(camelVersion).to.equal('4.18.1.redhat-00019');
+	});
+
+	test('should get Camel version for CLI from catalog (RedHat with executorVersion) - Camel Launcher', () => {
+		const catalog: CatalogLibraryEntry = {
+			name: 'Camel Main 4.18.1.redhat-00019',
+			version: '4.18.1.redhat-00019',
+			runtime: 'Main',
+			fileName: 'camel-main/4.18.1.redhat-00019/index-xxx.json',
+			executorVersion: '4.18.1.redhat-00016',
+		};
+
+		const camelVersion = catalogService.getCamelVersionForCLI(catalog, 'camel-launcher');
+		// Camel Launcher should use executorVersion which differs from catalog version
 		expect(camelVersion).to.equal('4.18.1.redhat-00016');
 	});
 

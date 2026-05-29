@@ -255,7 +255,7 @@ export async function ensureExecutorAvailable(
 		} else if (executorType === 'camel-launcher') {
 			const catalogService = KaotoCatalogService.getInstance();
 			const catalog = await catalogService.getSelectedIntegrationCatalog();
-			const version = catalogService.getCamelVersionForCLI(catalog) || DEFAULT_CAMEL_VERSION;
+			const version = catalogService.getCamelVersionForCLI(catalog, 'camel-launcher') || DEFAULT_CAMEL_VERSION;
 			const downloader = new CamelLauncherDownloader(context);
 
 			const launcherPath = await vscode.window.withProgress(

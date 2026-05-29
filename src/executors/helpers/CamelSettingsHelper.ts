@@ -49,7 +49,12 @@ export class CamelSettingsHelper {
 
 		const catalogService = KaotoCatalogService.getInstance();
 		const catalog = await catalogService.getSelectedIntegrationCatalog(resourceUri);
-		this.camelVersion = catalogService.getCamelVersionForCLI(catalog) || '';
+
+		// Get executor type from VS Code settings to avoid circular dependency
+		const vscodeConfig = workspace.getConfiguration();
+		const executorType = vscodeConfig.get<string>('kaoto.executor.type');
+
+		this.camelVersion = catalogService.getCamelVersionForCLI(catalog, executorType) || '';
 		this.runtime = catalogService.getRuntimeForCLI(catalog) || '';
 		this.initialized = true;
 	}

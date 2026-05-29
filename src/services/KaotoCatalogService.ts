@@ -389,24 +389,26 @@ export class KaotoCatalogService {
 	}
 	/**
 	 * Get the Camel version for CLI from catalog selection
-	 * Uses the executorVersion field from the catalog definition
+	 * For Camel Launcher: Uses the executorVersion field (JAR version)
+	 * For JBang: Uses the catalog version directly (for --camel-version flag)
 	 * (handles cases where catalog version != Camel version, e.g., Quarkus platform BOM versions, RedHat build numbers)
 	 *
 	 * @param catalog The catalog definition to get Camel version for
+	 * @param executorType The type of executor being used (optional, defaults to current executor)
 	 * @returns The Camel version to use with --camel-version parameter, or undefined if not found
 	 */
-	public getCamelVersionForCLI(catalog: CatalogLibraryEntry | undefined): string | undefined {
+	public getCamelVersionForCLI(catalog: CatalogLibraryEntry | undefined, executorType?: string): string | undefined {
 		if (!catalog) {
 			return undefined;
 		}
 
-		// Use executorVersion from catalog if available, otherwise fall back to catalog version
-		if (catalog.executorVersion) {
+		// For Camel Launcher, use executorVersion if available (JAR is version-specific)
+		// For JBang, always use catalog version (--camel-version flag needs catalog version)
+		if (executorType === 'camel-launcher' && catalog.executorVersion) {
 			return catalog.executorVersion;
 		}
 
-		// Fallback: use catalog version directly
-		KaotoOutputChannel.logWarning(`No executorVersion found for catalog ${catalog.version} (${catalog.runtime}), using catalog version as Camel version.`);
+		// For JBang or when executorVersion is not available, use catalog version
 		return catalog.version;
 	}
 
@@ -431,15 +433,16 @@ export class KaotoCatalogService {
 	 * Convenience method that combines getCamelVersionForCLI and getRuntimeForCLI
 	 *
 	 * @param catalog The catalog definition to get CLI parameters for
+	 * @param executorType The type of executor being used (optional)
 	 * @returns Object with executorVersion and runtime, or empty object if catalog is undefined
 	 */
-	public getCLIParameters(catalog: CatalogLibraryEntry | undefined): { executorVersion?: string; runtime?: string } {
+	public getCLIParameters(catalog: CatalogLibraryEntry | undefined, executorType?: string): { executorVersion?: string; runtime?: string } {
 		if (!catalog) {
 			return {};
 		}
 
 		return {
-			executorVersion: this.getCamelVersionForCLI(catalog),
+			executorVersion: this.getCamelVersionForCLI(catalog, executorType),
 			runtime: this.getRuntimeForCLI(catalog),
 		};
 	}

@@ -22,10 +22,14 @@ export class MavenRuntimeDetector {
 		}
 
 		try {
+			// Get executor configuration to build the correct command
+			const executor = await CamelExecutorFactory.createExecutor();
+			const config = executor.getConfig();
+
 			// Get Camel version from catalog service - use selected catalog
 			const catalogService = KaotoCatalogService.getInstance();
 			const catalog = await catalogService.getSelectedIntegrationCatalog();
-			const camelVersion = catalogService.getCamelVersionForCLI(catalog) || DEFAULT_CAMEL_VERSION;
+			const camelVersion = catalogService.getCamelVersionForCLI(catalog, config.type) || DEFAULT_CAMEL_VERSION;
 
 			let camelVersionToUse: string;
 			// This ensures versions lower than 4.13 fall back; 4.13 or newer use the configured version.
@@ -35,10 +39,6 @@ export class MavenRuntimeDetector {
 				// Fallback to 4.13.0 for older versions
 				camelVersionToUse = '4.13.0';
 			}
-
-			// Get executor configuration to build the correct command
-			const executor = await CamelExecutorFactory.createExecutor();
-			const config = executor.getConfig();
 
 			// Build command string based on executor type
 			let fullCommand: string;

@@ -63,7 +63,7 @@ export class CamelExecutorFactory {
 		// Get version from catalog service - use selected catalog, not default
 		const catalogService = KaotoCatalogService.getInstance();
 		const catalog = await catalogService.getSelectedIntegrationCatalog();
-		const version = catalogService.getCamelVersionForCLI(catalog) || DEFAULT_CAMEL_VERSION;
+		const version = catalogService.getCamelVersionForCLI(catalog, executorType) || DEFAULT_CAMEL_VERSION;
 
 		switch (executorType) {
 			case 'jbang':
