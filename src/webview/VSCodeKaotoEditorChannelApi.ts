@@ -1,6 +1,5 @@
 import { CatalogKind, KaotoEditorChannelApi, RuntimeMavenInformation, StepUpdateAction, Suggestion, SuggestionRequestContext } from '@kaoto/kaoto';
 import { CanvasLayoutDirection, ColorScheme, ISettingsModel, NodeLabelType, NodeToolbarTrigger, SettingsModel } from '@kaoto/kaoto/models';
-import { CatalogLibraryEntry } from '@kaoto/camel-catalog/types';
 import { BackendProxy } from '@kie-tools-core/backend/dist/api';
 import { I18n } from '@kie-tools-core/i18n/dist/core';
 import { DefaultVsCodeKieEditorChannelApiImpl } from '@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl';
