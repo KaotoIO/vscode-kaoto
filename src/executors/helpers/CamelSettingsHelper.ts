@@ -128,6 +128,7 @@ export class CamelSettingsHelper {
 	/**
 	 * Get Camel version argument from catalog selection
 	 * Note: For Camel Launcher executor, this returns empty string since version is baked into the JAR
+	 * Note: For JBang with Quarkus or Spring Boot runtimes, this returns empty string since version is passed via system properties
 	 */
 	async getCamelVersionArgument(userArgs: string[] = []): Promise<string> {
 		// Check if user has defined --camel-version
@@ -145,7 +146,13 @@ export class CamelSettingsHelper {
 		// Ensure initialization has happened
 		await this.initialize();
 
-		// Use the camelVersion from lazy initialization (for JBang executor)
+		// For JBang with Quarkus or Spring Boot runtimes, skip --camel-version
+		// (version is passed via system properties instead)
+		if (this.runtime === 'quarkus' || this.runtime === 'spring-boot') {
+			return '';
+		}
+
+		// Use the camelVersion from lazy initialization (for JBang executor with Main and other runtimes)
 		return this.camelVersion ? `--camel-version=${this.camelVersion}` : '';
 	}
 
