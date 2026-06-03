@@ -79,6 +79,15 @@ export class JBangExecutor extends BaseExecutor {
 			// Main runtime uses --camel-version argument (handled in CamelSettingsHelper)
 			if (runtime === 'quarkus') {
 				properties.push(`-Dcamel.jbang.quarkusVersion=${version}`);
+
+				// For Red Hat productized versions
+				if (version.includes('redhat')) {
+					properties.push(
+						'-Dcamel.jbang.quarkusGroupId=com.redhat.quarkus.platform',
+						'-Dcamel.jbang.quarkus.platform.url=https://registry.quarkus.redhat.com/client/platforms',
+						'-Dcamel.jbang.quarkusExtensionRegistryBaseUri=https://registry.quarkus.redhat.com/',
+					);
+				}
 			} else if (runtime === 'spring-boot') {
 				properties.push(`-Dcamel.jbang.camelSpringBootVersion=${version}`);
 			}
