@@ -46,6 +46,16 @@ suite('CamelSettingsHelper Tests', () => {
 		assert.equal(result.resolvedPort, 8080);
 	});
 
+	test('Should always use management port for Quarkus runtime', () => {
+		(helper as unknown as { runtime: string; camelVersion: string }).runtime = 'quarkus';
+		(helper as unknown as { runtime: string; camelVersion: string }).camelVersion = '3.20.0';
+
+		const result = helper.getPortArgument(8080);
+
+		assert.equal(result.argument, '--management-port=8080');
+		assert.equal(result.resolvedPort, 8080);
+	});
+
 	test('Should respect user-defined port in arguments', () => {
 		const userArgs = ['--management-port=9090'];
 		const result = helper.getPortArgument(8080, userArgs);

@@ -116,9 +116,9 @@ export class CamelSettingsHelper {
 		}
 
 		// Use code defaults - always use the allocated port, never -1
-		// Default to --management-port if version is not set or >= 4.14
+		// Quarkus always uses --management-port because its versioning differs from Camel core
 		const normalizedVersion = normalizeVersionForSemver(this.camelVersion);
-		const useManagementPort = !normalizedVersion || satisfies(normalizedVersion, '>=4.14');
+		const useManagementPort = this.runtime === 'quarkus' || this.runtime === 'spring-boot' || !normalizedVersion || satisfies(normalizedVersion, '>=4.14');
 		const effectivePort = port ?? 8080;
 		const argument = useManagementPort ? `--management-port=${effectivePort}` : `--port=${effectivePort}`;
 
