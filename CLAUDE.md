@@ -97,3 +97,61 @@ This is a VS Code extension for **Kaoto**, a visual low-code editor for Apache C
 - Integration tests use `vscode-extension-tester`
 - Chai assertions with chai-friendly ESLint rules
 - Test configuration in `.vscode-test.mjs`
+
+## AI Agent Contribution Guidelines
+
+Claude Code users are welcome contributors to Kaoto. When contributing code with AI assistance:
+
+### Human Oversight Required
+
+- AI agents **cannot** submit PRs independently
+- A human must review, approve, and sign all AI-generated code
+- The human reviewer is responsible for:
+  - Code quality and correctness
+  - Responding to maintainer feedback
+  - Following up on PR comments
+
+### Disclosure and Documentation
+
+- Disclosing AI tool usage (Claude Code) is **optional but recommended**
+- Mentioning your AI tool helps us improve AGENTS.md and CLAUDE.md
+- If you discover gaps in our agent documentation, please suggest improvements
+
+### PR Lifecycle
+
+- PRs require active follow-up from the human contributor
+- PRs without response after **2 weeks** will be closed
+- If you need more time, communicate with maintainers
+
+### Quality Standards
+
+Before submitting AI-generated PRs, ensure:
+
+1. **Build the extension**:
+
+   ```bash
+   yarn run build:dev
+   ```
+
+2. **Run linting**:
+
+   ```bash
+   yarn run lint
+   ```
+
+3. **Run unit tests**:
+
+   ```bash
+   yarn run test:unit
+   ```
+
+4. **Build and test the VSIX** (for significant changes):
+   ```bash
+   yarn run build:vsix
+   yarn run test:it:with-prebuilt-vsix
+   ```
+
+- Ensure all tests pass
+- Fix any linter errors
+- Verify changes work as expected in a VS Code instance
+- For UI changes, test the webview editor functionality
