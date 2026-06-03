@@ -55,6 +55,9 @@ suite('KaotoCatalogService Test Suite', () => {
 				runtime: 'Main',
 				fileName: 'camel-main/9.9.9/index.json',
 				executorVersion: '9.9.9',
+				camelCatalogVersion: '9.9.9',
+				frameworkVersion: '9.9.9',
+				runtimeProviderVersion: '9.9.9',
 			},
 		];
 
@@ -274,6 +277,9 @@ suite('KaotoCatalogService Test Suite', () => {
 			runtime: 'Main',
 			fileName: 'camel-main/4.18.0/index-825a64c8dcfd946d5eb88a96e71f6589.json',
 			executorVersion: '4.18.0',
+			camelCatalogVersion: '4.18.0',
+			runtimeProviderVersion: '',
+			frameworkVersion: '',
 		};
 
 		const label = KaotoCatalogService.buildDisplayLabel(catalog);
@@ -287,6 +293,9 @@ suite('KaotoCatalogService Test Suite', () => {
 			runtime: 'Main',
 			fileName: 'camel-main/4.18.0/index-825a64c8dcfd946d5eb88a96e71f6589.json',
 			executorVersion: '4.18.0',
+			camelCatalogVersion: '4.18.0',
+			runtimeProviderVersion: '',
+			frameworkVersion: '',
 		};
 
 		const camelVersion = catalogService.getCamelVersionForCLI(catalog, 'jbang');
@@ -301,6 +310,9 @@ suite('KaotoCatalogService Test Suite', () => {
 			runtime: 'Main',
 			fileName: 'camel-main/4.18.0/index-825a64c8dcfd946d5eb88a96e71f6589.json',
 			executorVersion: '4.18.0',
+			camelCatalogVersion: '4.18.0',
+			runtimeProviderVersion: '',
+			frameworkVersion: '',
 		};
 
 		const camelVersion = catalogService.getCamelVersionForCLI(catalog, 'camel-launcher');
@@ -315,6 +327,9 @@ suite('KaotoCatalogService Test Suite', () => {
 			runtime: 'Quarkus',
 			fileName: 'camel-quarkus/3.32.0/index-xxx.json',
 			executorVersion: '4.18.0',
+			camelCatalogVersion: '4.18.0',
+			runtimeProviderVersion: '3.32.0',
+			frameworkVersion: '',
 		};
 
 		const camelVersion = catalogService.getCamelVersionForCLI(catalog, 'jbang');
@@ -329,6 +344,9 @@ suite('KaotoCatalogService Test Suite', () => {
 			runtime: 'Quarkus',
 			fileName: 'camel-quarkus/3.32.0/index-xxx.json',
 			executorVersion: '4.18.0',
+			camelCatalogVersion: '4.18.0',
+			runtimeProviderVersion: '3.32.0',
+			frameworkVersion: '',
 		};
 
 		const camelVersion = catalogService.getCamelVersionForCLI(catalog, 'camel-launcher');
@@ -343,6 +361,9 @@ suite('KaotoCatalogService Test Suite', () => {
 			runtime: 'Main',
 			fileName: 'camel-main/4.18.1.redhat-00019/index-xxx.json',
 			executorVersion: '4.18.1.redhat-00016',
+			camelCatalogVersion: '4.18.1.redhat-00019',
+			runtimeProviderVersion: '',
+			frameworkVersion: '',
 		};
 
 		const camelVersion = catalogService.getCamelVersionForCLI(catalog, 'jbang');
@@ -357,6 +378,9 @@ suite('KaotoCatalogService Test Suite', () => {
 			runtime: 'Main',
 			fileName: 'camel-main/4.18.1.redhat-00019/index-xxx.json',
 			executorVersion: '4.18.1.redhat-00016',
+			camelCatalogVersion: '4.18.1.redhat-00019',
+			runtimeProviderVersion: '',
+			frameworkVersion: '',
 		};
 
 		const camelVersion = catalogService.getCamelVersionForCLI(catalog, 'camel-launcher');
@@ -376,6 +400,9 @@ suite('KaotoCatalogService Test Suite', () => {
 			runtime: 'Main',
 			fileName: 'camel-main/4.18.0/index-825a64c8dcfd946d5eb88a96e71f6589.json',
 			executorVersion: '4.18.0',
+			camelCatalogVersion: '4.18.0',
+			runtimeProviderVersion: '',
+			frameworkVersion: '',
 		};
 
 		const runtime = catalogService.getRuntimeForCLI(catalog);
@@ -389,6 +416,9 @@ suite('KaotoCatalogService Test Suite', () => {
 			runtime: 'Quarkus',
 			fileName: 'camel-quarkus/3.32.0/index-xxx.json',
 			executorVersion: '4.18.0',
+			camelCatalogVersion: '4.18.0',
+			runtimeProviderVersion: '3.32.0',
+			frameworkVersion: '',
 		};
 
 		const runtime = catalogService.getRuntimeForCLI(catalog);
@@ -402,6 +432,9 @@ suite('KaotoCatalogService Test Suite', () => {
 			runtime: 'Spring Boot',
 			fileName: 'camel-springboot/4.18.0/index-xxx.json',
 			executorVersion: '4.18.0',
+			camelCatalogVersion: '4.18.0',
+			runtimeProviderVersion: '',
+			frameworkVersion: '3.4.3',
 		};
 
 		const runtime = catalogService.getRuntimeForCLI(catalog);
@@ -420,6 +453,9 @@ suite('KaotoCatalogService Test Suite', () => {
 			runtime: 'Main',
 			fileName: 'camel-main/4.18.0/index-825a64c8dcfd946d5eb88a96e71f6589.json',
 			executorVersion: '4.18.0',
+			camelCatalogVersion: '4.18.0',
+			runtimeProviderVersion: '',
+			frameworkVersion: '',
 		};
 
 		const params = catalogService.getCLIParameters(catalog);
