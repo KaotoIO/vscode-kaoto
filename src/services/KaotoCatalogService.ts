@@ -408,6 +408,12 @@ export class KaotoCatalogService {
 			return catalog.executorVersion;
 		}
 
+		// For JBang with Quarkus runtime, use frameworkVersion (Quarkus platform version)
+		const runtime = this.getRuntimeForCLI(catalog);
+		if (runtime === 'quarkus' && catalog.frameworkVersion) {
+			return catalog.frameworkVersion;
+		}
+
 		// For JBang or when executorVersion is not available, use catalog version
 		return catalog.version;
 	}

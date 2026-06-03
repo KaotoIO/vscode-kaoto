@@ -329,12 +329,12 @@ suite('KaotoCatalogService Test Suite', () => {
 			executorVersion: '4.18.0',
 			camelCatalogVersion: '4.18.0',
 			runtimeProviderVersion: '3.32.0',
-			frameworkVersion: '',
+			frameworkVersion: '3.32.2',
 		};
 
 		const camelVersion = catalogService.getCamelVersionForCLI(catalog, 'jbang');
-		// JBang should use catalog version (3.32.0) for --camel-version flag
-		expect(camelVersion).to.equal('3.32.0');
+		// JBang with Quarkus should use frameworkVersion (Quarkus platform version)
+		expect(camelVersion).to.equal('3.32.2');
 	});
 
 	test('should get Camel version for CLI from catalog (Quarkus with executorVersion) - Camel Launcher', () => {
@@ -346,7 +346,7 @@ suite('KaotoCatalogService Test Suite', () => {
 			executorVersion: '4.18.0',
 			camelCatalogVersion: '4.18.0',
 			runtimeProviderVersion: '3.32.0',
-			frameworkVersion: '',
+			frameworkVersion: '3.32.2',
 		};
 
 		const camelVersion = catalogService.getCamelVersionForCLI(catalog, 'camel-launcher');
@@ -418,7 +418,7 @@ suite('KaotoCatalogService Test Suite', () => {
 			executorVersion: '4.18.0',
 			camelCatalogVersion: '4.18.0',
 			runtimeProviderVersion: '3.32.0',
-			frameworkVersion: '',
+			frameworkVersion: '3.32.2',
 		};
 
 		const runtime = catalogService.getRuntimeForCLI(catalog);
