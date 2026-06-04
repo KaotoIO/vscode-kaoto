@@ -388,6 +388,21 @@ export class KaotoCatalogService {
 		return undefined;
 	}
 	/**
+	 * Get the CLI version (JBang version) from catalog selection
+	 * This is used for the -Dcamel.jbang.version system property in JBang executor
+	 *
+	 * @param catalog The catalog definition to get CLI version for
+	 * @returns The CLI version to use with -Dcamel.jbang.version, or undefined if not found
+	 */
+	public getCliVersionForJBang(catalog: CatalogLibraryEntry | undefined): string | undefined {
+		if (!catalog) {
+			return undefined;
+		}
+
+		return catalog.cliVersion;
+	}
+
+	/**
 	 * Get the Camel version for CLI from catalog selection
 	 * For Camel Launcher: Uses the executorVersion field (JAR version)
 	 * For JBang: Uses the catalog version directly (for --camel-version flag)
