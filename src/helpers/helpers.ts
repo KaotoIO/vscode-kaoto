@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-import { ProgressLocation, window, workspace, WorkspaceFolder } from 'vscode';
+import { ExtensionContext, ProgressLocation, window, workspace, WorkspaceFolder } from 'vscode';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import * as path from 'path';
 import fs from 'fs';
+import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 
 /**
  * Utilizes constants, methods, ... used in both, desktop or web extension context
@@ -47,6 +48,39 @@ export const KAOTO_TESTS_FILES_REGEXP_SETTING_ID: string = 'kaoto.tests.files.re
 export const KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID: string = 'kaoto.openapi.files.regexp';
 
 export const DEFAULT_KAOTO_OPENAPI_FILES_REGEXP: string[] = ['*openapi.yaml', '*openapi.yml', '*openapi.json'];
+
+/**
+ * Safely reads a value from globalState with error handling.
+ * Returns the default value if the read fails.
+ *
+ * @param key - The storage key to read
+ * @param defaultValue - The default value to return on failure
+ * @returns The stored value or the default value
+ */
+export function safeGlobalStateGet<T>(context: ExtensionContext, key: string, defaultValue: T): T {
+	try {
+		return context.globalState.get<T>(key, defaultValue);
+	} catch (err) {
+		KaotoOutputChannel.logWarning(`Unable to read global state for key '${key}': ${String(err)}`);
+		return defaultValue;
+	}
+}
+
+/**
+ * Safely updates a value in globalState with error handling.
+ * Logs a warning if the update fails but continues execution.
+ *
+ * @param key - The storage key to update
+ * @param value - The value to store
+ */
+export async function safeGlobalStateUpdate(context: ExtensionContext, key: string, value: any): Promise<void> {
+	try {
+		await context.globalState.update(key, value);
+	} catch (err) {
+		KaotoOutputChannel.logWarning(`Unable to update global state for key '${key}': ${String(err)}`);
+	}
+}
+
 /**
  * Normalizes a Camel version string for semver comparison by removing RedHat build suffixes.
  * RedHat versions like "4.14.2.redhat-00006" are converted to "4.14.2" for semver compatibility

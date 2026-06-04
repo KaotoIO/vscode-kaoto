@@ -30,6 +30,8 @@ import {
 	verifyJBangExists,
 	verifyJBangTrustedSources,
 	verifyCamelPluginsAreInstalled,
+	safeGlobalStateGet,
+	safeGlobalStateUpdate,
 } from '../helpers/helpers';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { NewCamelFileCommand } from '../commands/NewCamelFileCommand';
@@ -77,38 +79,6 @@ export class ExtensionContextHandler {
 	) {
 		this.kieEditorStore = kieEditorStore;
 		this.context = context;
-	}
-
-	/**
-	 * Safely reads a value from globalState with error handling.
-	 * Returns the default value if the read fails.
-	 *
-	 * @param key - The storage key to read
-	 * @param defaultValue - The default value to return on failure
-	 * @returns The stored value or the default value
-	 */
-	private safeGlobalStateGet<T>(key: string, defaultValue: T): T {
-		try {
-			return this.context.globalState.get<T>(key, defaultValue);
-		} catch (err) {
-			KaotoOutputChannel.logWarning(`Unable to read global state for key '${key}': ${String(err)}`);
-			return defaultValue;
-		}
-	}
-
-	/**
-	 * Safely updates a value in globalState with error handling.
-	 * Logs a warning if the update fails but continues execution.
-	 *
-	 * @param key - The storage key to update
-	 * @param value - The value to store
-	 */
-	private async safeGlobalStateUpdate(key: string, value: any): Promise<void> {
-		try {
-			await this.context.globalState.update(key, value);
-		} catch (err) {
-			KaotoOutputChannel.logWarning(`Unable to update global state for key '${key}': ${String(err)}`);
-		}
 	}
 
 	/**
@@ -225,14 +195,14 @@ export class ExtensionContextHandler {
 				return;
 			}
 			const storageKey = 'kaoto.lastWhatsNewShownVersion';
-			const lastShown = this.safeGlobalStateGet<string | undefined>(storageKey, undefined);
+			const lastShown = safeGlobalStateGet<string | undefined>(this.context, storageKey, undefined);
 
 			// Only show What's New if lastShown is undefined (first install) or lastShown < currentVersion (upgrade)
 			if (lastShown && satisfies(lastShown, `>=${currentVersion}`)) {
 				return;
 			}
 			await WhatsNewPanel.show(this.context, currentVersion);
-			await this.safeGlobalStateUpdate(storageKey, currentVersion);
+			await safeGlobalStateUpdate(this.context, storageKey, currentVersion);
 		} catch (err) {
 			KaotoOutputChannel.logWarning(`Unable to show What's New: ${String(err)}`);
 		}
@@ -761,7 +731,7 @@ export class ExtensionContextHandler {
 	 */
 	private async showMultiWorkspaceInfoMessage(): Promise<void> {
 		const storageKey = 'kaoto.showRunAllFoldersMessage';
-		const showInfoMessage = this.safeGlobalStateGet<boolean>(storageKey, true);
+		const showInfoMessage = safeGlobalStateGet<boolean>(this.context, storageKey, true);
 
 		if (showInfoMessage) {
 			const doNotShowAgain = "Don't show again";
@@ -772,7 +742,7 @@ export class ExtensionContextHandler {
 				doNotShowAgain,
 			);
 			if (result === doNotShowAgain) {
-				await this.safeGlobalStateUpdate(storageKey, false);
+				await safeGlobalStateUpdate(this.context, storageKey, false);
 			}
 		}
 	}

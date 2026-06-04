@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { CatalogLibrary, CatalogLibraryEntry } from '@kaoto/camel-catalog/types';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
+import { RedHatMavenNotificationService } from './RedHatMavenNotificationService';
 
 /**
  * Grouped catalogs by runtime type
@@ -27,11 +28,13 @@ export class KaotoCatalogService {
 	private statusBarItem: vscode.StatusBarItem | undefined;
 	private readonly catalogBasePath: string;
 	private readonly catalogIndexPath: string;
+	private readonly redHatNotificationService: RedHatMavenNotificationService;
 
 	constructor(private readonly context: vscode.ExtensionContext) {
 		// Path to the catalog directory copied by webpack during build
 		this.catalogBasePath = path.join(context.extensionPath, 'dist', 'webview', 'editors', 'kaoto', 'camel-catalog');
 		this.catalogIndexPath = path.join(this.catalogBasePath, 'index.json');
+		this.redHatNotificationService = RedHatMavenNotificationService.initialize(context);
 		KaotoCatalogService.instance = this;
 	}
 
@@ -562,6 +565,9 @@ export class KaotoCatalogService {
 			this.statusBarItem.tooltip = 'Select Camel Catalog Version';
 			this.statusBarItem.command = 'kaoto.selectCamelCatalog';
 			this.statusBarItem.show();
+
+			// Check and show Red Hat Maven notification when a Kaoto editor is opened/focused
+			await this.checkAndShowRedHatNotification();
 		} else {
 			// If no catalog found (shouldn't happen), log warning but still show with default
 			KaotoOutputChannel.logWarning('No catalog found for Kaoto file, using default');
@@ -696,6 +702,10 @@ export class KaotoCatalogService {
 		if (selected?.catalog) {
 			const catalog = selected.catalog;
 			await this.setSelectedCatalog(catalog, resourceUri);
+
+			// Show Red Hat Maven notification if the selected catalog is a Red Hat version
+			await this.checkAndShowRedHatNotification();
+
 			return true; // Catalog was selected
 		}
 
@@ -721,6 +731,26 @@ export class KaotoCatalogService {
 		} catch (error) {
 			KaotoOutputChannel.logError(`Failed to reopen editor for ${uri.fsPath}`, error);
 			vscode.window.showErrorMessage('Failed to reopen editor. Please close and reopen manually.');
+		}
+	}
+
+	/**
+	 * Check if the current catalog is Red Hat and show notification if needed
+	 * Called during initialization and when opening editors
+	 */
+	private async checkAndShowRedHatNotification(): Promise<void> {
+		try {
+			// Get the currently selected integration catalog
+			const catalog = await this.getSelectedIntegrationCatalog();
+
+			if (catalog && this.redHatNotificationService.isRedHatCatalog(catalog.version)) {
+				const executorType = vscode.workspace.getConfiguration('kaoto').get<string>('executor.type') || 'jbang';
+				await this.redHatNotificationService.showRedHatMavenNotification(catalog.version, executorType);
+			}
+		} catch (error) {
+			// Don't fail initialization if notification check fails
+			const errorMsg = error instanceof Error ? error.message : String(error);
+			KaotoOutputChannel.logWarning(`Failed to check Red Hat catalog notification: ${errorMsg}`);
 		}
 	}
 
