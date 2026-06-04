@@ -891,10 +891,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/camel-catalog@npm:^0.4.10":
-  version: 0.4.10
-  resolution: "@kaoto/camel-catalog@npm:0.4.10"
-  checksum: 10/107d5c9c5b6d08fa1aa3ef9d5279f809a4547ad8a18b1f38954d43b572b6f59e34ae903500cb7aa76fbb04310524b5bba92ecee6771c865b9a4f6fe7235566d5
+"@kaoto/camel-catalog@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "@kaoto/camel-catalog@npm:0.5.1"
+  checksum: 10/0b5b32feb405cc4d2f8ab2dd02874c684e1fe3b1520920e46d5b4540a4604b998caca910ba2893b2b803d872e4b2605f84c87d75e32cd7070c6533b13334b6e5
   languageName: node
   linkType: hard
 
@@ -13657,7 +13657,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto/camel-catalog": "npm:^0.4.10"
+    "@kaoto/camel-catalog": "npm:^0.5.1"
     "@kaoto/kaoto": "npm:2.11.0-RC2"
     "@kie-tools-core/backend": "npm:10.0.0"
     "@kie-tools-core/editor": "npm:10.0.0"
