@@ -21,13 +21,25 @@ export class CamelCommandAPI {
 		const { argument: portArg, resolvedPort } = settingsHelper.getPortArgument(port, userArgs);
 		const runtimeArg = settingsHelper.getRuntimeArgument(userArgs);
 		const camelVersionArg = await settingsHelper.getCamelVersionArgument(userArgs);
+		const quarkusArgs = await settingsHelper.getQuarkusArguments(userArgs);
+		const springBootArgs = await settingsHelper.getSpringBootArguments(userArgs);
 		const reposArg = await settingsHelper.getRedHatMavenRepositoryArgument(userArgs);
 
 		// Show conflict warnings
 		await settingsHelper.showConflictWarnings(conflicts);
 
 		// Build final arguments
-		const args: CommandArguments = this.filterEmptyArgs([`'${filePath}'`, portArg, runtimeArg, ...userArgs, ...additionalArgs, camelVersionArg, reposArg]);
+		const args: CommandArguments = this.filterEmptyArgs([
+			`'${filePath}'`,
+			portArg,
+			runtimeArg,
+			...userArgs,
+			...additionalArgs,
+			camelVersionArg,
+			...quarkusArgs,
+			...springBootArgs,
+			reposArg,
+		]);
 
 		const result = await executor.execute('run', args, { cwd });
 		// Override resolved port if we determined it from settings
@@ -52,6 +64,8 @@ export class CamelCommandAPI {
 		const { argument: portArg, resolvedPort } = settingsHelper.getPortArgument(port, userArgs);
 		const runtimeArg = settingsHelper.getRuntimeArgument(userArgs);
 		const camelVersionArg = await settingsHelper.getCamelVersionArgument(userArgs);
+		const quarkusArgs = await settingsHelper.getQuarkusArguments(userArgs);
+		const springBootArgs = await settingsHelper.getSpringBootArguments(userArgs);
 		const reposArg = await settingsHelper.getRedHatMavenRepositoryArgument(userArgs);
 
 		// Show conflict warnings
@@ -65,6 +79,8 @@ export class CamelCommandAPI {
 			...userArgs,
 			...additionalArgs,
 			camelVersionArg,
+			...quarkusArgs,
+			...springBootArgs,
 			reposArg,
 		]);
 
@@ -96,6 +112,8 @@ export class CamelCommandAPI {
 		// Get user settings
 		const { args: userArgs, conflicts } = await settingsHelper.getExportArguments(cwd);
 		const camelVersionArg = await settingsHelper.getCamelVersionArgument(userArgs);
+		const quarkusArgs = await settingsHelper.getQuarkusArguments(userArgs);
+		const springBootArgs = await settingsHelper.getSpringBootArguments(userArgs);
 		const reposArg = await settingsHelper.getRedHatMavenRepositoryArgument(userArgs);
 
 		// Show conflict warnings
@@ -114,6 +132,8 @@ export class CamelCommandAPI {
 			...userArgs,
 			...additionalArgs,
 			camelVersionArg,
+			...quarkusArgs,
+			...springBootArgs,
 			reposArg,
 		]);
 

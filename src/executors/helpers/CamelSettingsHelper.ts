@@ -32,6 +32,8 @@ export interface ProcessedArguments {
 export class CamelSettingsHelper {
 	private camelVersion: string = '';
 	private runtime: string = '';
+	private frameworkVersion: string = '';
+	private catalog: any = undefined;
 	private initialized: boolean = false;
 
 	constructor() {
@@ -48,14 +50,15 @@ export class CamelSettingsHelper {
 		}
 
 		const catalogService = KaotoCatalogService.getInstance();
-		const catalog = await catalogService.getSelectedIntegrationCatalog(resourceUri);
+		this.catalog = await catalogService.getSelectedIntegrationCatalog(resourceUri);
 
 		// Get executor type from VS Code settings to avoid circular dependency
 		const vscodeConfig = workspace.getConfiguration();
 		const executorType = vscodeConfig.get<string>('kaoto.executor.type');
 
-		this.camelVersion = catalogService.getCamelVersionForCLI(catalog, executorType) || '';
-		this.runtime = catalogService.getRuntimeForCLI(catalog) || '';
+		this.camelVersion = catalogService.getCamelVersionForCLI(this.catalog, executorType) || '';
+		this.runtime = catalogService.getRuntimeForCLI(this.catalog) || '';
+		this.frameworkVersion = this.catalog?.frameworkVersion || '';
 		this.initialized = true;
 	}
 
@@ -154,6 +157,64 @@ export class CamelSettingsHelper {
 
 		// Use the camelVersion from lazy initialization (for JBang executor with Main and other runtimes)
 		return this.camelVersion ? `--camel-version=${this.camelVersion}` : '';
+	}
+
+	/**
+	 * Get Quarkus-related CLI arguments for JBang
+	 * Due to Camel JBang CLI bugs, these need to be provided as CLI arguments in addition to system properties
+	 * Returns array of arguments: --quarkus-version, --quarkus-group-id (for Red Hat versions)
+	 */
+	async getQuarkusArguments(userArgs: string[] = []): Promise<string[]> {
+		// Ensure initialization has happened
+		await this.initialize();
+
+		// Only for Quarkus runtime
+		if (this.runtime !== 'quarkus' || !this.camelVersion) {
+			return [];
+		}
+
+		const args: string[] = [];
+
+		// Add --quarkus-version if not already provided by user
+		if (!ArgumentConflictDetector.hasArgument(userArgs, 'quarkus-version')) {
+			args.push(`--quarkus-version=${this.frameworkVersion}`);
+		}
+
+		// For Red Hat productized versions, add group ID
+		if (this.camelVersion.includes('redhat') && !ArgumentConflictDetector.hasArgument(userArgs, 'quarkus-group-id')) {
+			args.push('--quarkus-group-id=com.redhat.quarkus.platform');
+		}
+
+		return args;
+	}
+
+	/**
+	 * Get Spring Boot-related CLI arguments for JBang
+	 * Due to Camel JBang CLI bugs, these need to be provided as CLI arguments in addition to system properties
+	 * Returns array of arguments: --camel-spring-boot-version, --spring-boot-version
+	 */
+	async getSpringBootArguments(userArgs: string[] = []): Promise<string[]> {
+		// Ensure initialization has happened
+		await this.initialize();
+
+		// Only for Spring Boot runtime
+		if (this.runtime !== 'spring-boot' || !this.camelVersion) {
+			return [];
+		}
+
+		const args: string[] = [];
+
+		// Add --camel-spring-boot-version if not already provided by user
+		if (!ArgumentConflictDetector.hasArgument(userArgs, 'camel-spring-boot-version')) {
+			args.push(`--camel-spring-boot-version=${this.camelVersion}`);
+		}
+
+		// Add --spring-boot-version if not already provided by user and frameworkVersion is available
+		if (this.frameworkVersion && !ArgumentConflictDetector.hasArgument(userArgs, 'spring-boot-version')) {
+			args.push(`--spring-boot-version=${this.frameworkVersion}`);
+		}
+
+		return args;
 	}
 
 	/**
