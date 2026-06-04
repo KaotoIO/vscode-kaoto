@@ -89,7 +89,7 @@ export class JBangExecutor extends BaseExecutor {
 					);
 				}
 			} else if (runtime === 'spring-boot') {
-				properties.push(`-Dcamel.jbang.camelSpringBootVersion=${version}`);
+				properties.push(`-Dcamel.jbang.camelSpringBootVersion=${version}`, `-Dcamel.jbang.springBootVersion=${catalog.frameworkVersion}`);
 			}
 
 			return properties;
