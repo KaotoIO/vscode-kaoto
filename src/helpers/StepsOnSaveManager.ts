@@ -6,6 +6,7 @@ import { satisfies } from 'compare-versions';
 import { CamelDependencyUpdateTask } from '../tasks/CamelDependencyUpdateTask';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
 import { DEFAULT_CAMEL_VERSION } from '../constants';
+import { ExecutorType } from '../executors/types/ExecutorTypes';
 
 export class StepsOnSaveManager {
 	private static _instance: StepsOnSaveManager | undefined;
@@ -40,7 +41,7 @@ export class StepsOnSaveManager {
 	public async updateDependencies(docPath: string, pomPath: string, message?: string): Promise<void> {
 		// Get executor type from VS Code settings to avoid circular dependency
 		const vscodeConfig = vscode.workspace.getConfiguration();
-		const executorType = vscodeConfig.get<string>('kaoto.executor.type');
+		const executorType = vscodeConfig.get<string>('kaoto.executor.type') as ExecutorType;
 
 		// Get version from catalog service - use selected catalog
 		const catalogService = KaotoCatalogService.getInstance();

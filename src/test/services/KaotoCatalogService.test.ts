@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import { CatalogLibraryEntry } from '@kaoto/camel-catalog/types';
 import { KaotoCatalogService } from '../../services/KaotoCatalogService';
 import { initializeKaotoCatalogService, getExtensionContext } from '../helpers/TestSetup';
+import { RuntimeType } from '../../executors/types/ExecutorTypes';
 
 suite('KaotoCatalogService Test Suite', () => {
 	let catalogService: KaotoCatalogService;
@@ -149,7 +150,7 @@ suite('KaotoCatalogService Test Suite', () => {
 		const defaultCatalog = catalogService.getDefaultCatalog(testFileUri);
 
 		// Should return a Citrus catalog for test files
-		const citrusCatalogs = catalogService.getCatalogs().filter((c) => c.runtime.toLowerCase() === 'citrus');
+		const citrusCatalogs = catalogService.getCatalogs().filter((c) => c.runtime.toLowerCase() === RuntimeType.CITRUS);
 		if (citrusCatalogs.length > 0) {
 			expect(defaultCatalog).to.not.be.undefined;
 			expect(defaultCatalog?.runtime.toLowerCase()).to.equal('citrus');
@@ -479,7 +480,8 @@ suite('KaotoCatalogService Test Suite', () => {
 			expect(integrationCatalog).to.not.be.undefined;
 
 			// Get a test catalog (Citrus)
-			const testCatalog = catalogService.getCatalogs().find((c) => c.runtime.toLowerCase() === 'citrus');
+			const testCatalog = catalogService.getCatalogs().find((c) => c.runtime.toLowerCase() === RuntimeType.CITRUS);
+			expect(testCatalog).to.not.be.undefined;
 
 			if (integrationCatalog && testCatalog) {
 				// Set integration catalog
@@ -515,7 +517,7 @@ suite('KaotoCatalogService Test Suite', () => {
 			const catalog = await catalogService.getSelectedCatalog(testFileUri);
 
 			// Should return test catalog (Citrus) if available
-			const citrusCatalogs = catalogService.getCatalogs().filter((c) => c.runtime.toLowerCase() === 'citrus');
+			const citrusCatalogs = catalogService.getCatalogs().filter((c) => c.runtime.toLowerCase() === RuntimeType.CITRUS);
 			if (citrusCatalogs.length > 0 && catalog) {
 				expect(catalog.runtime.toLowerCase()).to.equal('citrus');
 			}
@@ -529,7 +531,7 @@ suite('KaotoCatalogService Test Suite', () => {
 			expect(integrationDefault?.runtime).to.equal('Main');
 
 			// Test default may be undefined if no Citrus catalogs available
-			const citrusCatalogs = catalogService.getCatalogs().filter((c) => c.runtime.toLowerCase() === 'citrus');
+			const citrusCatalogs = catalogService.getCatalogs().filter((c) => c.runtime.toLowerCase() === RuntimeType.CITRUS);
 			if (citrusCatalogs.length > 0) {
 				expect(testDefault).to.not.be.undefined;
 				expect(testDefault?.runtime.toLowerCase()).to.equal('citrus');

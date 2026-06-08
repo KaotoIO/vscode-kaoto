@@ -10,6 +10,7 @@ import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
 import { ArgumentConflict, ArgumentConflictDetector } from '../../helpers/ArgumentConflictDetector';
 import { KaotoCatalogService } from '../../services/KaotoCatalogService';
 import { CamelExecutorFactory } from '../CamelExecutorFactory';
+import { RuntimeType, ExecutorType } from '../types/ExecutorTypes';
 import {
 	KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID,
 	KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID,
@@ -31,7 +32,7 @@ export interface ProcessedArguments {
  */
 export class CamelSettingsHelper {
 	private camelVersion: string = '';
-	private runtime: string = '';
+	private runtime: RuntimeType | '' = '';
 	private frameworkVersion: string = '';
 	private catalog: any = undefined;
 	private initialized: boolean = false;
@@ -54,7 +55,7 @@ export class CamelSettingsHelper {
 
 		// Get executor type from VS Code settings to avoid circular dependency
 		const vscodeConfig = workspace.getConfiguration();
-		const executorType = vscodeConfig.get<string>('kaoto.executor.type');
+		const executorType = vscodeConfig.get<ExecutorType>('kaoto.executor.type');
 
 		this.camelVersion = catalogService.getCamelVersionForCLI(this.catalog, executorType) || '';
 		this.runtime = catalogService.getRuntimeForCLI(this.catalog) || '';
@@ -121,7 +122,8 @@ export class CamelSettingsHelper {
 		// Use code defaults - always use the allocated port, never -1
 		// Quarkus always uses --management-port because its versioning differs from Camel core
 		const normalizedVersion = normalizeVersionForSemver(this.camelVersion);
-		const useManagementPort = this.runtime === 'quarkus' || this.runtime === 'spring-boot' || !normalizedVersion || satisfies(normalizedVersion, '>=4.14');
+		const useManagementPort =
+			this.runtime === RuntimeType.QUARKUS || this.runtime === RuntimeType.SPRING_BOOT || !normalizedVersion || satisfies(normalizedVersion, '>=4.14');
 		const effectivePort = port ?? 8080;
 		const argument = useManagementPort ? `--management-port=${effectivePort}` : `--port=${effectivePort}`;
 
@@ -151,7 +153,7 @@ export class CamelSettingsHelper {
 
 		// For JBang with Quarkus or Spring Boot runtimes, skip --camel-version
 		// (version is passed via system properties instead)
-		if (this.runtime === 'quarkus' || this.runtime === 'spring-boot') {
+		if (this.runtime === RuntimeType.QUARKUS || this.runtime === RuntimeType.SPRING_BOOT) {
 			return '';
 		}
 
@@ -169,7 +171,7 @@ export class CamelSettingsHelper {
 		await this.initialize();
 
 		// Only for Quarkus runtime
-		if (this.runtime !== 'quarkus' || !this.camelVersion) {
+		if (this.runtime !== RuntimeType.QUARKUS || !this.camelVersion) {
 			return [];
 		}
 
@@ -198,7 +200,7 @@ export class CamelSettingsHelper {
 		await this.initialize();
 
 		// Only for Spring Boot runtime
-		if (this.runtime !== 'spring-boot' || !this.camelVersion) {
+		if (this.runtime !== RuntimeType.SPRING_BOOT || !this.camelVersion) {
 			return [];
 		}
 

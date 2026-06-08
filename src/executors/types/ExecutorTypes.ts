@@ -10,6 +10,16 @@ import { ShellExecution } from 'vscode';
 export type ExecutorType = 'jbang' | 'camel-launcher';
 
 /**
+ * Supported runtime types
+ */
+export enum RuntimeType {
+	QUARKUS = 'quarkus',
+	SPRING_BOOT = 'spring-boot',
+	MAIN = 'camel-main',
+	CITRUS = 'citrus',
+}
+
+/**
  * Camel command types
  */
 export type CamelCommand = 'run' | 'export' | 'init' | 'bind' | 'stop' | 'dependency' | 'cmd' | 'plugin' | 'test' | 'kubernetes';

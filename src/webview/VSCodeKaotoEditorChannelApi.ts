@@ -18,6 +18,7 @@ import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
 import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
 import { getSuggestions } from '../helpers/SuggestionRegistry';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
+import { RuntimeType } from '../executors/types/ExecutorTypes';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 	private readonly currentEditedDocument: vscode.TextDocument | VsCodeKieEditorCustomDocument;
@@ -68,7 +69,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 				if (catalog) {
 					// Use the catalog name directly from index.json (e.g., "Camel Main 4.14.7" or "Citrus 4.10.1")
 					// Check runtime to determine if it's a testing catalog (Citrus) or runtime catalog
-					const isCitrusCatalog = catalog.runtime.toLowerCase() === 'citrus';
+					const isCitrusCatalog = catalog.runtime.toLowerCase() === RuntimeType.CITRUS;
 
 					if (isCitrusCatalog) {
 						testingCatalogName = catalog.name; // TODO
@@ -248,7 +249,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 				options as vscode.QuickPickOptions,
 			);
 		} catch (ex) {
-			const errorMessage = `Cannot get a user selection: ${ex.message}`;
+			const errorMessage = `Cannot get a user selection: ${(ex as Error).message}`;
 			vscode.window.showErrorMessage(errorMessage);
 			KaotoOutputChannel.logError(errorMessage, ex);
 			return undefined;

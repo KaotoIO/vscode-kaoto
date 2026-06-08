@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { CatalogLibrary, CatalogLibraryEntry } from '@kaoto/camel-catalog/types';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { RedHatMavenNotificationService } from './RedHatMavenNotificationService';
+import { RuntimeType, ExecutorType } from '../executors/types/ExecutorTypes';
 
 /**
  * Grouped catalogs by runtime type
@@ -137,16 +138,16 @@ export class KaotoCatalogService {
 	/**
 	 * Normalize runtime name from index.json to simplified format
 	 */
-	private normalizeRuntime(runtime: string): 'camel-main' | 'spring-boot' | 'quarkus' | 'citrus' {
+	private normalizeRuntime(runtime: string): RuntimeType {
 		const normalized = runtime.toLowerCase().replaceAll(/\s+/g, '-');
 		if (normalized.includes('citrus')) {
-			return 'citrus';
+			return RuntimeType.CITRUS;
 		} else if (normalized.includes('spring')) {
-			return 'spring-boot';
+			return RuntimeType.SPRING_BOOT;
 		} else if (normalized.includes('quarkus')) {
-			return 'quarkus';
+			return RuntimeType.QUARKUS;
 		}
-		return 'camel-main';
+		return RuntimeType.MAIN;
 	}
 
 	/**
@@ -244,7 +245,7 @@ export class KaotoCatalogService {
 	 */
 	public async setSelectedCatalog(catalog: CatalogLibraryEntry, resourceUri?: vscode.Uri): Promise<void> {
 		// Determine if this is a Citrus catalog
-		const isCitrusCatalog = this.normalizeRuntime(catalog.runtime) === 'citrus';
+		const isCitrusCatalog = this.normalizeRuntime(catalog.runtime) === RuntimeType.CITRUS;
 
 		if (isCitrusCatalog) {
 			await this.setSelectedTestCatalog(catalog, resourceUri);
@@ -381,7 +382,7 @@ export class KaotoCatalogService {
 	 * Get the default test catalog (latest Citrus catalog)
 	 */
 	public getDefaultTestCatalog(): CatalogLibraryEntry | undefined {
-		const citrusCatalogs = this.catalogs.filter((c) => c.runtime.toLowerCase() === 'citrus');
+		const citrusCatalogs = this.catalogs.filter((c) => c.runtime.toLowerCase() === RuntimeType.CITRUS);
 		if (citrusCatalogs.length > 0) {
 			const sorted = citrusCatalogs.toSorted((a, b) => {
 				return b.version.localeCompare(a.version, undefined, { numeric: true });
@@ -415,7 +416,7 @@ export class KaotoCatalogService {
 	 * @param executorType The type of executor being used (optional, defaults to current executor)
 	 * @returns The Camel version to use with --camel-version parameter, or undefined if not found
 	 */
-	public getCamelVersionForCLI(catalog: CatalogLibraryEntry | undefined, executorType?: string): string | undefined {
+	public getCamelVersionForCLI(catalog: CatalogLibraryEntry | undefined, executorType?: ExecutorType): string | undefined {
 		if (!catalog) {
 			return undefined;
 		}
@@ -428,7 +429,7 @@ export class KaotoCatalogService {
 
 		// For JBang with Quarkus runtime, use frameworkVersion (Quarkus platform version)
 		const runtime = this.getRuntimeForCLI(catalog);
-		if (executorType === 'jbang' && runtime === 'quarkus' && catalog.frameworkVersion) {
+		if (executorType === 'jbang' && runtime === RuntimeType.QUARKUS && catalog.frameworkVersion) {
 			return catalog.frameworkVersion;
 		}
 
@@ -443,7 +444,7 @@ export class KaotoCatalogService {
 	 * @param catalog The catalog definition to get runtime for
 	 * @returns The runtime to use with --runtime parameter, or undefined if not found
 	 */
-	public getRuntimeForCLI(catalog: CatalogLibraryEntry | undefined): string | undefined {
+	public getRuntimeForCLI(catalog: CatalogLibraryEntry | undefined): RuntimeType | undefined {
 		if (!catalog) {
 			return undefined;
 		}
@@ -460,7 +461,7 @@ export class KaotoCatalogService {
 	 * @param executorType The type of executor being used (optional)
 	 * @returns Object with executorVersion and runtime, or empty object if catalog is undefined
 	 */
-	public getCLIParameters(catalog: CatalogLibraryEntry | undefined, executorType?: string): { executorVersion?: string; runtime?: string } {
+	public getCLIParameters(catalog: CatalogLibraryEntry | undefined, executorType?: ExecutorType): { executorVersion?: string; runtime?: RuntimeType } {
 		if (!catalog) {
 			return {};
 		}
@@ -659,7 +660,7 @@ export class KaotoCatalogService {
 			// - For Citrus test files: show ONLY Citrus catalogs
 			// - For integration files: show all catalogs EXCEPT Citrus
 			const filteredCatalogs = catalogs.filter((catalog) => {
-				const isCitrusCatalog = catalog.runtime.toLowerCase() === 'citrus';
+				const isCitrusCatalog = catalog.runtime.toLowerCase() === RuntimeType.CITRUS;
 				if (isCitrusTestFile) {
 					// For test files, only show Citrus catalogs
 					return isCitrusCatalog;

@@ -1,5 +1,5 @@
 import { CamelExecutorFactory } from '../CamelExecutorFactory';
-import { CommandArguments, CommandResult } from '../types/ExecutorTypes';
+import { CommandArguments, CommandResult, RuntimeType } from '../types/ExecutorTypes';
 import { CamelSettingsHelper } from '../helpers/CamelSettingsHelper';
 import { TestFolderResolver } from '../../helpers/TestFolderResolver';
 
@@ -100,7 +100,7 @@ export class CamelCommandAPI {
 	static async export(
 		filePath: string,
 		gav: string,
-		runtime: string,
+		runtime: RuntimeType,
 		outputPath: string,
 		cwd: string,
 		kubernetes?: boolean,
@@ -120,7 +120,7 @@ export class CamelCommandAPI {
 		await settingsHelper.showConflictWarnings(conflicts);
 
 		// Add quarkus-openshift dependency if kubernetes export with quarkus runtime
-		const quarkusOpenshiftDependency = runtime === 'quarkus' && kubernetes ? ['--dependency=mvn:io.quarkus:quarkus-openshift'] : [];
+		const quarkusOpenshiftDependency = runtime === RuntimeType.QUARKUS && kubernetes ? ['--dependency=mvn:io.quarkus:quarkus-openshift'] : [];
 
 		// Build final arguments
 		const args: CommandArguments = this.filterEmptyArgs([

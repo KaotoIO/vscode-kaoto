@@ -16,6 +16,7 @@
 import { ShellExecution, TaskRevealKind, TaskScope, Uri, WorkspaceFolder } from 'vscode';
 import { CamelTask } from './CamelTask';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
+import { RuntimeType } from '../executors/types/ExecutorTypes';
 
 export class CamelExportTask extends CamelTask {
 	private constructor(scope: WorkspaceFolder | TaskScope.Workspace, shellExecution: ShellExecution) {
@@ -26,7 +27,7 @@ export class CamelExportTask extends CamelTask {
 		scope: WorkspaceFolder | TaskScope.Workspace,
 		uri: Uri,
 		gav: string,
-		runtime: string,
+		runtime: RuntimeType,
 		outputPath: string,
 		cwd: string,
 		kubernetes?: boolean,

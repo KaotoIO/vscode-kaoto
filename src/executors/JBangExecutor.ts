@@ -7,7 +7,7 @@ import { Uri } from 'vscode';
 import { BaseExecutor } from './BaseExecutor';
 import { CamelCommandBuilder } from './builders/CamelCommandBuilder';
 import { JBangExecutorConfig } from './types/ExecutorConfig';
-import { CamelCommand, CommandArguments, CommandContext, CommandResult } from './types/ExecutorTypes';
+import { CamelCommand, CommandArguments, CommandContext, CommandResult, RuntimeType } from './types/ExecutorTypes';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
 import { DEFAULT_CAMEL_VERSION } from '../constants';
 
@@ -79,7 +79,7 @@ export class JBangExecutor extends BaseExecutor {
 
 			// Add runtime-specific system properties only for Quarkus and Spring Boot
 			// Main runtime uses --camel-version argument (handled in CamelSettingsHelper)
-			if (runtime === 'quarkus') {
+			if (runtime === RuntimeType.QUARKUS) {
 				properties.push(`-Dcamel.jbang.quarkusVersion=${version}`);
 
 				// For Red Hat productized versions
@@ -90,7 +90,7 @@ export class JBangExecutor extends BaseExecutor {
 						'-Dcamel.jbang.quarkusExtensionRegistryBaseUri=https://registry.quarkus.redhat.com/',
 					);
 				}
-			} else if (runtime === 'spring-boot') {
+			} else if (runtime === RuntimeType.SPRING_BOOT) {
 				properties.push(`-Dcamel.jbang.camelSpringBootVersion=${version}`, `-Dcamel.jbang.springBootVersion=${catalog.frameworkVersion}`);
 			}
 
