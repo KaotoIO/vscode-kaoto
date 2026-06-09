@@ -16,19 +16,18 @@
 import { EventEmitter, tasks, TreeDataProvider, TreeItem, TreeItemCollapsibleState, workspace } from 'vscode';
 import { basename } from 'path';
 import { PortManager } from '../../helpers/PortManager';
-import { CamelJBangTaskDefinition } from '../../tasks/CamelJBangTask';
+import { CamelTaskDefinition } from '../../tasks/CamelTask';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
 import { Route } from '../deploymentTreeItems/Route';
 import { RootItem } from '../deploymentTreeItems/RootItem';
 import { ParentItem } from '../deploymentTreeItems/ParentItem';
 import { ChildItem } from '../deploymentTreeItems/ChildItem';
-import { KAOTO_DEPLOYMENTS_REFRESH_INTERVAL_SETTING_ID } from '../../constants';
 
 export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 	private readonly _onDidChangeTreeData = new EventEmitter<TreeItem | undefined | null | void>();
 	readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
-	private static readonly SETTINGS_REFRESH_INTERVAL = KAOTO_DEPLOYMENTS_REFRESH_INTERVAL_SETTING_ID;
+	private static readonly SETTINGS_REFRESH_INTERVAL = 'kaoto.deployments.refresh.interval';
 
 	private readonly CONTEXT_LOCALHOST_ITEM = 'root-localhost';
 	private readonly CONTEXT_INTEGRATION_LOCALHOST_ITEM = 'parent-localhost';
@@ -49,8 +48,8 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 		});
 
 		tasks.onDidStartTaskProcess(async (e) => {
-			const def = e.execution.task.definition as CamelJBangTaskDefinition;
-			if (def.type === 'camel-jbang' && def.port) {
+			const def = e.execution.task.definition as CamelTaskDefinition;
+			if (def.type === 'camel' && def.port) {
 				console.log(`[DeploymentsProvider] Task started on port ${def.port}`);
 				const ready = await this.waitForIntegrationReady(def.port);
 				if (ready) {
@@ -60,8 +59,8 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 			}
 		});
 		tasks.onDidEndTaskProcess((e) => {
-			const def = e.execution.task.definition as CamelJBangTaskDefinition;
-			if (def.type === 'camel-jbang' && def.port) {
+			const def = e.execution.task.definition as CamelTaskDefinition;
+			if (def.type === 'camel' && def.port) {
 				console.log(`[DeploymentsProvider] Task ended on port ${def.port}`);
 				this.portManager.releasePort(def.port);
 				this.refresh();

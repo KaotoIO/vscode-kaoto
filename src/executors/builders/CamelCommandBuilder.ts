@@ -2,7 +2,7 @@
  * Unified command builder for all Camel executors
  */
 
-import { ShellExecution, ShellExecutionOptions } from 'vscode';
+import { ShellExecution } from 'vscode';
 import { CamelCommand, CommandArguments, CommandContext, CommandResult } from '../types/ExecutorTypes';
 
 /**
@@ -41,12 +41,7 @@ export class CamelCommandBuilder {
 	 * Build shell execution from command components
 	 */
 	private buildExecution(executable: string, commandParts: string[], context?: CommandContext): ShellExecution {
-		const options: ShellExecutionOptions = {
-			cwd: context?.cwd,
-			env: context?.env,
-		};
-
-		return new ShellExecution(executable, commandParts, options);
+		return new ShellExecution(executable, commandParts, { cwd: context?.cwd });
 	}
 
 	/**

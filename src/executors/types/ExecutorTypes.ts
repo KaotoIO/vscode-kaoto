@@ -29,7 +29,6 @@ export type CamelCommand = 'run' | 'export' | 'init' | 'bind' | 'stop' | 'depend
  */
 export interface CommandContext {
 	readonly cwd?: string;
-	readonly env?: Record<string, string>;
 }
 
 /**

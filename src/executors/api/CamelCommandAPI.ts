@@ -1,8 +1,10 @@
+import { dirname, relative } from 'path';
 import { CamelExecutorFactory } from '../CamelExecutorFactory';
 import { CamelCommandBuilder } from '../builders/CamelCommandBuilder';
 import { CamelCommand, CommandArguments, CommandResult, RuntimeType } from '../types/ExecutorTypes';
 import { CamelSettingsHelper } from '../helpers/CamelSettingsHelper';
 import { TestFolderResolver } from '../../helpers/TestFolderResolver';
+import { arePathsEqual } from '../../helpers/helpers';
 
 interface ResolvedSettings {
 	camelVersionArg: string;
@@ -15,6 +17,13 @@ interface ResolvedSettings {
  * High-level API for executing Camel commands
  * Used by task classes to abstract executor details
  * Integrates user settings from VS Code configuration
+ *
+ * NOTE: Do NOT embed shell quotes (single or double) in args.
+ * ShellExecution(command, args) handles platform-specific quoting automatically.
+ * Embedded quotes conflict with VS Code's auto-quoting on Windows PowerShell
+ * (spaces trigger double-quoting, making embedded quotes literal).
+ * The only exception is JBangExecutor's -D system properties which need
+ * single quotes to prevent PowerShell from interpreting the -D prefix.
  */
 export class CamelCommandAPI {
 	private static async resolveCommonSettings(settingsHelper: CamelSettingsHelper, userArgs: string[]): Promise<ResolvedSettings> {
@@ -54,7 +63,7 @@ export class CamelCommandAPI {
 		await settingsHelper.showConflictWarnings(conflicts);
 
 		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs([
-			`'${filePath}'`,
+			filePath,
 			portArg,
 			runtimeArg,
 			...userArgs,
@@ -84,7 +93,7 @@ export class CamelCommandAPI {
 		await settingsHelper.showConflictWarnings(conflicts);
 
 		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs([
-			`'--source-dir=${sourceDir}'`,
+			`--source-dir=${sourceDir}`,
 			portArg,
 			runtimeArg,
 			...userArgs,
@@ -100,7 +109,13 @@ export class CamelCommandAPI {
 	}
 
 	/**
-	 * Export a Camel integration to Maven project with user settings
+	 * Export a Camel integration to Maven project with user settings.
+	 *
+	 * Restores two behaviors from the pre-migration CamelJBang.export():
+	 * 1. Converts filePath to a relative path (relative to cwd) to avoid Windows
+	 *    path-handling issues with absolute paths containing spaces/special chars.
+	 * 2. Omits --directory when outputPath equals the file's parent directory
+	 *    (documented Camel JBang Windows workaround).
 	 */
 	static async export(
 		filePath: string,
@@ -119,13 +134,16 @@ export class CamelCommandAPI {
 
 		await settingsHelper.showConflictWarnings(conflicts);
 
+		const relPath = relative(cwd, filePath);
+		const relativeFilePath = !relPath || relPath === '.' ? '.' : relPath;
+		const directoryArg = arePathsEqual(dirname(filePath), outputPath) ? '' : `--directory=${outputPath}`;
 		const quarkusOpenshiftDependency = runtime === RuntimeType.QUARKUS && kubernetes ? ['--dependency=mvn:io.quarkus:quarkus-openshift'] : [];
 
 		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs([
-			`'${filePath}'`,
+			relativeFilePath,
 			`--runtime=${runtime}`,
 			`--gav=${gav}`,
-			`--directory=${outputPath}`,
+			directoryArg,
 			...quarkusOpenshiftDependency,
 			...userArgs,
 			...additionalArgs,
@@ -146,7 +164,7 @@ export class CamelCommandAPI {
 	 * Initialize a new Camel file
 	 */
 	static async init(filePath: string, cwd?: string): Promise<CommandResult> {
-		return this.executeSimple('init', [`'${filePath}'`], cwd);
+		return this.executeSimple('init', [filePath], cwd);
 	}
 
 	/**
@@ -160,7 +178,7 @@ export class CamelCommandAPI {
 	 * Bind a Kamelet to a source/sink
 	 */
 	static async bind(file: string, source: string, sink: string, cwd?: string, additionalArgs: CommandArguments = []): Promise<CommandResult> {
-		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs(['--source', source, '--sink', sink, `'${file}'`, ...additionalArgs]);
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs(['--source', source, '--sink', sink, file, ...additionalArgs]);
 		return this.executeSimple('bind', args, cwd);
 	}
 
@@ -190,14 +208,14 @@ export class CamelCommandAPI {
 	 * Initialize a new Camel test file
 	 */
 	static async testInit(filePath: string, cwd?: string): Promise<CommandResult> {
-		return this.executeSimple('test', ['init', `'${filePath}'`], cwd);
+		return this.executeSimple('test', ['init', filePath], cwd);
 	}
 
 	/**
 	 * Run Camel tests
 	 */
 	static async testRun(filePath: string, cwd?: string, additionalArgs: CommandArguments = []): Promise<CommandResult> {
-		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs(['run', `'${filePath}'`, ...additionalArgs]);
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs(['run', filePath, ...additionalArgs]);
 		return this.executeSimple('test', args, cwd);
 	}
 
