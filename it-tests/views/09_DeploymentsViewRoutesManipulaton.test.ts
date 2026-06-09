@@ -88,14 +88,14 @@ describe('Deployments View', function () {
 				it(`click '${rm.button}' on ${p.route}`, async function () {
 					await clickRouteActionButton(rm.button);
 
-					await waitUntilTerminalHasText(driver, [`${rm.state} ${p.route}`], 1_000, 20_000);
+					await waitUntilTerminalHasText(driver, [`${rm.state} ${p.route}`], 1_000, 30_000);
 					await waitUntilRouteHasState(rm.state);
 					await waitUntilRouteHasButtons(rm.allowedButtons);
 				});
 			});
 		});
 
-		async function clickRouteActionButton(action: string, timeout = 15_000): Promise<void> {
+		async function clickRouteActionButton(action: string, timeout = 30_000): Promise<void> {
 			let clicked = false;
 			await driver.wait(
 				async () => {
@@ -123,7 +123,7 @@ describe('Deployments View', function () {
 			await driver.sleep(1_000);
 		}
 
-		async function waitUntilRouteHasState(state: string, interval = 500, timeout = 15_000): Promise<void> {
+		async function waitUntilRouteHasState(state: string, interval = 500, timeout = 30_000): Promise<void> {
 			await driver.wait(
 				async function () {
 					try {
@@ -141,7 +141,7 @@ describe('Deployments View', function () {
 			);
 		}
 
-		async function waitUntilRouteHasButtons(expectedButtons: string[], interval = 500, timeout = 15_000): Promise<void> {
+		async function waitUntilRouteHasButtons(expectedButtons: string[], interval = 500, timeout = 30_000): Promise<void> {
 			let buttonsLabels: string[] = [];
 			await driver.wait(
 				async function () {

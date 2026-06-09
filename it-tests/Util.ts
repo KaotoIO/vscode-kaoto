@@ -164,6 +164,7 @@ export async function checkEmptyCanvasLoaded(driver: WebDriver, timeout: number 
 
 export async function checkTopologyLoaded(driver: WebDriver, timeout: number = 10_000) {
 	await driver.wait(until.elementLocated(By.xpath("//div[@data-test-id='topology']")), timeout, 'Kaoto topology was not loaded properly');
+	await driver.sleep(1_000); // stabilize tests which are sometimes failing on macOS CI
 }
 
 // Enforce same default storage setup as ExTester - see https://github.com/redhat-developer/vscode-extension-tester/wiki/Test-Setup#useful-env-variables

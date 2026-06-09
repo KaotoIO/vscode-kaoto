@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ActivityBar, after, before, By, ComboSetting, VSBrowser, WebDriver, WebView, Workbench } from 'vscode-extension-tester';
+import { ActivityBar, after, before, By, ComboSetting, until, VSBrowser, WebDriver, WebView, Workbench } from 'vscode-extension-tester';
 import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame, resetUserSettings } from '../Util';
 import { join } from 'path';
 import { expect } from 'chai';
@@ -29,9 +29,7 @@ describe('User Settings', function () {
 
 	const locators = {
 		TimerComponent: {
-			timer_2_3: `g[data-id^='timer'][data-kind='node']`,
-			timer_2_4: `g[data-nodelabel='timerID']`,
-			label: `.custom-node__label`,
+			label: `//*[name()='g' and @data-testid='custom-node__route.from']//*[contains(@class,'custom-node__label__text')]`,
 		},
 	};
 
@@ -40,9 +38,13 @@ describe('User Settings', function () {
 
 		// provide the Node Label using Settings UI editor
 		const settings = await new Workbench().openSettings();
-		const textSetting = await driver.wait(async () => {
-			return (await settings.findSetting('Node Label', 'Kaoto')) as ComboSetting;
-		});
+		const textSetting = await driver.wait(
+			async () => {
+				return (await settings.findSetting('Node Label', 'Kaoto')) as ComboSetting;
+			},
+			10_000,
+			'Looking for "Kaoto > Node Label" combo setting.',
+		);
 		await textSetting.setValue('id');
 		await driver.sleep(1_000); // stabilize tests which are sometimes failing on macOS CI
 		await closeEditor('Settings', true);
@@ -71,12 +73,7 @@ describe('User Settings', function () {
 
 	it(`Check 'id' Node Label is used instead of default 'description'`, async function () {
 		this.timeout(60_000);
-		let timer;
-		try {
-			timer = await driver.findElement(By.css(`${locators.TimerComponent.timer_2_3} ${locators.TimerComponent.label}`));
-		} catch {
-			timer = await driver.findElement(By.css(`${locators.TimerComponent.timer_2_4} ${locators.TimerComponent.label}`));
-		}
+		const timer = await driver.wait(until.elementLocated(By.xpath(locators.TimerComponent.label)), 10_000);
 		const label = await timer.getText();
 
 		expect(label.split('\n')).to.contains('timerID');
