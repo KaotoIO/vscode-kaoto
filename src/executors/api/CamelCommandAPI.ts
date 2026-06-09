@@ -233,10 +233,28 @@ export class CamelCommandAPI {
 		const executor = await CamelExecutorFactory.createExecutor();
 		const settingsHelper = new CamelSettingsHelper();
 
+		// Get user settings
 		const { args: userArgs, conflicts } = await settingsHelper.getKubernetesRunArguments(cwd || '');
+		const runtimeArg = settingsHelper.getRuntimeArgument(userArgs);
+		const camelVersionArg = await settingsHelper.getCamelVersionArgument(userArgs);
+		const quarkusArgs = await settingsHelper.getQuarkusArguments(userArgs);
+		const springBootArgs = await settingsHelper.getSpringBootArguments(userArgs);
+		const reposArg = await settingsHelper.getRedHatMavenRepositoryArgument(userArgs);
+
+		// Show conflict warnings
 		await settingsHelper.showConflictWarnings(conflicts);
 
-		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs(['run', filePattern, ...userArgs, ...additionalArgs]);
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs([
+			'run',
+			filePattern,
+			...userArgs,
+			runtimeArg,
+			camelVersionArg,
+			...quarkusArgs,
+			...springBootArgs,
+			reposArg,
+			...additionalArgs,
+		]);
 		return await executor.execute('kubernetes', args, { cwd });
 	}
 }

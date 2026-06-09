@@ -117,7 +117,7 @@ export class CamelSettingsHelper {
 		await this.initialize(Uri.file(cwd));
 
 		const kubernetesArgs = workspace.getConfiguration().get(KAOTO_EXECUTOR_KUBERNETES_RUN_ARGUMENTS_SETTING_ID) as string[];
-		const codeArgs = ['run'];
+		const codeArgs: string[] = [];
 		const result = ArgumentConflictDetector.mergeArguments(codeArgs, kubernetesArgs, 'kubernetesRun');
 
 		return { args: result.merged, conflicts: result.conflicts };
