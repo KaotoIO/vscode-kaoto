@@ -71,21 +71,18 @@ export abstract class AbstractNewCamelRouteCommand extends AbstractCamelCommand 
 	 * @returns a promise that resolves when the file exists or rejects when the timeout is reached.
 	 */
 	protected async waitForFileExists(fileUri: Uri, maxWaitMs: number = 5_000, delayMs: number = 100): Promise<void> {
-		return new Promise((resolve, reject) => {
-			const startTime = Date.now();
-			const checkFile = () => {
-				try {
-					workspace.fs.stat(fileUri);
-					resolve();
-				} catch {
-					if (Date.now() - startTime >= maxWaitMs) {
-						reject(new Error(`File did not appear within ${maxWaitMs / 1000} seconds: ${fileUri.fsPath}`));
-					} else {
-						setTimeout(checkFile, delayMs);
-					}
+		const startTime = Date.now();
+
+		while (true) {
+			try {
+				await workspace.fs.stat(fileUri);
+				return;
+			} catch {
+				if (Date.now() - startTime >= maxWaitMs) {
+					throw new Error(`File did not appear within ${maxWaitMs / 1000} seconds: ${fileUri.fsPath}`);
 				}
-			};
-			checkFile();
-		});
+				await new Promise((resolve) => setTimeout(resolve, delayMs));
+			}
+		}
 	}
 }

@@ -12,7 +12,6 @@ suite('Executor Implementation Tests', () => {
 			executor = new JBangExecutor({
 				type: 'jbang',
 				version: '4.18.0',
-				jbangPath: 'jbang',
 			});
 		});
 

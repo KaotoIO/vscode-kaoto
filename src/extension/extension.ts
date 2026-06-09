@@ -209,7 +209,7 @@ export async function ensureExecutorAvailable(
 		}
 
 		const config = vscode.workspace.getConfiguration();
-		const executorType = config.get<string>('kaoto.executor.type', 'camel-launcher');
+		const executorType = config.get<string>('kaoto.executor.type', 'jbang');
 
 		if (executorType === 'jbang') {
 			const jbang = await vscode.window.withProgress(

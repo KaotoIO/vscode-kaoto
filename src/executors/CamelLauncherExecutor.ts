@@ -2,6 +2,7 @@
  * Camel Launcher executor implementation
  */
 
+import { execSync } from 'child_process';
 import { existsSync } from 'fs';
 import { BaseExecutor } from './BaseExecutor';
 import { CamelCommandBuilder } from './builders/CamelCommandBuilder';
@@ -15,7 +16,6 @@ export class CamelLauncherExecutor extends BaseExecutor {
 	private readonly jarPath: string;
 
 	constructor(config: CamelLauncherExecutorConfig, jarPath: string) {
-		// Configure builder to execute JAR using java -jar
 		const commandBuilder = new CamelCommandBuilder({
 			executable: 'java',
 			prefixArgs: ['-jar', jarPath],
@@ -25,8 +25,19 @@ export class CamelLauncherExecutor extends BaseExecutor {
 		this.jarPath = jarPath;
 	}
 
+	getJarPath(): string {
+		return this.jarPath;
+	}
+
 	async isAvailable(): Promise<boolean> {
-		// Check if the launcher JAR exists
-		return existsSync(this.jarPath);
+		if (!existsSync(this.jarPath)) {
+			return false;
+		}
+		try {
+			execSync('java -version', { stdio: 'pipe' });
+			return true;
+		} catch {
+			return false;
+		}
 	}
 }

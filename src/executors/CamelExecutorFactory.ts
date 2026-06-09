@@ -58,7 +58,7 @@ export class CamelExecutorFactory {
 	 */
 	private static async loadConfiguration(): Promise<AnyExecutorConfig> {
 		const vscodeConfig = vscode.workspace.getConfiguration();
-		const executorType = vscodeConfig.get<ExecutorType>('kaoto.executor.type', 'camel-launcher');
+		const executorType = vscodeConfig.get<ExecutorType>('kaoto.executor.type', 'jbang');
 
 		// Get version from catalog service - use selected catalog, not default
 		const catalogService = KaotoCatalogService.getInstance();
@@ -70,7 +70,6 @@ export class CamelExecutorFactory {
 				return {
 					type: 'jbang',
 					version: version,
-					jbangPath: vscodeConfig.get('kaoto.executor.path'),
 				};
 
 			case 'camel-launcher':

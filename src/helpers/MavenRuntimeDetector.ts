@@ -4,6 +4,7 @@ import { RuntimeMavenInformation } from '@kaoto/kaoto';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
 import { CamelExecutorFactory } from '../executors/CamelExecutorFactory';
+import { CamelLauncherExecutor } from '../executors/CamelLauncherExecutor';
 import { findFolderOfPomXml, normalizeVersionForSemver } from './helpers';
 import { DEFAULT_CAMEL_VERSION } from '../constants';
 
@@ -31,24 +32,17 @@ export class MavenRuntimeDetector {
 			const catalog = await catalogService.getSelectedIntegrationCatalog();
 			const camelVersion = catalogService.getCamelVersionForCLI(catalog, config.type) || DEFAULT_CAMEL_VERSION;
 
-			let camelVersionToUse: string;
-			// This ensures versions lower than 4.13 fall back; 4.13 or newer use the configured version.
-			if (satisfies(normalizeVersionForSemver(camelVersion), '>=4.13')) {
-				camelVersionToUse = camelVersion;
-			} else {
-				// Fallback to 4.13.0 for older versions
-				camelVersionToUse = '4.13.0';
-			}
+			// Ensure minimum version 4.13 for dependency runtime --json support
+			const camelVersionToUse = satisfies(normalizeVersionForSemver(camelVersion), '>=4.13') ? camelVersion : '4.13.0';
 
 			// Build command string based on executor type
 			let fullCommand: string;
 			if (config.type === 'jbang') {
-				const jbangPath = (config as any).jbangPath || 'jbang';
-				fullCommand = `${jbangPath} -Dcamel.jbang.version=${camelVersionToUse} camel@apache/camel dependency runtime --json pom.xml`;
+				fullCommand = `jbang -Dcamel.jbang.version=${camelVersionToUse} camel@apache/camel dependency runtime --json pom.xml`;
 			} else {
-				// For camel-launcher, get the launcher path from the executor
-				const launcherPath = (executor as any).launcherPath;
-				fullCommand = `${launcherPath} dependency runtime --json pom.xml`;
+				// For camel-launcher, use java -jar <jarPath>
+				const jarPath = (executor as CamelLauncherExecutor).getJarPath();
+				fullCommand = `java -jar ${jarPath} dependency runtime --json pom.xml`;
 			}
 
 			const response: string = execSync(fullCommand, {

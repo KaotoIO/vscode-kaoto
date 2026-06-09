@@ -17,7 +17,6 @@ export interface ExecutorConfig {
  */
 export interface JBangExecutorConfig extends ExecutorConfig {
 	readonly type: 'jbang';
-	readonly jbangPath?: string;
 }
 
 /**
