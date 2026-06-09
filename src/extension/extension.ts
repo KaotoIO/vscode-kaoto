@@ -214,7 +214,7 @@ export async function ensureExecutorAvailable(
 		if (executorType === 'jbang') {
 			const jbang = await vscode.window.withProgress(
 				{
-					location: vscode.ProgressLocation.Notification,
+					location: vscode.ProgressLocation.Window,
 					title: 'Kaoto: Preparing JBang',
 					cancellable: false,
 				},
@@ -260,7 +260,7 @@ export async function ensureExecutorAvailable(
 
 			const launcherPath = await vscode.window.withProgress(
 				{
-					location: vscode.ProgressLocation.Notification,
+					location: vscode.ProgressLocation.Window,
 					title: `Kaoto: Preparing Camel Launcher ${version}`,
 					cancellable: false,
 				},
