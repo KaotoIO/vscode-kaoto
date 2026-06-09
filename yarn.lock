@@ -916,9 +916,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/kaoto@npm:2.11.0-RC2":
-  version: 2.11.0-RC2
-  resolution: "@kaoto/kaoto@npm:2.11.0-RC2"
+"@kaoto/kaoto@npm:2.11.0-RC3":
+  version: 2.11.0-RC3
+  resolution: "@kaoto/kaoto@npm:2.11.0-RC3"
   dependencies:
     "@carbon/icons-react": "npm:^11.67.0"
     "@carbon/react": "npm:^1.102.0"
@@ -951,7 +951,7 @@ __metadata:
     zundo: "npm:^2.3.0"
     zustand: "npm:^5.0.11"
   peerDependencies:
-    "@kaoto/camel-catalog": ^0.4.4
+    "@kaoto/camel-catalog": ^0.5.2
     "@patternfly/patternfly": ^6.4.0
     "@patternfly/react-code-editor": ^6.4.0
     "@patternfly/react-core": ^6.4.0
@@ -963,7 +963,7 @@ __metadata:
     react: ^19.2.4
     react-dom: ^19.2.4
     react-monaco-editor: ^0.56.0
-  checksum: 10/e39378e692a2f00e9434b1d0844a4ee13b98d27404ca48274a5dc55f94fa2f9cd41b039077ad632a985b96ed9677053bde2fb04f8468eef2ad3b61d8f0a64693
+  checksum: 10/dee17ee67ab52e19d89134229559e9553bf0a3bfa1a1007fa09c3bbb7fef3dec5f8a2cc41a584c0aa08f543e7b747e5f110399b8445f367c9e48a7fd8ba2c8c9
   languageName: node
   linkType: hard
 
@@ -13658,7 +13658,7 @@ __metadata:
   resolution: "vscode-kaoto@workspace:."
   dependencies:
     "@kaoto/camel-catalog": "npm:^0.5.2"
-    "@kaoto/kaoto": "npm:2.11.0-RC2"
+    "@kaoto/kaoto": "npm:2.11.0-RC3"
     "@kie-tools-core/backend": "npm:10.0.0"
     "@kie-tools-core/editor": "npm:10.0.0"
     "@kie-tools-core/i18n": "npm:10.0.0"

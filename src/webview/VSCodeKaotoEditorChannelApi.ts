@@ -72,12 +72,10 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 					const isCitrusCatalog = catalog.runtime.toLowerCase() === RuntimeType.CITRUS;
 
 					if (isCitrusCatalog) {
-						testingCatalogName = catalog.name; // TODO
+						testingCatalogName = catalog.name;
 					} else {
-						runtimeCatalogName = catalog.name; // TODO
+						runtimeCatalogName = catalog.name;
 					}
-
-					vscode.window.showInformationMessage(`Selected catalog: ${catalog.name}`);
 				}
 			} catch (error) {
 				KaotoOutputChannel.logError('Failed to get selected catalog from KaotoCatalogService', error);
@@ -94,6 +92,8 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 
 		const settingsModel: Partial<ISettingsModel> = {
 			catalogUrl: catalogUrl ?? '',
+			runtimeCatalogName: runtimeCatalogName,
+			testingCatalogName: testingCatalogName,
 			nodeLabel: nodeLabel ?? NodeLabelType.Description,
 			nodeToolbarTrigger: nodeToolbarTrigger ?? NodeToolbarTrigger.onHover,
 			colorScheme: colorTheme,
@@ -102,9 +102,6 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 				apicurioRegistryUrl: apicurioRegistryUrl ?? '',
 				customMediaTypes: customMediaTypes ?? [],
 			},
-			// TODO
-			// runtimeCatalogName: runtimeCatalogName,
-			// testingCatalogName: testingCatalogName,
 		};
 
 		return new SettingsModel(settingsModel);
