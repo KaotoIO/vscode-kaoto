@@ -59,7 +59,7 @@ export async function waitUntilTerminalHasText(driver: WebDriver, textArray: str
 			try {
 				const terminal = await activateTerminalView();
 				const terminalText = await terminal.getText();
-				for await (const text of textArray) {
+				for (const text of textArray) {
 					if (!terminalText.includes(text)) {
 						return false;
 					}
