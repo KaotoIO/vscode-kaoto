@@ -12,5 +12,6 @@
     "container.image-push=true",
     "--trait",
     "container.image-pull-policy=IfNotPresent"
-  ]
+  ],
+  "kaoto.runtimeCatalogName": "Camel Main 4.20.0"
 }
