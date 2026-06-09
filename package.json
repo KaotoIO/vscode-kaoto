@@ -98,7 +98,7 @@
     },
     "virtualWorkspaces": {
       "supported": "limited",
-      "description": "In virtual workspaces, actions which requires Camel JBang CLI cannot be working because of missing Shell Execution environment."
+      "description": "In virtual workspaces, actions which requires Camel CLI cannot be working because of missing Shell Execution environment."
     }
   },
   "contributes": {
@@ -280,6 +280,11 @@
       {
         "command": "kaoto.whatsNew.show",
         "title": "Show What's New",
+        "category": "Kaoto"
+      },
+      {
+        "command": "kaoto.selectCamelCatalog",
+        "title": "Select Camel Catalog Version",
         "category": "Kaoto"
       },
       {
@@ -571,6 +576,10 @@
       ],
       "commandPalette": [
         {
+          "command": "kaoto.selectCamelCatalog",
+          "when": "false"
+        },
+        {
           "command": "kaoto.open",
           "when": "false"
         },
@@ -730,22 +739,22 @@
         {
           "command": "kaoto.integrations.run.workspace",
           "group": "navigation@1",
-          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount == 1 && !kaoto.workspaceHasPomXml"
+          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.executorAvailable && workspaceFolderCount == 1 && !kaoto.workspaceHasPomXml"
         },
         {
           "command": "kaoto.integrations.run.all.workspaces",
           "group": "navigation@1",
-          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 1"
+          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.executorAvailable && workspaceFolderCount > 1"
         },
         {
           "submenu": "kaoto.new.file",
           "group": "navigation@2",
-          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 0"
+          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.executorAvailable && workspaceFolderCount > 0"
         },
         {
           "command": "kaoto.camel.jbang.export.workspace",
           "group": "navigation@3",
-          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount == 1 && !kaoto.workspaceHasPomXml"
+          "when": "view == kaoto.integrations && !virtualWorkspace && kaoto.executorAvailable && workspaceFolderCount == 1 && !kaoto.workspaceHasPomXml"
         },
         {
           "command": "kaoto.integrations.refresh",
@@ -765,7 +774,7 @@
         {
           "command": "kaoto.citrus.jbang.init.test",
           "group": "navigation@1",
-          "when": "view == kaoto.tests && !virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 0"
+          "when": "view == kaoto.tests && !virtualWorkspace && kaoto.executorAvailable && workspaceFolderCount > 0"
         },
         {
           "command": "kaoto.tests.clearResults",
@@ -786,12 +795,12 @@
       "view/item/context": [
         {
           "command": "kaoto.integrations.run.folder",
-          "when": "view == kaoto.integrations && viewItem == folder && !virtualWorkspace && kaoto.jbangAvailable",
+          "when": "view == kaoto.integrations && viewItem == folder && !virtualWorkspace && kaoto.executorAvailable",
           "group": "inline@1"
         },
         {
           "command": "kaoto.camel.jbang.export.folder",
-          "when": "view == kaoto.integrations && viewItem == folder && !virtualWorkspace && kaoto.jbangAvailable",
+          "when": "view == kaoto.integrations && viewItem == folder && !virtualWorkspace && kaoto.executorAvailable",
           "group": "inline@2"
         },
         {
@@ -806,22 +815,22 @@
         },
         {
           "command": "kaoto.integrations.updateDependencies",
-          "when": "view == kaoto.integrations && viewItem == integration-maven-child && !virtualWorkspace && kaoto.jbangAvailable",
+          "when": "view == kaoto.integrations && viewItem == integration-maven-child && !virtualWorkspace && kaoto.executorAvailable",
           "group": "navigation@3"
         },
         {
           "command": "kaoto.integrations.run",
-          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child) && !virtualWorkspace && kaoto.jbangAvailable",
+          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child) && !virtualWorkspace && kaoto.executorAvailable",
           "group": "inline@1"
         },
         {
           "command": "kaoto.integrations.kubernetes.run",
-          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child) && !virtualWorkspace && kaoto.jbangAvailable",
+          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child) && !virtualWorkspace && kaoto.executorAvailable",
           "group": "inline@2"
         },
         {
           "command": "kaoto.camel.jbang.export",
-          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child) && !virtualWorkspace && kaoto.jbangAvailable",
+          "when": "view == kaoto.integrations && (viewItem == integration || viewItem == integration-standalone-child) && !virtualWorkspace && kaoto.executorAvailable",
           "group": "inline@3"
         },
         {
@@ -866,12 +875,12 @@
         },
         {
           "command": "kaoto.tests.run",
-          "when": "view == kaoto.tests && viewItem =~ /^citrus-test-file(-passed|-failed)?$/ && kaoto.jbangAvailable",
+          "when": "view == kaoto.tests && viewItem =~ /^citrus-test-file(-passed|-failed)?$/ && kaoto.executorAvailable",
           "group": "inline@1"
         },
         {
           "command": "kaoto.tests.run.folder",
-          "when": "view == kaoto.tests && viewItem == test-folder && kaoto.jbangAvailable",
+          "when": "view == kaoto.tests && viewItem == test-folder && kaoto.executorAvailable",
           "group": "inline@1"
         },
         {
@@ -897,7 +906,7 @@
       {
         "view": "kaoto.integrations",
         "contents": "In order to start with Apache Camel, you can create a standalone Camel File.\n[Camel File...](command:kaoto.new.camel.file)\nTo learn more about Apache Camel [read docs](https://camel.apache.org/docs/).",
-        "when": "!virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 0"
+        "when": "!virtualWorkspace && kaoto.executorAvailable && workspaceFolderCount > 0"
       },
       {
         "view": "kaoto.integrations",
@@ -912,7 +921,7 @@
       {
         "view": "kaoto.tests",
         "contents": "In order to start with Citrus, you can create a new Citrus Test file.\n[New Citrus Test...](command:kaoto.citrus.jbang.init.test)\nTo learn more about Camel Testing [read docs](https://camel.apache.org/manual/camel-jbang-test.html).",
-        "when": "!virtualWorkspace && kaoto.jbangAvailable && workspaceFolderCount > 0"
+        "when": "!virtualWorkspace && kaoto.executorAvailable && workspaceFolderCount > 0"
       }
     ],
     "configuration": [
@@ -1155,73 +1164,6 @@
         }
       },
       {
-        "id": "jbang",
-        "title": "JBang",
-        "properties": {
-          "kaoto.camelJbang.version": {
-            "type": "string",
-            "markdownDescription": "Apache [Camel JBang](https://camel.apache.org/manual/camel-jbang.html) version used for an internal Camel JBang CLI calls. Requirements can differ between versions.\n\nIt is recommended to use `default` version to ensure all extension features works properly.",
-            "default": "4.20.0",
-            "order": 0
-          },
-          "kaoto.camelJbang.runArguments": {
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-              "type": "string"
-            },
-            "additionalProperties": false,
-            "markdownDescription": "User defined arguments to be applied at every launch. In case of spaces, the values needs to be enclosed with quotes.\n\n**User settings take priority:** If you define arguments like `--management-port`, `--port`, `--console`, `--camel-version`, or `--repos`, your values will override the extension's defaults. Warnings will be shown in the output when conflicts are detected.\n\n**Port resolution:** When you specify `--management-port` or `--port`, the Deployments view will automatically monitor the port you defined instead of the default port. This ensures proper tracking of running integrations.\n\nFor possible values see [official docs](https://camel.apache.org/manual/camel-jbang.html#_creating_and_running_camel_routes).",
-            "default": [
-              "--dev",
-              "--logging-level=info",
-              "*.xsl"
-            ],
-            "order": 1
-          },
-          "kaoto.camelJbang.runFolderOrWorkspaceArguments": {
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-              "type": "string"
-            },
-            "additionalProperties": false,
-            "markdownDescription": "User defined arguments to be applied at every launch of a folder or workspace. In case of spaces, the values needs to be enclosed with quotes.\n\n**User settings take priority:** If you define arguments like `--management-port`, `--port`, `--console`, `--camel-version`, or `--repos`, your values will override the extension's defaults. Warnings will be shown in the output when conflicts are detected.\n\n**Port resolution:** When you specify `--management-port` or `--port`, the Deployments view will automatically monitor the port you defined instead of the default port. This ensures proper tracking of running integrations.\n\nFor possible values see [official docs](https://camel.apache.org/manual/camel-jbang.html#_creating_and_running_camel_routes).",
-            "default": [
-              "--dev"
-            ],
-            "order": 2
-          },
-          "kaoto.camelJbang.redHatMavenRepository": {
-            "type": "string",
-            "markdownDescription": "Define Red Hat Maven Repository, which is used automatically in case the `#kaoto.camelVersion#` uses Red Hat productized Camel version (e.g. `4.8.0.redhat-00017`).",
-            "default": "https://maven.repository.redhat.com/ga/",
-            "order": 3
-          },
-          "kaoto.camelJbang.redHatMavenRepository.global": {
-            "type": "boolean",
-            "markdownDescription": "The `#repos` placeholder will be added by default to use also repositories defined in global Camel JBang configuration file.\n\n**Note**: The placeholder is available for versions `3.20.7/3.21` onwards.",
-            "default": true,
-            "order": 4
-          },
-          "kaoto.camelJbang.kubernetesRunArguments": {
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-              "type": "string"
-            },
-            "additionalProperties": false,
-            "markdownDescription": "User defined arguments to be applied at every deploy (See [Camel JBang Kubernetes](https://camel.apache.org/manual/camel-jbang-kubernetes.html)). In case of spaces, the values needs to be enclosed with quotes.\n\n**User settings take priority:** If you define `--camel-version`, your value will override the extension's default from `#kaoto.camelVersion#`. Warnings will be shown in the output when conflicts are detected.\n\nBeware that `--disable-auto`, which is provided by default, requires Camel 4.11+.",
-            "default": [
-              "--cluster-type=openshift",
-              "--disable-auto",
-              "--dev"
-            ],
-            "order": 5
-          }
-        }
-      },
-      {
         "id": "maven",
         "title": "Maven Projects",
         "properties": {
@@ -1230,19 +1172,6 @@
             "default": true,
             "markdownDescription": "Enable automatic update of Camel dependencies in pom.xml on save.",
             "order": 0
-          },
-          "kaoto.maven.camelJbang.exportProjectArguments": {
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-              "type": "string"
-            },
-            "additionalProperties": false,
-            "markdownDescription": "User defined arguments to be applied at every export of a Maven project. In case of spaces, the values needs to be enclosed with quotes.\n\n**User settings take priority:** If you define arguments like `--camel-version` or `--repos`, your values will override the extension's defaults. Warnings will be shown in the output when conflicts are detected.\n\nFor possible values see [official docs](https://camel.apache.org/manual/camel-jbang.html#_creating_projects).",
-            "default": [
-              "--cluster-type=openshift"
-            ],
-            "order": 1
           },
           "kaoto.maven.executor.exportProjectArguments": {
             "type": "array",

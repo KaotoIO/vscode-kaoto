@@ -25,14 +25,7 @@ import { NewCamelPipeCommand } from '../commands/NewCamelPipeCommand';
 import {
 	CAMEL_TRUSTED_SOURCE_URL,
 	CITRUS_TRUSTED_SOURCE_URL,
-	COMMAND_CAMEL_KAMELET_YAML,
 	COMMAND_CAMEL_NEW_FILE,
-	COMMAND_CAMEL_NEW_PROJECT,
-	COMMAND_CAMEL_NEW_PROJECT_FOLDER,
-	COMMAND_CAMEL_NEW_PROJECT_WORKSPACE,
-	COMMAND_CAMEL_PIPE_YAML,
-	COMMAND_CAMEL_ROUTE,
-	COMMAND_CITRUS_INIT,
 	COMMAND_CLOSE_SOURCE,
 	COMMAND_DEPLOYMENTS_LOGS,
 	COMMAND_DEPLOYMENTS_REFRESH,
@@ -59,20 +52,23 @@ import {
 	COMMAND_TESTS_REFRESH,
 	COMMAND_TESTS_RUN,
 	COMMAND_TESTS_RUN_FOLDER,
+	COMMAND_TESTS_DELETE,
+	COMMAND_TESTS_SHOW_SOURCE,
+	COMMAND_OPENAPI_DELETE,
+	COMMAND_OPENAPI_SHOW_SOURCE,
 	COMMAND_UNDO,
 	COMMAND_WHATS_NEW_SHOW,
 	CONTEXT_EXECUTOR_AVAILABLE,
-	CONTEXT_JBANG_AVAILABLE,
 	CONTEXT_WORKSPACE_HAS_POM_XML,
-	KAOTO_EDITOR_VIEW_TYPE,
-	KAOTO_EXCLUDE_PATTERN,
+	VIEW_OPENAPI,
 	STATE_LAST_WHATS_NEW_SHOWN_VERSION,
 	STATE_SHOW_RUN_ALL_FOLDERS_MESSAGE,
-	VIEW_DEPLOYMENTS,
-	VIEW_HELP,
-	VIEW_INTEGRATIONS,
-	VIEW_OPENAPI,
+	KAOTO_EXECUTOR_TYPE_SETTING_ID,
+	COMMAND_SELECT_CAMEL_CATALOG,
 	VIEW_TESTS,
+	VIEW_INTEGRATIONS,
+	VIEW_HELP,
+	VIEW_DEPLOYMENTS,
 } from '../constants';
 import {
 	findFolderOfPomXml,
@@ -81,37 +77,36 @@ import {
 	verifyJBangExists,
 	verifyJBangTrustedSources,
 	verifyCamelPluginsAreInstalled,
+	safeGlobalStateGet,
+	safeGlobalStateUpdate,
 } from '../helpers/helpers';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { NewCamelFileCommand } from '../commands/NewCamelFileCommand';
 import { confirmFileDeleteDialog } from '../helpers/modals';
 import { TelemetryEvent, TelemetryService } from '@redhat-developer/vscode-redhat-telemetry';
 import { NewCamelProjectCommand } from '../commands/NewCamelProjectCommand';
-import { CamelRunJBangTask } from '../tasks/CamelRunJBangTask';
-import { CamelKubernetesRunJBangTask } from '../tasks/CamelKubernetesRunJBangTask';
+import { CamelTaskFactory } from '../tasks/CamelTaskFactory';
+import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 import { DeploymentsProvider } from '../views/providers/DeploymentsProvider';
 import { PortManager } from '../helpers/PortManager';
 import { ParentItem } from '../views/deploymentTreeItems/ParentItem';
-import { CamelStopJBangTask } from '../tasks/CamelStopJBangTask';
+import { RouteOperation } from '../types/RouteOperation';
 import { ChildItem } from '../views/deploymentTreeItems/ChildItem';
-import { CamelRouteOperationJBangTask } from '../tasks/CamelRouteOperationJBangTask';
-import { CamelJBang, RouteOperation } from '../helpers/CamelJBang';
 import { RecommendationCore } from '@redhat-developer/vscode-extension-proposals';
 import { WhatsNewPanel } from './WhatsNewPanel';
 import { satisfies } from 'compare-versions';
 import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
-import { CamelRunSourceDirJBangTask } from '../tasks/CamelRunSourceDirJBangTask';
 import { Folder } from '../views/integrationTreeItems/Folder';
 import { TestsProvider } from '../views/providers/TestsProvider';
 import { AbstractFolderTreeProvider } from '../views/providers/AbstractFolderTreeProvider';
 import { NewCamelTestCommand } from '../commands/NewCamelTestCommand';
-import { CamelTestRunFolderJBangTask } from '../tasks/CamelTestRunFolderJBangTask';
 import { TestFolder } from '../views/testTreeItems/TestFolder';
-import { CamelJBangTask, CamelJBangTaskDefinition } from '../tasks/CamelJBangTask';
-import { CamelTestRunJBangTask } from '../tasks/CamelTestRunJBangTask';
+import { CamelTask, CamelTaskDefinition } from '../tasks/CamelTask';
 import { Test } from '../views/testTreeItems/Test';
 import { OpenApiProvider } from '../views/providers/OpenApiProvider';
 import { ImportOpenApiCommand } from '../commands/ImportOpenApiCommand';
+import { ensureExecutorAvailable } from '../executors/ExecutorInitializer';
+import { KaotoCatalogService } from '../services/KaotoCatalogService';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -131,35 +126,34 @@ export class ExtensionContextHandler {
 	}
 
 	/**
-	 * Safely reads a value from globalState with error handling.
-	 * Returns the default value if the read fails.
-	 *
-	 * @param key - The storage key to read
-	 * @param defaultValue - The default value to return on failure
-	 * @returns The stored value or the default value
+	 * Register executor-related configuration listeners, catalog selection command,
+	 * and trigger initial executor setup (non-blocking).
 	 */
-	private safeGlobalStateGet<T>(key: string, defaultValue: T): T {
-		try {
-			return this.context.globalState.get<T>(key, defaultValue);
-		} catch (err) {
-			KaotoOutputChannel.logWarning(`Unable to read global state for key '${key}': ${String(err)}`);
-			return defaultValue;
-		}
-	}
+	public registerExecutorSetup(catalogService: KaotoCatalogService): void {
+		this.context.subscriptions.push(
+			vscode.workspace.onDidChangeConfiguration(async (event) => {
+				if (event.affectsConfiguration(KAOTO_EXECUTOR_TYPE_SETTING_ID)) {
+					KaotoOutputChannel.logInfo('Executor type configuration changed, validating requirements...');
 
-	/**
-	 * Safely updates a value in globalState with error handling.
-	 * Logs a warning if the update fails but continues execution.
-	 *
-	 * @param key - The storage key to update
-	 * @param value - The value to store
-	 */
-	private async safeGlobalStateUpdate(key: string, value: any): Promise<void> {
-		try {
-			await this.context.globalState.update(key, value);
-		} catch (err) {
-			KaotoOutputChannel.logWarning(`Unable to update global state for key '${key}': ${String(err)}`);
-		}
+					ensureExecutorAvailable(this.context, this, true).catch((error) => {
+						KaotoOutputChannel.logError('Failed to initialize executor after configuration change', error);
+					});
+				}
+			}),
+			vscode.commands.registerCommand(COMMAND_SELECT_CAMEL_CATALOG, async () => {
+				const catalogSelected = await catalogService.showCatalogPicker();
+
+				if (catalogSelected) {
+					ensureExecutorAvailable(this.context, this, true).catch((error) => {
+						KaotoOutputChannel.logError('Failed to initialize executor after catalog selection', error);
+					});
+				}
+			}),
+		);
+
+		ensureExecutorAvailable(this.context, this).catch((error) => {
+			KaotoOutputChannel.logError('Background executor setup failed', error);
+		});
 	}
 
 	/**
@@ -201,43 +195,27 @@ export class ExtensionContextHandler {
 		}
 	}
 
-	public isWorkspaceVirtual(): boolean | undefined {
-		return vscode.workspace.workspaceFolders?.every((f) => f.uri.scheme !== 'file');
-	}
-
 	public async checkJbangOnPath(): Promise<boolean> {
-		const jbangExec = await verifyJBangExists();
-		await vscode.commands.executeCommand('setContext', CONTEXT_JBANG_AVAILABLE, jbangExec); // store availability in VS Code context
-		if (!jbangExec) {
-			const jbangInstallationLink: string = 'https://www.jbang.dev/documentation/jbang/latest/installation.html';
-			const msg: string = `JBang is missing on a system PATH. Please follow instructions below and install JBang. [JBang Installation Guide](${jbangInstallationLink}).`;
-			KaotoOutputChannel.logWarning(msg);
-			const selection = await vscode.window.showWarningMessage(msg, 'Install');
-			if (selection !== undefined) {
-				await vscode.commands.executeCommand('vscode.open', `${jbangInstallationLink}`);
-			} else {
-				await vscode.window.showWarningMessage('JBang is not installed. Some Kaoto extension features may not work properly.', 'OK');
-			}
-			return false;
-		}
-		return true;
+		return this.checkToolOnPath('JBang', verifyJBangExists, 'https://www.jbang.dev/documentation/jbang/latest/installation.html');
 	}
 
 	public async checkJavaOnPath(): Promise<boolean> {
-		const javaExists = await verifyJavaExists();
-		if (!javaExists) {
-			const javaInstallationLink: string = 'https://adoptium.net/installation/';
-			const msg: string = `Java is missing on a system PATH. Camel Launcher requires Java to run. [Java Installation Guide](${javaInstallationLink}).`;
-			KaotoOutputChannel.logWarning(msg);
-			const selection = await vscode.window.showWarningMessage(msg, 'Install');
-			if (selection === undefined) {
-				await vscode.window.showWarningMessage('Java is not installed. Some Kaoto extension features may not work properly.', 'OK');
-			} else {
-				await vscode.commands.executeCommand('vscode.open', `${javaInstallationLink}`);
-			}
-			return false;
+		return this.checkToolOnPath('Java', verifyJavaExists, 'https://adoptium.net/installation/');
+	}
+
+	private async checkToolOnPath(toolName: string, verifyFn: () => Promise<boolean>, installUrl: string): Promise<boolean> {
+		if (await verifyFn()) {
+			return true;
 		}
-		return true;
+		const msg = `${toolName} is missing on a system PATH. Please follow instructions below and install ${toolName}. [${toolName} Installation Guide](${installUrl}).`;
+		KaotoOutputChannel.logWarning(msg);
+		const selection = await vscode.window.showWarningMessage(msg, 'Install');
+		if (selection !== undefined) {
+			await vscode.commands.executeCommand('vscode.open', installUrl);
+		} else {
+			await vscode.window.showWarningMessage(`${toolName} is not installed. Some Kaoto extension features may not work properly.`, 'OK');
+		}
+		return false;
 	}
 
 	public async setExecutorAvailable(available: boolean): Promise<void> {
@@ -294,33 +272,36 @@ export class ExtensionContextHandler {
 				return;
 			}
 			const storageKey = STATE_LAST_WHATS_NEW_SHOWN_VERSION;
-			const lastShown = this.safeGlobalStateGet<string | undefined>(storageKey, undefined);
+			const lastShown = safeGlobalStateGet<string | undefined>(this.context, storageKey, undefined);
 
 			// Only show What's New if lastShown is undefined (first install) or lastShown < currentVersion (upgrade)
 			if (lastShown && satisfies(lastShown, `>=${currentVersion}`)) {
 				return;
 			}
 			await WhatsNewPanel.show(this.context, currentVersion);
-			await this.safeGlobalStateUpdate(storageKey, currentVersion);
+			await safeGlobalStateUpdate(this.context, storageKey, currentVersion);
 		} catch (err) {
 			KaotoOutputChannel.logWarning(`Unable to show What's New: ${String(err)}`);
 		}
 	}
 
 	public async registerToggleSourceCode() {
+		const OPEN_SOURCE_COMMAND_ID: string = COMMAND_OPEN_SOURCE;
+		const CLOSE_SOURCE_COMMAND_ID: string = COMMAND_CLOSE_SOURCE;
+
 		this.context.subscriptions.push(
-			vscode.commands.registerCommand(COMMAND_OPEN_SOURCE, async () => {
+			vscode.commands.registerCommand(OPEN_SOURCE_COMMAND_ID, async () => {
 				if (this.kieEditorStore.activeEditor !== undefined) {
 					const doc = await vscode.workspace.openTextDocument(this.kieEditorStore.activeEditor?.document.document.uri);
 					await vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside);
-					await this.sendCommandTrackingEvent(COMMAND_OPEN_SOURCE);
+					await this.sendCommandTrackingEvent(OPEN_SOURCE_COMMAND_ID);
 				}
 			}),
 		);
 		this.context.subscriptions.push(
-			vscode.commands.registerCommand(COMMAND_CLOSE_SOURCE, async () => {
+			vscode.commands.registerCommand(CLOSE_SOURCE_COMMAND_ID, async () => {
 				await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
-				await this.sendCommandTrackingEvent(COMMAND_CLOSE_SOURCE);
+				await this.sendCommandTrackingEvent(CLOSE_SOURCE_COMMAND_ID);
 			}),
 		);
 	}
@@ -328,7 +309,7 @@ export class ExtensionContextHandler {
 	public registerOpenWithKaoto() {
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(COMMAND_OPEN_WITH_KAOTO, async (uri: vscode.Uri) => {
-				await vscode.commands.executeCommand('vscode.openWith', uri, KAOTO_EDITOR_VIEW_TYPE);
+				await vscode.commands.executeCommand('vscode.openWith', uri, 'webviewEditorsKaoto');
 				await this.sendCommandTrackingEvent(COMMAND_OPEN_WITH_KAOTO);
 			}),
 		);
@@ -372,14 +353,14 @@ export class ExtensionContextHandler {
 		const clearResultsCommand = vscode.commands.registerCommand(COMMAND_TESTS_CLEAR_RESULTS, () => this.testsProvider.clearAllResults());
 		this.context.subscriptions.push(testsTreeView, dispose, refreshCommand, clearResultsCommand, refreshOnVisibilityChange);
 
-		this.registerViewItemContextMenu(this.testsProvider);
+		this.registerViewItemContextMenu(this.testsProvider, COMMAND_TESTS_SHOW_SOURCE, COMMAND_TESTS_DELETE);
 	}
 
 	public registerTestsInitCommands() {
 		this.context.subscriptions.push(
-			vscode.commands.registerCommand(COMMAND_CITRUS_INIT, async () => {
+			vscode.commands.registerCommand(NewCamelTestCommand.ID_COMMAND_CITRUS_INIT, async () => {
 				await new NewCamelTestCommand().create();
-				await this.sendCommandTrackingEvent(COMMAND_CITRUS_INIT);
+				await this.sendCommandTrackingEvent(NewCamelTestCommand.ID_COMMAND_CITRUS_INIT);
 			}),
 		);
 	}
@@ -389,7 +370,14 @@ export class ExtensionContextHandler {
 			const filePath = test.resourceUri?.fsPath as string;
 			const fileName = path.basename(filePath) || 'test';
 
-			await this.executeTestRun([filePath], () => CamelTestRunJBangTask.create(filePath), `Running test: ${fileName}`);
+			await this.executeTestRun(
+				[filePath],
+				async () => {
+					const result = await CamelCommandAPI.testRun(path.basename(filePath), path.dirname(filePath));
+					return CamelTaskFactory.createBackground(`Running - ${path.basename(filePath)}`, result);
+				},
+				`Running test: ${fileName}`,
+			);
 			await this.sendCommandTrackingEvent(COMMAND_TESTS_RUN);
 		});
 
@@ -403,14 +391,21 @@ export class ExtensionContextHandler {
 				return;
 			}
 
-			await this.executeTestRun(testFilePaths, () => CamelTestRunFolderJBangTask.create(folderPath), `Running tests in: ${folderName}`);
+			await this.executeTestRun(
+				testFilePaths,
+				async () => {
+					const result = await CamelCommandAPI.testRunFolder(folderPath);
+					return CamelTaskFactory.createBackground(`Running - ${folderPath}`, result);
+				},
+				`Running tests in: ${folderName}`,
+			);
 			await this.sendCommandTrackingEvent(COMMAND_TESTS_RUN_FOLDER);
 		});
 
 		this.context.subscriptions.push(runCommand, runFolderCommand);
 	}
 
-	private async executeTestRun(testFilePaths: string[], createTask: () => Promise<CamelJBangTask>, progressMessage: string): Promise<void> {
+	private async executeTestRun(testFilePaths: string[], createTask: () => Promise<CamelTask>, progressMessage: string): Promise<void> {
 		for (const testPath of testFilePaths) {
 			this.testsProvider.setTestRunning(testPath, true);
 		}
@@ -471,7 +466,7 @@ export class ExtensionContextHandler {
 		const refreshCommand = vscode.commands.registerCommand(COMMAND_OPENAPI_REFRESH, () => this.openApiProvider.refresh());
 		this.context.subscriptions.push(openApiTreeView, dispose, refreshCommand);
 
-		this.registerViewItemContextMenu(this.openApiProvider);
+		this.registerViewItemContextMenu(this.openApiProvider, COMMAND_OPENAPI_SHOW_SOURCE, COMMAND_OPENAPI_DELETE);
 	}
 
 	public registerOpenApiImportCommand() {
@@ -517,18 +512,16 @@ export class ExtensionContextHandler {
 		this.context.subscriptions.push(showSourceCommand, deleteCommand, updateDependenciesCommand);
 	}
 
-	private registerViewItemContextMenu(provider: AbstractFolderTreeProvider<any>) {
-		// register show source menu button
-		const showSourceCommand = vscode.commands.registerCommand(provider.VIEW_ITEM_SHOW_SOURCE_COMMAND_ID, async (item: vscode.TreeItem) => {
+	private registerViewItemContextMenu(provider: AbstractFolderTreeProvider<any>, showSourceCommandId: string, deleteCommandId: string) {
+		const showSourceCommand = vscode.commands.registerCommand(showSourceCommandId, async (item: vscode.TreeItem) => {
 			if (!item.resourceUri) {
 				return;
 			}
 			await vscode.window.showTextDocument(item.resourceUri);
-			await this.sendCommandTrackingEvent(provider.VIEW_ITEM_SHOW_SOURCE_COMMAND_ID);
+			await this.sendCommandTrackingEvent(showSourceCommandId);
 		});
 
-		// register delete menu button
-		const deleteCommand = vscode.commands.registerCommand(provider.VIEW_ITEM_DELETE_COMMAND_ID, async (item: vscode.TreeItem) => {
+		const deleteCommand = vscode.commands.registerCommand(deleteCommandId, async (item: vscode.TreeItem) => {
 			if (!item.resourceUri) {
 				return;
 			}
@@ -539,7 +532,7 @@ export class ExtensionContextHandler {
 				provider.refresh();
 				KaotoOutputChannel.logInfo(`Item '${item.resourceUri.fsPath}' was deleted.`);
 			}
-			await this.sendCommandTrackingEvent(provider.VIEW_ITEM_DELETE_COMMAND_ID);
+			await this.sendCommandTrackingEvent(deleteCommandId);
 		});
 
 		this.context.subscriptions.push(showSourceCommand, deleteCommand);
@@ -565,42 +558,45 @@ export class ExtensionContextHandler {
 		);
 		// register commands for new Camel files creation using YAML or XML DSL - Camel Routes
 		this.context.subscriptions.push(
-			vscode.commands.registerCommand(COMMAND_CAMEL_ROUTE, async () => {
+			vscode.commands.registerCommand(NewCamelRouteCommand.ID_COMMAND_CAMEL_ROUTE, async () => {
 				await new NewCamelRouteCommand().create();
-				await this.sendCommandTrackingEvent(COMMAND_CAMEL_ROUTE);
+				await this.sendCommandTrackingEvent(NewCamelRouteCommand.ID_COMMAND_CAMEL_ROUTE);
 			}),
 		);
 		// register commands for new Camel files creation using YAML DSL - Kamelets, Pipes
 		this.context.subscriptions.push(
-			vscode.commands.registerCommand(COMMAND_CAMEL_KAMELET_YAML, async () => {
+			vscode.commands.registerCommand(NewCamelKameletCommand.ID_COMMAND_CAMEL_KAMELET_YAML, async () => {
 				await new NewCamelKameletCommand('YAML').create();
-				await this.sendCommandTrackingEvent(COMMAND_CAMEL_KAMELET_YAML);
+				await this.sendCommandTrackingEvent(NewCamelKameletCommand.ID_COMMAND_CAMEL_KAMELET_YAML);
 			}),
 		);
 		this.context.subscriptions.push(
-			vscode.commands.registerCommand(COMMAND_CAMEL_PIPE_YAML, async () => {
+			vscode.commands.registerCommand(NewCamelPipeCommand.ID_COMMAND_CAMEL_PIPE_YAML, async () => {
 				await new NewCamelPipeCommand('YAML').create();
-				await this.sendCommandTrackingEvent(COMMAND_CAMEL_PIPE_YAML);
+				await this.sendCommandTrackingEvent(NewCamelPipeCommand.ID_COMMAND_CAMEL_PIPE_YAML);
 			}),
 		);
 	}
 
 	public registerNewCamelProjectCommands() {
-		const exportSingleFileCommand = vscode.commands.registerCommand(COMMAND_CAMEL_NEW_PROJECT, async (integration: Integration) => {
-			await new NewCamelProjectCommand().create(integration.filepath, path.dirname(integration.filepath.fsPath));
-			await this.sendCommandTrackingEvent(COMMAND_CAMEL_NEW_PROJECT);
-		});
-		const exportFolderCommand = vscode.commands.registerCommand(COMMAND_CAMEL_NEW_PROJECT_FOLDER, async (folder: Folder) => {
+		const exportSingleFileCommand = vscode.commands.registerCommand(
+			NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT,
+			async (integration: Integration) => {
+				await new NewCamelProjectCommand().create(integration.filepath, path.dirname(integration.filepath.fsPath));
+				await this.sendCommandTrackingEvent(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT);
+			},
+		);
+		const exportFolderCommand = vscode.commands.registerCommand(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_FOLDER, async (folder: Folder) => {
 			await new NewCamelProjectCommand().create(folder.folderUri, folder.folderUri.fsPath);
-			await this.sendCommandTrackingEvent(COMMAND_CAMEL_NEW_PROJECT_FOLDER);
+			await this.sendCommandTrackingEvent(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_FOLDER);
 		});
-		const exportWorkspaceCommand = vscode.commands.registerCommand(COMMAND_CAMEL_NEW_PROJECT_WORKSPACE, async () => {
+		const exportWorkspaceCommand = vscode.commands.registerCommand(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_WORKSPACE, async () => {
 			if (!vscode.workspace.workspaceFolders?.[0]) {
 				return;
 			}
 			const workspaceFolder = vscode.workspace.workspaceFolders[0];
 			await new NewCamelProjectCommand().create(workspaceFolder.uri, workspaceFolder.uri.fsPath);
-			await this.sendCommandTrackingEvent(COMMAND_CAMEL_NEW_PROJECT_WORKSPACE);
+			await this.sendCommandTrackingEvent(NewCamelProjectCommand.ID_COMMAND_CAMEL_NEW_PROJECT_WORKSPACE);
 		});
 		this.context.subscriptions.push(exportSingleFileCommand, exportFolderCommand, exportWorkspaceCommand);
 	}
@@ -609,20 +605,13 @@ export class ExtensionContextHandler {
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(COMMAND_INTEGRATIONS_RUN, async (integration: Integration) => {
 				const allocatedPort = await portManager.allocatePort();
-				let runTask: CamelRunJBangTask | undefined;
+				const result = await CamelCommandAPI.run(integration.filepath.fsPath, path.dirname(integration.filepath.fsPath), allocatedPort);
+				const runTask = CamelTaskFactory.createBackground(`Running - ${path.basename(integration.filepath.fsPath)}::${result.resolvedPort}`, result);
 
-				try {
-					runTask = await CamelRunJBangTask.create(integration.filepath.fsPath, allocatedPort);
-					this.synchronizePortTracking(portManager, runTask, allocatedPort);
-					await runTask.execute();
-					await this.sendCommandTrackingEvent(COMMAND_INTEGRATIONS_RUN);
-				} catch (error) {
-					// Release the port that is currently reserved
-					// If synchronizePortTracking succeeded, it may have changed which port is reserved
-					const portToRelease = runTask ? (runTask.definition as CamelJBangTaskDefinition).port : allocatedPort;
-					portManager.releasePort(portToRelease);
-					throw error;
-				}
+				this.synchronizePortTracking(portManager, runTask, allocatedPort);
+
+				await runTask.execute();
+				await this.sendCommandTrackingEvent(COMMAND_INTEGRATIONS_RUN);
 			}),
 		);
 	}
@@ -665,7 +654,8 @@ export class ExtensionContextHandler {
 	public registerKubernetesRunCommands() {
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(COMMAND_INTEGRATIONS_KUBERNETES_RUN, async (integration: Integration) => {
-				const deployTask = await CamelKubernetesRunJBangTask.create(integration.filepath.fsPath);
+				const deployResult = await CamelCommandAPI.kubernetesRun(integration.filepath.fsPath, path.dirname(integration.filepath.fsPath));
+				const deployTask = CamelTaskFactory.create({ label: `Deploying - ${path.basename(integration.filepath.fsPath)}` }, deployResult);
 				await deployTask.execute();
 				await this.sendCommandTrackingEvent(COMMAND_INTEGRATIONS_KUBERNETES_RUN);
 			}),
@@ -675,7 +665,9 @@ export class ExtensionContextHandler {
 	public registerDeploymentsIntegrationCommands() {
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(COMMAND_DEPLOYMENTS_STOP, async (integration: ParentItem) => {
-				await new CamelStopJBangTask(integration.label as string).executeAndWait();
+				const stopResult = await CamelCommandAPI.stop(integration.label as string);
+				const stopTask = CamelTaskFactory.createSilent(`Stop - ${integration.label as string}`, stopResult);
+				await stopTask.executeAndWait();
 				await this.sendCommandTrackingEvent(COMMAND_DEPLOYMENTS_STOP);
 			}),
 		);
@@ -695,32 +687,24 @@ export class ExtensionContextHandler {
 	}
 
 	public registerDeploymentsRouteCommands() {
-		const startCommand = vscode.commands.registerCommand(COMMAND_DEPLOYMENTS_ROUTE_START, async (route: ChildItem) => {
-			await new CamelRouteOperationJBangTask(RouteOperation.start, route.parentIntegration.label as string, route.label as string).executeAndWait();
-			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Started');
-			this.deploymentsProvider.refresh();
-			await this.sendCommandTrackingEvent(COMMAND_DEPLOYMENTS_ROUTE_START);
-		});
-		const stopCommand = vscode.commands.registerCommand(COMMAND_DEPLOYMENTS_ROUTE_STOP, async (route: ChildItem) => {
-			await new CamelRouteOperationJBangTask(RouteOperation.stop, route.parentIntegration.label as string, route.label as string).executeAndWait();
-			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Stopped');
-			this.deploymentsProvider.refresh();
-			await this.sendCommandTrackingEvent(COMMAND_DEPLOYMENTS_ROUTE_STOP);
-		});
-		const resumeCommand = vscode.commands.registerCommand(COMMAND_DEPLOYMENTS_ROUTE_RESUME, async (route: ChildItem) => {
-			await new CamelRouteOperationJBangTask(RouteOperation.resume, route.parentIntegration.label as string, route.label as string).executeAndWait();
-			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Started');
-			this.deploymentsProvider.refresh();
-			await this.sendCommandTrackingEvent(COMMAND_DEPLOYMENTS_ROUTE_RESUME);
-		});
-		const suspendCommand = vscode.commands.registerCommand(COMMAND_DEPLOYMENTS_ROUTE_SUSPEND, async (route: ChildItem) => {
-			await new CamelRouteOperationJBangTask(RouteOperation.suspend, route.parentIntegration.label as string, route.label as string).executeAndWait();
-			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Suspended');
-			this.deploymentsProvider.refresh();
-			await this.sendCommandTrackingEvent(COMMAND_DEPLOYMENTS_ROUTE_SUSPEND);
-		});
+		const registerRouteCommand = (commandId: string, operation: RouteOperation, expectedState: 'Started' | 'Stopped' | 'Suspended') =>
+			vscode.commands.registerCommand(commandId, async (route: ChildItem) => {
+				const integrationName = route.parentIntegration.label as string;
+				const routeName = route.label as string;
+				const result = await CamelCommandAPI.routeOperation(operation, integrationName, routeName);
+				const task = CamelTaskFactory.createSilent(`${operation} - ${integrationName}: ${routeName}`, result);
+				await task.executeAndWait();
+				await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, routeName, expectedState);
+				this.deploymentsProvider.refresh();
+				await this.sendCommandTrackingEvent(commandId);
+			});
 
-		this.context.subscriptions.push(startCommand, stopCommand, resumeCommand, suspendCommand);
+		this.context.subscriptions.push(
+			registerRouteCommand(COMMAND_DEPLOYMENTS_ROUTE_START, RouteOperation.start, 'Started'),
+			registerRouteCommand(COMMAND_DEPLOYMENTS_ROUTE_STOP, RouteOperation.stop, 'Stopped'),
+			registerRouteCommand(COMMAND_DEPLOYMENTS_ROUTE_RESUME, RouteOperation.resume, 'Started'),
+			registerRouteCommand(COMMAND_DEPLOYMENTS_ROUTE_SUSPEND, RouteOperation.suspend, 'Suspended'),
+		);
 	}
 
 	public async hideIntegrationsViewButtonsForMavenProjects() {
@@ -736,7 +720,7 @@ export class ExtensionContextHandler {
 	}
 
 	private async updatePomContext() {
-		const pomFile = await vscode.workspace.findFiles('pom.xml', KAOTO_EXCLUDE_PATTERN, 1);
+		const pomFile = await vscode.workspace.findFiles('pom.xml', IntegrationsProvider.EXCLUDE_PATTERN, 1);
 		const hasPom = pomFile.length > 0;
 		await vscode.commands.executeCommand('setContext', CONTEXT_WORKSPACE_HAS_POM_XML, hasPom);
 	}
@@ -750,22 +734,14 @@ export class ExtensionContextHandler {
 	 * @param task - The task whose port should be synchronized
 	 * @param allocatedPort - The port that was originally allocated
 	 */
-	private synchronizePortTracking(portManager: PortManager, task: CamelJBangTask, allocatedPort: number): void {
-		const taskDef = task.definition as CamelJBangTaskDefinition;
+	private synchronizePortTracking(portManager: PortManager, task: CamelTask, allocatedPort: number): void {
+		const taskDef = task.definition as CamelTaskDefinition;
 		const actualPort = taskDef.port;
+
 		if (actualPort !== allocatedPort) {
-			if (actualPort === CamelJBang.NO_PORT) {
-				portManager.releasePort(allocatedPort);
-				return;
-			}
-			const usedPorts = portManager.getUsedPorts();
-			if (usedPorts.has(actualPort)) {
-				portManager.releasePort(allocatedPort);
-				throw new Error(`Port ${actualPort} is already reserved by another running integration.`);
-			}
 			// User overrode the port in settings, update PortManager to track the actual port
 			portManager.releasePort(allocatedPort);
-			usedPorts.add(actualPort);
+			portManager.getUsedPorts().add(actualPort);
 		}
 	}
 
@@ -791,16 +767,15 @@ export class ExtensionContextHandler {
 	 */
 	private async executeRunSourceDirTask(folderPath: string, portManager: PortManager): Promise<void> {
 		const allocatedPort = await portManager.allocatePort();
-		let runTask: CamelRunSourceDirJBangTask | undefined;
+		let runTask: CamelTask | undefined;
 
 		try {
-			runTask = await CamelRunSourceDirJBangTask.create(folderPath, allocatedPort);
+			const result = await CamelCommandAPI.runSourceDir(folderPath, allocatedPort);
+			runTask = CamelTaskFactory.createBackground(`Running - ${path.basename(folderPath)}::${result.resolvedPort}`, result);
 			this.synchronizePortTracking(portManager, runTask, allocatedPort);
 			await runTask.execute();
 		} catch (error) {
-			// Release the port that is currently reserved
-			// If synchronizePortTracking succeeded, it may have changed which port is reserved
-			const portToRelease = runTask ? (runTask.definition as CamelJBangTaskDefinition).port : allocatedPort;
+			const portToRelease = runTask ? (runTask.definition as CamelTaskDefinition).port : allocatedPort;
 			portManager.releasePort(portToRelease);
 			throw error;
 		}
@@ -812,7 +787,7 @@ export class ExtensionContextHandler {
 	 */
 	private async showMultiWorkspaceInfoMessage(): Promise<void> {
 		const storageKey = STATE_SHOW_RUN_ALL_FOLDERS_MESSAGE;
-		const showInfoMessage = this.safeGlobalStateGet<boolean>(storageKey, true);
+		const showInfoMessage = safeGlobalStateGet<boolean>(this.context, storageKey, true);
 
 		if (showInfoMessage) {
 			const doNotShowAgain = "Don't show again";
@@ -823,7 +798,7 @@ export class ExtensionContextHandler {
 				doNotShowAgain,
 			);
 			if (result === doNotShowAgain) {
-				await this.safeGlobalStateUpdate(storageKey, false);
+				await safeGlobalStateUpdate(this.context, storageKey, false);
 			}
 		}
 	}

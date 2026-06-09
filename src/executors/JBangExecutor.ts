@@ -29,7 +29,7 @@ export class JBangExecutor extends BaseExecutor {
 
 		return {
 			executable: JBangExecutor.JBANG_EXECUTABLE,
-			prefixArgs: [`-Dcamel.jbang.version=${cliVersion}`, ...runtimeSystemProps, 'camel@apache/camel'],
+			prefixArgs: [`'-Dcamel.jbang.version=${cliVersion}'`, ...runtimeSystemProps, 'camel@apache/camel'],
 		};
 	}
 
@@ -48,17 +48,17 @@ export class JBangExecutor extends BaseExecutor {
 		const properties: string[] = [];
 
 		if (runtime === RuntimeType.QUARKUS) {
-			properties.push(`-Dcamel.jbang.quarkusVersion=${version}`);
+			properties.push(`'-Dcamel.jbang.quarkusVersion=${version}'`);
 
 			if (isRedHatBuild(version)) {
 				properties.push(
-					'-Dcamel.jbang.quarkusGroupId=com.redhat.quarkus.platform',
-					'-Dcamel.jbang.quarkus.platform.url=https://registry.quarkus.redhat.com/client/platforms',
-					'-Dcamel.jbang.quarkusExtensionRegistryBaseUri=https://registry.quarkus.redhat.com/',
+					`'-Dcamel.jbang.quarkusGroupId=com.redhat.quarkus.platform'`,
+					`'-Dcamel.jbang.quarkus.platform.url=https://registry.quarkus.redhat.com/client/platforms'`,
+					`'-Dcamel.jbang.quarkusExtensionRegistryBaseUri=https://registry.quarkus.redhat.com/'`,
 				);
 			}
 		} else if (runtime === RuntimeType.SPRING_BOOT) {
-			properties.push(`-Dcamel.jbang.camelSpringBootVersion=${version}`, `-Dcamel.jbang.springBootVersion=${catalog.frameworkVersion}`);
+			properties.push(`'-Dcamel.jbang.camelSpringBootVersion=${version}'`, `'-Dcamel.jbang.springBootVersion=${catalog.frameworkVersion}'`);
 		}
 
 		return properties;

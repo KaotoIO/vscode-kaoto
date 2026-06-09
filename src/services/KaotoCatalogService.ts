@@ -6,6 +6,12 @@ import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { RedHatMavenNotificationService } from './RedHatMavenNotificationService';
 import { RuntimeType, ExecutorType } from '../executors/types/ExecutorTypes';
 import { isRedHatBuild } from '../helpers/helpers';
+import {
+	COMMAND_SELECT_CAMEL_CATALOG,
+	KAOTO_CATALOG_URL_SETTING_ID,
+	KAOTO_RUNTIME_CATALOG_NAME_SETTING_ID,
+	KAOTO_TESTING_CATALOG_NAME_SETTING_ID,
+} from '../constants';
 
 /**
  * Grouped catalogs by runtime type
@@ -201,7 +207,7 @@ export class KaotoCatalogService {
 				.showWarningMessage(`Kaoto: Invalid ${catalogTypeLabel} catalog name "${catalogName}". Using default instead.`, 'Select Valid Catalog')
 				.then((choice) => {
 					if (choice === 'Select Valid Catalog') {
-						vscode.commands.executeCommand('kaoto.selectCamelCatalog');
+						vscode.commands.executeCommand(COMMAND_SELECT_CAMEL_CATALOG);
 					}
 				});
 		}
@@ -242,7 +248,7 @@ export class KaotoCatalogService {
 		if (this.statusBarItem) {
 			this.statusBarItem.text = `$(package) ${displayLabel}`;
 			this.statusBarItem.tooltip = 'Select Camel Catalog Version';
-			this.statusBarItem.command = 'kaoto.selectCamelCatalog';
+			this.statusBarItem.command = COMMAND_SELECT_CAMEL_CATALOG;
 			this.statusBarItem.show();
 		}
 	}
@@ -455,7 +461,7 @@ export class KaotoCatalogService {
 	public createStatusBarItem(): vscode.StatusBarItem {
 		this.statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
-		this.statusBarItem.command = 'kaoto.selectCamelCatalog';
+		this.statusBarItem.command = COMMAND_SELECT_CAMEL_CATALOG;
 		this.statusBarItem.tooltip = 'Select Camel Catalog Version';
 
 		// Don't show status bar initially - wait for Kaoto editor to be active
@@ -470,12 +476,9 @@ export class KaotoCatalogService {
 				void this.updateStatusBar();
 			}),
 			vscode.workspace.onDidChangeConfiguration((e) => {
-				if (
-					e.affectsConfiguration('kaoto.runtimeCatalogName') ||
-					e.affectsConfiguration('kaoto.testingCatalogName') ||
-					e.affectsConfiguration('kaoto.catalog.url')
-				) {
-					void this.loadCatalogs();
+				if (e.affectsConfiguration(KAOTO_CATALOG_URL_SETTING_ID)) {
+					void this.loadCatalogs().then(() => this.updateStatusBar());
+				} else if (e.affectsConfiguration(KAOTO_RUNTIME_CATALOG_NAME_SETTING_ID) || e.affectsConfiguration(KAOTO_TESTING_CATALOG_NAME_SETTING_ID)) {
 					void this.updateStatusBar();
 				}
 			}),
@@ -517,14 +520,15 @@ export class KaotoCatalogService {
 			return;
 		}
 
-		const catalog = (await this.getSelectedCatalog(documentUri)) ?? this.getDefaultCatalog(documentUri);
+		const selected = await this.getSelectedCatalog(documentUri);
+		const catalog = selected ?? this.getDefaultCatalog(documentUri);
 		if (!catalog) {
 			KaotoOutputChannel.logWarning('Status bar: No catalog available, hiding');
 			this.statusBarItem.hide();
 			return;
 		}
 
-		if (!(await this.getSelectedCatalog(documentUri))) {
+		if (!selected) {
 			KaotoOutputChannel.logWarning('No catalog found for Kaoto file, using default');
 		}
 

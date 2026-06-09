@@ -1,6 +1,8 @@
 # 2.11.0
 
 - Upgrade default Camel JBang version from 4.18.0 to 4.20.0
+- Upgrade to Kaoto 2.11.0
+- Support two executors - Camel CLI (default) and Camel Launcher (experimental)
 
 # 2.10.2
 
