@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Uri, commands } from 'vscode';
-import { COMMAND_OPEN_WITH_KAOTO } from '../constants';
 import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
-import { CamelBindJBangTask } from '../tasks/CamelBindJBangTask';
+import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 import { CamelRouteDSL } from './AbstractCamelCommand';
 import path from 'path';
 
 export class NewCamelPipeCommand extends AbstractNewCamelRouteCommand {
+	public static readonly ID_COMMAND_CAMEL_PIPE_YAML = 'kaoto.camel.jbang.init.pipe.yaml';
 	protected static readonly PROGRESS_NOTIFICATION_MESSAGE = 'Creating a new Pipe file...';
 
 	public async create(): Promise<void> {
@@ -28,19 +27,13 @@ export class NewCamelPipeCommand extends AbstractNewCamelRouteCommand {
 		if (wsFolder || this.singleWorkspaceFolder) {
 			const targetFolder = await this.showDialogToPickFolder(wsFolder?.uri);
 			if (targetFolder) {
-				const name = await this.showInputBoxForFileName(targetFolder ? targetFolder.fsPath : undefined);
+				const name = await this.showInputBoxForFileName(targetFolder.fsPath);
 				if (name && this.camelDSL && this.singleWorkspaceFolder) {
 					const fileName = this.getFullName(name, this.camelDSL.extension);
 					const filePath = this.computeFullPath(targetFolder.fsPath, fileName);
-
 					const wsFolderTarget = wsFolder || this.singleWorkspaceFolder;
-					await new CamelBindJBangTask(wsFolderTarget, path.relative(wsFolderTarget.uri.fsPath, filePath)).executeAndWaitWithProgress(
-						NewCamelPipeCommand.PROGRESS_NOTIFICATION_MESSAGE,
-					);
-
-					const targetFileURI = Uri.file(filePath);
-					await this.waitForFileExists(targetFileURI);
-					await commands.executeCommand(COMMAND_OPEN_WITH_KAOTO, targetFileURI);
+					const result = await CamelCommandAPI.bind(path.relative(wsFolderTarget.uri.fsPath, filePath), 'timer-source', 'log-sink');
+					await this.executeInitAndOpen(result, fileName, filePath, wsFolderTarget, NewCamelPipeCommand.PROGRESS_NOTIFICATION_MESSAGE);
 				}
 			}
 		} else {

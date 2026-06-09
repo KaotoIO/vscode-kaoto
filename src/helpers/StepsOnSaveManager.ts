@@ -1,10 +1,13 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
-import { KAOTO_CAMEL_JBANG_VERSION_SETTING_ID, KAOTO_MAVEN_DEPENDENCIES_UPDATE_ON_SAVE_SETTING_ID } from '../constants';
-import { findFolderOfPomXml } from './helpers';
+import { findFolderOfPomXml, normalizeVersionForSemver } from './helpers';
 import { satisfies } from 'compare-versions';
-import { CamelDependencyUpdateJBangTask } from '../tasks/CamelDependencyUpdateJBangTask';
+import { CamelTaskFactory } from '../tasks/CamelTaskFactory';
+import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
+import { KaotoCatalogService } from '../services/KaotoCatalogService';
+import { DEFAULT_CAMEL_VERSION_FALLBACK } from '../constants';
+import { ExecutorType } from '../executors/types/ExecutorTypes';
 
 export class StepsOnSaveManager {
 	private static _instance: StepsOnSaveManager | undefined;
@@ -37,16 +40,26 @@ export class StepsOnSaveManager {
 	}
 
 	public async updateDependencies(docPath: string, pomPath: string, message?: string): Promise<void> {
-		const camelJBangVersion = vscode.workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_VERSION_SETTING_ID) as string;
-		if (satisfies(camelJBangVersion, '<4.14')) {
-			KaotoOutputChannel.logWarning('Camel JBang version is <4.14. Skipping update on save for Camel dependencies in pom.xml.');
-			vscode.window.setStatusBarMessage('Kaoto: Camel JBang version is <4.14. Skipping update on save for Camel dependencies in pom.xml.', 5_000);
-			return; // skip update on save for Camel JBang <4.14
+		// Get executor type from VS Code settings to avoid circular dependency
+		const vscodeConfig = vscode.workspace.getConfiguration();
+		const executorType = vscodeConfig.get<string>('kaoto.executor.type') as ExecutorType;
+
+		// Get version from catalog service - use selected catalog
+		const catalogService = KaotoCatalogService.getInstance();
+		const catalog = await catalogService.getSelectedIntegrationCatalog();
+		const camelVersion = catalogService.getCamelVersionForCLI(catalog, executorType) || DEFAULT_CAMEL_VERSION_FALLBACK;
+
+		if (satisfies(normalizeVersionForSemver(camelVersion), '<4.14')) {
+			KaotoOutputChannel.logWarning('Camel version is <4.14. Skipping update on save for Camel dependencies in pom.xml.');
+			vscode.window.setStatusBarMessage('Kaoto: Camel version is <4.14. Skipping update on save for Camel dependencies in pom.xml.', 5_000);
+			return; // skip update on save for Camel <4.14
 		}
 
 		KaotoOutputChannel.logInfo(message ?? 'Updating Camel dependencies...');
 		try {
-			await new CamelDependencyUpdateJBangTask(pomPath, docPath).executeAndWaitWithProgress('Updating Camel dependencies in pom.xml');
+			const result = await CamelCommandAPI.dependencyUpdate(pomPath, docPath, path.dirname(pomPath));
+			const task = CamelTaskFactory.createSilent('Update Camel dependencies in pom.xml', result);
+			await task.executeAndWaitWithProgress('Updating Camel dependencies in pom.xml');
 			vscode.window.setStatusBarMessage(`Kaoto: Camel dependencies in '${pomPath}' successfully updated.`, 5_000);
 			KaotoOutputChannel.logInfo('Camel dependencies update completed successfully.');
 			this.hasStepsByDocPath.set(docPath, false);
@@ -96,7 +109,7 @@ export class StepsOnSaveManager {
 		}
 		const pomPath = path.join(pomFolder, 'pom.xml');
 
-		const updateOnSave = vscode.workspace.getConfiguration().get(KAOTO_MAVEN_DEPENDENCIES_UPDATE_ON_SAVE_SETTING_ID);
+		const updateOnSave = vscode.workspace.getConfiguration().get('kaoto.maven.dependenciesUpdate.onSave');
 		if (!updateOnSave) {
 			return;
 		}

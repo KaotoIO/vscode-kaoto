@@ -16,22 +16,6 @@ export const DEFAULT_KAOTO_OPENAPI_FILES_REGEXP: string[] = ['*openapi.yaml', '*
 
 // ─── Settings IDs ────────────────────────────────────────────────────────────
 
-export const KAOTO_CAMEL_VERSION_SETTING_ID = 'kaoto.camelVersion';
-
-export const KAOTO_CAMEL_JBANG_VERSION_SETTING_ID = 'kaoto.camelJbang.version';
-
-export const KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID = 'kaoto.camelJbang.runArguments';
-
-export const KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID = 'kaoto.camelJbang.runFolderOrWorkspaceArguments';
-
-export const KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID = 'kaoto.camelJbang.redHatMavenRepository';
-
-export const KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID = 'kaoto.camelJbang.redHatMavenRepository.global';
-
-export const KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID = 'kaoto.camelJbang.kubernetesRunArguments';
-
-export const KAOTO_MAVEN_CAMEL_JBANG_EXPORT_FOLDER_ARGUMENTS_SETTING_ID = 'kaoto.maven.camelJbang.exportProjectArguments';
-
 export const KAOTO_MAVEN_DEPENDENCIES_UPDATE_ON_SAVE_SETTING_ID = 'kaoto.maven.dependenciesUpdate.onSave';
 
 export const KAOTO_LOCAL_KAMELET_DIRECTORIES_SETTING_ID = 'kaoto.localKameletDirectories';
@@ -110,6 +94,8 @@ export const COMMAND_CLOSE_SOURCE = 'kaoto.close.source';
 
 export const COMMAND_OPEN_WITH_KAOTO = 'kaoto.open';
 
+export const COMMAND_SELECT_CAMEL_CATALOG = 'kaoto.selectCamelCatalog';
+
 export const COMMAND_INTEGRATIONS_REFRESH = 'kaoto.integrations.refresh';
 
 export const COMMAND_INTEGRATIONS_SHOW_SOURCE = 'kaoto.integrations.showSource';
@@ -175,8 +161,6 @@ export const VIEW_OPENAPI = 'kaoto.openapi';
 export const VIEW_WHATS_NEW = 'kaoto.whatsNew';
 
 // ─── Context Keys ────────────────────────────────────────────────────────────
-
-export const CONTEXT_JBANG_AVAILABLE = 'kaoto.jbangAvailable';
 
 export const CONTEXT_EXECUTOR_AVAILABLE = 'kaoto.executorAvailable';
 
