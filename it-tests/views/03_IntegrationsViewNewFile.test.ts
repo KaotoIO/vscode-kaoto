@@ -131,7 +131,7 @@ describe('Integrations View', function () {
 				const newCamelRoute = await getTreeItem(driver, integrationsSection, dsl.fileName, 120_000);
 				expect(newCamelRoute).to.not.be.undefined;
 
-				await switchToKaotoAndCheckIntegrationType(dsl.fileName, 'Camel Route', 'setBody');
+				await switchToKaotoAndCheckIntegrationType(dsl.fileName, 'Camel Route', 'timer');
 			});
 		});
 
