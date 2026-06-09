@@ -17,6 +17,15 @@ import { CamelJBang } from '../helpers/CamelJBang';
 import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
 import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
 import { getSuggestions } from '../helpers/SuggestionRegistry';
+import {
+	KAOTO_CANVAS_LAYOUT_DIRECTION_SETTING_ID,
+	KAOTO_CATALOG_URL_SETTING_ID,
+	KAOTO_COLOR_THEME_SETTING_ID,
+	KAOTO_NODE_LABEL_SETTING_ID,
+	KAOTO_NODE_TOOLBAR_TRIGGER_SETTING_ID,
+	KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID,
+	KAOTO_REST_CUSTOM_MEDIA_TYPES_SETTING_ID,
+} from '../constants';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 	private readonly currentEditedDocument: vscode.TextDocument | VsCodeKieEditorCustomDocument;
@@ -42,17 +51,19 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 	}
 
 	async getCatalogURL(): Promise<string | undefined> {
-		return await vscode.workspace.getConfiguration('kaoto').get('catalog.url');
+		return await vscode.workspace.getConfiguration().get(KAOTO_CATALOG_URL_SETTING_ID);
 	}
 
 	async getVSCodeKaotoSettings(): Promise<ISettingsModel> {
-		const catalogUrl = await vscode.workspace.getConfiguration('kaoto').get<Promise<string | null>>('catalog.url');
-		const nodeLabel = await vscode.workspace.getConfiguration('kaoto').get<Promise<NodeLabelType | null>>('nodeLabel');
-		const nodeToolbarTrigger = await vscode.workspace.getConfiguration('kaoto').get<Promise<NodeToolbarTrigger | null>>('nodeToolbarTrigger');
-		const colorThemeSetting = await vscode.workspace.getConfiguration('kaoto').get<Promise<ColorScheme | null>>('colorTheme');
-		const canvasLayoutDirection = await vscode.workspace.getConfiguration('kaoto').get<Promise<CanvasLayoutDirection | null>>('canvasLayoutDirection');
-		const customMediaTypes = await vscode.workspace.getConfiguration('kaoto').get<Promise<string[] | null>>('restConfiguration.customMediaTypes');
-		const apicurioRegistryUrl = await vscode.workspace.getConfiguration('kaoto').get<Promise<string | null>>('restConfiguration.apicurioRegistryUrl');
+		const catalogUrl = await vscode.workspace.getConfiguration().get<Promise<string | null>>(KAOTO_CATALOG_URL_SETTING_ID);
+		const nodeLabel = await vscode.workspace.getConfiguration().get<Promise<NodeLabelType | null>>(KAOTO_NODE_LABEL_SETTING_ID);
+		const nodeToolbarTrigger = await vscode.workspace.getConfiguration().get<Promise<NodeToolbarTrigger | null>>(KAOTO_NODE_TOOLBAR_TRIGGER_SETTING_ID);
+		const colorThemeSetting = await vscode.workspace.getConfiguration().get<Promise<ColorScheme | null>>(KAOTO_COLOR_THEME_SETTING_ID);
+		const canvasLayoutDirection = await vscode.workspace
+			.getConfiguration()
+			.get<Promise<CanvasLayoutDirection | null>>(KAOTO_CANVAS_LAYOUT_DIRECTION_SETTING_ID);
+		const customMediaTypes = await vscode.workspace.getConfiguration().get<Promise<string[] | null>>(KAOTO_REST_CUSTOM_MEDIA_TYPES_SETTING_ID);
+		const apicurioRegistryUrl = await vscode.workspace.getConfiguration().get<Promise<string | null>>(KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID);
 		const colorTheme = this.getColorSchemeFromVSCode(colorThemeSetting, vscode.window.activeColorTheme);
 
 		const settingsModel: Partial<ISettingsModel> = {

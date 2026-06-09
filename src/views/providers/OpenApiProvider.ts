@@ -19,12 +19,17 @@ import { basename, normalize } from 'path';
 import { OpenApiFile } from '../openApiTreeItems/OpenApiFile';
 import { OpenApiFolder } from '../openApiTreeItems/OpenApiFolder';
 import { AbstractFolderTreeProvider } from './AbstractFolderTreeProvider';
-import { DEFAULT_KAOTO_OPENAPI_FILES_REGEXP, KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID } from '../../helpers/helpers';
+import {
+	COMMAND_OPENAPI_DELETE,
+	COMMAND_OPENAPI_SHOW_SOURCE,
+	DEFAULT_KAOTO_OPENAPI_FILES_REGEXP,
+	KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID,
+} from '../../constants';
 import { OpenApiImportService } from '../../services/openapi-import.service';
 
 export class OpenApiProvider extends AbstractFolderTreeProvider<OpenApiFolder> {
-	public readonly VIEW_ITEM_SHOW_SOURCE_COMMAND_ID: string = 'kaoto.openapi.showSource';
-	public readonly VIEW_ITEM_DELETE_COMMAND_ID: string = 'kaoto.openapi.delete';
+	public readonly VIEW_ITEM_SHOW_SOURCE_COMMAND_ID: string = COMMAND_OPENAPI_SHOW_SOURCE;
+	public readonly VIEW_ITEM_DELETE_COMMAND_ID: string = COMMAND_OPENAPI_DELETE;
 
 	/** Cached OpenAPI files after content-based filtering */
 	private openApiFilesCache: Uri[] | undefined;

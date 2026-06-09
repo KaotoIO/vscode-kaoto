@@ -21,7 +21,6 @@ import { CamelRouteDSL } from './AbstractCamelCommand';
 import isValidFilename from 'valid-filename';
 
 export class NewCamelTestCommand extends AbstractNewCamelRouteCommand {
-	public static readonly ID_COMMAND_CITRUS_INIT = 'kaoto.citrus.jbang.init.test';
 	protected static readonly PROGRESS_NOTIFICATION_MESSAGE = 'Creating a new Citrus Test file...';
 
 	public async create(): Promise<void> {

@@ -21,42 +21,8 @@ import * as path from 'path';
 import fs from 'fs';
 
 /**
- * Utilizes constants, methods, ... used in both, desktop or web extension context
+ * Utilizes helper methods used in both, desktop or web extension context
  */
-
-export const KAOTO_FILE_PATH_GLOB: string = '**/*.{yml,yaml,xml}';
-
-export const KAOTO_CAMEL_JBANG_VERSION_SETTING_ID: string = 'kaoto.camelJbang.version';
-
-export const KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID: string = 'kaoto.camelJbang.runArguments';
-
-export const KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID: string = 'kaoto.camelJbang.runFolderOrWorkspaceArguments';
-
-export const KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID: string = 'kaoto.camelJbang.redHatMavenRepository';
-
-export const KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID: string = 'kaoto.camelJbang.redHatMavenRepository.global';
-
-export const KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID: string = 'kaoto.camelJbang.kubernetesRunArguments';
-
-export const KAOTO_MAVEN_CAMEL_JBANG_EXPORT_FOLDER_ARGUMENTS_SETTING_ID: string = 'kaoto.maven.camelJbang.exportProjectArguments';
-
-export const KAOTO_LOCAL_KAMELET_DIRECTORIES_SETTING_ID: string = 'kaoto.localKameletDirectories';
-
-export const KAOTO_INTEGRATIONS_FILES_REGEXP_SETTING_ID: string = 'kaoto.integrations.files.regexp';
-
-export const KAOTO_TESTS_FILES_REGEXP_SETTING_ID: string = 'kaoto.tests.files.regexp';
-
-export const KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID: string = 'kaoto.openapi.files.regexp';
-
-export const DEFAULT_KAOTO_OPENAPI_FILES_REGEXP: string[] = ['*openapi.yaml', '*openapi.yml', '*openapi.json'];
-
-export const KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID: string = 'kaoto.restConfiguration.apicurioRegistryUrl';
-
-export const KAOTO_REST_CUSTOM_MEDIA_TYPES_SETTING_ID: string = 'kaoto.restConfiguration.customMediaTypes';
-
-export const CAMEL_TRUSTED_SOURCE_URL: string = 'https://github.com/apache/camel/';
-
-export const CITRUS_TRUSTED_SOURCE_URL: string = 'https://github.com/citrusframework/citrus/';
 
 export async function verifyJBangExists(): Promise<boolean> {
 	return await runJBangCommandWithStatusBar(`version`, `Checking JBang executable on PATH...`).then((output) => !output.stderr.includes('command not found')); // JBang exists

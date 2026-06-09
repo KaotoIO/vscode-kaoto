@@ -20,11 +20,17 @@ import { TestResult } from '../../types/testTreeItemType';
 import { TestFolder } from '../testTreeItems/TestFolder';
 import { basename, dirname, join } from 'path';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
-import { KAOTO_TESTS_FILES_REGEXP_SETTING_ID } from '../../helpers/helpers';
+import {
+	COMMAND_TESTS_DELETE,
+	COMMAND_TESTS_SHOW_SOURCE,
+	CONTEXT_TEST_EXISTS,
+	CONTEXT_TEST_RESULTS_EXIST,
+	KAOTO_TESTS_FILES_REGEXP_SETTING_ID,
+} from '../../constants';
 
 export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
-	public readonly VIEW_ITEM_SHOW_SOURCE_COMMAND_ID: string = 'kaoto.tests.showSource';
-	public readonly VIEW_ITEM_DELETE_COMMAND_ID: string = 'kaoto.tests.delete';
+	public readonly VIEW_ITEM_SHOW_SOURCE_COMMAND_ID: string = COMMAND_TESTS_SHOW_SOURCE;
+	public readonly VIEW_ITEM_DELETE_COMMAND_ID: string = COMMAND_TESTS_DELETE;
 
 	private static readonly TEST_FILE_PATTERN = '{**/*.citrus.yaml,**/*.citrus.test.yaml,**/*.citrus.it.yaml,**/*.citrus-test.yaml,**/*.citrus-it.yaml}';
 	private static readonly SCHEDULE_REFRESH_MS = 100;
@@ -104,7 +110,7 @@ export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
 	}
 
 	protected setContext(hasFiles: boolean): void {
-		commands.executeCommand('setContext', 'kaoto.testExists', hasFiles);
+		commands.executeCommand('setContext', CONTEXT_TEST_EXISTS, hasFiles);
 	}
 
 	/**
@@ -222,7 +228,7 @@ export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
 
 	private updateResultsContext(): void {
 		const hasResults = Array.from(this.testResults.values()).some((r) => r !== 'none');
-		commands.executeCommand('setContext', 'kaoto.testResultsExist', hasResults);
+		commands.executeCommand('setContext', CONTEXT_TEST_RESULTS_EXIST, hasResults);
 	}
 
 	/**

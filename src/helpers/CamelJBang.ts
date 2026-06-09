@@ -15,17 +15,16 @@
  */
 import { RelativePattern, ShellExecution, ShellExecutionOptions, ShellQuotedString, ShellQuoting, Uri, workspace, window } from 'vscode';
 import {
-	arePathsEqual,
-	findFolderOfPomXml,
 	KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID,
 	KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID,
 	KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID,
 	KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID,
 	KAOTO_CAMEL_JBANG_VERSION_SETTING_ID,
+	KAOTO_CAMEL_VERSION_SETTING_ID,
 	KAOTO_LOCAL_KAMELET_DIRECTORIES_SETTING_ID,
 	KAOTO_MAVEN_CAMEL_JBANG_EXPORT_FOLDER_ARGUMENTS_SETTING_ID,
-	resolvePaths,
-} from './helpers';
+} from '../constants';
+import { arePathsEqual, findFolderOfPomXml, resolvePaths } from './helpers';
 import path, { dirname, relative } from 'path';
 import { execSync } from 'child_process';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
@@ -394,7 +393,7 @@ export class CamelJBang {
 	}
 
 	protected getCamelVersion(userArgs: string[] = [], context: string = 'camel-version'): { argument: string; conflicts: ArgumentConflict[] } {
-		const camelVersion = workspace.getConfiguration().get('kaoto.camelVersion');
+		const camelVersion = workspace.getConfiguration().get(KAOTO_CAMEL_VERSION_SETTING_ID);
 
 		// If no workspace configuration, return empty
 		if (!camelVersion) {
@@ -412,7 +411,7 @@ export class CamelJBang {
 
 		// If not found in userArgs, fall back to workspace configuration
 		if (!camelVersion) {
-			const workspaceCamelVersion = workspace.getConfiguration().get('kaoto.camelVersion');
+			const workspaceCamelVersion = workspace.getConfiguration().get(KAOTO_CAMEL_VERSION_SETTING_ID);
 			camelVersion = workspaceCamelVersion ? (workspaceCamelVersion as string) : '';
 		}
 
