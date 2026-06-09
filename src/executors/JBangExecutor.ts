@@ -10,6 +10,7 @@ import { JBangExecutorConfig } from './types/ExecutorConfig';
 import { CamelCommand, CommandArguments, CommandContext, CommandResult, RuntimeType } from './types/ExecutorTypes';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
 import { DEFAULT_CAMEL_VERSION } from '../constants';
+import { isRedHatBuild } from '../helpers/helpers';
 
 /**
  * JBang executor implementation
@@ -75,7 +76,7 @@ export class JBangExecutor extends BaseExecutor {
 				properties.push(`-Dcamel.jbang.quarkusVersion=${version}`);
 
 				// For Red Hat productized versions
-				if (version.includes('redhat')) {
+				if (isRedHatBuild(version)) {
 					properties.push(
 						'-Dcamel.jbang.quarkusGroupId=com.redhat.quarkus.platform',
 						'-Dcamel.jbang.quarkus.platform.url=https://registry.quarkus.redhat.com/client/platforms',

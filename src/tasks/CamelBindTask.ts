@@ -19,7 +19,7 @@ import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 
 export class CamelBindTask extends CamelTask {
 	private constructor(scope: WorkspaceFolder | TaskScope.Workspace, shellExecution: ShellExecution) {
-		super(scope, 'Init a Camel file with JBang', shellExecution, true, TaskRevealKind.Silent);
+		super(scope, 'Init a Camel Pipe file', shellExecution, true, TaskRevealKind.Silent);
 	}
 
 	static async create(

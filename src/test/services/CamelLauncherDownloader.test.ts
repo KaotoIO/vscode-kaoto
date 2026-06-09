@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import * as path from 'path';
 import * as fs from 'fs';
 import { CamelLauncherDownloader, LauncherNotFoundError } from '../../services/CamelLauncherDownloader';
+import { isRedHatBuild } from '../../helpers/helpers';
 
 suite('CamelLauncherDownloader Tests', () => {
 	let downloader: CamelLauncherDownloader;
@@ -119,13 +120,10 @@ suite('CamelLauncherDownloader Tests', () => {
 	});
 
 	test('Should detect RedHat build versions', () => {
-		// Access private method through any cast for testing
-		const downloaderAny = downloader as any;
-
-		assert.isTrue(downloaderAny.isRedHatBuild('4.14.2.redhat-00006'));
-		assert.isTrue(downloaderAny.isRedHatBuild('4.14.2.redhat-00019'));
-		assert.isFalse(downloaderAny.isRedHatBuild('4.18.0'));
-		assert.isFalse(downloaderAny.isRedHatBuild('4.14.5'));
+		assert.isTrue(isRedHatBuild('4.14.2.redhat-00006'));
+		assert.isTrue(isRedHatBuild('4.14.2.redhat-00019'));
+		assert.isFalse(isRedHatBuild('4.18.0'));
+		assert.isFalse(isRedHatBuild('4.14.5'));
 	});
 
 	test('Should use RedHat Maven repository for RedHat builds', () => {

@@ -4,6 +4,7 @@ import * as https from 'https';
 import * as os from 'os';
 import { ExtensionContext } from 'vscode';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
+import { isRedHatBuild } from '../helpers/helpers';
 
 /**
  * Error thrown when Camel Launcher version is not found (404)
@@ -61,17 +62,10 @@ export class CamelLauncherDownloader {
 	}
 
 	/**
-	 * Check if version is a RedHat build
-	 */
-	private isRedHatBuild(version: string): boolean {
-		return version.includes('.redhat-');
-	}
-
-	/**
 	 * Get Maven repository base URL for the version
 	 */
 	private getMavenBaseUrl(version: string): string {
-		return this.isRedHatBuild(version) ? CamelLauncherDownloader.REDHAT_MAVEN_BASE : CamelLauncherDownloader.MAVEN_CENTRAL_BASE;
+		return isRedHatBuild(version) ? CamelLauncherDownloader.REDHAT_MAVEN_BASE : CamelLauncherDownloader.MAVEN_CENTRAL_BASE;
 	}
 
 	/**

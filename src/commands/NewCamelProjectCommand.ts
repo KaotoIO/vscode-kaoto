@@ -48,8 +48,8 @@ export class NewCamelProjectCommand {
 						return;
 					}
 				}
-				const camelExportJBangTask = await CamelExportTask.create(currentWorkspace, uri, input, runtime, outputFolder.fsPath, cwd, true);
-				await camelExportJBangTask.executeAndWaitWithProgress('Creating a new Camel project...');
+				const camelExportTask = await CamelExportTask.create(currentWorkspace, uri, input, runtime, outputFolder.fsPath, cwd, true);
+				await camelExportTask.executeAndWaitWithProgress('Creating a new Camel project...');
 
 				// if not exist, init .vscode with tasks.json and launch.json config files
 				await workspace.fs.createDirectory(Uri.file(path.join(outputFolder.fsPath, '.vscode')));

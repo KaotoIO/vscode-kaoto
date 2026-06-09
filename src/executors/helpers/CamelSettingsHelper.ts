@@ -12,15 +12,16 @@ import { KaotoCatalogService } from '../../services/KaotoCatalogService';
 import { CamelExecutorFactory } from '../CamelExecutorFactory';
 import { RuntimeType, ExecutorType } from '../types/ExecutorTypes';
 import {
-	KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID,
-	KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID,
-	KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID,
-	KAOTO_MAVEN_CAMEL_JBANG_EXPORT_FOLDER_ARGUMENTS_SETTING_ID,
+	KAOTO_EXECUTOR_RUN_ARGUMENTS_SETTING_ID,
+	KAOTO_EXECUTOR_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID,
+	KAOTO_EXECUTOR_KUBERNETES_RUN_ARGUMENTS_SETTING_ID,
+	KAOTO_EXECUTOR_EXPORT_ARGUMENTS_SETTING_ID,
 	KAOTO_LOCAL_KAMELET_DIRECTORIES_SETTING_ID,
-	KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID,
-	KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID,
+	KAOTO_EXECUTOR_RED_HAT_MAVEN_REPOSITORY_SETTING_ID,
+	KAOTO_EXECUTOR_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID,
 	resolvePaths,
 	normalizeVersionForSemver,
+	isRedHatBuild,
 } from '../../helpers/helpers';
 
 export interface ProcessedArguments {
@@ -71,7 +72,7 @@ export class CamelSettingsHelper {
 		// Initialize catalog-based settings
 		await this.initialize(Uri.file(filePath));
 
-		const runArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID) as string[];
+		const runArgs = workspace.getConfiguration().get(KAOTO_EXECUTOR_RUN_ARGUMENTS_SETTING_ID) as string[];
 		const xslFilteredArgs = await this.handleMissingXslFiles(filePath, runArgs);
 		const processedArgs = await this.handleLocalKameletDirArgument(xslFilteredArgs, cwd);
 
@@ -89,7 +90,7 @@ export class CamelSettingsHelper {
 		// Initialize catalog-based settings (use cwd as resource)
 		await this.initialize(Uri.file(cwd));
 
-		const runArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID) as string[];
+		const runArgs = workspace.getConfiguration().get(KAOTO_EXECUTOR_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID) as string[];
 		const processedArgs = await this.handleLocalKameletDirArgument(runArgs, cwd);
 
 		// Merge with hardcoded --console argument
@@ -103,7 +104,7 @@ export class CamelSettingsHelper {
 	 * Get processed export arguments with user settings
 	 */
 	async getExportArguments(cwd: string): Promise<ProcessedArguments> {
-		const exportArgs = workspace.getConfiguration().get(KAOTO_MAVEN_CAMEL_JBANG_EXPORT_FOLDER_ARGUMENTS_SETTING_ID) as string[];
+		const exportArgs = workspace.getConfiguration().get(KAOTO_EXECUTOR_EXPORT_ARGUMENTS_SETTING_ID) as string[];
 		const processedArgs = await this.handleLocalKameletDirArgument(exportArgs, cwd);
 		return { args: processedArgs, conflicts: [] };
 	}
@@ -114,7 +115,7 @@ export class CamelSettingsHelper {
 	async getKubernetesRunArguments(cwd: string): Promise<ProcessedArguments> {
 		await this.initialize(Uri.file(cwd));
 
-		const kubernetesArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID) as string[];
+		const kubernetesArgs = workspace.getConfiguration().get(KAOTO_EXECUTOR_KUBERNETES_RUN_ARGUMENTS_SETTING_ID) as string[];
 		const codeArgs = ['run'];
 		const result = ArgumentConflictDetector.mergeArguments(codeArgs, kubernetesArgs, 'kubernetesRun');
 
@@ -197,7 +198,7 @@ export class CamelSettingsHelper {
 		}
 
 		// For Red Hat productized versions, add group ID
-		if (this.camelVersion.includes('redhat') && !ArgumentConflictDetector.hasArgument(userArgs, 'quarkus-group-id')) {
+		if (isRedHatBuild(this.camelVersion) && !ArgumentConflictDetector.hasArgument(userArgs, 'quarkus-group-id')) {
 			args.push('--quarkus-group-id=com.redhat.quarkus.platform');
 		}
 
@@ -256,8 +257,8 @@ export class CamelSettingsHelper {
 
 		// Check if we're using a RedHat version by looking at the actual Camel version
 		// (not the --camel-version argument, which may be empty for Camel Launcher)
-		if (this.camelVersion.includes('redhat')) {
-			const url = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID) as string;
+		if (isRedHatBuild(this.camelVersion)) {
+			const url = workspace.getConfiguration().get(KAOTO_EXECUTOR_RED_HAT_MAVEN_REPOSITORY_SETTING_ID) as string;
 			const reposPlaceholder = this.getCamelGlobalRepos();
 			return url ? `--repos=${reposPlaceholder}${url}` : '';
 		}
@@ -335,7 +336,7 @@ export class CamelSettingsHelper {
 	 * Get Camel global repos prefix
 	 */
 	private getCamelGlobalRepos(): string {
-		const globalRepos = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID) as boolean;
+		const globalRepos = workspace.getConfiguration().get(KAOTO_EXECUTOR_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID) as boolean;
 		return globalRepos ? '#repos,' : '';
 	}
 
