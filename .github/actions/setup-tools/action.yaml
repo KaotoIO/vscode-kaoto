@@ -50,6 +50,15 @@ runs:
         distribution: temurin
         java-version: ${{ inputs.java-version }}
 
+    - name: Setup Maven settings.xml
+      uses: s4u/maven-settings-action@v4.0.0
+      with:
+        repositories: |
+          [{"id": "red-hat-enterprise-maven-repository", "name": "Red Hat Enterprise Maven Repository", "url": "https://maven.repository.redhat.com/ga/", "releases": {"enabled": true}, "snapshots": {"enabled": false}}]
+        pluginRepositories: |
+          [{"id": "red-hat-enterprise-maven-repository", "name": "Red Hat Enterprise Maven Repository", "url": "https://maven.repository.redhat.com/ga/", "releases": {"enabled": true}, "snapshots": {"enabled": false}}]
+        githubServer: false
+
     - name: Setup JBang (Linux, macOS)
       if: ${{ runner.os != 'Windows' && inputs.install-jbang == 'true' }}
       uses: jbangdev/setup-jbang@v0.1.1
