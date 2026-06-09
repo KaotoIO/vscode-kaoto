@@ -62,11 +62,13 @@ export class CamelTask extends Task {
 	 * Execute and wait till the end of the task
 	 */
 	public async executeAndWait(): Promise<void> {
+		const completion = this.waitForCompletion();
 		await this.execute();
-		await this.waitForEnd();
+		await completion;
 	}
 
 	public async executeAndWaitWithProgress(message: string): Promise<void> {
+		const completion = this.waitForCompletion();
 		await this.execute();
 		await window.withProgress(
 			{
@@ -75,21 +77,8 @@ export class CamelTask extends Task {
 				cancellable: false,
 			},
 			(progress) => {
-				progress.report({ increment: 0 });
-				return new Promise<void>((resolve, reject) => {
-					progress.report({ increment: 50 });
-					const disposable = tasks.onDidEndTaskProcess((e) => {
-						if (e.execution.task.name === this.label) {
-							disposable.dispose();
-							progress.report({ increment: 100 });
-							if (e.exitCode === 0) {
-								resolve();
-							} else {
-								reject(new Error(`Task "${this.label}" failed with exit code ${e.exitCode}`));
-							}
-						}
-					});
-				});
+				progress.report({ increment: 50 });
+				return completion.then(() => progress.report({ increment: 100 }));
 			},
 		);
 	}
@@ -107,8 +96,8 @@ export class CamelTask extends Task {
 		await tasks.executeTask(this);
 	}
 
-	private async waitForEnd(): Promise<void> {
-		await new Promise<void>((resolve, reject) => {
+	private waitForCompletion(): Promise<void> {
+		return new Promise<void>((resolve, reject) => {
 			const disposable = tasks.onDidEndTaskProcess((e) => {
 				if (e.execution.task.name === this.label) {
 					disposable.dispose();

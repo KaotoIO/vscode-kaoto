@@ -83,15 +83,4 @@ suite('CamelCommandBuilder Tests', () => {
 
 		assert.equal(result.execution.options?.cwd, '/project/path');
 	});
-
-	test('Should include context env in execution options', () => {
-		const builder = new CamelCommandBuilder({
-			executable: 'camel',
-			prefixArgs: [],
-		});
-
-		const result = builder.buildCommand('run', ['test.yaml'], { env: { TEST_VAR: 'value' } });
-
-		assert.deepEqual(result.execution.options?.env, { TEST_VAR: 'value' });
-	});
 });

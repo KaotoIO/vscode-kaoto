@@ -52,7 +52,7 @@ This is a VS Code extension for **Kaoto**, a visual low-code editor for Apache C
 - **Key Directories:**
   - `src/commands/` - VS Code commands for creating Camel files
   - `src/views/` - Tree view providers for integrations and deployments
-  - `src/tasks/` - Camel JBang task implementations for CLI operations
+  - `src/tasks/` - Generic Camel task implementations for CLI operations
   - `src/helpers/` - Utility functions and managers
   - `src/webview/` - Webview integration with Kaoto editor
 
@@ -68,7 +68,7 @@ This is a VS Code extension for **Kaoto**, a visual low-code editor for Apache C
 - **Core Editor:** `@kaoto/kaoto` (v2.7.1) - The main Kaoto editor library, [repository](https://github.com/KaotoIO/kaoto)
 - **VS Code Integration:** `@kie-tools-core/*` packages for editor envelope and backend, [repository](https://github.com/apache/incubator-kie-tools)
 - **UI Framework:** PatternFly React components
-- **Camel Support:** Uses Camel JBang CLI for operations
+- **Camel Support:** Uses Camel JBang CLI or Camel Launcher CLI for operations
 
 ## File Types Supported
 
@@ -82,7 +82,7 @@ This is a VS Code extension for **Kaoto**, a visual low-code editor for Apache C
 - Custom editor for supported file types
 - Tree views for integrations and deployments
 - Commands for creating new Camel files
-- Integration with Camel JBang CLI for running and deploying
+- Integration with Camel JBang CLI or Camel Launcher for running and deploying
 
 ## TypeScript Configuration
 

@@ -20,11 +20,13 @@ import { I18n } from '@kie-tools-core/i18n/dist/core';
 import * as KogitoVsCode from '@kie-tools-core/vscode-extension/dist';
 import { getRedHatService, TelemetryService } from '@redhat-developer/vscode-redhat-telemetry';
 import * as vscode from 'vscode';
-import { KAOTO_EDITOR_VIEW_TYPE, KAOTO_FILE_PATH_GLOB } from '../constants';
+import { KAOTO_FILE_PATH_GLOB } from '../constants';
 import { VSCodeKaotoChannelApiProducer } from './../webview/VSCodeKaotoChannelApiProducer';
 import { ExtensionContextHandler } from './ExtensionContextHandler';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { PortManager } from '../helpers/PortManager';
+import { CamelExecutorFactory } from '../executors/CamelExecutorFactory';
+import { KaotoCatalogService } from '../services/KaotoCatalogService';
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -32,13 +34,16 @@ let telemetryService: TelemetryService;
 export async function activate(context: vscode.ExtensionContext) {
 	KaotoOutputChannel.logInfo('Kaoto extension is alive.');
 
+	// Initialize executor factory with extension context
+	CamelExecutorFactory.initialize(context);
+
 	const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
 	backendProxy = new VsCodeBackendProxy(context, backendI18n);
 
 	const kieEditorStore = await KogitoVsCode.startExtension({
 		extensionName: 'redhat.vscode-kaoto',
 		context: context,
-		viewType: KAOTO_EDITOR_VIEW_TYPE,
+		viewType: 'webviewEditorsKaoto',
 		editorEnvelopeLocator: new EditorEnvelopeLocator('vscode', [
 			new EnvelopeMapping({
 				type: 'kaoto',
@@ -57,12 +62,27 @@ export async function activate(context: vscode.ExtensionContext) {
 	const portManager = new PortManager();
 
 	/*
+	 * Initialize Camel Catalog Service
+	 */
+	const catalogService = new KaotoCatalogService(context);
+	await catalogService.initialize();
+
+	// Create and register status bar item
+	const catalogStatusBar = catalogService.createStatusBarItem();
+	context.subscriptions.push(catalogStatusBar);
+
+	/*
 	 * init Red Hat Telemetry
 	 */
 	const redhatService = await getRedHatService(context);
 	telemetryService = await redhatService.getTelemetryService();
 
 	const contextHandler = new ExtensionContextHandler(context, kieEditorStore, telemetryService);
+
+	/*
+	 * Register executor setup: config listeners, catalog command, and initial executor init
+	 */
+	contextHandler.registerExecutorSetup(catalogService);
 
 	/*
 	 * register undo/redo blank commands
@@ -129,19 +149,6 @@ export async function activate(context: vscode.ExtensionContext) {
 	 * Show What's New on first start for this version
 	 */
 	await contextHandler.showWhatsNewIfNeeded();
-
-	/*
-	 * check JBang is available on a system PATH
-	 */
-	const jbang = await contextHandler.checkJbangOnPath();
-
-	/*
-	 * check JBang Trusted Sources and plugins are configured
-	 */
-	if (jbang) {
-		await contextHandler.checkJBangTrustedSources();
-		await contextHandler.checkCamelJBangPlugins();
-	}
 
 	KaotoOutputChannel.logInfo('Kaoto extension is successfully setup.');
 	console.log('Kaoto extension is successfully setup.');
