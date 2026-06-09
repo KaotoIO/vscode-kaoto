@@ -14,18 +14,50 @@
  * limitations under the License.
  */
 
-import { ProgressLocation, window, workspace, WorkspaceFolder } from 'vscode';
+import { ExtensionContext, ProgressLocation, window, workspace, WorkspaceFolder } from 'vscode';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import * as path from 'path';
 import fs from 'fs';
+import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 
 /**
  * Utilizes helper methods used in both, desktop or web extension context
  */
 
+export function safeGlobalStateGet<T>(context: ExtensionContext, key: string, defaultValue: T): T {
+	try {
+		return context.globalState.get<T>(key, defaultValue);
+	} catch (err) {
+		KaotoOutputChannel.logWarning(`Unable to read global state for key '${key}': ${String(err)}`);
+		return defaultValue;
+	}
+}
+
+export async function safeGlobalStateUpdate(context: ExtensionContext, key: string, value: any): Promise<void> {
+	try {
+		await context.globalState.update(key, value);
+	} catch (err) {
+		KaotoOutputChannel.logWarning(`Unable to update global state for key '${key}': ${String(err)}`);
+	}
+}
+
+export function normalizeVersionForSemver(version: string): string {
+	return version.replace(/\.redhat-\d+$/, '');
+}
+
+export function isRedHatBuild(version: string): boolean {
+	return version.includes('.redhat-');
+}
+
 export async function verifyJBangExists(): Promise<boolean> {
-	return await runJBangCommandWithStatusBar(`version`, `Checking JBang executable on PATH...`).then((output) => !output.stderr.includes('command not found')); // JBang exists
+	const output = await runJBangCommandWithStatusBar(`version`, `Checking JBang executable on PATH...`);
+	return output.success;
+}
+
+export async function verifyJavaExists(): Promise<boolean> {
+	const output = await runCommandWithStatusBar('java -version', 'Checking Java executable on PATH...');
+	return output.success;
 }
 
 export async function verifyCamelPluginsAreInstalled(plugins: string[]): Promise<{ plugin: string; installed: boolean }[]> {
@@ -40,7 +72,17 @@ export async function verifyJBangTrustedSources(urls: string[]): Promise<{ url: 
 	});
 }
 
-export async function runJBangCommandWithStatusBar(args: string, msg: string): Promise<{ stdout: string; stderr: string }> {
+export interface CommandOutput {
+	stdout: string;
+	stderr: string;
+	success: boolean;
+}
+
+export async function runJBangCommandWithStatusBar(args: string, msg: string): Promise<CommandOutput> {
+	return runCommandWithStatusBar(`jbang ${args}`, msg);
+}
+
+export async function runCommandWithStatusBar(command: string, msg: string): Promise<CommandOutput> {
 	const execPromise = promisify(exec);
 	return await window.withProgress(
 		{
@@ -51,11 +93,12 @@ export async function runJBangCommandWithStatusBar(args: string, msg: string): P
 		async (progress) => {
 			progress.report({ increment: 0 });
 			try {
-				const { stdout, stderr } = await execPromise(`jbang ${args}`);
+				const { stdout, stderr } = await execPromise(command);
 				progress.report({ increment: 100 });
-				return { stdout, stderr };
+				return { stdout, stderr, success: true };
 			} catch (error) {
-				return { stdout: '', stderr: error instanceof Error ? error.message : String(error) };
+				const message = error instanceof Error ? error.message : String(error);
+				return { stdout: '', stderr: message, success: false };
 			}
 		},
 	);
