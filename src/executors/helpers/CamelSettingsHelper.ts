@@ -14,6 +14,7 @@ import { RuntimeType, ExecutorType } from '../types/ExecutorTypes';
 import {
 	KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID,
 	KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID,
+	KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID,
 	KAOTO_MAVEN_CAMEL_JBANG_EXPORT_FOLDER_ARGUMENTS_SETTING_ID,
 	KAOTO_LOCAL_KAMELET_DIRECTORIES_SETTING_ID,
 	KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID,
@@ -105,6 +106,19 @@ export class CamelSettingsHelper {
 		const exportArgs = workspace.getConfiguration().get(KAOTO_MAVEN_CAMEL_JBANG_EXPORT_FOLDER_ARGUMENTS_SETTING_ID) as string[];
 		const processedArgs = await this.handleLocalKameletDirArgument(exportArgs, cwd);
 		return { args: processedArgs, conflicts: [] };
+	}
+
+	/**
+	 * Get processed kubernetes run arguments with user settings
+	 */
+	async getKubernetesRunArguments(cwd: string): Promise<ProcessedArguments> {
+		await this.initialize(Uri.file(cwd));
+
+		const kubernetesArgs = workspace.getConfiguration().get(KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID) as string[];
+		const codeArgs = ['run'];
+		const result = ArgumentConflictDetector.mergeArguments(codeArgs, kubernetesArgs, 'kubernetesRun');
+
+		return { args: result.merged, conflicts: result.conflicts };
 	}
 
 	/**

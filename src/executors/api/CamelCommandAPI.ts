@@ -171,23 +171,6 @@ export class CamelCommandAPI {
 	}
 
 	/**
-	 * Update dependencies
-	 */
-	static async dependency(action: string, filePath: string, cwd?: string, additionalArgs: CommandArguments = []): Promise<CommandResult> {
-		const executor = await CamelExecutorFactory.createExecutor();
-		const args: CommandArguments = this.filterEmptyArgs([action, `'${filePath}'`, ...additionalArgs]);
-		return await executor.execute('dependency', args, { cwd });
-	}
-
-	/**
-	 * Execute a custom Camel command
-	 */
-	static async cmd(cmdArgs: CommandArguments, cwd?: string): Promise<CommandResult> {
-		const executor = await CamelExecutorFactory.createExecutor();
-		return await executor.execute('cmd', cmdArgs, { cwd });
-	}
-
-	/**
 	 * Add a plugin
 	 */
 	static async pluginAdd(pluginName: string, cwd?: string, additionalArgs: CommandArguments = []): Promise<CommandResult> {
@@ -243,20 +226,16 @@ export class CamelCommandAPI {
 	}
 
 	/**
-	 * Execute Kubernetes run operation
+	 * Execute Kubernetes run operation with user settings
 	 */
 	static async kubernetesRun(filePattern: string, cwd?: string, additionalArgs: CommandArguments = []): Promise<CommandResult> {
 		const executor = await CamelExecutorFactory.createExecutor();
-		const args: CommandArguments = this.filterEmptyArgs(['run', filePattern, ...additionalArgs]);
-		return await executor.execute('kubernetes', args, { cwd });
-	}
+		const settingsHelper = new CamelSettingsHelper();
 
-	/**
-	 * Execute Kubernetes operations
-	 */
-	static async kubernetes(action: string, cwd?: string, additionalArgs: CommandArguments = []): Promise<CommandResult> {
-		const executor = await CamelExecutorFactory.createExecutor();
-		const args: CommandArguments = this.filterEmptyArgs([action, ...additionalArgs]);
+		const { args: userArgs, conflicts } = await settingsHelper.getKubernetesRunArguments(cwd || '');
+		await settingsHelper.showConflictWarnings(conflicts);
+
+		const args: CommandArguments = this.filterEmptyArgs(['run', filePattern, ...userArgs, ...additionalArgs]);
 		return await executor.execute('kubernetes', args, { cwd });
 	}
 
