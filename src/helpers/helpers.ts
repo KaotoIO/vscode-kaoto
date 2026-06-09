@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ExtensionContext, ProgressLocation, window, workspace, WorkspaceFolder } from 'vscode';
+import { ExtensionContext, window, workspace, WorkspaceFolder } from 'vscode';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import * as path from 'path';
@@ -84,24 +84,16 @@ export async function runJBangCommandWithStatusBar(args: string, msg: string): P
 
 export async function runCommandWithStatusBar(command: string, msg: string): Promise<CommandOutput> {
 	const execPromise = promisify(exec);
-	return await window.withProgress(
-		{
-			location: ProgressLocation.Window,
-			cancellable: false,
-			title: `Kaoto: ${msg}`,
-		},
-		async (progress) => {
-			progress.report({ increment: 0 });
-			try {
-				const { stdout, stderr } = await execPromise(command);
-				progress.report({ increment: 100 });
-				return { stdout, stderr, success: true };
-			} catch (error) {
-				const message = error instanceof Error ? error.message : String(error);
-				return { stdout: '', stderr: message, success: false };
-			}
-		},
-	);
+	const statusBarMessage = window.setStatusBarMessage(`Kaoto: ${msg}`);
+	try {
+		const { stdout, stderr } = await execPromise(command);
+		return { stdout, stderr, success: true };
+	} catch (error) {
+		const message = error instanceof Error ? error.message : String(error);
+		return { stdout: '', stderr: message, success: false };
+	} finally {
+		statusBarMessage.dispose();
+	}
 }
 
 /**
