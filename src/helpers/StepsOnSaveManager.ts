@@ -6,7 +6,7 @@ import { satisfies } from 'compare-versions';
 import { CamelTaskFactory } from '../tasks/CamelTaskFactory';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
-import { DEFAULT_CAMEL_VERSION_FALLBACK } from '../constants';
+import { DEFAULT_CAMEL_VERSION_FALLBACK, KAOTO_EXECUTOR_TYPE_SETTING_ID, KAOTO_MAVEN_DEPENDENCIES_UPDATE_ON_SAVE_SETTING_ID } from '../constants';
 import { ExecutorType } from '../executors/types/ExecutorTypes';
 
 export class StepsOnSaveManager {
@@ -42,7 +42,7 @@ export class StepsOnSaveManager {
 	public async updateDependencies(docPath: string, pomPath: string, message?: string): Promise<void> {
 		// Get executor type from VS Code settings to avoid circular dependency
 		const vscodeConfig = vscode.workspace.getConfiguration();
-		const executorType = vscodeConfig.get<string>('kaoto.executor.type') as ExecutorType;
+		const executorType = vscodeConfig.get<ExecutorType>(KAOTO_EXECUTOR_TYPE_SETTING_ID);
 
 		// Get version from catalog service - use selected catalog
 		const catalogService = KaotoCatalogService.getInstance();
@@ -109,7 +109,7 @@ export class StepsOnSaveManager {
 		}
 		const pomPath = path.join(pomFolder, 'pom.xml');
 
-		const updateOnSave = vscode.workspace.getConfiguration().get('kaoto.maven.dependenciesUpdate.onSave');
+		const updateOnSave = vscode.workspace.getConfiguration().get<boolean>(KAOTO_MAVEN_DEPENDENCIES_UPDATE_ON_SAVE_SETTING_ID);
 		if (!updateOnSave) {
 			return;
 		}
