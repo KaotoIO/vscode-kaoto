@@ -18,41 +18,35 @@ export class JBangExecutor extends BaseExecutor {
 	constructor(config: JBangExecutorConfig) {
 		const jbangPath = config.jbangPath || 'jbang';
 
-		// Configure builder for JBang - CLI version will be determined from catalog at runtime
-		// Runtime-specific properties will be added dynamically based on catalog selection
+		// Placeholder builder — execute() builds a dynamic one with catalog-resolved prefix args
 		const commandBuilder = new CamelCommandBuilder({
 			executable: jbangPath,
-			prefixArgs: ['camel@apache/camel'],
+			prefixArgs: [],
 		});
 
 		super(config, commandBuilder);
 	}
 
 	async execute(command: CamelCommand, args: CommandArguments, context?: CommandContext): Promise<CommandResult> {
-		// Get CLI version and runtime-specific system properties from catalog
-		const catalogService = KaotoCatalogService.getInstance();
-		const resourceUri = context?.cwd ? Uri.file(context.cwd) : undefined;
-		const catalog = await catalogService.getSelectedIntegrationCatalog(resourceUri);
-
-		// Get CLI version from catalog, fallback to default Camel version if not available
-		const cliVersion = catalogService.getCliVersionForJBang(catalog) || DEFAULT_CAMEL_VERSION;
-		const runtimeSystemProps = await this.getRuntimeSystemProperties(context?.cwd);
-
-		// Create a new command builder with CLI version and runtime-specific properties
-		const jbangPath = (this.config as JBangExecutorConfig).jbangPath || 'jbang';
-		const prefixArgs = [`-Dcamel.jbang.version=${cliVersion}`, ...runtimeSystemProps, 'camel@apache/camel'];
-		const enhancedBuilder = new CamelCommandBuilder({
-			executable: jbangPath,
-			prefixArgs,
-		});
-
-		// Validate executor is available
 		if (!(await this.isAvailable())) {
 			throw new Error(`Executor ${this.config.type} is not available`);
 		}
 
-		// Build and execute command with enhanced builder
-		return enhancedBuilder.buildCommand(command, args, context);
+		const catalogService = KaotoCatalogService.getInstance();
+		const resourceUri = context?.cwd ? Uri.file(context.cwd) : undefined;
+		const catalog = await catalogService.getSelectedIntegrationCatalog(resourceUri);
+
+		const cliVersion = catalogService.getCliVersionForJBang(catalog) || DEFAULT_CAMEL_VERSION;
+		const runtimeSystemProps = await this.getRuntimeSystemProperties(context?.cwd);
+
+		const jbangPath = (this.config as JBangExecutorConfig).jbangPath || 'jbang';
+		const prefixArgs = [`-Dcamel.jbang.version=${cliVersion}`, ...runtimeSystemProps, 'camel@apache/camel'];
+		const builder = new CamelCommandBuilder({
+			executable: jbangPath,
+			prefixArgs,
+		});
+
+		return builder.buildCommand(command, args, context);
 	}
 
 	/**

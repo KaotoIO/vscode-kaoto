@@ -155,28 +155,6 @@ export class CamelLauncherDownloader {
 	}
 
 	/**
-	 * Clean up old launcher versions
-	 */
-	async cleanupOldVersions(keepVersion?: string): Promise<void> {
-		const entries = fs.readdirSync(this.storageDir);
-
-		for (const entry of entries) {
-			const fullPath = path.join(this.storageDir, entry);
-
-			// Skip if it's the version we want to keep
-			if (keepVersion && entry === `camel-launcher-${keepVersion}`) {
-				continue;
-			}
-
-			// Remove old launcher directories
-			if (entry.startsWith('camel-launcher-') && fs.statSync(fullPath).isDirectory()) {
-				fs.rmSync(fullPath, { recursive: true, force: true });
-				KaotoOutputChannel.logInfo(`Cleaned up old Camel Launcher: ${entry}`);
-			}
-		}
-	}
-
-	/**
 	 * Get storage directory
 	 */
 	getStorageDirectory(): string {

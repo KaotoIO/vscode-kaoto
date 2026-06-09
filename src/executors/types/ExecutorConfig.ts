@@ -22,11 +22,9 @@ export interface JBangExecutorConfig extends ExecutorConfig {
 
 /**
  * Camel Launcher executor configuration
- * For first iteration: always auto-downloads based on version
  */
 export interface CamelLauncherExecutorConfig extends ExecutorConfig {
 	readonly type: 'camel-launcher';
-	readonly autoDownload: boolean; // Always true for first iteration
 }
 
 /**

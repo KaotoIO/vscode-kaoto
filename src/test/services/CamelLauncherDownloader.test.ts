@@ -83,44 +83,6 @@ suite('CamelLauncherDownloader Tests', () => {
 		assert.isTrue(fs.existsSync(result));
 	});
 
-	test('Should cleanup old versions', async () => {
-		// Create multiple version directories
-		const version1 = '4.17.0';
-		const version2 = '4.18.0';
-
-		const dir1 = path.join(testStoragePath, `camel-launcher-${version1}`);
-		const dir2 = path.join(testStoragePath, `camel-launcher-${version2}`);
-
-		fs.mkdirSync(dir1, { recursive: true });
-		fs.mkdirSync(dir2, { recursive: true });
-
-		// Cleanup old versions, keeping version2
-		await downloader.cleanupOldVersions(version2);
-
-		// version1 should be removed, version2 should remain
-		assert.isFalse(fs.existsSync(dir1));
-		assert.isTrue(fs.existsSync(dir2));
-	});
-
-	test('Should cleanup all versions when no version specified', async () => {
-		// Create multiple version directories
-		const version1 = '4.17.0';
-		const version2 = '4.18.0';
-
-		const dir1 = path.join(testStoragePath, `camel-launcher-${version1}`);
-		const dir2 = path.join(testStoragePath, `camel-launcher-${version2}`);
-
-		fs.mkdirSync(dir1, { recursive: true });
-		fs.mkdirSync(dir2, { recursive: true });
-
-		// Cleanup all versions
-		await downloader.cleanupOldVersions();
-
-		// Both should be removed
-		assert.isFalse(fs.existsSync(dir1));
-		assert.isFalse(fs.existsSync(dir2));
-	});
-
 	test('Should handle missing launcher directory gracefully', async () => {
 		const version = '999.999.999';
 		const launcherDir = path.join(testStoragePath, `camel-launcher-${version}`);

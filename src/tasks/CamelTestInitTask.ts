@@ -18,11 +18,8 @@ import { WorkspaceFolder, TaskScope } from 'vscode';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 
 export class CamelTestInitTask extends CamelInitTask {
-	private cwd: string;
-
-	protected constructor(scope: WorkspaceFolder | TaskScope.Workspace, label: string, shellExecution: any, cwd: string) {
+	protected constructor(scope: WorkspaceFolder | TaskScope.Workspace, label: string, shellExecution: any) {
 		super(scope, label, shellExecution);
-		this.cwd = cwd;
 	}
 
 	static async create(
@@ -32,6 +29,6 @@ export class CamelTestInitTask extends CamelInitTask {
 		cwd?: string,
 	): Promise<CamelTestInitTask> {
 		const result = await CamelCommandAPI.testInit(file, cwd);
-		return new CamelTestInitTask(scope, label, result.execution, cwd || '');
+		return new CamelTestInitTask(scope, label, result.execution);
 	}
 }

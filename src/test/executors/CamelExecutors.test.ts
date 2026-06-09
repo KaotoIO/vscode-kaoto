@@ -100,7 +100,6 @@ suite('Executor Implementation Tests', () => {
 				{
 					type: 'camel-launcher',
 					version: '4.18.0',
-					autoDownload: false,
 				},
 				testLauncherPath,
 			);
@@ -136,7 +135,6 @@ suite('Executor Implementation Tests', () => {
 				{
 					type: 'camel-launcher',
 					version: '4.18.0',
-					autoDownload: false,
 				},
 				'/non/existent/path/camel',
 			);
@@ -233,7 +231,6 @@ suite('Executor Implementation Tests', () => {
 				{
 					type: 'camel-launcher',
 					version: '4.18.0',
-					autoDownload: false,
 				},
 				'/non/existent/path/camel',
 			);

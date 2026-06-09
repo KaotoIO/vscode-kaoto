@@ -38,7 +38,6 @@ export interface CommandContext {
 export interface CommandResult {
 	readonly execution: ShellExecution;
 	readonly resolvedPort?: number;
-	readonly metadata?: Record<string, unknown>;
 }
 
 /**

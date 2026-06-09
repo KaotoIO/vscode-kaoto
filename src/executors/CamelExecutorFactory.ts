@@ -3,7 +3,7 @@ import { ICamelExecutor } from './ICamelExecutor';
 import { JBangExecutor } from './JBangExecutor';
 import { CamelLauncherExecutor } from './CamelLauncherExecutor';
 import { CamelLauncherDownloader } from '../services/CamelLauncherDownloader';
-import { AnyExecutorConfig, JBangExecutorConfig, CamelLauncherExecutorConfig } from './types/ExecutorConfig';
+import { AnyExecutorConfig, CamelLauncherExecutorConfig } from './types/ExecutorConfig';
 import { ExecutorType } from './types/ExecutorTypes';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
@@ -71,14 +71,13 @@ export class CamelExecutorFactory {
 					type: 'jbang',
 					version: version,
 					jbangPath: vscodeConfig.get('kaoto.executor.path'),
-				} as JBangExecutorConfig;
+				};
 
 			case 'camel-launcher':
 				return {
 					type: 'camel-launcher',
 					version: version,
-					autoDownload: true, // Always auto-download
-				} as CamelLauncherExecutorConfig;
+				};
 
 			default:
 				throw new Error(`Unknown executor type: ${executorType}`);
@@ -102,11 +101,9 @@ export class CamelExecutorFactory {
 	}
 
 	/**
-	 * Create Camel Launcher executor with auto-download
-	 * Always downloads the launcher based on configured version
+	 * Create Camel Launcher executor, downloading the JAR if needed
 	 */
 	private static async createCamelLauncherExecutor(config: CamelLauncherExecutorConfig): Promise<ICamelExecutor> {
-		// Always auto-download launcher
 		if (!this.downloader) {
 			this.downloader = new CamelLauncherDownloader(this.extensionContext);
 		}
@@ -134,19 +131,5 @@ export class CamelExecutorFactory {
 	static resetExecutor(): void {
 		this.executorInstance = undefined;
 		this.currentConfig = undefined;
-	}
-
-	/**
-	 * Get current executor instance (if any)
-	 */
-	static getCurrentExecutor(): ICamelExecutor | undefined {
-		return this.executorInstance;
-	}
-
-	/**
-	 * Get current configuration (if any)
-	 */
-	static getCurrentConfig(): AnyExecutorConfig | undefined {
-		return this.currentConfig;
 	}
 }

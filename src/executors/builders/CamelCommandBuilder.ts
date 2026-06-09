@@ -59,11 +59,10 @@ export class CamelCommandBuilder {
 	/**
 	 * Build command result
 	 */
-	private buildResult(execution: ShellExecution, resolvedPort?: number, metadata?: Record<string, unknown>): CommandResult {
+	private buildResult(execution: ShellExecution, resolvedPort?: number): CommandResult {
 		return {
 			execution,
 			resolvedPort,
-			metadata,
 		};
 	}
 
