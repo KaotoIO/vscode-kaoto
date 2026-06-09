@@ -4,6 +4,7 @@
 
 import { execSync } from 'child_process';
 import { Uri } from 'vscode';
+import { CatalogLibraryEntry } from '@kaoto/camel-catalog/types';
 import { BaseExecutor } from './BaseExecutor';
 import { CamelCommandBuilder } from './builders/CamelCommandBuilder';
 import { JBangExecutorConfig } from './types/ExecutorConfig';
@@ -37,7 +38,7 @@ export class JBangExecutor extends BaseExecutor {
 		const catalog = await catalogService.getSelectedIntegrationCatalog(resourceUri);
 
 		const cliVersion = catalogService.getCliVersionForJBang(catalog) || DEFAULT_CAMEL_VERSION;
-		const runtimeSystemProps = await this.getRuntimeSystemProperties(context?.cwd);
+		const runtimeSystemProps = this.getRuntimeSystemProperties(catalogService, catalog);
 
 		const prefixArgs = [`-Dcamel.jbang.version=${cliVersion}`, ...runtimeSystemProps, 'camel@apache/camel'];
 		const builder = new CamelCommandBuilder({
@@ -51,47 +52,35 @@ export class JBangExecutor extends BaseExecutor {
 	/**
 	 * Get runtime-specific system properties for JBang based on catalog selection
 	 */
-	private async getRuntimeSystemProperties(cwd?: string): Promise<string[]> {
-		try {
-			const catalogService = KaotoCatalogService.getInstance();
-			const resourceUri = cwd ? Uri.file(cwd) : undefined;
-			const catalog = await catalogService.getSelectedIntegrationCatalog(resourceUri);
-
-			if (!catalog) {
-				return [];
-			}
-
-			const runtime = catalogService.getRuntimeForCLI(catalog);
-			const version = catalogService.getCamelVersionForCLI(catalog, 'jbang');
-
-			if (!version) {
-				return [];
-			}
-
-			const properties: string[] = [];
-
-			// Add runtime-specific system properties only for Quarkus and Spring Boot
-			// Main runtime uses --camel-version argument (handled in CamelSettingsHelper)
-			if (runtime === RuntimeType.QUARKUS) {
-				properties.push(`-Dcamel.jbang.quarkusVersion=${version}`);
-
-				// For Red Hat productized versions
-				if (isRedHatBuild(version)) {
-					properties.push(
-						'-Dcamel.jbang.quarkusGroupId=com.redhat.quarkus.platform',
-						'-Dcamel.jbang.quarkus.platform.url=https://registry.quarkus.redhat.com/client/platforms',
-						'-Dcamel.jbang.quarkusExtensionRegistryBaseUri=https://registry.quarkus.redhat.com/',
-					);
-				}
-			} else if (runtime === RuntimeType.SPRING_BOOT) {
-				properties.push(`-Dcamel.jbang.camelSpringBootVersion=${version}`, `-Dcamel.jbang.springBootVersion=${catalog.frameworkVersion}`);
-			}
-
-			return properties;
-		} catch (error) {
-			// If catalog service fails, return empty array to avoid breaking execution
+	private getRuntimeSystemProperties(catalogService: KaotoCatalogService, catalog: CatalogLibraryEntry | undefined): string[] {
+		if (!catalog) {
 			return [];
 		}
+
+		const runtime = catalogService.getRuntimeForCLI(catalog);
+		const version = catalogService.getCamelVersionForCLI(catalog, 'jbang');
+
+		if (!version) {
+			return [];
+		}
+
+		const properties: string[] = [];
+
+		if (runtime === RuntimeType.QUARKUS) {
+			properties.push(`-Dcamel.jbang.quarkusVersion=${version}`);
+
+			if (isRedHatBuild(version)) {
+				properties.push(
+					'-Dcamel.jbang.quarkusGroupId=com.redhat.quarkus.platform',
+					'-Dcamel.jbang.quarkus.platform.url=https://registry.quarkus.redhat.com/client/platforms',
+					'-Dcamel.jbang.quarkusExtensionRegistryBaseUri=https://registry.quarkus.redhat.com/',
+				);
+			}
+		} else if (runtime === RuntimeType.SPRING_BOOT) {
+			properties.push(`-Dcamel.jbang.camelSpringBootVersion=${version}`, `-Dcamel.jbang.springBootVersion=${catalog.frameworkVersion}`);
+		}
+
+		return properties;
 	}
 
 	async isAvailable(): Promise<boolean> {

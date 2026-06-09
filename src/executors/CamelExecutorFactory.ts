@@ -94,8 +94,10 @@ export class CamelExecutorFactory {
 			case 'camel-launcher':
 				return await this.createCamelLauncherExecutor(config);
 
-			default:
-				throw new Error(`Unknown executor type: ${(config as any).type}`);
+			default: {
+				const exhaustiveCheck: never = config;
+				throw new Error(`Unknown executor type: ${(exhaustiveCheck as AnyExecutorConfig).type}`);
+			}
 		}
 	}
 

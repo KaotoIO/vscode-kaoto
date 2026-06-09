@@ -6,6 +6,7 @@
 import { workspace, window, Uri, RelativePattern } from 'vscode';
 import { dirname } from 'path';
 import { satisfies } from 'compare-versions';
+import { CatalogLibraryEntry } from '@kaoto/camel-catalog/types';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
 import { ArgumentConflict, ArgumentConflictDetector } from '../../helpers/ArgumentConflictDetector';
 import { KaotoCatalogService } from '../../services/KaotoCatalogService';
@@ -36,7 +37,7 @@ export class CamelSettingsHelper {
 	private camelVersion: string = '';
 	private runtime: RuntimeType | '' = '';
 	private frameworkVersion: string = '';
-	private catalog: any = undefined;
+	private catalog: CatalogLibraryEntry | undefined = undefined;
 	private initialized: boolean = false;
 
 	constructor() {

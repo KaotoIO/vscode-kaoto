@@ -1,4 +1,5 @@
 import { CamelExecutorFactory } from '../CamelExecutorFactory';
+import { CamelCommandBuilder } from '../builders/CamelCommandBuilder';
 import { CommandArguments, CommandResult, RuntimeType } from '../types/ExecutorTypes';
 import { CamelSettingsHelper } from '../helpers/CamelSettingsHelper';
 import { TestFolderResolver } from '../../helpers/TestFolderResolver';
@@ -29,7 +30,7 @@ export class CamelCommandAPI {
 		await settingsHelper.showConflictWarnings(conflicts);
 
 		// Build final arguments
-		const args: CommandArguments = this.filterEmptyArgs([
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs([
 			`'${filePath}'`,
 			portArg,
 			runtimeArg,
@@ -72,7 +73,7 @@ export class CamelCommandAPI {
 		await settingsHelper.showConflictWarnings(conflicts);
 
 		// Build final arguments
-		const args: CommandArguments = this.filterEmptyArgs([
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs([
 			`'--source-dir=${sourceDir}'`,
 			portArg,
 			runtimeArg,
@@ -123,7 +124,7 @@ export class CamelCommandAPI {
 		const quarkusOpenshiftDependency = runtime === RuntimeType.QUARKUS && kubernetes ? ['--dependency=mvn:io.quarkus:quarkus-openshift'] : [];
 
 		// Build final arguments
-		const args: CommandArguments = this.filterEmptyArgs([
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs([
 			`'${filePath}'`,
 			`--runtime=${runtime}`,
 			`--gav=${gav}`,
@@ -166,7 +167,7 @@ export class CamelCommandAPI {
 	 */
 	static async bind(file: string, source: string, sink: string, cwd?: string, additionalArgs: CommandArguments = []): Promise<CommandResult> {
 		const executor = await CamelExecutorFactory.createExecutor();
-		const args: CommandArguments = this.filterEmptyArgs(['--source', source, '--sink', sink, `'${file}'`, ...additionalArgs]);
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs(['--source', source, '--sink', sink, `'${file}'`, ...additionalArgs]);
 		return await executor.execute('bind', args, { cwd });
 	}
 
@@ -175,7 +176,7 @@ export class CamelCommandAPI {
 	 */
 	static async pluginAdd(pluginName: string, cwd?: string, additionalArgs: CommandArguments = []): Promise<CommandResult> {
 		const executor = await CamelExecutorFactory.createExecutor();
-		const args: CommandArguments = this.filterEmptyArgs(['add', pluginName, ...additionalArgs]);
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs(['add', pluginName, ...additionalArgs]);
 		return await executor.execute('plugin', args, { cwd });
 	}
 
@@ -210,7 +211,7 @@ export class CamelCommandAPI {
 	 */
 	static async testRun(filePath: string, cwd?: string, additionalArgs: CommandArguments = []): Promise<CommandResult> {
 		const executor = await CamelExecutorFactory.createExecutor();
-		const args: CommandArguments = this.filterEmptyArgs(['run', `'${filePath}'`, ...additionalArgs]);
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs(['run', `'${filePath}'`, ...additionalArgs]);
 		return await executor.execute('test', args, { cwd });
 	}
 
@@ -235,14 +236,7 @@ export class CamelCommandAPI {
 		const { args: userArgs, conflicts } = await settingsHelper.getKubernetesRunArguments(cwd || '');
 		await settingsHelper.showConflictWarnings(conflicts);
 
-		const args: CommandArguments = this.filterEmptyArgs(['run', filePattern, ...userArgs, ...additionalArgs]);
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs(['run', filePattern, ...userArgs, ...additionalArgs]);
 		return await executor.execute('kubernetes', args, { cwd });
-	}
-
-	/**
-	 * Filter empty arguments
-	 */
-	private static filterEmptyArgs(args: (string | undefined | null)[]): string[] {
-		return args.filter((arg) => arg !== undefined && arg !== null && arg !== '') as string[];
 	}
 }

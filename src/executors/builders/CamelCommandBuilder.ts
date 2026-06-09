@@ -29,7 +29,7 @@ export class CamelCommandBuilder {
 	 */
 	buildCommand(command: CamelCommand, args: CommandArguments, context?: CommandContext): CommandResult {
 		// Build command parts: [prefixArgs, command, args]
-		const commandParts = this.filterEmptyArgs([...(this.config.prefixArgs || []), command, ...args]);
+		const commandParts = CamelCommandBuilder.filterEmptyArgs([...(this.config.prefixArgs || []), command, ...args]);
 
 		const execution = this.buildExecution(this.config.executable, commandParts, context);
 		const resolvedPort = this.extractPort(args);
@@ -50,9 +50,9 @@ export class CamelCommandBuilder {
 	}
 
 	/**
-	 * Filter empty arguments
+	 * Filter empty/null/undefined arguments from a command args array
 	 */
-	private filterEmptyArgs(args: (string | undefined | null)[]): string[] {
+	static filterEmptyArgs(args: (string | undefined | null)[]): string[] {
 		return args.filter((arg) => arg !== undefined && arg !== null && arg !== '') as string[];
 	}
 
