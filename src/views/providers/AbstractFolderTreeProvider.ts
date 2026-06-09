@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { Event, EventEmitter, FileSystemWatcher, TreeDataProvider, TreeItem, TreeItemLabel, Uri, workspace } from 'vscode';
+import { KAOTO_EXCLUDE_PATTERN } from '../../constants';
 import { join, relative, sep } from 'path';
 
 /**
@@ -34,7 +35,7 @@ export abstract class AbstractFolderTreeProvider<TFolder extends IFolderTreeItem
 	public abstract readonly VIEW_ITEM_SHOW_SOURCE_COMMAND_ID: string;
 	public abstract readonly VIEW_ITEM_DELETE_COMMAND_ID: string;
 
-	public static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.citrus-jbang*/**,**/.camel-jbang*/**,**/target/**,**/.mvn/**}';
+	public static readonly EXCLUDE_PATTERN = KAOTO_EXCLUDE_PATTERN;
 
 	protected readonly _onDidChangeTreeData: EventEmitter<TreeItemType> = new EventEmitter<TreeItemType>();
 	readonly onDidChangeTreeData: Event<TreeItemType> = this._onDidChangeTreeData.event;

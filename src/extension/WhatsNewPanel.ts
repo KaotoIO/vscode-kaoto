@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import * as vscode from 'vscode';
+import { VIEW_WHATS_NEW } from '../constants';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 
 export class WhatsNewPanel {
@@ -31,7 +32,7 @@ export class WhatsNewPanel {
 			const htmlContent: string = await vscode.commands.executeCommand('markdown.api.render', markdown);
 
 			const panel = vscode.window.createWebviewPanel(
-				'kaoto.whatsNew',
+				VIEW_WHATS_NEW,
 				`What's New in Kaoto ${folderVersion}`,
 				{
 					viewColumn: vscode.ViewColumn.Active,

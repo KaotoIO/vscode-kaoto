@@ -22,7 +22,7 @@ import { Integration } from '../integrationTreeItems/Integration';
 import { Route } from '../integrationTreeItems/Route';
 import { Folder } from '../integrationTreeItems/Folder';
 import { File } from '../integrationTreeItems/File';
-import { KAOTO_INTEGRATIONS_FILES_REGEXP_SETTING_ID } from '../../helpers/helpers';
+import { CONTEXT_INTEGRATION_EXISTS, KAOTO_EXCLUDE_PATTERN, KAOTO_INTEGRATIONS_FILES_REGEXP_SETTING_ID } from '../../constants';
 import { IntegrationFile, IntegrationFileIcon, IntegrationFileIconType, IntegrationFileDSL } from '../../types/IntegrationTreeItemType';
 
 type TreeItemType = TreeItem | undefined | null | void;
@@ -31,7 +31,7 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 	private readonly _onDidChangeTreeData: EventEmitter<TreeItemType> = new EventEmitter<TreeItemType>();
 	readonly onDidChangeTreeData: Event<TreeItemType> = this._onDidChangeTreeData.event;
 
-	public static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.camel-jbang*/**,**/.citrus-jbang*/**,**/target/**,**/.mvn/**}';
+	public static readonly EXCLUDE_PATTERN = KAOTO_EXCLUDE_PATTERN;
 
 	private fileWatcher: FileSystemWatcher;
 	private filePattern: string;
@@ -243,7 +243,7 @@ export class IntegrationsProvider implements TreeDataProvider<TreeItem> {
 	 * @param value The value to set the context for
 	 */
 	private setContext(value: boolean): void {
-		commands.executeCommand('setContext', 'kaoto.integrationExists', value);
+		commands.executeCommand('setContext', CONTEXT_INTEGRATION_EXISTS, value);
 	}
 
 	/**

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 import { QuickPickItem, Uri, commands, window } from 'vscode';
+import { COMMAND_OPEN_WITH_KAOTO } from '../constants';
 import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
 import { CamelInitJBangTask } from '../tasks/CamelInitJBangTask';
 import { CamelRouteDSL } from './AbstractCamelCommand';
 import path from 'path';
 
 export class NewCamelKameletCommand extends AbstractNewCamelRouteCommand {
-	public static readonly ID_COMMAND_CAMEL_KAMELET_YAML = 'kaoto.camel.jbang.init.kamelet.yaml';
 	protected static readonly PROGRESS_NOTIFICATION_MESSAGE = 'Creating a new Kamelet file...';
 
 	private kameletType: string = '';
@@ -44,7 +44,7 @@ export class NewCamelKameletCommand extends AbstractNewCamelRouteCommand {
 						);
 						const targetFileURI = Uri.file(filePath);
 						await this.waitForFileExists(targetFileURI);
-						await commands.executeCommand('kaoto.open', targetFileURI);
+						await commands.executeCommand(COMMAND_OPEN_WITH_KAOTO, targetFileURI);
 					}
 				}
 			}

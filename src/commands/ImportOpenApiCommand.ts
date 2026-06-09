@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { commands, ProgressLocation, QuickPickItem, Uri, window, workspace } from 'vscode';
-import { DEFAULT_KAOTO_OPENAPI_FILES_REGEXP, KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID, KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID } from '../helpers/helpers';
+import {
+	COMMAND_OPEN_WITH_KAOTO,
+	DEFAULT_KAOTO_OPENAPI_FILES_REGEXP,
+	KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID,
+	KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID,
+} from '../constants';
 import { ApicurioRegistryService, ApicurioRegistryUrlError, type ApicurioArtifact } from '../services/apicurio-registry.service';
 import { OpenApiImportService, OpenApiParseError, OpenApiValidationError, type ParsedOperation } from '../services/openapi-import.service';
 import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
@@ -31,8 +36,6 @@ const OPENAPI_SOURCE_ITEMS: QuickPickItem[] = [
 ];
 
 export class ImportOpenApiCommand extends AbstractNewCamelRouteCommand {
-	public static readonly ID_COMMAND_OPENAPI_IMPORT = 'kaoto.openapi.import';
-
 	private readonly importService = new OpenApiImportService();
 	private readonly registryService = new ApicurioRegistryService();
 
@@ -392,6 +395,6 @@ export class ImportOpenApiCommand extends AbstractNewCamelRouteCommand {
 
 		await workspace.fs.writeFile(fileUri, new TextEncoder().encode(content));
 		await this.waitForFileExists(fileUri);
-		await commands.executeCommand('kaoto.open', fileUri);
+		await commands.executeCommand(COMMAND_OPEN_WITH_KAOTO, fileUri);
 	}
 }

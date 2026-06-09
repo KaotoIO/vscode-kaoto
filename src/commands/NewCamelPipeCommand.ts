@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 import { Uri, commands } from 'vscode';
+import { COMMAND_OPEN_WITH_KAOTO } from '../constants';
 import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
 import { CamelBindJBangTask } from '../tasks/CamelBindJBangTask';
 import { CamelRouteDSL } from './AbstractCamelCommand';
 import path from 'path';
 
 export class NewCamelPipeCommand extends AbstractNewCamelRouteCommand {
-	public static readonly ID_COMMAND_CAMEL_PIPE_YAML = 'kaoto.camel.jbang.init.pipe.yaml';
 	protected static readonly PROGRESS_NOTIFICATION_MESSAGE = 'Creating a new Pipe file...';
 
 	public async create(): Promise<void> {
@@ -40,7 +40,7 @@ export class NewCamelPipeCommand extends AbstractNewCamelRouteCommand {
 
 					const targetFileURI = Uri.file(filePath);
 					await this.waitForFileExists(targetFileURI);
-					await commands.executeCommand('kaoto.open', targetFileURI);
+					await commands.executeCommand(COMMAND_OPEN_WITH_KAOTO, targetFileURI);
 				}
 			}
 		} else {

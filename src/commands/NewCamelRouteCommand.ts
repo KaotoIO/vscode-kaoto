@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 import { commands, QuickPickItem, Uri, window } from 'vscode';
+import { COMMAND_OPEN_WITH_KAOTO } from '../constants';
 import { CamelInitJBangTask } from '../tasks/CamelInitJBangTask';
 import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
 import path from 'path';
 
 export class NewCamelRouteCommand extends AbstractNewCamelRouteCommand {
-	public static readonly ID_COMMAND_CAMEL_ROUTE = 'kaoto.camel.jbang.init.route';
 	protected static readonly PROGRESS_NOTIFICATION_MESSAGE = 'Creating a new Route file...';
 
 	public async create(): Promise<void> {
@@ -46,7 +46,7 @@ export class NewCamelRouteCommand extends AbstractNewCamelRouteCommand {
 					);
 					const targetFileURI = Uri.file(filePath);
 					await this.waitForFileExists(targetFileURI);
-					await commands.executeCommand('kaoto.open', targetFileURI);
+					await commands.executeCommand(COMMAND_OPEN_WITH_KAOTO, targetFileURI);
 				}
 			}
 		} else {

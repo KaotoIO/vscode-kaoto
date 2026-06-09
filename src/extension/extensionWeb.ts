@@ -19,7 +19,7 @@ import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from '@ki
 import { I18n } from '@kie-tools-core/i18n/dist/core';
 import * as KogitoVsCode from '@kie-tools-core/vscode-extension/dist';
 import * as vscode from 'vscode';
-import { KAOTO_FILE_PATH_GLOB } from '../helpers/helpers';
+import { KAOTO_EDITOR_VIEW_TYPE, KAOTO_FILE_PATH_GLOB } from '../constants';
 import { VSCodeKaotoChannelApiProducer } from './../webview/VSCodeKaotoChannelApiProducer';
 import { ExtensionContextHandler } from './ExtensionContextHandler';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
@@ -35,7 +35,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const kieEditorStore = await KogitoVsCode.startExtension({
 		extensionName: 'redhat.vscode-kaoto',
 		context: context,
-		viewType: 'webviewEditorsKaoto',
+		viewType: KAOTO_EDITOR_VIEW_TYPE,
 		editorEnvelopeLocator: new EditorEnvelopeLocator('vscode', [
 			new EnvelopeMapping({
 				type: 'kaoto',

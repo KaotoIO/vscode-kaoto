@@ -15,7 +15,7 @@
  */
 import { ShellExecution, ShellExecutionOptions, Uri, workspace } from 'vscode';
 import { CamelJBang } from './CamelJBang';
-import { KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID } from './helpers';
+import { KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID } from '../constants';
 
 /**
  * Camel JBang class which allows shell execution of different JBang CLI commands

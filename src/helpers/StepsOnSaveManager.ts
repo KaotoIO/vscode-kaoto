@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
-import { findFolderOfPomXml, KAOTO_CAMEL_JBANG_VERSION_SETTING_ID } from './helpers';
+import { KAOTO_CAMEL_JBANG_VERSION_SETTING_ID, KAOTO_MAVEN_DEPENDENCIES_UPDATE_ON_SAVE_SETTING_ID } from '../constants';
+import { findFolderOfPomXml } from './helpers';
 import { satisfies } from 'compare-versions';
 import { CamelDependencyUpdateJBangTask } from '../tasks/CamelDependencyUpdateJBangTask';
 
@@ -95,7 +96,7 @@ export class StepsOnSaveManager {
 		}
 		const pomPath = path.join(pomFolder, 'pom.xml');
 
-		const updateOnSave = vscode.workspace.getConfiguration().get('kaoto.maven.dependenciesUpdate.onSave');
+		const updateOnSave = vscode.workspace.getConfiguration().get(KAOTO_MAVEN_DEPENDENCIES_UPDATE_ON_SAVE_SETTING_ID);
 		if (!updateOnSave) {
 			return;
 		}

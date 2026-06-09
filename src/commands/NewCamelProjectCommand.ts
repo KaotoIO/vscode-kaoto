@@ -20,10 +20,6 @@ import { confirmDestructiveActionInSelectedFolder } from '../helpers/modals';
 import path from 'path';
 
 export class NewCamelProjectCommand {
-	public static readonly ID_COMMAND_CAMEL_NEW_PROJECT = 'kaoto.camel.jbang.export';
-	public static readonly ID_COMMAND_CAMEL_NEW_PROJECT_FOLDER = 'kaoto.camel.jbang.export.folder';
-	public static readonly ID_COMMAND_CAMEL_NEW_PROJECT_WORKSPACE = 'kaoto.camel.jbang.export.workspace';
-
 	public async create(uri: Uri, cwd: string) {
 		const runtime = await this.askForRuntime();
 		if (!runtime) {
