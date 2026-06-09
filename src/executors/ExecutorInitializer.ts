@@ -18,6 +18,8 @@ export async function ensureExecutorAvailable(
 	contextHandler: ExtensionContextHandler,
 	forceReinitialize: boolean = false,
 ): Promise<void> {
+	await contextHandler.setExecutorAvailable(false);
+
 	try {
 		if (forceReinitialize) {
 			CamelExecutorFactory.resetExecutor();
@@ -28,58 +30,27 @@ export async function ensureExecutorAvailable(
 		const executorType = config.get<string>(KAOTO_EXECUTOR_TYPE_SETTING_ID, 'jbang');
 
 		if (executorType === 'jbang') {
-			const jbang = await vscode.window.withProgress(
-				{
-					location: vscode.ProgressLocation.Window,
-					title: 'Kaoto: Preparing JBang',
-					cancellable: false,
-				},
-				async (progress) => {
-					KaotoOutputChannel.logInfo('Checking JBang availability...');
-					progress.report({ message: 'Checking JBang on PATH...' });
+			KaotoOutputChannel.logInfo('Checking JBang availability...');
 
-					const resolvedJbang = await contextHandler.checkJbangOnPath();
+			const resolvedJbang = await contextHandler.checkJbangOnPath();
 
-					if (!resolvedJbang) {
-						return undefined;
-					}
-
-					progress.report({ message: 'Configuring trusted JBang sources...' });
-					await contextHandler.checkJBangTrustedSources();
-
-					progress.report({ message: 'Verifying Camel JBang plugins...' });
-					await contextHandler.checkCamelJBangPlugins();
-
-					progress.report({ message: 'JBang is ready.' });
-					return resolvedJbang;
-				},
-			);
-
-			if (jbang) {
-				KaotoOutputChannel.logInfo('JBang is ready');
-				vscode.window.setStatusBarMessage('$(check) Kaoto: JBang ready', 3000);
-
-				await contextHandler.setExecutorAvailable(true);
-			} else {
+			if (!resolvedJbang) {
 				KaotoOutputChannel.logWarning('JBang not found on PATH');
 				vscode.window.setStatusBarMessage('$(warning) Kaoto: JBang not found', 5000);
-
 				await contextHandler.setExecutorAvailable(false);
+				return;
 			}
-		} else if (executorType === 'camel-launcher') {
-			const javaAvailable = await vscode.window.withProgress(
-				{
-					location: vscode.ProgressLocation.Window,
-					title: 'Kaoto: Preparing Camel Launcher',
-					cancellable: false,
-				},
-				async (progress) => {
-					KaotoOutputChannel.logInfo('Checking Java availability...');
-					progress.report({ message: 'Checking Java on PATH...' });
 
-					return await contextHandler.checkJavaOnPath();
-				},
-			);
+			await contextHandler.checkJBangTrustedSources();
+			await contextHandler.checkCamelJBangPlugins();
+
+			KaotoOutputChannel.logInfo('JBang is ready');
+			vscode.window.setStatusBarMessage('$(check) Kaoto: JBang ready', 3000);
+			await contextHandler.setExecutorAvailable(true);
+		} else if (executorType === 'camel-launcher') {
+			KaotoOutputChannel.logInfo('Checking Java availability...');
+
+			const javaAvailable = await contextHandler.checkJavaOnPath();
 
 			if (!javaAvailable) {
 				KaotoOutputChannel.logWarning('Java not found on PATH');
@@ -93,27 +64,16 @@ export async function ensureExecutorAvailable(
 			const version = catalogService.getCamelVersionForCLI(catalog, 'camel-launcher') || DEFAULT_CAMEL_VERSION_FALLBACK;
 			const downloader = new CamelLauncherDownloader(context);
 
-			const launcherPath = await vscode.window.withProgress(
-				{
-					location: vscode.ProgressLocation.Window,
-					title: `Kaoto: Preparing Camel Launcher ${version}`,
-					cancellable: false,
-				},
-				async (progress) => {
-					progress.report({ message: 'Downloading Camel Launcher and preparing scripts...' });
-					KaotoOutputChannel.logInfo(`Downloading Camel Launcher ${version}...`);
-
-					const resolvedLauncherPath = await downloader.ensureLauncher(version);
-
-					progress.report({ message: 'Camel Launcher is ready.' });
-					return resolvedLauncherPath;
-				},
-			);
-
-			KaotoOutputChannel.logInfo(`Camel Launcher ${version} ready at: ${launcherPath}`);
-			vscode.window.setStatusBarMessage('$(check) Kaoto: Camel Launcher ready', 3000);
-
-			await contextHandler.setExecutorAvailable(true);
+			KaotoOutputChannel.logInfo(`Downloading Camel Launcher ${version}...`);
+			const statusBarMessage = vscode.window.setStatusBarMessage(`Kaoto: Preparing Camel Launcher ${version}...`);
+			try {
+				const launcherPath = await downloader.ensureLauncher(version);
+				KaotoOutputChannel.logInfo(`Camel Launcher ${version} ready at: ${launcherPath}`);
+				vscode.window.setStatusBarMessage('$(check) Kaoto: Camel Launcher ready', 3000);
+				await contextHandler.setExecutorAvailable(true);
+			} finally {
+				statusBarMessage.dispose();
+			}
 		}
 	} catch (error) {
 		const isLauncherNotFound = error instanceof Error && error.name === 'LauncherNotFoundError';

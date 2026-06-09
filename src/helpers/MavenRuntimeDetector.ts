@@ -41,9 +41,8 @@ export class MavenRuntimeDetector {
 			if (config.type === 'jbang') {
 				fullCommand = `jbang "-Dcamel.jbang.version=${camelVersionToUse}" camel@apache/camel dependency runtime --json pom.xml`;
 			} else {
-				// For camel-launcher, use java -jar <jarPath>
 				const jarPath = (executor as CamelLauncherExecutor).getJarPath();
-				fullCommand = `java -jar ${jarPath} dependency runtime --json pom.xml`;
+				fullCommand = `java -jar "${jarPath}" dependency runtime --json pom.xml`;
 			}
 
 			const response: string = execSync(fullCommand, {

@@ -605,13 +605,21 @@ export class ExtensionContextHandler {
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(COMMAND_INTEGRATIONS_RUN, async (integration: Integration) => {
 				const allocatedPort = await portManager.allocatePort();
-				const result = await CamelCommandAPI.run(integration.filepath.fsPath, path.dirname(integration.filepath.fsPath), allocatedPort);
-				const runTask = CamelTaskFactory.createBackground(`Running - ${path.basename(integration.filepath.fsPath)}::${result.resolvedPort}`, result);
+				let runTask: CamelTask | undefined;
 
-				this.synchronizePortTracking(portManager, runTask, allocatedPort);
+				try {
+					const result = await CamelCommandAPI.run(integration.filepath.fsPath, path.dirname(integration.filepath.fsPath), allocatedPort);
+					runTask = CamelTaskFactory.createBackground(`Running - ${path.basename(integration.filepath.fsPath)}::${result.resolvedPort}`, result);
 
-				await runTask.execute();
-				await this.sendCommandTrackingEvent(COMMAND_INTEGRATIONS_RUN);
+					this.synchronizePortTracking(portManager, runTask, allocatedPort);
+
+					await runTask.execute();
+					await this.sendCommandTrackingEvent(COMMAND_INTEGRATIONS_RUN);
+				} catch (error) {
+					const portToRelease = runTask ? (runTask.definition as CamelTaskDefinition).port : allocatedPort;
+					portManager.releasePort(portToRelease);
+					throw error;
+				}
 			}),
 		);
 	}
