@@ -15,7 +15,8 @@
  */
 import { QuickPickItem, Uri, commands, window } from 'vscode';
 import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
-import { CamelInitTask } from '../tasks/CamelInitTask';
+import { CamelTaskFactory } from '../tasks/CamelTaskFactory';
+import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 import { CamelRouteDSL } from './AbstractCamelCommand';
 import path from 'path';
 
@@ -39,7 +40,8 @@ export class NewCamelKameletCommand extends AbstractNewCamelRouteCommand {
 						const filePath = this.computeFullPath(targetFolder.fsPath, fileName);
 
 						const wsFolderTarget = wsFolder || this.singleWorkspaceFolder;
-						const initTask = await CamelInitTask.create(path.relative(wsFolderTarget.uri.fsPath, filePath), wsFolderTarget);
+						const result = await CamelCommandAPI.init(path.relative(wsFolderTarget.uri.fsPath, filePath));
+						const initTask = CamelTaskFactory.createSilent(`Init: ${fileName}`, result, wsFolderTarget);
 						await initTask.executeAndWaitWithProgress(NewCamelKameletCommand.PROGRESS_NOTIFICATION_MESSAGE);
 						const targetFileURI = Uri.file(filePath);
 						await this.waitForFileExists(targetFileURI);

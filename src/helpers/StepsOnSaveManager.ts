@@ -3,7 +3,8 @@ import * as path from 'path';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { findFolderOfPomXml, normalizeVersionForSemver } from './helpers';
 import { satisfies } from 'compare-versions';
-import { CamelDependencyUpdateTask } from '../tasks/CamelDependencyUpdateTask';
+import { CamelTaskFactory } from '../tasks/CamelTaskFactory';
+import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
 import { DEFAULT_CAMEL_VERSION } from '../constants';
 import { ExecutorType } from '../executors/types/ExecutorTypes';
@@ -56,7 +57,8 @@ export class StepsOnSaveManager {
 
 		KaotoOutputChannel.logInfo(message ?? 'Updating Camel dependencies...');
 		try {
-			const task = await CamelDependencyUpdateTask.create(pomPath, docPath);
+			const result = await CamelCommandAPI.dependencyUpdate(pomPath, docPath, path.dirname(pomPath));
+			const task = CamelTaskFactory.createSilent('Update Camel dependencies in pom.xml', result);
 			await task.executeAndWaitWithProgress('Updating Camel dependencies in pom.xml');
 			vscode.window.setStatusBarMessage(`Kaoto: Camel dependencies in '${pomPath}' successfully updated.`, 5_000);
 			KaotoOutputChannel.logInfo('Camel dependencies update completed successfully.');

@@ -15,7 +15,8 @@
  */
 import { commands, Uri, window, workspace } from 'vscode';
 import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
-import { CamelTestInitTask } from '../tasks/CamelTestInitTask';
+import { CamelTaskFactory } from '../tasks/CamelTaskFactory';
+import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 import path from 'path';
 import { CamelRouteDSL } from './AbstractCamelCommand';
 import isValidFilename from 'valid-filename';
@@ -36,7 +37,8 @@ export class NewCamelTestCommand extends AbstractNewCamelRouteCommand {
 					const fileName = this.getFullName(name, this.getDSL().extension);
 					const filePath = this.computeFullPath(targetFolderPath, fileName);
 
-					const task = await CamelTestInitTask.create(fileName, wsFolderTarget, 'Init a Camel Test file', targetFolderPath);
+					const result = await CamelCommandAPI.testInit(fileName, targetFolderPath);
+					const task = CamelTaskFactory.createSilent(`Init: ${fileName}`, result, wsFolderTarget);
 					await task.executeAndWaitWithProgress(NewCamelTestCommand.PROGRESS_NOTIFICATION_MESSAGE);
 					const targetFileURI = Uri.file(filePath);
 					await this.waitForFileExists(targetFileURI);

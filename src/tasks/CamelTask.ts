@@ -26,7 +26,7 @@ export interface CamelTaskDefinition extends TaskDefinition {
  * This class represents implementation of vscode.task for Camel commands.
  * Uses the generic executor abstraction (JBang or Camel Launcher).
  */
-export abstract class CamelTask extends Task {
+export class CamelTask extends Task {
 	// Constant for indicating no port is specified
 	public static readonly NO_PORT = -1;
 

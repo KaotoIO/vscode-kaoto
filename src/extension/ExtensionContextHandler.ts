@@ -38,28 +38,23 @@ import { NewCamelFileCommand } from '../commands/NewCamelFileCommand';
 import { confirmFileDeleteDialog } from '../helpers/modals';
 import { TelemetryEvent, TelemetryService } from '@redhat-developer/vscode-redhat-telemetry';
 import { NewCamelProjectCommand } from '../commands/NewCamelProjectCommand';
-import { CamelRunTask } from '../tasks/CamelRunTask';
-import { CamelKubernetesRunTask } from '../tasks/CamelKubernetesRunTask';
+import { CamelTaskFactory } from '../tasks/CamelTaskFactory';
+import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 import { DeploymentsProvider } from '../views/providers/DeploymentsProvider';
 import { PortManager } from '../helpers/PortManager';
 import { ParentItem } from '../views/deploymentTreeItems/ParentItem';
-import { CamelStopTask } from '../tasks/CamelStopTask';
-import { ChildItem } from '../views/deploymentTreeItems/ChildItem';
-import { CamelRouteOperationTask } from '../tasks/CamelRouteOperationTask';
 import { RouteOperation } from '../types/RouteOperation';
+import { ChildItem } from '../views/deploymentTreeItems/ChildItem';
 import { RecommendationCore } from '@redhat-developer/vscode-extension-proposals';
 import { WhatsNewPanel } from './WhatsNewPanel';
 import { satisfies } from 'compare-versions';
 import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
-import { CamelRunSourceDirTask } from '../tasks/CamelRunSourceDirTask';
 import { Folder } from '../views/integrationTreeItems/Folder';
 import { TestsProvider } from '../views/providers/TestsProvider';
 import { AbstractFolderTreeProvider } from '../views/providers/AbstractFolderTreeProvider';
 import { NewCamelTestCommand } from '../commands/NewCamelTestCommand';
-import { CamelTestRunFolderTask } from '../tasks/CamelTestRunFolderTask';
 import { TestFolder } from '../views/testTreeItems/TestFolder';
 import { CamelTask, CamelTaskDefinition } from '../tasks/CamelTask';
-import { CamelTestRunTask } from '../tasks/CamelTestRunTask';
 import { Test } from '../views/testTreeItems/Test';
 import { OpenApiProvider } from '../views/providers/OpenApiProvider';
 import { ImportOpenApiCommand } from '../commands/ImportOpenApiCommand';
@@ -295,7 +290,14 @@ export class ExtensionContextHandler {
 			const filePath = test.resourceUri?.fsPath as string;
 			const fileName = path.basename(filePath) || 'test';
 
-			await this.executeTestRun([filePath], () => CamelTestRunTask.create(filePath), `Running test: ${fileName}`);
+			await this.executeTestRun(
+				[filePath],
+				async () => {
+					const result = await CamelCommandAPI.testRun(path.basename(filePath), path.dirname(filePath));
+					return CamelTaskFactory.createBackground(`Running - ${path.basename(filePath)}`, result);
+				},
+				`Running test: ${fileName}`,
+			);
 			await this.sendCommandTrackingEvent(TESTS_RUN_COMMAND_ID);
 		});
 
@@ -310,7 +312,14 @@ export class ExtensionContextHandler {
 				return;
 			}
 
-			await this.executeTestRun(testFilePaths, () => CamelTestRunFolderTask.create(folderPath), `Running tests in: ${folderName}`);
+			await this.executeTestRun(
+				testFilePaths,
+				async () => {
+					const result = await CamelCommandAPI.testRunFolder(folderPath);
+					return CamelTaskFactory.createBackground(`Running - ${folderPath}`, result);
+				},
+				`Running tests in: ${folderName}`,
+			);
 			await this.sendCommandTrackingEvent(TESTS_RUN_FOLDER_COMMAND_ID);
 		});
 
@@ -525,7 +534,8 @@ export class ExtensionContextHandler {
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(INTEGRATIONS_RUN_COMMAND_ID, async (integration: Integration) => {
 				const allocatedPort = await portManager.allocatePort();
-				const runTask = await CamelRunTask.create(integration.filepath.fsPath, allocatedPort);
+				const result = await CamelCommandAPI.run(integration.filepath.fsPath, path.dirname(integration.filepath.fsPath), allocatedPort);
+				const runTask = CamelTaskFactory.createBackground(`Running - ${path.basename(integration.filepath.fsPath)}::${result.resolvedPort}`, result);
 
 				this.synchronizePortTracking(portManager, runTask, allocatedPort);
 
@@ -579,7 +589,8 @@ export class ExtensionContextHandler {
 
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID, async (integration: Integration) => {
-				const deployTask = await CamelKubernetesRunTask.create(integration.filepath.fsPath);
+				const deployResult = await CamelCommandAPI.kubernetesRun(integration.filepath.fsPath, path.dirname(integration.filepath.fsPath));
+				const deployTask = CamelTaskFactory.create({ label: `Deploying - ${path.basename(integration.filepath.fsPath)}` }, deployResult);
 				await deployTask.execute();
 				await this.sendCommandTrackingEvent(INTEGRATIONS_KUBERNETES_RUN_COMMAND_ID);
 			}),
@@ -592,7 +603,8 @@ export class ExtensionContextHandler {
 
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(DEPLOYMENTS_INTEGRATION_STOP_COMMAND_ID, async (integration: ParentItem) => {
-				const stopTask = await CamelStopTask.create(integration.label as string);
+				const stopResult = await CamelCommandAPI.stop(integration.label as string);
+				const stopTask = CamelTaskFactory.createSilent(`Stop - ${integration.label as string}`, stopResult);
 				await stopTask.executeAndWait();
 				await this.sendCommandTrackingEvent(DEPLOYMENTS_INTEGRATION_STOP_COMMAND_ID);
 			}),
@@ -619,30 +631,42 @@ export class ExtensionContextHandler {
 		const DEPLOYMENTS_ROUTE_SUSPEND_COMMAND_ID: string = 'kaoto.deployments.route.suspend';
 
 		const startCommand = vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_START_COMMAND_ID, async (route: ChildItem) => {
-			const task = await CamelRouteOperationTask.create(RouteOperation.start, route.parentIntegration.label as string, route.label as string);
+			const integrationName = route.parentIntegration.label as string;
+			const routeName = route.label as string;
+			const result = await CamelCommandAPI.routeOperation(RouteOperation.start, integrationName, routeName);
+			const task = CamelTaskFactory.createSilent(`${RouteOperation.start} - ${integrationName}: ${routeName}`, result);
 			await task.executeAndWait();
-			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Started');
+			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, routeName, 'Started');
 			this.deploymentsProvider.refresh();
 			await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_START_COMMAND_ID);
 		});
 		const stopCommand = vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_STOP_COMMAND_ID, async (route: ChildItem) => {
-			const task = await CamelRouteOperationTask.create(RouteOperation.stop, route.parentIntegration.label as string, route.label as string);
+			const integrationName = route.parentIntegration.label as string;
+			const routeName = route.label as string;
+			const result = await CamelCommandAPI.routeOperation(RouteOperation.stop, integrationName, routeName);
+			const task = CamelTaskFactory.createSilent(`${RouteOperation.stop} - ${integrationName}: ${routeName}`, result);
 			await task.executeAndWait();
-			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Stopped');
+			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, routeName, 'Stopped');
 			this.deploymentsProvider.refresh();
 			await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_STOP_COMMAND_ID);
 		});
 		const resumeCommand = vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_RESUME_COMMAND_ID, async (route: ChildItem) => {
-			const task = await CamelRouteOperationTask.create(RouteOperation.resume, route.parentIntegration.label as string, route.label as string);
+			const integrationName = route.parentIntegration.label as string;
+			const routeName = route.label as string;
+			const result = await CamelCommandAPI.routeOperation(RouteOperation.resume, integrationName, routeName);
+			const task = CamelTaskFactory.createSilent(`${RouteOperation.resume} - ${integrationName}: ${routeName}`, result);
 			await task.executeAndWait();
-			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Started');
+			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, routeName, 'Started');
 			this.deploymentsProvider.refresh();
 			await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_RESUME_COMMAND_ID);
 		});
 		const suspendCommand = vscode.commands.registerCommand(DEPLOYMENTS_ROUTE_SUSPEND_COMMAND_ID, async (route: ChildItem) => {
-			const task = await CamelRouteOperationTask.create(RouteOperation.suspend, route.parentIntegration.label as string, route.label as string);
+			const integrationName = route.parentIntegration.label as string;
+			const routeName = route.label as string;
+			const result = await CamelCommandAPI.routeOperation(RouteOperation.suspend, integrationName, routeName);
+			const task = CamelTaskFactory.createSilent(`${RouteOperation.suspend} - ${integrationName}: ${routeName}`, result);
 			await task.executeAndWait();
-			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, route.label as string, 'Suspended');
+			await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, routeName, 'Suspended');
 			this.deploymentsProvider.refresh();
 			await this.sendCommandTrackingEvent(DEPLOYMENTS_ROUTE_SUSPEND_COMMAND_ID);
 		});
@@ -710,15 +734,14 @@ export class ExtensionContextHandler {
 	 */
 	private async executeRunSourceDirTask(folderPath: string, portManager: PortManager): Promise<void> {
 		const allocatedPort = await portManager.allocatePort();
-		let runTask: CamelRunSourceDirTask | undefined;
+		let runTask: CamelTask | undefined;
 
 		try {
-			runTask = await CamelRunSourceDirTask.create(folderPath, allocatedPort);
+			const result = await CamelCommandAPI.runSourceDir(folderPath, allocatedPort);
+			runTask = CamelTaskFactory.createBackground(`Running - ${path.basename(folderPath)}::${result.resolvedPort}`, result);
 			this.synchronizePortTracking(portManager, runTask, allocatedPort);
 			await runTask.execute();
 		} catch (error) {
-			// Release the port that is currently reserved
-			// If synchronizePortTracking succeeded, it may have changed which port is reserved
 			const portToRelease = runTask ? (runTask.definition as CamelTaskDefinition).port : allocatedPort;
 			portManager.releasePort(portToRelease);
 			throw error;
