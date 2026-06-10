@@ -9,6 +9,7 @@ import { isRedHatBuild } from '../helpers/helpers';
 import {
 	COMMAND_SELECT_CAMEL_CATALOG,
 	KAOTO_CATALOG_URL_SETTING_ID,
+	KAOTO_EXECUTOR_TYPE_SETTING_ID,
 	KAOTO_RUNTIME_CATALOG_NAME_SETTING_ID,
 	KAOTO_TESTING_CATALOG_NAME_SETTING_ID,
 } from '../constants';
@@ -37,6 +38,7 @@ export class KaotoCatalogService {
 	private readonly catalogBasePath: string;
 	private readonly catalogIndexPath: string;
 	private readonly redHatNotificationService: RedHatMavenNotificationService;
+	private lastNotifiedRedHatVersion: string | undefined;
 
 	constructor(private readonly context: vscode.ExtensionContext) {
 		// Path to the catalog directory copied by webpack during build
@@ -64,7 +66,6 @@ export class KaotoCatalogService {
 			await this.loadCatalogs();
 			KaotoOutputChannel.logInfo(`Loaded ${this.catalogs.length} Camel catalog definitions`);
 
-			// Log default catalog
 			const defaultCatalog = this.getDefaultCatalog();
 			if (defaultCatalog) {
 				KaotoOutputChannel.logInfo(`Default catalog: ${defaultCatalog.name}`);
@@ -81,7 +82,7 @@ export class KaotoCatalogService {
 	 * Load catalogs from custom URL when configured, otherwise from local index.json
 	 */
 	private getCustomCatalogUrl(): string | undefined {
-		return vscode.workspace.getConfiguration('kaoto').get<string | null>('catalog.url')?.trim() || undefined;
+		return vscode.workspace.getConfiguration().get<string | null>(KAOTO_CATALOG_URL_SETTING_ID)?.trim() || undefined;
 	}
 
 	private async loadCatalogs(): Promise<void> {
@@ -481,6 +482,9 @@ export class KaotoCatalogService {
 				} else if (e.affectsConfiguration(KAOTO_RUNTIME_CATALOG_NAME_SETTING_ID) || e.affectsConfiguration(KAOTO_TESTING_CATALOG_NAME_SETTING_ID)) {
 					void this.updateStatusBar();
 				}
+				if (e.affectsConfiguration(KAOTO_RUNTIME_CATALOG_NAME_SETTING_ID)) {
+					void this.checkAndShowRedHatNotification();
+				}
 			}),
 			vscode.window.onDidChangeActiveTextEditor(() => {
 				void this.updateStatusBar();
@@ -686,20 +690,25 @@ export class KaotoCatalogService {
 	}
 
 	/**
-	 * Check if the current catalog is Red Hat and show notification if needed
-	 * Called during initialization and when opening editors
+	 * Show Red Hat Maven notification once per catalog version change.
+	 * Triggered on initialization and catalog selection change -- not on editor focus.
 	 */
 	private async checkAndShowRedHatNotification(): Promise<void> {
 		try {
-			// Get the currently selected integration catalog
 			const catalog = await this.getSelectedIntegrationCatalog();
 
-			if (catalog && this.redHatNotificationService.isRedHatCatalog(catalog.version)) {
-				const executorType = vscode.workspace.getConfiguration('kaoto').get<string>('executor.type') || 'jbang';
-				await this.redHatNotificationService.showRedHatMavenNotification(catalog.version, executorType);
+			if (!catalog || !this.redHatNotificationService.isRedHatCatalog(catalog.version)) {
+				return;
 			}
+
+			if (this.lastNotifiedRedHatVersion === catalog.version) {
+				return;
+			}
+
+			this.lastNotifiedRedHatVersion = catalog.version;
+			const executorType = vscode.workspace.getConfiguration().get<ExecutorType>(KAOTO_EXECUTOR_TYPE_SETTING_ID) || 'jbang';
+			await this.redHatNotificationService.showRedHatMavenNotification(catalog.version, executorType);
 		} catch (error) {
-			// Don't fail initialization if notification check fails
 			const errorMsg = error instanceof Error ? error.message : String(error);
 			KaotoOutputChannel.logWarning(`Failed to check Red Hat catalog notification: ${errorMsg}`);
 		}
