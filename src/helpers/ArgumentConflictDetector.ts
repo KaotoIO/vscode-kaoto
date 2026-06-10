@@ -29,7 +29,7 @@ interface ParsedArgument {
 }
 
 /**
- * Utility class for detecting and resolving argument conflicts in Camel JBang commands
+ * Utility class for detecting and resolving argument conflicts in Camel commands
  */
 export class ArgumentConflictDetector {
 	/** Cache for parsed arguments to avoid redundant parsing */
@@ -216,7 +216,7 @@ export class ArgumentConflictDetector {
 	 * @returns Port number if found, undefined otherwise
 	 */
 	static extractPortValue(args: string[]): number | undefined {
-		// Check for --management-port first (takes priority in Camel JBang 4.14+)
+		// Check for --management-port first (takes priority in Camel 4.14+)
 		const managementPort = this.getArgumentValue(args, 'management-port');
 		if (managementPort !== undefined) {
 			const port = Number.parseInt(managementPort, 10);

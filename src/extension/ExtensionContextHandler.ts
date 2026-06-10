@@ -61,6 +61,7 @@ import {
 	COMMAND_TESTS_RUN_FOLDER,
 	COMMAND_UNDO,
 	COMMAND_WHATS_NEW_SHOW,
+	CONTEXT_EXECUTOR_AVAILABLE,
 	CONTEXT_JBANG_AVAILABLE,
 	CONTEXT_WORKSPACE_HAS_POM_XML,
 	KAOTO_EDITOR_VIEW_TYPE,
@@ -76,6 +77,7 @@ import {
 import {
 	findFolderOfPomXml,
 	runJBangCommandWithStatusBar,
+	verifyJavaExists,
 	verifyJBangExists,
 	verifyJBangTrustedSources,
 	verifyCamelPluginsAreInstalled,
@@ -219,6 +221,27 @@ export class ExtensionContextHandler {
 			return false;
 		}
 		return true;
+	}
+
+	public async checkJavaOnPath(): Promise<boolean> {
+		const javaExists = await verifyJavaExists();
+		if (!javaExists) {
+			const javaInstallationLink: string = 'https://adoptium.net/installation/';
+			const msg: string = `Java is missing on a system PATH. Camel Launcher requires Java to run. [Java Installation Guide](${javaInstallationLink}).`;
+			KaotoOutputChannel.logWarning(msg);
+			const selection = await vscode.window.showWarningMessage(msg, 'Install');
+			if (selection === undefined) {
+				await vscode.window.showWarningMessage('Java is not installed. Some Kaoto extension features may not work properly.', 'OK');
+			} else {
+				await vscode.commands.executeCommand('vscode.open', `${javaInstallationLink}`);
+			}
+			return false;
+		}
+		return true;
+	}
+
+	public async setExecutorAvailable(available: boolean): Promise<void> {
+		await vscode.commands.executeCommand('setContext', CONTEXT_EXECUTOR_AVAILABLE, available);
 	}
 
 	public async checkJBangTrustedSources() {

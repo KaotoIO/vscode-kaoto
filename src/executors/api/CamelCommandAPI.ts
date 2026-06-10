@@ -1,0 +1,239 @@
+import { CamelExecutorFactory } from '../CamelExecutorFactory';
+import { CamelCommandBuilder } from '../builders/CamelCommandBuilder';
+import { CamelCommand, CommandArguments, CommandResult, RuntimeType } from '../types/ExecutorTypes';
+import { CamelSettingsHelper } from '../helpers/CamelSettingsHelper';
+import { TestFolderResolver } from '../../helpers/TestFolderResolver';
+
+interface ResolvedSettings {
+	camelVersionArg: string;
+	quarkusArgs: string[];
+	springBootArgs: string[];
+	reposArg: string;
+}
+
+/**
+ * High-level API for executing Camel commands
+ * Used by task classes to abstract executor details
+ * Integrates user settings from VS Code configuration
+ */
+export class CamelCommandAPI {
+	private static async resolveCommonSettings(settingsHelper: CamelSettingsHelper, userArgs: string[]): Promise<ResolvedSettings> {
+		const [camelVersionArg, quarkusArgs, springBootArgs, reposArg] = await Promise.all([
+			settingsHelper.getCamelVersionArgument(userArgs),
+			settingsHelper.getQuarkusArguments(userArgs),
+			settingsHelper.getSpringBootArguments(userArgs),
+			settingsHelper.getRedHatMavenRepositoryArgument(userArgs),
+		]);
+		return { camelVersionArg, quarkusArgs, springBootArgs, reposArg };
+	}
+
+	private static applyPortOverride(result: CommandResult, portArg: string, resolvedPort: number): CommandResult {
+		if (portArg) {
+			return { ...result, resolvedPort };
+		}
+		return result;
+	}
+
+	private static async executeSimple(command: CamelCommand, args: CommandArguments, cwd?: string): Promise<CommandResult> {
+		const executor = await CamelExecutorFactory.createExecutor();
+		return await executor.execute(command, args, { cwd });
+	}
+
+	/**
+	 * Run a Camel integration with user settings
+	 */
+	static async run(filePath: string, cwd: string, port?: number, additionalArgs: CommandArguments = []): Promise<CommandResult> {
+		const executor = await CamelExecutorFactory.createExecutor();
+		const settingsHelper = new CamelSettingsHelper();
+
+		const { args: userArgs, conflicts } = await settingsHelper.getRunArguments(filePath, cwd);
+		const { argument: portArg, resolvedPort } = settingsHelper.getPortArgument(port, userArgs);
+		const runtimeArg = settingsHelper.getRuntimeArgument(userArgs);
+		const common = await this.resolveCommonSettings(settingsHelper, userArgs);
+
+		await settingsHelper.showConflictWarnings(conflicts);
+
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs([
+			`'${filePath}'`,
+			portArg,
+			runtimeArg,
+			...userArgs,
+			...additionalArgs,
+			common.camelVersionArg,
+			...common.quarkusArgs,
+			...common.springBootArgs,
+			common.reposArg,
+		]);
+
+		const result = await executor.execute('run', args, { cwd });
+		return this.applyPortOverride(result, portArg, resolvedPort);
+	}
+
+	/**
+	 * Run a Camel integration from source directory with user settings
+	 */
+	static async runSourceDir(sourceDir: string, port?: number, additionalArgs: CommandArguments = []): Promise<CommandResult> {
+		const executor = await CamelExecutorFactory.createExecutor();
+		const settingsHelper = new CamelSettingsHelper();
+
+		const { args: userArgs, conflicts } = await settingsHelper.getRunSourceDirArguments(sourceDir);
+		const { argument: portArg, resolvedPort } = settingsHelper.getPortArgument(port, userArgs);
+		const runtimeArg = settingsHelper.getRuntimeArgument(userArgs);
+		const common = await this.resolveCommonSettings(settingsHelper, userArgs);
+
+		await settingsHelper.showConflictWarnings(conflicts);
+
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs([
+			`'--source-dir=${sourceDir}'`,
+			portArg,
+			runtimeArg,
+			...userArgs,
+			...additionalArgs,
+			common.camelVersionArg,
+			...common.quarkusArgs,
+			...common.springBootArgs,
+			common.reposArg,
+		]);
+
+		const result = await executor.execute('run', args, { cwd: sourceDir });
+		return this.applyPortOverride(result, portArg, resolvedPort);
+	}
+
+	/**
+	 * Export a Camel integration to Maven project with user settings
+	 */
+	static async export(
+		filePath: string,
+		gav: string,
+		runtime: RuntimeType,
+		outputPath: string,
+		cwd: string,
+		kubernetes?: boolean,
+		additionalArgs: CommandArguments = [],
+	): Promise<CommandResult> {
+		const executor = await CamelExecutorFactory.createExecutor();
+		const settingsHelper = new CamelSettingsHelper();
+
+		const { args: userArgs, conflicts } = await settingsHelper.getExportArguments(cwd);
+		const common = await this.resolveCommonSettings(settingsHelper, userArgs);
+
+		await settingsHelper.showConflictWarnings(conflicts);
+
+		const quarkusOpenshiftDependency = runtime === RuntimeType.QUARKUS && kubernetes ? ['--dependency=mvn:io.quarkus:quarkus-openshift'] : [];
+
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs([
+			`'${filePath}'`,
+			`--runtime=${runtime}`,
+			`--gav=${gav}`,
+			`--directory=${outputPath}`,
+			...quarkusOpenshiftDependency,
+			...userArgs,
+			...additionalArgs,
+			common.camelVersionArg,
+			...common.quarkusArgs,
+			...common.springBootArgs,
+			common.reposArg,
+		]);
+
+		if (kubernetes) {
+			return await executor.execute('kubernetes', ['export', ...args], { cwd });
+		} else {
+			return await executor.execute('export', args, { cwd });
+		}
+	}
+
+	/**
+	 * Initialize a new Camel file
+	 */
+	static async init(filePath: string, cwd?: string): Promise<CommandResult> {
+		return this.executeSimple('init', [`'${filePath}'`], cwd);
+	}
+
+	/**
+	 * Stop a running integration
+	 */
+	static async stop(name: string, cwd?: string): Promise<CommandResult> {
+		return this.executeSimple('stop', [name], cwd);
+	}
+
+	/**
+	 * Bind a Kamelet to a source/sink
+	 */
+	static async bind(file: string, source: string, sink: string, cwd?: string, additionalArgs: CommandArguments = []): Promise<CommandResult> {
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs(['--source', source, '--sink', sink, `'${file}'`, ...additionalArgs]);
+		return this.executeSimple('bind', args, cwd);
+	}
+
+	/**
+	 * Add a plugin
+	 */
+	static async pluginAdd(pluginName: string, cwd?: string, additionalArgs: CommandArguments = []): Promise<CommandResult> {
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs(['add', pluginName, ...additionalArgs]);
+		return this.executeSimple('plugin', args, cwd);
+	}
+
+	/**
+	 * Update dependencies in pom.xml
+	 */
+	static async dependencyUpdate(pomPath: string, integrationFilePath: string, cwd?: string): Promise<CommandResult> {
+		return this.executeSimple('dependency', ['update', pomPath, integrationFilePath, '--lazy-bean', '--ignore-loading-error'], cwd);
+	}
+
+	/**
+	 * Execute route operations (start, stop, suspend, resume)
+	 */
+	static async routeOperation(operation: string, integration: string, routeId: string, cwd?: string): Promise<CommandResult> {
+		return this.executeSimple('cmd', [`${operation}-route`, integration, `--id=${routeId}`], cwd);
+	}
+
+	/**
+	 * Initialize a new Camel test file
+	 */
+	static async testInit(filePath: string, cwd?: string): Promise<CommandResult> {
+		return this.executeSimple('test', ['init', `'${filePath}'`], cwd);
+	}
+
+	/**
+	 * Run Camel tests
+	 */
+	static async testRun(filePath: string, cwd?: string, additionalArgs: CommandArguments = []): Promise<CommandResult> {
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs(['run', `'${filePath}'`, ...additionalArgs]);
+		return this.executeSimple('test', args, cwd);
+	}
+
+	/**
+	 * Run all Camel tests in a folder
+	 * Automatically resolves to the actual test folder if the provided path is not a test folder
+	 */
+	static async testRunFolder(folderPath: string): Promise<CommandResult> {
+		const testFolder = await TestFolderResolver.resolveTestFolder(folderPath);
+		return this.executeSimple('test', ['run', '*'], testFolder);
+	}
+
+	/**
+	 * Execute Kubernetes run operation with user settings
+	 */
+	static async kubernetesRun(filePattern: string, cwd?: string, additionalArgs: CommandArguments = []): Promise<CommandResult> {
+		const executor = await CamelExecutorFactory.createExecutor();
+		const settingsHelper = new CamelSettingsHelper();
+
+		const { args: userArgs, conflicts } = await settingsHelper.getKubernetesRunArguments(cwd || '');
+		const runtimeArg = settingsHelper.getRuntimeArgument(userArgs);
+		const common = await this.resolveCommonSettings(settingsHelper, userArgs);
+
+		await settingsHelper.showConflictWarnings(conflicts);
+
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs([
+			'run',
+			filePattern,
+			...userArgs,
+			runtimeArg,
+			common.camelVersionArg,
+			...common.quarkusArgs,
+			...common.springBootArgs,
+			common.reposArg,
+			...additionalArgs,
+		]);
+		return await executor.execute('kubernetes', args, { cwd });
+	}
+}

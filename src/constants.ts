@@ -1,3 +1,7 @@
+// ─── Default Values ──────────────────────────────────────────────────────────
+
+export const DEFAULT_CAMEL_VERSION_FALLBACK: string = '4.20.0';
+
 // ─── Editor Type ─────────────────────────────────────────────────────────────
 
 export const KAOTO_EDITOR_VIEW_TYPE = 'webviewEditorsKaoto';
@@ -7,6 +11,8 @@ export const KAOTO_EDITOR_VIEW_TYPE = 'webviewEditorsKaoto';
 export const KAOTO_FILE_PATH_GLOB = '**/*.{yml,yaml,xml}';
 
 export const KAOTO_EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.citrus-jbang*/**,**/.camel-jbang*/**,**/target/**,**/.mvn/**}';
+
+export const DEFAULT_KAOTO_OPENAPI_FILES_REGEXP: string[] = ['*openapi.yaml', '*openapi.yml', '*openapi.json'];
 
 // ─── Settings IDs ────────────────────────────────────────────────────────────
 
@@ -52,9 +58,25 @@ export const KAOTO_COLOR_THEME_SETTING_ID = 'kaoto.colorTheme';
 
 export const KAOTO_CANVAS_LAYOUT_DIRECTION_SETTING_ID = 'kaoto.canvasLayoutDirection';
 
-// ─── Default Values ──────────────────────────────────────────────────────────
+// ─── Executor Settings IDs ───────────────────────────────────────────────────
 
-export const DEFAULT_KAOTO_OPENAPI_FILES_REGEXP: string[] = ['*openapi.yaml', '*openapi.yml', '*openapi.json'];
+export const KAOTO_EXECUTOR_TYPE_SETTING_ID = 'kaoto.executor.type';
+
+export const KAOTO_EXECUTOR_RUN_ARGUMENTS_SETTING_ID = 'kaoto.executor.runArguments';
+
+export const KAOTO_EXECUTOR_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID = 'kaoto.executor.runFolderOrWorkspaceArguments';
+
+export const KAOTO_EXECUTOR_RED_HAT_MAVEN_REPOSITORY_SETTING_ID = 'kaoto.executor.redHatMavenRepository';
+
+export const KAOTO_EXECUTOR_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID = 'kaoto.executor.redHatMavenRepository.global';
+
+export const KAOTO_EXECUTOR_KUBERNETES_RUN_ARGUMENTS_SETTING_ID = 'kaoto.executor.kubernetesRunArguments';
+
+export const KAOTO_EXECUTOR_EXPORT_ARGUMENTS_SETTING_ID = 'kaoto.maven.executor.exportProjectArguments';
+
+export const KAOTO_RUNTIME_CATALOG_NAME_SETTING_ID = 'kaoto.runtimeCatalogName';
+
+export const KAOTO_TESTING_CATALOG_NAME_SETTING_ID = 'kaoto.testingCatalogName';
 
 // ─── Command IDs ─────────────────────────────────────────────────────────────
 
@@ -155,6 +177,8 @@ export const VIEW_WHATS_NEW = 'kaoto.whatsNew';
 // ─── Context Keys ────────────────────────────────────────────────────────────
 
 export const CONTEXT_JBANG_AVAILABLE = 'kaoto.jbangAvailable';
+
+export const CONTEXT_EXECUTOR_AVAILABLE = 'kaoto.executorAvailable';
 
 export const CONTEXT_WORKSPACE_HAS_POM_XML = 'kaoto.workspaceHasPomXml';
 
