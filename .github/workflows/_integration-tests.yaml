@@ -100,9 +100,7 @@ jobs:
           max_attempts: 2
           command: |
             eval $(minikube -p minikube docker-env)
-            xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube --mocha_config .mocharc-json.js
-      - uses: ./.github/actions/test-json-reports
-        if: ${{ !cancelled() }}
+            xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
       - uses: ./.github/actions/upload-test-artifacts
         if: failure()
         with:
@@ -137,10 +135,8 @@ jobs:
           timeout_minutes: 30
           retry_wait_seconds: ${{ inputs.retry-wait-macos }}
           max_attempts: 2
-          command: yarn run test:it:with-prebuilt-vsix --mocha_config .mocharc-json.js
+          command: yarn run test:it:with-prebuilt-vsix
           on_retry_command: rm -rf "${RUNNER_TEMP}/extest-code"
-      - uses: ./.github/actions/test-json-reports
-        if: ${{ !cancelled() }}
       - uses: ./.github/actions/upload-test-artifacts
         if: failure()
         with:
@@ -177,9 +173,7 @@ jobs:
           max_attempts: 2
           command: |
             Set-DisplayResolution -Width 1920 -Height 1080 -Force
-            yarn run test:it:with-prebuilt-vsix --mocha_config .mocharc-json.js
-      - uses: ./.github/actions/test-json-reports
-        if: ${{ !cancelled() }}
+            yarn run test:it:with-prebuilt-vsix
       - uses: ./.github/actions/upload-test-artifacts
         if: failure()
         with:
