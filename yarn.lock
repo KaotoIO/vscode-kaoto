@@ -891,10 +891,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/camel-catalog@npm:^0.4.5":
-  version: 0.4.5
-  resolution: "@kaoto/camel-catalog@npm:0.4.5"
-  checksum: 10/2d90f699babdabf9b40fd53ac940951767158d6a42428c94d074af2e70b1087a8552f35ec3f25638b5c2e53bb3c2189f3b2d678b55b6130028a27dc9cbe8317d
+"@kaoto/camel-catalog@npm:^0.5.5":
+  version: 0.5.5
+  resolution: "@kaoto/camel-catalog@npm:0.5.5"
+  checksum: 10/019977e4072b2ef4993fc9a8a30dc4e33e74c754dc6d9978a4dbeadb0721bed373a346bf842a1ed6d1810b4df6dc11647cf51cae9bd598f5685e703c42628c3a
   languageName: node
   linkType: hard
 
@@ -916,9 +916,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/kaoto@npm:2.11.0-RC2":
-  version: 2.11.0-RC2
-  resolution: "@kaoto/kaoto@npm:2.11.0-RC2"
+"@kaoto/kaoto@npm:2.11.0-RC4":
+  version: 2.11.0-RC4
+  resolution: "@kaoto/kaoto@npm:2.11.0-RC4"
   dependencies:
     "@carbon/icons-react": "npm:^11.67.0"
     "@carbon/react": "npm:^1.102.0"
@@ -951,7 +951,7 @@ __metadata:
     zundo: "npm:^2.3.0"
     zustand: "npm:^5.0.11"
   peerDependencies:
-    "@kaoto/camel-catalog": ^0.4.4
+    "@kaoto/camel-catalog": ^0.5.2
     "@patternfly/patternfly": ^6.4.0
     "@patternfly/react-code-editor": ^6.4.0
     "@patternfly/react-core": ^6.4.0
@@ -963,7 +963,7 @@ __metadata:
     react: ^19.2.4
     react-dom: ^19.2.4
     react-monaco-editor: ^0.56.0
-  checksum: 10/e39378e692a2f00e9434b1d0844a4ee13b98d27404ca48274a5dc55f94fa2f9cd41b039077ad632a985b96ed9677053bde2fb04f8468eef2ad3b61d8f0a64693
+  checksum: 10/9b7f471c9d00c73f24f16f48b74630866a89b9a2376cd8ec2df47befc8d0e42789f59fd848d0a694d7c2c4f631e1e497cdee701172d0aca0fb87b89b471ea724
   languageName: node
   linkType: hard
 
@@ -13648,8 +13648,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto/camel-catalog": "npm:^0.4.5"
-    "@kaoto/kaoto": "npm:2.11.0-RC2"
+    "@kaoto/camel-catalog": "npm:^0.5.5"
+    "@kaoto/kaoto": "npm:2.11.0-RC4"
     "@kie-tools-core/backend": "npm:10.0.0"
     "@kie-tools-core/editor": "npm:10.0.0"
     "@kie-tools-core/i18n": "npm:10.0.0"
