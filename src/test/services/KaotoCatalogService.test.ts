@@ -4,6 +4,7 @@ import { CatalogLibraryEntry } from '@kaoto/camel-catalog/types';
 import { KaotoCatalogService } from '../../services/KaotoCatalogService';
 import { initializeKaotoCatalogService, getExtensionContext } from '../helpers/TestSetup';
 import { RuntimeType } from '../../executors/types/ExecutorTypes';
+import { KAOTO_CATALOG_URL_SETTING_ID } from '../../constants';
 
 suite('KaotoCatalogService Test Suite', () => {
 	let catalogService: KaotoCatalogService;
@@ -65,7 +66,7 @@ suite('KaotoCatalogService Test Suite', () => {
 		Object.defineProperty(vscode.workspace, 'getConfiguration', {
 			value: () =>
 				({
-					get: (key: string) => (key === 'catalog.url' ? 'https://example.com/catalog/index.json' : undefined),
+					get: (key: string) => (key === KAOTO_CATALOG_URL_SETTING_ID ? 'https://example.com/catalog/index.json' : undefined),
 				}) as vscode.WorkspaceConfiguration,
 			configurable: true,
 		});
@@ -102,7 +103,7 @@ suite('KaotoCatalogService Test Suite', () => {
 		Object.defineProperty(vscode.workspace, 'getConfiguration', {
 			value: () =>
 				({
-					get: (key: string) => (key === 'catalog.url' ? 'https://example.com/catalog/index.json' : undefined),
+					get: (key: string) => (key === KAOTO_CATALOG_URL_SETTING_ID ? 'https://example.com/catalog/index.json' : undefined),
 				}) as vscode.WorkspaceConfiguration,
 			configurable: true,
 		});
@@ -119,7 +120,7 @@ suite('KaotoCatalogService Test Suite', () => {
 
 		expect(catalogService.getCatalogs().length).to.be.greaterThan(0);
 		expect(warningMessages).to.have.lengthOf(1);
-		expect(warningMessages[0]).to.include('kaoto.catalog.url');
+		expect(warningMessages[0]).to.include(KAOTO_CATALOG_URL_SETTING_ID);
 		expect(warningMessages[0]).to.include('Falling back to local node_modules catalog');
 	});
 
