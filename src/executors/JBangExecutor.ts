@@ -1,8 +1,8 @@
 import { execSync } from 'child_process';
-import { Uri } from 'vscode';
+import { ShellQuotedString, Uri } from 'vscode';
 import { CatalogLibraryEntry } from '@kaoto/camel-catalog/types';
 import { BaseExecutor } from './BaseExecutor';
-import { CommandBuilderConfig } from './builders/CamelCommandBuilder';
+import { CamelCommandBuilder, CommandBuilderConfig } from './builders/CamelCommandBuilder';
 import { JBangExecutorConfig } from './types/ExecutorConfig';
 import { CommandContext, RuntimeType } from './types/ExecutorTypes';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
@@ -29,11 +29,16 @@ export class JBangExecutor extends BaseExecutor {
 
 		return {
 			executable: JBangExecutor.JBANG_EXECUTABLE,
-			prefixArgs: [`'-Dcamel.jbang.version=${cliVersion}'`, ...runtimeSystemProps, 'camel@apache/camel'],
+			prefixArgs: [CamelCommandBuilder.strongQuote(`-Dcamel.jbang.version=${cliVersion}`), ...runtimeSystemProps, 'camel@apache/camel'],
 		};
 	}
 
-	private getRuntimeSystemProperties(catalogService: KaotoCatalogService, catalog: CatalogLibraryEntry | undefined): string[] {
+	/**
+	 * JBang -D system properties use ShellQuoting.Strong to prevent:
+	 * - PowerShell: interpreting dots as property access (e.g., -Dcamel.jbang → -Dcamel + .jbang)
+	 * - bash: potential issues with special chars in URLs (registry URIs)
+	 */
+	private getRuntimeSystemProperties(catalogService: KaotoCatalogService, catalog: CatalogLibraryEntry | undefined): ShellQuotedString[] {
 		if (!catalog) {
 			return [];
 		}
@@ -45,20 +50,21 @@ export class JBangExecutor extends BaseExecutor {
 			return [];
 		}
 
-		const properties: string[] = [];
+		const sq = CamelCommandBuilder.strongQuote;
+		const properties: ShellQuotedString[] = [];
 
 		if (runtime === RuntimeType.QUARKUS) {
-			properties.push(`'-Dcamel.jbang.quarkusVersion=${version}'`);
+			properties.push(sq(`-Dcamel.jbang.quarkusVersion=${version}`));
 
 			if (isRedHatBuild(version)) {
 				properties.push(
-					`'-Dcamel.jbang.quarkusGroupId=com.redhat.quarkus.platform'`,
-					`'-Dcamel.jbang.quarkus.platform.url=https://registry.quarkus.redhat.com/client/platforms'`,
-					`'-Dcamel.jbang.quarkusExtensionRegistryBaseUri=https://registry.quarkus.redhat.com/'`,
+					sq('-Dcamel.jbang.quarkusGroupId=com.redhat.quarkus.platform'),
+					sq('-Dcamel.jbang.quarkus.platform.url=https://registry.quarkus.redhat.com/client/platforms'),
+					sq('-Dcamel.jbang.quarkusExtensionRegistryBaseUri=https://registry.quarkus.redhat.com/'),
 				);
 			}
 		} else if (runtime === RuntimeType.SPRING_BOOT) {
-			properties.push(`'-Dcamel.jbang.camelSpringBootVersion=${version}'`, `'-Dcamel.jbang.springBootVersion=${catalog.frameworkVersion}'`);
+			properties.push(sq(`-Dcamel.jbang.camelSpringBootVersion=${version}`), sq(`-Dcamel.jbang.springBootVersion=${catalog.frameworkVersion}`));
 		}
 
 		return properties;
