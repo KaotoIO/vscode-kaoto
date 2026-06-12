@@ -1,6 +1,7 @@
 import { execSync } from 'child_process';
 import { existsSync } from 'fs';
 import { BaseExecutor } from './BaseExecutor';
+import { CamelCommandBuilder } from './builders/CamelCommandBuilder';
 import { CamelLauncherExecutorConfig } from './types/ExecutorConfig';
 
 /**
@@ -13,7 +14,7 @@ export class CamelLauncherExecutor extends BaseExecutor {
 	constructor(config: CamelLauncherExecutorConfig, jarPath: string) {
 		super(config, {
 			executable: 'java',
-			prefixArgs: ['-jar', jarPath],
+			prefixArgs: ['-jar', CamelCommandBuilder.strongQuote(jarPath)],
 		});
 		this.jarPath = jarPath;
 	}
