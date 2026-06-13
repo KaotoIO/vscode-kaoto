@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@kaoto/camel-catalog": "^0.5.5",
-    "@kaoto/kaoto": "2.11.0-RC4",
+    "@kaoto/kaoto": "2.11.0-RC5",
     "@kie-tools-core/backend": "10.0.0",
     "@kie-tools-core/editor": "10.0.0",
     "@kie-tools-core/i18n": "10.0.0",
@@ -51,6 +51,7 @@
     "@redhat-developer/vscode-extension-proposals": "^0.0.23",
     "@redhat-developer/vscode-redhat-telemetry": "^0.10.2",
     "compare-versions": "^6.1.1",
+    "dompurify": "3.4.10",
     "get-port-please": "^3.2.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
@@ -1422,6 +1423,7 @@
     "webpack-permissions-plugin": "^1.0.10"
   },
   "resolutions": {
+    "dompurify": "3.4.10",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "semver": "7.5.2",
