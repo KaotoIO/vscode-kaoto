@@ -89,7 +89,6 @@ export class WhatsNewPanel {
 			'</style>',
 			'</head>',
 			'<body>',
-			`<img class="logo" src="https://raw.githubusercontent.com/KaotoIO/vscode-kaoto/57103641d7c3f2d7ac6be9433d1d360d9732a926/images/logo-kaoto.png" alt="Kaoto">`,
 			htmlBody,
 			`<div class="blog-note">Read the full blog post on our official site - <a href="${blogUrl}" target="_blank" rel="noreferrer noopener">${blogUrl}</a></div>`,
 			'</body>',
