@@ -898,35 +898,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/forms@npm:^1.7.1":
-  version: 1.7.1
-  resolution: "@kaoto/forms@npm:1.7.1"
+"@kaoto/forms@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "@kaoto/forms@npm:1.8.0"
   dependencies:
     ajv: "npm:^8.12.0"
     clsx: "npm:^2.1.0"
     lodash.clonedeep: "npm:^4.5.0"
     usehooks-ts: "npm:^3.0.0"
   peerDependencies:
-    "@patternfly/patternfly": 6.4.0
-    "@patternfly/react-core": 6.4.0
-    "@patternfly/react-icons": 6.4.0
-    react: ^18.3.1
-    react-dom: ^18.3.1
-  checksum: 10/6a87f3cfd996600a0bec4c03eeda3d0078eee12e034fc09166c3800797a81b6a0c1e3aa2c0181318d5f3807427cb41ec4e291ab008eb13b63261d4d2ae9ecaec
+    "@patternfly/patternfly": ^6.5.2
+    "@patternfly/react-core": ^6.5.1
+    "@patternfly/react-icons": ^6.5.1
+    react: ^19.2.0
+    react-dom: ^19.2.0
+  checksum: 10/172acd672019c65fcdf9297345cfcf5b9216127d275ec13f9011e5bd4a8f3fd1154a3bd235e41cdb1d1b1c63f5061d7ab864b54aa23c3a36b764a80dd70cd7e5
   languageName: node
   linkType: hard
 
-"@kaoto/kaoto@npm:2.11.0-RC4":
-  version: 2.11.0-RC4
-  resolution: "@kaoto/kaoto@npm:2.11.0-RC4"
+"@kaoto/kaoto@npm:2.11.0-RC5":
+  version: 2.11.0-RC5
+  resolution: "@kaoto/kaoto@npm:2.11.0-RC5"
   dependencies:
     "@carbon/icons-react": "npm:^11.67.0"
     "@carbon/react": "npm:^1.102.0"
     "@dnd-kit/core": "npm:^6.1.0"
     "@dnd-kit/modifiers": "npm:^9.0.0"
-    "@kaoto/forms": "npm:^1.7.1"
+    "@kaoto/forms": "npm:^1.8.0"
     "@kie-tools-core/editor": "npm:^10.0.0"
     "@kie-tools-core/notifications": "npm:^10.0.0"
+    "@monaco-editor/react": "npm:^4.7.0"
     "@visx/shape": "npm:^3.12.0"
     chevrotain: "npm:10.5.0"
     clsx: "npm:^2.1.0"
@@ -935,7 +936,7 @@ __metadata:
     jszip: "npm:^3.10.1"
     lodash: "npm:^4.17.21"
     mobx: "npm:^6.9.0"
-    monaco-editor: "npm:^0.50.0"
+    monaco-editor: "npm:^0.55.1"
     react-markdown: "npm:^10.0.0"
     react-router-dom: "npm:^7.6.4"
     react-virtuoso: "npm:^4.18.1"
@@ -951,19 +952,19 @@ __metadata:
     zundo: "npm:^2.3.0"
     zustand: "npm:^5.0.11"
   peerDependencies:
-    "@kaoto/camel-catalog": ^0.5.2
-    "@patternfly/patternfly": ^6.4.0
-    "@patternfly/react-code-editor": ^6.4.0
-    "@patternfly/react-core": ^6.4.0
-    "@patternfly/react-drag-drop": ^6.4.3
-    "@patternfly/react-icons": ^6.4.0
-    "@patternfly/react-table": ^6.4.0
-    "@patternfly/react-topology": ^6.4.0
-    monaco-yaml: ^5.1.1
+    "@kaoto/camel-catalog": ^0.5.5
+    "@patternfly/patternfly": ^6.5.2
+    "@patternfly/react-code-editor": ^6.5.1
+    "@patternfly/react-core": ^6.5.1
+    "@patternfly/react-drag-drop": ^6.5.1
+    "@patternfly/react-icons": ^6.5.1
+    "@patternfly/react-table": ^6.5.1
+    "@patternfly/react-topology": ^6.5.0
+    monaco-editor: ^0.55.1
+    monaco-yaml: ^5.5.1
     react: ^19.2.4
     react-dom: ^19.2.4
-    react-monaco-editor: ^0.56.0
-  checksum: 10/9b7f471c9d00c73f24f16f48b74630866a89b9a2376cd8ec2df47befc8d0e42789f59fd848d0a694d7c2c4f631e1e497cdee701172d0aca0fb87b89b471ea724
+  checksum: 10/2432f0fe591ccb2baa355c32b836d81b277b8eca4a8083f15d5e119de10fbdf984093b57adb0296eb9b0c3be0fd8954d7c7218c6714b7130897b7498458c086d
   languageName: node
   linkType: hard
 
@@ -2566,6 +2567,13 @@ __metadata:
     "@types/node": "npm:*"
     "@types/ws": "npm:*"
   checksum: 10/87bfc4948739ab2b69d6c133dfbe7cbd3134191e5c618c571b6976bf4f3cb74ec5b493a17f53c6a80acff5f6aafb22c5e5b6a12dcf7b42486a0831316207bf85
+  languageName: node
+  linkType: hard
+
+"@types/trusted-types@npm:^2.0.7":
+  version: 2.0.7
+  resolution: "@types/trusted-types@npm:2.0.7"
+  checksum: 10/8e4202766a65877efcf5d5a41b7dd458480b36195e580a3b1085ad21e948bc417d55d6f8af1fd2a7ad008015d4117d5fdfe432731157da3c68678487174e4ba3
   languageName: node
   linkType: hard
 
@@ -5493,6 +5501,18 @@ __metadata:
   dependencies:
     domelementtype: "npm:^2.3.0"
   checksum: 10/809b805a50a9c6884a29f38aec0a4e1b4537f40e1c861950ed47d10b049febe6b79ab72adaeeebb3cc8fc1cd33f34e97048a72a9265103426d93efafa78d3e96
+  languageName: node
+  linkType: hard
+
+"dompurify@npm:3.4.10":
+  version: 3.4.10
+  resolution: "dompurify@npm:3.4.10"
+  dependencies:
+    "@types/trusted-types": "npm:^2.0.7"
+  dependenciesMeta:
+    "@types/trusted-types":
+      optional: true
+  checksum: 10/e051c70e7a0729d8cc04d40d7863dc8977495140857e81dc668fb548b7a43c7f80cfc973e3c9c0a6cd18b8eaa94ea7de9603daa02d38c8b15a9b32cc25a6f440
   languageName: node
   linkType: hard
 
@@ -8889,6 +8909,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"marked@npm:14.0.0":
+  version: 14.0.0
+  resolution: "marked@npm:14.0.0"
+  bin:
+    marked: bin/marked.js
+  checksum: 10/5f69e58e177bde75fb6145127c939c096d05494c5dff92d73af8a550097d6631c82e919f8a375e3743379a2623418151086b925a902a2be123590b887716f2bb
+  languageName: node
+  linkType: hard
+
 "math-intrinsics@npm:^1.1.0":
   version: 1.1.0
   resolution: "math-intrinsics@npm:1.1.0"
@@ -9899,10 +9928,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-editor@npm:^0.50.0":
-  version: 0.50.0
-  resolution: "monaco-editor@npm:0.50.0"
-  checksum: 10/594f2a3812147c1ef41c4dba444c649c32af95c3eb09529049bb7a2cb38e1747facbae0a459a07140e77cf9d73df41f034399804f9123f9cfff45394321a3983
+"monaco-editor@npm:^0.55.1":
+  version: 0.55.1
+  resolution: "monaco-editor@npm:0.55.1"
+  dependencies:
+    dompurify: "npm:3.2.7"
+    marked: "npm:14.0.0"
+  checksum: 10/73836b612a923342001b8cbb459aad0de486c94672fb7cf9d28bdafed9f3b7523d5aba510d9f8e7d24476a5aacf0d3a5c0cdc520ed4764f6f89f8cf5ba8d9329
   languageName: node
   linkType: hard
 
@@ -13606,7 +13638,7 @@ __metadata:
   resolution: "vscode-kaoto@workspace:."
   dependencies:
     "@kaoto/camel-catalog": "npm:^0.5.5"
-    "@kaoto/kaoto": "npm:2.11.0-RC4"
+    "@kaoto/kaoto": "npm:2.11.0-RC5"
     "@kie-tools-core/backend": "npm:10.0.0"
     "@kie-tools-core/editor": "npm:10.0.0"
     "@kie-tools-core/i18n": "npm:10.0.0"
@@ -13643,6 +13675,7 @@ __metadata:
     constants-browserify: "npm:^1.0.0"
     copy-webpack-plugin: "npm:^14.0.0"
     css-loader: "npm:6.8.1"
+    dompurify: "npm:3.4.10"
     eslint: "npm:^10.5.0"
     eslint-config-prettier: "npm:^10.1.8"
     eslint-define-config: "npm:^2.1.0"
