@@ -1103,7 +1103,7 @@
               "(experimental) Use Camel Launcher to execute Camel commands"
             ],
             "markdownDescription": "Select the executor type for running Camel integrations.\n\n**JBang**: Traditional approach using JBang CLI (requires JBang installation).\n\n**Camel Launcher**: (experimental) New approach using standalone Camel Launcher (no JBang required, automatically downloaded).",
-            "default": "jbang",
+            "default": "camel-launcher",
             "order": 1
           },
           "kaoto.executor.runArguments": {

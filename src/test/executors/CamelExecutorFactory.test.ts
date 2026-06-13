@@ -37,12 +37,12 @@ suite('CamelExecutorFactory Tests', () => {
 		assert.instanceOf(executor, CamelLauncherExecutor);
 	});
 
-	test('Should use jbang as default when no type specified', async () => {
+	test('Should use camel-launcher as default when no type specified', async () => {
 		await vscode.workspace.getConfiguration().update('kaoto.executor.type', undefined, vscode.ConfigurationTarget.Global);
 
 		const executor = await CamelExecutorFactory.createExecutor();
 
-		assert.instanceOf(executor, JBangExecutor);
+		assert.instanceOf(executor, CamelLauncherExecutor);
 	});
 
 	test('Should check if executor is available', async () => {
