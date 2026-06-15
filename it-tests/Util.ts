@@ -164,6 +164,7 @@ export async function checkEmptyCanvasLoaded(driver: WebDriver, timeout: number 
 
 export async function checkTopologyLoaded(driver: WebDriver, timeout: number = 10_000) {
 	await driver.wait(until.elementLocated(By.xpath("//div[@data-test-id='topology']")), timeout, 'Kaoto topology was not loaded properly');
+	await driver.sleep(1_000); // stabilize tests which are sometimes failing on macOS CI
 }
 
 // Enforce same default storage setup as ExTester - see https://github.com/redhat-developer/vscode-extension-tester/wiki/Test-Setup#useful-env-variables
@@ -219,11 +220,11 @@ export async function openResourcesAndWaitForActivation(
 /**
  * Waits for the extension to be fully activated.
  *
- * The activation check follows this flow:
- * 1. Check if extension activation time is visible (indicates fully activated)
- * 2. If not activated, check status bar for "Kaoto:" messages (indicates activation in progress)
- * 3. If no status bar messages, re-check activation time (handles gap between status messages)
- * 4. Repeat until extension is fully activated or timeout is reached
+ * Uses status bar messages as the primary detection mechanism:
+ * 1. "Kaoto: ..." in-progress messages indicate activation is ongoing
+ * 2. "Kaoto: ... ready" or "not found" indicate activation finished
+ * 3. Messages disappeared after being seen means "ready" was shown between polls
+ * 4. No messages ever seen falls back to Extensions view activation time check
  *
  * @param extensionName Display name of the extension to check
  * @param timeout Maximum time to wait for activation in milliseconds
@@ -231,32 +232,30 @@ export async function openResourcesAndWaitForActivation(
  */
 export async function waitForExtensionActivation(extensionName: string, timeout: number, interval: number): Promise<void> {
 	const driver = VSBrowser.instance.driver;
+	let sawKaotoMessage = false;
 
 	await driver.wait(
 		async function () {
-			// Step 1: Check if extension is already activated (activation time visible)
-			const activated = await extensionIsActivated(extensionName);
-			if (activated) {
+			const statusResult = await getKaotoStatusBarState();
+
+			if (statusResult === 'ready') {
 				return true;
 			}
 
-			// Step 2: Extension not activated yet, check status bar for activation messages
-			// During activation, Kaoto shows progress messages like "Kaoto: Checking requirements..."
-			const hasKaotoStatusMessage = await checkStatusBarForKaotoMessages();
-			if (hasKaotoStatusMessage) {
-				// Still showing activation messages, extension is activating - continue waiting
+			if (statusResult === 'in-progress') {
+				sawKaotoMessage = true;
 				return false;
 			}
 
-			// Step 3: No status bar messages found, check activation time one more time
-			// This handles the brief gap between status messages during activation
-			const activatedFinal = await extensionIsActivated(extensionName);
-			if (activatedFinal) {
+			// No Kaoto status bar messages found
+			if (sawKaotoMessage) {
+				// Previously saw activation messages but now they're gone --
+				// the transient "ready" message appeared and disappeared between polls
 				return true;
 			}
 
-			// Not activated yet and no status messages - continue polling
-			return false;
+			// Never saw any Kaoto messages -- fall back to Extensions view check
+			return await extensionIsActivated(extensionName);
 		},
 		timeout,
 		`Extension '${extensionName}' was not activated within ${timeout}ms. ` +
@@ -265,27 +264,32 @@ export async function waitForExtensionActivation(extensionName: string, timeout:
 	);
 }
 
+type KaotoStatusBarState = 'ready' | 'in-progress' | 'none';
+
 /**
- * Checks if any status bar item contains a message starting with "Kaoto:".
- * These messages indicate the extension is in the process of activating
- * (e.g., "Kaoto: Checking requirements...", "Kaoto: Loading catalogs...").
+ * Checks status bar items for Kaoto activation messages.
  *
- * @returns true if a Kaoto status message is found, false otherwise
+ * @returns 'in-progress' if an activation message is found (e.g. "Kaoto: Checking JBang...")
+ * @returns 'ready' if a completion message is found (e.g. "Kaoto: JBang ready", "Kaoto: JBang not found")
+ * @returns 'none' if no Kaoto messages are present in the status bar
  */
-async function checkStatusBarForKaotoMessages(): Promise<boolean> {
+async function getKaotoStatusBarState(): Promise<KaotoStatusBarState> {
 	try {
 		const statusBar = new StatusBar();
 		const statusBarItems = await statusBar.getItems();
 
-		const kaotoStatusBarMsg = await statusBarItems[2].getText();
-		if (kaotoStatusBarMsg.startsWith('Kaoto:')) {
-			return false;
-		} else {
-			return true;
+		for (const item of statusBarItems) {
+			const text = await item.getText();
+			if (text.includes('Kaoto:')) {
+				if (text.includes('ready') || text.includes('not found')) {
+					return 'ready';
+				}
+				return 'in-progress';
+			}
 		}
+		return 'none';
 	} catch (error) {
-		// Status bar might not be accessible, treat as no messages
-		return false;
+		return 'none';
 	}
 }
 

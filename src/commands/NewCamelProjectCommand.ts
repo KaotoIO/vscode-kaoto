@@ -15,11 +15,17 @@
  */
 import { commands, QuickPickItem, Uri, window, workspace } from 'vscode';
 import { arePathsEqual } from '../helpers/helpers';
-import { CamelExportJBangTask } from '../tasks/CamelExportJBangTask';
+import { CamelTaskFactory } from '../tasks/CamelTaskFactory';
+import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 import { confirmDestructiveActionInSelectedFolder } from '../helpers/modals';
 import path from 'path';
+import { RuntimeType } from '../executors/types/ExecutorTypes';
 
 export class NewCamelProjectCommand {
+	public static readonly ID_COMMAND_CAMEL_NEW_PROJECT = 'kaoto.camel.jbang.export';
+	public static readonly ID_COMMAND_CAMEL_NEW_PROJECT_FOLDER = 'kaoto.camel.jbang.export.folder';
+	public static readonly ID_COMMAND_CAMEL_NEW_PROJECT_WORKSPACE = 'kaoto.camel.jbang.export.workspace';
+
 	public async create(uri: Uri, cwd: string) {
 		const runtime = await this.askForRuntime();
 		if (!runtime) {
@@ -43,8 +49,9 @@ export class NewCamelProjectCommand {
 						return;
 					}
 				}
-				const camelExportJBangTask = await CamelExportJBangTask.create(currentWorkspace, uri, input, runtime, outputFolder.fsPath, cwd);
-				await camelExportJBangTask.executeAndWaitWithProgress('Creating a new Camel project...');
+				const result = await CamelCommandAPI.export(uri.fsPath, input, runtime, outputFolder.fsPath, cwd, true);
+				const camelExportTask = CamelTaskFactory.createSilent('Create a Camel project', result, currentWorkspace);
+				await camelExportTask.executeAndWaitWithProgress('Creating a new Camel project...');
 
 				// if not exist, init .vscode with tasks.json and launch.json config files
 				await workspace.fs.createDirectory(Uri.file(path.join(outputFolder.fsPath, '.vscode')));
@@ -58,9 +65,9 @@ export class NewCamelProjectCommand {
 		}
 	}
 
-	private async askForRuntime(): Promise<string | undefined> {
+	private async askForRuntime(): Promise<RuntimeType | undefined> {
 		const selection = await this.showQuickPickForCamelRuntime();
-		return selection?.label;
+		return selection?.label as RuntimeType | undefined;
 	}
 
 	private async askForGAV() {
@@ -77,7 +84,7 @@ export class NewCamelProjectCommand {
 	/**
 	 * Maven GAV validation
 	 * 	- no empty name
-	 *  - Have 2 double-dots (similar check than Camel JBang)
+	 *  - Have 2 double-dots (similar check than Camel)
 	 *  - following mostly recommendations from Maven Central for name rules
 	 *
 	 * @param name
@@ -146,8 +153,8 @@ export class NewCamelProjectCommand {
 	 */
 	private async showQuickPickForCamelRuntime(): Promise<QuickPickItem | undefined> {
 		const items: QuickPickItem[] = [
-			{ label: 'quarkus', description: 'Camel Quarkus' },
-			{ label: 'spring-boot', description: 'Camel on Spring Boot' },
+			{ label: RuntimeType.QUARKUS, description: 'Camel Quarkus' },
+			{ label: RuntimeType.SPRING_BOOT, description: 'Camel on Spring Boot' },
 		];
 		return await window.showQuickPick(items, {
 			placeHolder: 'Please select a Camel Runtime.',

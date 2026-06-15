@@ -36,13 +36,13 @@ export class MavenRuntimeDetector {
 			const camelVersionToUse = satisfies(normalizeVersionForSemver(camelVersion), '>=4.13') ? camelVersion : '4.13.0';
 
 			// Build command string based on executor type
+			// Use double quotes for -D and paths: single quotes are literal in cmd.exe on Windows
 			let fullCommand: string;
 			if (config.type === 'jbang') {
-				fullCommand = `jbang -Dcamel.jbang.version=${camelVersionToUse} camel@apache/camel dependency runtime --json pom.xml`;
+				fullCommand = `jbang "-Dcamel.jbang.version=${camelVersionToUse}" camel@apache/camel dependency runtime --json pom.xml`;
 			} else {
-				// For camel-launcher, use java -jar <jarPath>
 				const jarPath = (executor as CamelLauncherExecutor).getJarPath();
-				fullCommand = `java -jar ${jarPath} dependency runtime --json pom.xml`;
+				fullCommand = `java -jar "${jarPath}" dependency runtime --json pom.xml`;
 			}
 
 			const response: string = execSync(fullCommand, {

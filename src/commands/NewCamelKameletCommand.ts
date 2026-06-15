@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { QuickPickItem, Uri, commands, window } from 'vscode';
-import { COMMAND_OPEN_WITH_KAOTO } from '../constants';
+import { QuickPickItem, window } from 'vscode';
 import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
-import { CamelInitJBangTask } from '../tasks/CamelInitJBangTask';
+import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 import { CamelRouteDSL } from './AbstractCamelCommand';
 import path from 'path';
 
 export class NewCamelKameletCommand extends AbstractNewCamelRouteCommand {
+	public static readonly ID_COMMAND_CAMEL_KAMELET_YAML = 'kaoto.camel.jbang.init.kamelet.yaml';
 	protected static readonly PROGRESS_NOTIFICATION_MESSAGE = 'Creating a new Kamelet file...';
 
 	private kameletType: string = '';
@@ -33,18 +33,13 @@ export class NewCamelKameletCommand extends AbstractNewCamelRouteCommand {
 				const type = await this.showQuickPickForKameletType();
 				if (type) {
 					this.kameletType = type.label;
-					const name = await this.showInputBoxForFileName(targetFolder ? targetFolder.fsPath : undefined);
+					const name = await this.showInputBoxForFileName(targetFolder.fsPath);
 					if (name && this.camelDSL && this.singleWorkspaceFolder) {
 						const fileName = this.getKameletFullName(name, this.kameletType, this.camelDSL.extension);
 						const filePath = this.computeFullPath(targetFolder.fsPath, fileName);
-
 						const wsFolderTarget = wsFolder || this.singleWorkspaceFolder;
-						await new CamelInitJBangTask(path.relative(wsFolderTarget.uri.fsPath, filePath), wsFolderTarget).executeAndWaitWithProgress(
-							NewCamelKameletCommand.PROGRESS_NOTIFICATION_MESSAGE,
-						);
-						const targetFileURI = Uri.file(filePath);
-						await this.waitForFileExists(targetFileURI);
-						await commands.executeCommand(COMMAND_OPEN_WITH_KAOTO, targetFileURI);
+						const result = await CamelCommandAPI.init(path.relative(wsFolderTarget.uri.fsPath, filePath));
+						await this.executeInitAndOpen(result, fileName, filePath, wsFolderTarget, NewCamelKameletCommand.PROGRESS_NOTIFICATION_MESSAGE);
 					}
 				}
 			}

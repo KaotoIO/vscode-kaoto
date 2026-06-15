@@ -6,6 +6,13 @@ import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { RedHatMavenNotificationService } from './RedHatMavenNotificationService';
 import { RuntimeType, ExecutorType } from '../executors/types/ExecutorTypes';
 import { isRedHatBuild } from '../helpers/helpers';
+import {
+	COMMAND_SELECT_CAMEL_CATALOG,
+	KAOTO_CATALOG_URL_SETTING_ID,
+	KAOTO_EXECUTOR_TYPE_SETTING_ID,
+	KAOTO_RUNTIME_CATALOG_NAME_SETTING_ID,
+	KAOTO_TESTING_CATALOG_NAME_SETTING_ID,
+} from '../constants';
 
 /**
  * Grouped catalogs by runtime type
@@ -31,6 +38,7 @@ export class KaotoCatalogService {
 	private readonly catalogBasePath: string;
 	private readonly catalogIndexPath: string;
 	private readonly redHatNotificationService: RedHatMavenNotificationService;
+	private lastNotifiedRedHatVersion: string | undefined;
 
 	constructor(private readonly context: vscode.ExtensionContext) {
 		// Path to the catalog directory copied by webpack during build
@@ -58,7 +66,6 @@ export class KaotoCatalogService {
 			await this.loadCatalogs();
 			KaotoOutputChannel.logInfo(`Loaded ${this.catalogs.length} Camel catalog definitions`);
 
-			// Log default catalog
 			const defaultCatalog = this.getDefaultCatalog();
 			if (defaultCatalog) {
 				KaotoOutputChannel.logInfo(`Default catalog: ${defaultCatalog.name}`);
@@ -75,7 +82,7 @@ export class KaotoCatalogService {
 	 * Load catalogs from custom URL when configured, otherwise from local index.json
 	 */
 	private getCustomCatalogUrl(): string | undefined {
-		return vscode.workspace.getConfiguration('kaoto').get<string | null>('catalog.url')?.trim() || undefined;
+		return vscode.workspace.getConfiguration().get<string | null>(KAOTO_CATALOG_URL_SETTING_ID)?.trim() || undefined;
 	}
 
 	private async loadCatalogs(): Promise<void> {
@@ -201,7 +208,7 @@ export class KaotoCatalogService {
 				.showWarningMessage(`Kaoto: Invalid ${catalogTypeLabel} catalog name "${catalogName}". Using default instead.`, 'Select Valid Catalog')
 				.then((choice) => {
 					if (choice === 'Select Valid Catalog') {
-						vscode.commands.executeCommand('kaoto.selectCamelCatalog');
+						vscode.commands.executeCommand(COMMAND_SELECT_CAMEL_CATALOG);
 					}
 				});
 		}
@@ -242,7 +249,7 @@ export class KaotoCatalogService {
 		if (this.statusBarItem) {
 			this.statusBarItem.text = `$(package) ${displayLabel}`;
 			this.statusBarItem.tooltip = 'Select Camel Catalog Version';
-			this.statusBarItem.command = 'kaoto.selectCamelCatalog';
+			this.statusBarItem.command = COMMAND_SELECT_CAMEL_CATALOG;
 			this.statusBarItem.show();
 		}
 	}
@@ -455,7 +462,7 @@ export class KaotoCatalogService {
 	public createStatusBarItem(): vscode.StatusBarItem {
 		this.statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
-		this.statusBarItem.command = 'kaoto.selectCamelCatalog';
+		this.statusBarItem.command = COMMAND_SELECT_CAMEL_CATALOG;
 		this.statusBarItem.tooltip = 'Select Camel Catalog Version';
 
 		// Don't show status bar initially - wait for Kaoto editor to be active
@@ -470,13 +477,13 @@ export class KaotoCatalogService {
 				void this.updateStatusBar();
 			}),
 			vscode.workspace.onDidChangeConfiguration((e) => {
-				if (
-					e.affectsConfiguration('kaoto.runtimeCatalogName') ||
-					e.affectsConfiguration('kaoto.testingCatalogName') ||
-					e.affectsConfiguration('kaoto.catalog.url')
-				) {
-					void this.loadCatalogs();
+				if (e.affectsConfiguration(KAOTO_CATALOG_URL_SETTING_ID)) {
+					void this.loadCatalogs().then(() => this.updateStatusBar());
+				} else if (e.affectsConfiguration(KAOTO_RUNTIME_CATALOG_NAME_SETTING_ID) || e.affectsConfiguration(KAOTO_TESTING_CATALOG_NAME_SETTING_ID)) {
 					void this.updateStatusBar();
+				}
+				if (e.affectsConfiguration(KAOTO_RUNTIME_CATALOG_NAME_SETTING_ID)) {
+					void this.checkAndShowRedHatNotification();
 				}
 			}),
 			vscode.window.onDidChangeActiveTextEditor(() => {
@@ -517,14 +524,15 @@ export class KaotoCatalogService {
 			return;
 		}
 
-		const catalog = (await this.getSelectedCatalog(documentUri)) ?? this.getDefaultCatalog(documentUri);
+		const selected = await this.getSelectedCatalog(documentUri);
+		const catalog = selected ?? this.getDefaultCatalog(documentUri);
 		if (!catalog) {
 			KaotoOutputChannel.logWarning('Status bar: No catalog available, hiding');
 			this.statusBarItem.hide();
 			return;
 		}
 
-		if (!(await this.getSelectedCatalog(documentUri))) {
+		if (!selected) {
 			KaotoOutputChannel.logWarning('No catalog found for Kaoto file, using default');
 		}
 
@@ -682,20 +690,25 @@ export class KaotoCatalogService {
 	}
 
 	/**
-	 * Check if the current catalog is Red Hat and show notification if needed
-	 * Called during initialization and when opening editors
+	 * Show Red Hat Maven notification once per catalog version change.
+	 * Triggered on initialization and catalog selection change -- not on editor focus.
 	 */
 	private async checkAndShowRedHatNotification(): Promise<void> {
 		try {
-			// Get the currently selected integration catalog
 			const catalog = await this.getSelectedIntegrationCatalog();
 
-			if (catalog && this.redHatNotificationService.isRedHatCatalog(catalog.version)) {
-				const executorType = vscode.workspace.getConfiguration('kaoto').get<string>('executor.type') || 'jbang';
-				await this.redHatNotificationService.showRedHatMavenNotification(catalog.version, executorType);
+			if (!catalog || !this.redHatNotificationService.isRedHatCatalog(catalog.version)) {
+				return;
 			}
+
+			if (this.lastNotifiedRedHatVersion === catalog.version) {
+				return;
+			}
+
+			this.lastNotifiedRedHatVersion = catalog.version;
+			const executorType = vscode.workspace.getConfiguration().get<ExecutorType>(KAOTO_EXECUTOR_TYPE_SETTING_ID) || 'jbang';
+			await this.redHatNotificationService.showRedHatMavenNotification(catalog.version, executorType);
 		} catch (error) {
-			// Don't fail initialization if notification check fails
 			const errorMsg = error instanceof Error ? error.message : String(error);
 			KaotoOutputChannel.logWarning(`Failed to check Red Hat catalog notification: ${errorMsg}`);
 		}

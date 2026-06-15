@@ -1,6 +1,6 @@
 {
   "workbench.editor.useModal": "off",
-  "kaoto.camelJbang.kubernetesRunArguments": [
+  "kaoto.executor.kubernetesRunArguments": [
     "--cluster-type=minikube",
     "--dev",
     "--verbose",
@@ -11,6 +11,7 @@
     "--trait",
     "container.image-push=true",
     "--trait",
-    "container.image-pull-policy=IfNotPresent"
+    "container.image-pull-policy=IfNotPresent",
+    "--camel-version=4.20.0"
   ]
 }

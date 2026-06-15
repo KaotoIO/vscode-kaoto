@@ -2,7 +2,7 @@
  * Core types for the Camel executor system
  */
 
-import { ShellExecution } from 'vscode';
+import { ShellExecution, ShellQuotedString } from 'vscode';
 
 /**
  * Supported executor types
@@ -29,7 +29,6 @@ export type CamelCommand = 'run' | 'export' | 'init' | 'bind' | 'stop' | 'depend
  */
 export interface CommandContext {
 	readonly cwd?: string;
-	readonly env?: Record<string, string>;
 }
 
 /**
@@ -41,6 +40,12 @@ export interface CommandResult {
 }
 
 /**
- * Generic command arguments
+ * A single command argument: either a plain string (passed to ShellExecution
+ * with default quoting) or a ShellQuotedString (with explicit quoting control).
  */
-export type CommandArguments = string[];
+export type CommandArg = string | ShellQuotedString;
+
+/**
+ * Generic command arguments -- supports mixed plain strings and explicitly-quoted args.
+ */
+export type CommandArguments = CommandArg[];

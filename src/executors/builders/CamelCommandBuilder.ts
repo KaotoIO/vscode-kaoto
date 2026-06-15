@@ -2,8 +2,8 @@
  * Unified command builder for all Camel executors
  */
 
-import { ShellExecution, ShellExecutionOptions } from 'vscode';
-import { CamelCommand, CommandArguments, CommandContext, CommandResult } from '../types/ExecutorTypes';
+import { ShellExecution, ShellQuotedString, ShellQuoting } from 'vscode';
+import { CamelCommand, CommandArg, CommandArguments, CommandContext, CommandResult } from '../types/ExecutorTypes';
 
 /**
  * Configuration for command builder
@@ -12,23 +12,37 @@ export interface CommandBuilderConfig {
 	/** Executable path (e.g., 'jbang' or '/path/to/camel-launcher/bin/camel') */
 	executable: string;
 
-	/** Prefix arguments to add before the Camel command (e.g., JBang needs ['-Dcamel.jbang.version=X', 'camel@apache/camel']) */
-	prefixArgs?: string[];
+	/** Prefix arguments to add before the Camel command (e.g., JBang needs [strongQuote('-Dcamel.jbang.version=X'), 'camel@apache/camel']) */
+	prefixArgs?: CommandArg[];
 }
 
 /**
  * Unified command builder for all Camel executors
  * Handles both JBang and Camel Launcher with configuration
+ *
+ * Args can be plain strings (VS Code applies default heuristic quoting) or
+ * ShellQuotedString objects (explicit quoting control). Use strongQuote()
+ * for args that contain shell-sensitive characters (dots in -D properties,
+ * file paths with spaces, URLs, etc.).
  */
 export class CamelCommandBuilder {
 	constructor(private readonly config: CommandBuilderConfig) {}
+
+	/**
+	 * Wrap a value in ShellQuoting.Strong for cross-platform safety.
+	 * - bash: single quotes (prevents glob, word splitting, special char interpretation)
+	 * - PowerShell: single quotes (prevents property access on dots, variable expansion)
+	 * - cmd.exe: double quotes (proper path and special char handling)
+	 */
+	static strongQuote(value: string): ShellQuotedString {
+		return { value, quoting: ShellQuoting.Strong };
+	}
 
 	/**
 	 * Build command for execution
 	 * Structure: <executable> [...prefixArgs] <command> <args>
 	 */
 	buildCommand(command: CamelCommand, args: CommandArguments, context?: CommandContext): CommandResult {
-		// Build command parts: [prefixArgs, command, args]
 		const commandParts = CamelCommandBuilder.filterEmptyArgs([...(this.config.prefixArgs || []), command, ...args]);
 
 		const execution = this.buildExecution(this.config.executable, commandParts, context);
@@ -38,22 +52,27 @@ export class CamelCommandBuilder {
 	}
 
 	/**
-	 * Build shell execution from command components
+	 * Build shell execution from command components.
+	 * ShellExecution accepts mixed (string | ShellQuotedString)[] natively.
 	 */
-	private buildExecution(executable: string, commandParts: string[], context?: CommandContext): ShellExecution {
-		const options: ShellExecutionOptions = {
-			cwd: context?.cwd,
-			env: context?.env,
-		};
-
-		return new ShellExecution(executable, commandParts, options);
+	private buildExecution(executable: string, commandParts: CommandArg[], context?: CommandContext): ShellExecution {
+		return new ShellExecution(executable, commandParts, { cwd: context?.cwd });
 	}
 
 	/**
-	 * Filter empty/null/undefined arguments from a command args array
+	 * Filter empty/null/undefined arguments from a command args array.
+	 * Handles both plain strings and ShellQuotedString objects.
 	 */
-	static filterEmptyArgs(args: (string | undefined | null)[]): string[] {
-		return args.filter((arg) => arg !== undefined && arg !== null && arg !== '') as string[];
+	static filterEmptyArgs(args: (CommandArg | undefined | null)[]): CommandArg[] {
+		return args.filter((arg): arg is CommandArg => {
+			if (arg === undefined || arg === null) {
+				return false;
+			}
+			if (typeof arg === 'string') {
+				return arg !== '';
+			}
+			return arg.value !== '';
+		});
 	}
 
 	/**
@@ -67,12 +86,16 @@ export class CamelCommandBuilder {
 	}
 
 	/**
-	 * Extract port from arguments
+	 * Extract port from arguments (handles both string and ShellQuotedString)
 	 */
 	private extractPort(args: CommandArguments): number | undefined {
-		const portArg = args.find((arg) => arg.startsWith('--port=') || arg.startsWith('--management-port='));
+		const portArg = args.find((arg) => {
+			const value = typeof arg === 'string' ? arg : arg.value;
+			return value.startsWith('--port=') || value.startsWith('--management-port=');
+		});
 		if (portArg) {
-			const match = portArg.match(/=(-?\d+)/);
+			const value = typeof portArg === 'string' ? portArg : portArg.value;
+			const match = value.match(/=(-?\d+)/);
 			return match ? parseInt(match[1], 10) : undefined;
 		}
 		return undefined;

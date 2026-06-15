@@ -19,7 +19,11 @@ import {
 	before,
 	By,
 	EditorView,
+	InputBox,
 	Key,
+	ModalDialog,
+	NotificationType,
+	StatusBar,
 	TextSetting,
 	until,
 	VSBrowser,
@@ -28,8 +32,9 @@ import {
 	WebView,
 	Workbench,
 } from 'vscode-extension-tester';
-import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame, resetUserSettings } from '../Util';
+import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame, resetUserSettings, switchToKaotoFrame } from '../Util';
 import { join } from 'path';
+import { rmSync } from 'fs';
 import { expect } from 'chai';
 
 describe('User Settings', function () {
@@ -43,18 +48,6 @@ describe('User Settings', function () {
 	let kaotoWebview: WebView;
 
 	const locators = {
-		CatalogDropDown: {
-			dropdown: By.xpath(`//button[@data-testid='runtime-selector-list-dropdown']`),
-		},
-		RuntimeSelector: {
-			selector: (label: string) => By.xpath(`//li[@data-testid='runtime-selector-${label}']`),
-		},
-		RuntimeSelectorItems: {
-			list: By.className('pf-v6-c-menu__list'),
-			listItem: By.className('pf-v6-c-menu__list-item'),
-			label: By.className('pf-v6-c-menu__item-text'),
-			submenu: By.className('runtime-selector__submenu'),
-		},
 		KaotoView: {
 			catalogButton: By.xpath(`//button[@id='topology-control-bar-catalog-button']`),
 			catalog: {
@@ -88,11 +81,22 @@ describe('User Settings', function () {
 				// probably test not failed in Kaoto UI, just continue
 			}
 		}
-		await new EditorView().closeAllEditors();
+		try {
+			await new EditorView().closeAllEditors();
+		} catch {
+			// handle modal dialog (e.g. "Save/Don't Save") that blocks editor close
+			try {
+				const dialog = new ModalDialog();
+				await dialog.pushButton("Don't Save");
+				await new EditorView().closeAllEditors();
+			} catch {
+				// if dialog handling also fails, use command palette as last resort
+				await new Workbench().executeCommand('View: Close All Editors');
+			}
+		}
 	});
 
-	// skipped until we switch to status bar catalog selector, because of already missing Camel Catalog dropdown selector in Kaoto editor UI
-	describe.skip('Custom catalogs', function () {
+	describe('Custom catalogs', function () {
 		before(async function () {
 			// provide the Catalog URL using Settings UI editor
 			const settings = await new Workbench().openSettings();
@@ -143,41 +147,116 @@ describe('User Settings', function () {
 
 		const runtimeSelectors = ['Main', 'Quarkus', 'Spring Boot'];
 
-		runtimeSelectors.forEach(function (runtime) {
-			it(`Check custom Kaoto catalog loaded - ${runtime}`, async function () {
-				this.timeout(60_000);
+		it('Check custom Kaoto catalogs loaded for all runtimes', async function () {
+			this.timeout(60_000);
 
-				// expand Catalog dropdown
-				const dropdown = await expandCatalogDropdown();
+			// switch back from Kaoto webview to interact with VS Code status bar
+			await kaotoWebview.switchBack();
 
-				// get all items available for selected runtime
-				let items = await getDropdownItemsText(runtime);
-				expect(items.length).is.greaterThan(1);
-				expect(items).to.satisfy((items: string[]) => items.every((item) => item.startsWith(`Camel ${runtime}`)));
+			// open catalog picker via status bar
+			await clickCatalogStatusBarItem();
+			const input = await InputBox.create(5_000);
+			const picks = await input.getQuickPicks();
 
-				// collapse catalog dropdown
-				await dropdown.click();
-				await driver.sleep(500); // time to reflect changes in DOM
-				try {
-					await driver.wait(until.elementLocated(locators.RuntimeSelectorItems.list), 5_000);
-					throw new Error('Dropdown was not closed!');
-				} catch (error) {
-					if (error instanceof Error && error.name !== 'TimeoutError') {
-						throw new Error(error.message);
-					}
-				}
-			});
+			const labels: string[] = [];
+			for (const pick of picks) {
+				labels.push(await pick.getLabel());
+			}
+
+			// verify catalogs for each runtime are present
+			for (const runtime of runtimeSelectors) {
+				const runtimeItems = labels.filter((label) => label.startsWith(`Camel ${runtime}`));
+				expect(runtimeItems.length, `Expected catalog items for runtime '${runtime}'`).to.be.greaterThan(0);
+				expect(runtimeItems).to.satisfy((items: string[]) => items.every((item) => item.startsWith(`Camel ${runtime}`)));
+			}
+
+			// close the quick pick without selecting
+			await input.cancel();
+
+			// switch back into webview frame
+			await kaotoWebview.switchToFrame();
 		});
 	});
 
 	describe('Default catalogs', function () {
+		after(async function () {
+			rmSync(join(WORKSPACE_FOLDER, '.vscode'), { recursive: true, force: true });
+		});
+
 		before(async function () {
 			kaotoWebview = (await openAndSwitchToKaotoFrame(WORKSPACE_FOLDER, 'my.camel.yaml', driver, true)).kaotoWebview;
 			await checkTopologyLoaded(driver);
 		});
 
+		it(`Select 'community' catalog and check "Red Hat" components are not available`, async function () {
+			this.timeout(90_000);
+
+			// switch back from Kaoto webview to interact with VS Code status bar
+			await kaotoWebview.switchBack();
+			await driver.sleep(1_000); // stabilize tests which are sometimes failing on macOS CI
+
+			// open catalog picker via status bar and select a community 'Main' runtime catalog
+			await clickCatalogStatusBarItem();
+			const input = await InputBox.create(5_000);
+			const picks = await input.getQuickPicks();
+
+			// find and select the first 'Camel Main' item that is NOT a Red Hat version
+			for (const pick of picks) {
+				const label = await pick.getLabel();
+				if (label.startsWith('Camel Main') && !label.toLowerCase().includes('redhat')) {
+					await pick.select();
+					break;
+				}
+			}
+
+			// wait for the "Reopen" notification and click it
+			await clickReopenNotification();
+
+			// switch back to Kaoto webview frame after editor reload
+			kaotoWebview = (await switchToKaotoFrame(driver, false)).kaotoWebview;
+			await checkTopologyLoaded(driver, 15_000);
+
+			const catalogWindow = await openCatalogInListView();
+
+			const providers = await getCatalogProvidersList(catalogWindow);
+			expect(providers).to.not.contain('Red Hat');
+			expect(providers).to.contain('Community');
+
+			// check first component does not contain 'Red Hat' flag
+			const provider = await getFirstCatalogItemProvider(catalogWindow);
+			expect(provider).to.not.be.equal('Red Hat');
+
+			// switch catalog window back to gallery view
+			await switchBackCatalogToGalleryViewAndClose(catalogWindow);
+		});
+
 		it(`Select 'redhat' catalog and check new components are available`, async function () {
 			this.timeout(90_000);
+
+			// switch back from Kaoto webview to interact with VS Code status bar
+			await kaotoWebview.switchBack();
+			await driver.sleep(2_000); // stabilize after previous catalog switch cycle on macOS CI
+
+			// open catalog picker via status bar and select a Red Hat catalog
+			await clickCatalogStatusBarItem();
+			const input = await InputBox.create(5_000);
+			const picks = await input.getQuickPicks();
+
+			// find and select the first catalog with 'redhat' in the version
+			for (const pick of picks) {
+				const label = await pick.getLabel();
+				if (label.toLowerCase().includes('redhat')) {
+					await pick.select();
+					break;
+				}
+			}
+
+			// wait for the "Reopen" notification and click it
+			await clickReopenNotification();
+
+			// switch back to Kaoto webview frame after editor reload
+			kaotoWebview = (await switchToKaotoFrame(driver, false)).kaotoWebview;
+			await checkTopologyLoaded(driver, 15_000);
 
 			const catalogWindow = await openCatalogInListView();
 
@@ -190,36 +269,6 @@ describe('User Settings', function () {
 			// check first component contains 'Red Hat' flag
 			const provider = await getFirstCatalogItemProvider(catalogWindow);
 			expect(provider).to.be.equal('Red Hat');
-
-			// switch catalog window back to gallery view
-			await switchBackCatalogToGalleryViewAndClose(catalogWindow);
-		});
-
-		// skipped until we switch to status bar catalog selector, because of already missing Camel Catalog dropdown selector in Kaoto editor UI
-		it.skip(`Select 'community' catalog and check "Red Hat" components are not available`, async function () {
-			this.timeout(90_000);
-
-			// expand dropdown
-			const dropdown = await expandCatalogDropdown();
-
-			// select Main > Camel Main X.X.X
-			await selectDropdownItem('Main', dropdown);
-
-			// it needs some time to start loading a new catalog
-			await driver.sleep(1_000);
-
-			// wait for reload of kaoto view
-			await checkTopologyLoaded(driver, 15_000);
-
-			const catalogWindow = await openCatalogInListView();
-
-			const providers = await getCatalogProvidersList(catalogWindow);
-			expect(providers).to.not.contain('Red Hat');
-			expect(providers).to.contain('Community');
-
-			// check first component contains 'Red Hat' flag
-			const provider = await getFirstCatalogItemProvider(catalogWindow);
-			expect(provider).to.not.be.equal('Red Hat');
 
 			// switch catalog window back to gallery view
 			await switchBackCatalogToGalleryViewAndClose(catalogWindow);
@@ -272,8 +321,10 @@ describe('User Settings', function () {
 	}
 
 	async function openCatalogInListView(): Promise<WebElement> {
-		// click Open Catalog
-		const catalog = await driver.findElement(locators.KaotoView.catalogButton);
+		// wait for the catalog button to be visible and clickable
+		const catalog = await driver.wait(until.elementLocated(locators.KaotoView.catalogButton), 10_000, 'Catalog button was not located');
+		await driver.wait(until.elementIsVisible(catalog), 10_000, 'Catalog button was not visible');
+		await driver.wait(until.elementIsEnabled(catalog), 10_000, 'Catalog button was not enabled');
 		await catalog.click();
 
 		// wait catalog modal dialog is open
@@ -282,7 +333,7 @@ describe('User Settings', function () {
 
 		// switch to list view
 		await catalogWindow.findElement(locators.KaotoView.catalog.listButton).click();
-		await driver.wait(until.elementLocated(locators.KaotoView.catalog.list), 5_000);
+		await driver.wait(until.elementLocated(locators.KaotoView.catalog.list), 10_000);
 
 		return catalogWindow;
 	}
@@ -303,47 +354,50 @@ describe('User Settings', function () {
 		await catalogWindow.findElement(locators.KaotoView.catalog.closeButton).click();
 	}
 
-	async function expandCatalogDropdown(timeout: number = 2500): Promise<WebElement> {
-		const dropdown = await driver.findElement(locators.CatalogDropDown.dropdown);
-		await dropdown.click();
-		await driver.wait(until.elementLocated(locators.RuntimeSelectorItems.list), timeout, 'Dropdown was not displayed properly!');
-		return dropdown;
+	async function clickCatalogStatusBarItem(): Promise<void> {
+		const statusBar = new StatusBar();
+		const catalogItem = await driver.wait(
+			async () => {
+				const items = await statusBar.getItems();
+				for (const item of items) {
+					const text = await item.getText();
+					if (text.includes('Camel')) {
+						return item;
+					}
+				}
+				return undefined;
+			},
+			10_000,
+			'Catalog status bar item containing "Camel" was not found',
+		);
+		if (!catalogItem) {
+			throw new Error('Catalog status bar item containing "Camel" was not found');
+		}
+		await catalogItem.click();
 	}
 
-	async function getDropdownItemsText(item: string, timeout: number = 2500): Promise<string[]> {
-		// expand selected runtime list
-		const parentItem = await driver.findElement(locators.RuntimeSelector.selector(item));
-		try {
-			await driver.actions().move({ origin: parentItem, duration: 1_000 }).perform();
-			await driver.wait(until.elementLocated(locators.RuntimeSelectorItems.submenu), timeout, 'Runtime selector sub-menu was not displayed properly!');
-		} catch (error) {
-			await parentItem.click();
-			await driver.wait(until.elementLocated(locators.RuntimeSelectorItems.submenu), timeout, 'Runtime selector sub-menu was not displayed properly!');
-		}
-
-		// get all listed items
-		const items = await parentItem.findElement(locators.RuntimeSelectorItems.list).findElements(locators.RuntimeSelectorItems.listItem);
-
-		// get labels of all displayed items
-		let labels: string[] = [];
-		for (const item of items) {
-			const label = await item.findElement(locators.RuntimeSelectorItems.label).getText();
-			labels.push(label);
-		}
-		return labels;
-	}
-
-	async function selectDropdownItem(item: string, dropdown: WebElement, timeout: number = 2500) {
-		const parentItem = await dropdown.findElement(locators.RuntimeSelector.selector(item));
-		try {
-			await driver.actions().move({ origin: parentItem, duration: 1_000 }).perform();
-			await driver.wait(until.elementLocated(locators.RuntimeSelectorItems.submenu), timeout, 'Runtime selector sub-menu was not displayed properly!');
-		} catch (error) {
-			await parentItem.click();
-			await driver.wait(until.elementLocated(locators.RuntimeSelectorItems.submenu), timeout, 'Runtime selector sub-menu was not displayed properly!');
-		}
-
-		// select first Camel Main catalog item
-		await parentItem.findElement(By.xpath(`//li[starts-with(@data-testid, 'runtime-selector-Camel Main')]`)).click();
+	async function clickReopenNotification(): Promise<void> {
+		await driver.wait(
+			async () => {
+				try {
+					const notificationsCenter = await new Workbench().openNotificationsCenter();
+					const notifications = await notificationsCenter.getNotifications(NotificationType.Info);
+					for (const notification of notifications) {
+						const message = await notification.getMessage();
+						if (message.includes('Reopen editor to apply changes')) {
+							await notification.takeAction('Reopen');
+							return true;
+						}
+					}
+					return false;
+				} catch {
+					return false;
+				}
+			},
+			15_000,
+			'Notification with "Reopen" button was not found after catalog change',
+			1_000,
+		);
+		await driver.sleep(1_000); // allow editor to reopen
 	}
 });

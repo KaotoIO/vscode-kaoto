@@ -1,8 +1,10 @@
+import { dirname, relative } from 'path';
 import { CamelExecutorFactory } from '../CamelExecutorFactory';
 import { CamelCommandBuilder } from '../builders/CamelCommandBuilder';
-import { CamelCommand, CommandArguments, CommandResult, RuntimeType } from '../types/ExecutorTypes';
+import { CamelCommand, CommandArg, CommandArguments, CommandResult, RuntimeType } from '../types/ExecutorTypes';
 import { CamelSettingsHelper } from '../helpers/CamelSettingsHelper';
 import { TestFolderResolver } from '../../helpers/TestFolderResolver';
+import { arePathsEqual } from '../../helpers/helpers';
 
 interface ResolvedSettings {
 	camelVersionArg: string;
@@ -11,10 +13,17 @@ interface ResolvedSettings {
 	reposArg: string;
 }
 
+const sq = CamelCommandBuilder.strongQuote;
+
 /**
- * High-level API for executing Camel commands
- * Used by task classes to abstract executor details
- * Integrates user settings from VS Code configuration
+ * High-level API for executing Camel commands.
+ * Used by task classes to abstract executor details.
+ * Integrates user settings from VS Code configuration.
+ *
+ * Uses ShellQuotedString.Strong (via sq()) for args that may contain
+ * shell-sensitive characters: file paths (spaces, special chars),
+ * --option=path args, URLs, and args with # or dots.
+ * Plain strings are used for command keywords and simple flags.
  */
 export class CamelCommandAPI {
 	private static async resolveCommonSettings(settingsHelper: CamelSettingsHelper, userArgs: string[]): Promise<ResolvedSettings> {
@@ -40,6 +49,13 @@ export class CamelCommandAPI {
 	}
 
 	/**
+	 * Quote resolved settings values that may contain URLs or special chars.
+	 */
+	private static quoteCommonSettings(common: ResolvedSettings): CommandArg[] {
+		return CamelCommandBuilder.filterEmptyArgs([sq(common.camelVersionArg), ...common.quarkusArgs, ...common.springBootArgs, sq(common.reposArg)]);
+	}
+
+	/**
 	 * Run a Camel integration with user settings
 	 */
 	static async run(filePath: string, cwd: string, port?: number, additionalArgs: CommandArguments = []): Promise<CommandResult> {
@@ -54,15 +70,12 @@ export class CamelCommandAPI {
 		await settingsHelper.showConflictWarnings(conflicts);
 
 		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs([
-			`'${filePath}'`,
+			sq(filePath),
 			portArg,
 			runtimeArg,
 			...userArgs,
 			...additionalArgs,
-			common.camelVersionArg,
-			...common.quarkusArgs,
-			...common.springBootArgs,
-			common.reposArg,
+			...this.quoteCommonSettings(common),
 		]);
 
 		const result = await executor.execute('run', args, { cwd });
@@ -84,15 +97,12 @@ export class CamelCommandAPI {
 		await settingsHelper.showConflictWarnings(conflicts);
 
 		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs([
-			`'--source-dir=${sourceDir}'`,
+			sq(`--source-dir=${sourceDir}`),
 			portArg,
 			runtimeArg,
 			...userArgs,
 			...additionalArgs,
-			common.camelVersionArg,
-			...common.quarkusArgs,
-			...common.springBootArgs,
-			common.reposArg,
+			...this.quoteCommonSettings(common),
 		]);
 
 		const result = await executor.execute('run', args, { cwd: sourceDir });
@@ -100,7 +110,13 @@ export class CamelCommandAPI {
 	}
 
 	/**
-	 * Export a Camel integration to Maven project with user settings
+	 * Export a Camel integration to Maven project with user settings.
+	 *
+	 * Restores two behaviors from the pre-migration CamelJBang.export():
+	 * 1. Converts filePath to a relative path (relative to cwd) to avoid Windows
+	 *    path-handling issues with absolute paths containing spaces/special chars.
+	 * 2. Omits --directory when outputPath equals the file's parent directory
+	 *    (documented Camel JBang Windows workaround).
 	 */
 	static async export(
 		filePath: string,
@@ -119,20 +135,20 @@ export class CamelCommandAPI {
 
 		await settingsHelper.showConflictWarnings(conflicts);
 
+		const relPath = relative(cwd, filePath);
+		const relativeFilePath = !relPath || relPath === '.' ? '.' : relPath;
+		const directoryArg = arePathsEqual(dirname(filePath), outputPath) ? '' : `--directory=${outputPath}`;
 		const quarkusOpenshiftDependency = runtime === RuntimeType.QUARKUS && kubernetes ? ['--dependency=mvn:io.quarkus:quarkus-openshift'] : [];
 
 		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs([
-			`'${filePath}'`,
+			sq(relativeFilePath),
 			`--runtime=${runtime}`,
-			`--gav=${gav}`,
-			`--directory=${outputPath}`,
+			sq(`--gav=${gav}`),
+			directoryArg ? sq(directoryArg) : '',
 			...quarkusOpenshiftDependency,
 			...userArgs,
 			...additionalArgs,
-			common.camelVersionArg,
-			...common.quarkusArgs,
-			...common.springBootArgs,
-			common.reposArg,
+			...this.quoteCommonSettings(common),
 		]);
 
 		if (kubernetes) {
@@ -146,7 +162,7 @@ export class CamelCommandAPI {
 	 * Initialize a new Camel file
 	 */
 	static async init(filePath: string, cwd?: string): Promise<CommandResult> {
-		return this.executeSimple('init', [`'${filePath}'`], cwd);
+		return this.executeSimple('init', [sq(filePath)], cwd);
 	}
 
 	/**
@@ -160,7 +176,7 @@ export class CamelCommandAPI {
 	 * Bind a Kamelet to a source/sink
 	 */
 	static async bind(file: string, source: string, sink: string, cwd?: string, additionalArgs: CommandArguments = []): Promise<CommandResult> {
-		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs(['--source', source, '--sink', sink, `'${file}'`, ...additionalArgs]);
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs(['--source', source, '--sink', sink, sq(file), ...additionalArgs]);
 		return this.executeSimple('bind', args, cwd);
 	}
 
@@ -176,7 +192,7 @@ export class CamelCommandAPI {
 	 * Update dependencies in pom.xml
 	 */
 	static async dependencyUpdate(pomPath: string, integrationFilePath: string, cwd?: string): Promise<CommandResult> {
-		return this.executeSimple('dependency', ['update', pomPath, integrationFilePath, '--lazy-bean', '--ignore-loading-error'], cwd);
+		return this.executeSimple('dependency', ['update', sq(pomPath), sq(integrationFilePath), '--lazy-bean', '--ignore-loading-error'], cwd);
 	}
 
 	/**
@@ -190,14 +206,14 @@ export class CamelCommandAPI {
 	 * Initialize a new Camel test file
 	 */
 	static async testInit(filePath: string, cwd?: string): Promise<CommandResult> {
-		return this.executeSimple('test', ['init', `'${filePath}'`], cwd);
+		return this.executeSimple('test', ['init', sq(filePath)], cwd);
 	}
 
 	/**
 	 * Run Camel tests
 	 */
 	static async testRun(filePath: string, cwd?: string, additionalArgs: CommandArguments = []): Promise<CommandResult> {
-		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs(['run', `'${filePath}'`, ...additionalArgs]);
+		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs(['run', sq(filePath), ...additionalArgs]);
 		return this.executeSimple('test', args, cwd);
 	}
 
@@ -225,13 +241,10 @@ export class CamelCommandAPI {
 
 		const args: CommandArguments = CamelCommandBuilder.filterEmptyArgs([
 			'run',
-			filePattern,
+			sq(filePattern),
 			...userArgs,
 			runtimeArg,
-			common.camelVersionArg,
-			...common.quarkusArgs,
-			...common.springBootArgs,
-			common.reposArg,
+			...this.quoteCommonSettings(common),
 			...additionalArgs,
 		]);
 		return await executor.execute('kubernetes', args, { cwd });
