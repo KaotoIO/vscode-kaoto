@@ -721,12 +721,12 @@
         {
           "command": "kaoto.open.source",
           "when": "activeCustomEditorId == webviewEditorsKaoto",
-          "group": "navigation@1"
+          "group": "navigation@99"
         },
         {
           "command": "kaoto.close.source",
           "when": "(resourceFilename =~ /\\.(camel|kamelet|pipe).yaml$/ || resourceFilename =~ /\\-pipe.yaml$/ || resourceFilename =~ /\\.camel.xml$/ || resourceFilename =~ /\\.citrus(-test|-it|\\.test|\\.it)?\\.yaml$/) && activeCustomEditorId !== webviewEditorsKaoto",
-          "group": "navigation@1"
+          "group": "navigation@99"
         }
       ],
       "explorer/context": [
