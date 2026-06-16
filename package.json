@@ -302,7 +302,7 @@
         "command": "kaoto.close.source",
         "title": "Close Source Code",
         "shortTitle": "Close Source",
-        "enablement": "(resourceFilename =~ /\\.(camel|kamelet|pipe).yaml$/ || resourceFilename =~ /\\-pipe.yaml$/ || resourceFilename =~ /\\.camel.xml$/)",
+        "enablement": "(resourceFilename =~ /\\.(camel|kamelet|pipe).yaml$/ || resourceFilename =~ /\\-pipe.yaml$/ || resourceFilename =~ /\\.camel.xml$/ || resourceFilename =~ /\\.citrus(-test|-it|\\.test|\\.it)?\\.yaml$/)",
         "category": "Kaoto",
         "icon": "./icons/commands/source_active.png"
       },
@@ -716,7 +716,7 @@
         },
         {
           "command": "kaoto.close.source",
-          "when": "(resourceFilename =~ /\\.(camel|kamelet|pipe).yaml$/ || resourceFilename =~ /\\-pipe.yaml$/ || resourceFilename =~ /\\.camel.xml$/) && activeCustomEditorId !== webviewEditorsKaoto",
+          "when": "(resourceFilename =~ /\\.(camel|kamelet|pipe).yaml$/ || resourceFilename =~ /\\-pipe.yaml$/ || resourceFilename =~ /\\.camel.xml$/ || resourceFilename =~ /\\.citrus(-test|-it|\\.test|\\.it)?\\.yaml$/) && activeCustomEditorId !== webviewEditorsKaoto",
           "group": "navigation@1"
         }
       ],
