@@ -682,12 +682,12 @@ export class ExtensionContextHandler {
 
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(COMMAND_DEPLOYMENTS_LOGS, async (integration: ParentItem) => {
-				const runningLabel = `Running - ${integration.description as string}::${integration.port}`;
-				const terminal = vscode.window.terminals.find((t) => t.name === runningLabel);
+				const portSuffix = `::${integration.port}`;
+				const terminal = vscode.window.terminals.find((t) => t.name.startsWith('Running - ') && t.name.endsWith(portSuffix));
 				if (terminal) {
 					terminal.show();
 				} else {
-					KaotoOutputChannel.logWarning(`Terminal with a name "${runningLabel}" was not found.`);
+					KaotoOutputChannel.logWarning(`Terminal for integration on port ${integration.port} was not found.`);
 				}
 				await this.sendCommandTrackingEvent(COMMAND_DEPLOYMENTS_LOGS);
 			}),
