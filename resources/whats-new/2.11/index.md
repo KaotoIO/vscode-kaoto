@@ -8,6 +8,52 @@ We are happy to announce that new version of extension was released!
 
 This release brings significant enhancements to testing capabilities with Citrus framework integration, expanded DataMapper functionality for complex schema handling, improved runtime management with multiple executor options, and visual editor improvements. Powered by Apache Camel 4.20.0, Kaoto continues to make visual integration design more powerful and intuitive.
 
+---
+
+## ⚠️ Breaking Changes & Migration Guide
+
+This release includes settings renames and removals. **If you customized any JBang-related settings, you must update them manually after upgrading.**
+
+### Renamed Settings
+
+The `kaoto.camelJbang.*` settings namespace has been replaced with `kaoto.executor.*`:
+
+| Old Setting (v2.10.x) | New Setting (v2.11.0) |
+| --- | --- |
+| `kaoto.camelJbang.runArguments` | `kaoto.executor.runArguments` |
+| `kaoto.camelJbang.runFolderOrWorkspaceArguments` | `kaoto.executor.runFolderOrWorkspaceArguments` |
+| `kaoto.camelJbang.redHatMavenRepository` | `kaoto.executor.redHatMavenRepository` |
+| `kaoto.camelJbang.redHatMavenRepository.global` | `kaoto.executor.redHatMavenRepository.global` |
+| `kaoto.camelJbang.kubernetesRunArguments` | `kaoto.executor.kubernetesRunArguments` |
+| `kaoto.maven.camelJbang.exportProjectArguments` | `kaoto.maven.executor.exportProjectArguments` |
+
+**Action:** Open your `settings.json` and rename any `kaoto.camelJbang.*` entries to their `kaoto.executor.*` equivalents.
+
+### Removed Settings
+
+| Setting | Migration |
+| --- | --- |
+| `kaoto.camelJbang.version` | No longer needed. The Camel version is now determined by the selected catalog. Default fallback is `4.20.0`. |
+| `kaoto.camelVersion` | Replaced by the new catalog picker — use the status bar to select your runtime catalog, or set `kaoto.runtimeCatalogName` in workspace settings. |
+
+### Settings UI Reorganized
+
+- The **JBang** section has been renamed to **Executor**
+- A new **Advanced** section holds catalog-related workspace settings
+- Canvas settings (nodeLabel, colorTheme, etc.) remain unchanged under **Canvas**
+
+### Default Camel CLI Version: 4.18.0 → 4.20.0
+
+The default Camel version used for CLI operations has been updated. If your integrations depend on 4.18.x-specific behavior, verify compatibility with [Camel 4.20.0 release notes](https://camel.apache.org/releases/release-4.20.0/).
+
+### Red Hat Productized Catalog Requires Maven Configuration
+
+When using Red Hat productized Camel versions (e.g. `4.8.0.redhat-00017`), you **MUST** configure the Red Hat recommended repositories in your Maven `settings.xml`. Without this configuration, the Red Hat catalog — which is a default option — will not function correctly.
+
+The extension will show a notification guiding you through this setup when a productized catalog is selected. Refer to the [Red Hat Maven Repository documentation](https://docs.redhat.com/es/documentation/red_hat_build_of_apache_camel/4.18/html/getting_started_with_red_hat_build_of_apache_camel_for_spring_boot/set-up-maven-locally#add-red-hat-repositories-to-maven) for details on configuring your `~/.m2/settings.xml`.
+
+---
+
 ### Citrus Testing Capabilities
 
 Kaoto 2.11 introduces comprehensive Citrus framework integration, bringing automated testing capabilities directly into your visual integration design workflow:
@@ -45,10 +91,6 @@ All executor-related settings are consolidated under the `kaoto.executor.*` name
 #### Catalog Version Picker
 
 A new **status bar item** shows the currently selected Camel catalog version and lets you switch between available versions with a single click. The picker filters catalogs based on the open file — showing Camel runtimes (Main, Quarkus, Spring Boot) for integration files and Citrus versions for test files.
-
-#### Red Hat Productized Versions
-
-When using Red Hat productized Camel versions (e.g. `4.8.0.redhat-00017`), you **must** configure the Red Hat recommended repositories in your Maven `settings.xml`. The extension will show a notification guiding you through this setup when a productized catalog is selected.
 
 ---
 
