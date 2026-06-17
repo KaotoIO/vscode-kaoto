@@ -17,8 +17,7 @@ node('rhel9'){
 	installBuildRequirements()
 
 	stage 'Build vscode-kaoto'
-	sh "yarn"
-	sh "yarn build:dev"
+	sh "yarn --network-timeout 1000000"
 	sh "yarn build:prod"
 
 	stage('Unit Tests') {
