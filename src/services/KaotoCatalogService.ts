@@ -694,10 +694,15 @@ export class KaotoCatalogService {
 
 	/**
 	 * Show Red Hat Maven notification once per catalog version change.
-	 * Triggered on initialization and catalog selection change -- not on editor focus.
+	 * Only shown when a runtime integration file is active (not test files).
 	 */
 	private async checkAndShowRedHatNotification(): Promise<void> {
 		try {
+			const activeUri = this.getActiveKaotoDocumentUri();
+			if (!activeUri || !this.isKaotoIntegrationFile(activeUri)) {
+				return;
+			}
+
 			const catalog = await this.getSelectedIntegrationCatalog();
 
 			if (!catalog || !this.redHatNotificationService.isRedHatCatalog(catalog.version)) {
