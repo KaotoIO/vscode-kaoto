@@ -492,6 +492,9 @@ export class KaotoCatalogService {
 			vscode.window.tabGroups.onDidChangeTabGroups(() => {
 				void this.updateStatusBar();
 			}),
+			vscode.window.tabGroups.onDidChangeTabs(() => {
+				void this.updateStatusBar();
+			}),
 		);
 
 		return this.statusBarItem;
