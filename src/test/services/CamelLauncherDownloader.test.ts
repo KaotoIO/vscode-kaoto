@@ -93,13 +93,18 @@ suite('CamelLauncherDownloader Tests', () => {
 			fs.rmSync(launcherDir, { recursive: true, force: true });
 		}
 
+		// Stub the private downloadFile method to simulate HTTP 404 without hitting the network
+		const originalDownloadFile = (downloader as any).downloadFile;
+		(downloader as any).downloadFile = () => Promise.reject(new Error('Failed to download: HTTP 404'));
+
 		try {
-			// This should attempt to download, which will fail for invalid version
 			await downloader.ensureLauncher(version);
 			assert.fail('Should have thrown an error');
 		} catch (error) {
 			assert.instanceOf(error, LauncherNotFoundError);
 			assert.include(error.message, 'is not available');
+		} finally {
+			(downloader as any).downloadFile = originalDownloadFile;
 		}
 	});
 
