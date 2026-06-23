@@ -923,6 +923,16 @@
         "view": "kaoto.tests",
         "contents": "In order to start with Citrus, you can create a new Citrus Test file.\n[New Citrus Test...](command:kaoto.citrus.jbang.init.test)\nTo learn more about Camel Testing [read docs](https://camel.apache.org/manual/camel-jbang-test.html).",
         "when": "!virtualWorkspace && kaoto.executorAvailable && workspaceFolderCount > 0"
+      },
+      {
+        "view": "kaoto.openapi",
+        "contents": "You have not yet added a folder to the workspace.\n[Open Folder](command:vscode.openFolder)",
+        "when": "workspaceFolderCount == 0"
+      },
+      {
+        "view": "kaoto.openapi",
+        "contents": "You can import an existing OpenAPI specification to use with your Camel integrations.\n[Import...](command:kaoto.openapi.import)\nTo learn more about OpenAPI and Kaoto [read docs](https://kaoto.io/docs/rest/).",
+        "when": "!virtualWorkspace && workspaceFolderCount > 0"
       }
     ],
     "configuration": [
