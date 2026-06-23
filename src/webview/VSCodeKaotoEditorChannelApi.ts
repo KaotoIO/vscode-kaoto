@@ -15,6 +15,7 @@ import * as vscode from 'vscode';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { MavenRuntimeDetector } from '../helpers/MavenRuntimeDetector';
 import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
+import { ExternalFileChangeWatcher } from '../helpers/ExternalFileChangeWatcher';
 import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
 import { getSuggestions } from '../helpers/SuggestionRegistry';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
@@ -31,6 +32,7 @@ import {
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 	private readonly currentEditedDocument: vscode.TextDocument | VsCodeKieEditorCustomDocument;
+	private externalFileChangeWatcher: ExternalFileChangeWatcher | undefined;
 
 	constructor(
 		editor: VsCodeKieEditorController,
@@ -45,10 +47,21 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		super(editor, resourceContentService, workspaceApi, backendProxy, notificationsApi, javaCodeCompletionApi, viewType, i18n);
 		this.currentEditedDocument = editor.document.document;
 
+		const docUri = this.currentEditedDocument.uri;
+		const workspaceFolder = vscode.workspace.getWorkspaceFolder(docUri);
+		this.externalFileChangeWatcher = new ExternalFileChangeWatcher(docUri, async (content) => {
+			const normalizedPath = workspaceFolder
+				? path.relative(workspaceFolder.uri.fsPath, docUri.fsPath).split(path.sep).join('/')
+				: path.basename(docUri.fsPath);
+			await editor.setContent(normalizedPath, content);
+			KaotoOutputChannel.logInfo(`Kaoto editor reloaded after external change to: ${docUri.fsPath}`);
+		});
+
 		// Dispose watcher when the webview/editor is closed
 		editor.setupPanelOnDidDispose();
 		editor.panel.onDidDispose(() => {
 			StepsOnSaveManager.instance.disposeFor(this.currentEditedDocument.uri);
+			this.externalFileChangeWatcher?.dispose();
 		});
 	}
 
