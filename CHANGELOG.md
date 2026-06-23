@@ -1,5 +1,7 @@
 # 2.12.0
 
+- Add launch config for a simple run of exported Camel (Maven) Application
+
 # 2.11.0
 
 - Upgrade default Camel JBang version from 4.18.0 to 4.20.0
