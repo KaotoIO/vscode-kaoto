@@ -8,7 +8,7 @@
 <p align="center">
   <a href="#feature-highlights">Features</a> •
   <a href="#installation">Installation</a> •
-  <a href="https://kaoto.io/docs/manual/">Documentation</a> •
+  <a href="https://kaoto.io/docs/">Documentation</a> •
   <a href="#feedback">Feedback</a>  •
   <a href="#data--telemetry">Telemetry</a>
 </p>
@@ -133,7 +133,7 @@ You can follow [Installation Guide](https://kaoto.io/docs/installation) on a Kao
 
 Learn more about Kaoto and how to use it effectively:
 
-- 📘 [User Manual](https://kaoto.io/docs/manual/) - In-depth guide on all features and configurations.
+- 📘 [User Manual](https://kaoto.io/docs/) - In-depth guide on all features and configurations.
 - 🚀 [Quickstart Guide](https://kaoto.io/docs/quickstart/) - Get started with Kaoto in minutes.
 - 🛠️ [Installation Guide](https://kaoto.io/docs/installation/) - Step-by-step instructions for installing Kaoto.
 
