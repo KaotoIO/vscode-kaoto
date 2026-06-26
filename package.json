@@ -265,13 +265,13 @@
           {
             "id": "kaoto.walkthrough.step11",
             "title": "Check out the documentation",
-            "description": "Check out the documentation to learn more about Kaoto.\n\n[Open Documentation](https://kaoto.io/docs/manual/)",
+            "description": "Check out the documentation to learn more about Kaoto.\n\n[Open Documentation](https://kaoto.io/docs/)",
             "media": {
               "image": "images/logo-kaoto.png",
               "altText": "Check out the Documentation"
             },
             "completionEvents": [
-              "onLink:https://kaoto.io/docs/manual/"
+              "onLink:https://kaoto.io/docs/"
             ]
           }
         ]
@@ -933,7 +933,7 @@
           "kaoto.catalog.url": {
             "type": "string",
             "default": null,
-            "markdownDescription": "URL to a Kaoto catalog. For instance `https://raw.githubusercontent.com/KaotoIO/camel-catalog/refs/heads/main/catalog/index.json `. Documentation to generate your own set of catalog is available [here](https://kaoto.io/docs/manual/09_generatingcatalog/).\n\nIt requires to reopen the Kaoto editors to be effective.\n\n**Note**: Use the Kaoto editor status bar to select from a custom catalogs.",
+            "markdownDescription": "URL to a Kaoto catalog. For instance `https://raw.githubusercontent.com/KaotoIO/camel-catalog/refs/heads/main/catalog/index.json `. Documentation to generate your own set of catalog is available [here](https://kaoto.io/docs/designer/04-runtime-selector/).\n\nIt requires to reopen the Kaoto editors to be effective.\n\n**Note**: Use the Kaoto editor status bar to select from a custom catalogs.",
             "scope": "window",
             "order": 0
           },
