@@ -102,7 +102,7 @@ export class OpenApiProvider extends AbstractFolderTreeProvider<OpenApiFolder> {
 
 		if (!element) {
 			if (files.length === 0) {
-				return [new TreeItem('No OpenAPI files')];
+				return [];
 			}
 			return await this.getRootChildren(files);
 		}
