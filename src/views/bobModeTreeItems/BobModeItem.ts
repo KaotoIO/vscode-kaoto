@@ -23,10 +23,11 @@ export class BobModeItem extends TreeItem {
 		name: string | undefined,
 		public readonly fileUri: Uri,
 		public readonly line: number,
+		modeDescription: string | undefined = undefined,
 	) {
 		super(name ?? slug, TreeItemCollapsibleState.None);
 		this.description = slug;
-		this.tooltip = name ?? slug;
+		this.tooltip = modeDescription ?? name ?? slug;
 		this.iconPath = new ThemeIcon('symbol-misc');
 		this.contextValue = BobModeItem.CONTEXT_VALUE;
 		this.command = {

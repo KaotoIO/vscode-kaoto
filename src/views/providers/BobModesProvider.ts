@@ -110,8 +110,9 @@ export class BobModesProvider implements vscode.TreeDataProvider<BobModeItem> {
 					continue;
 				}
 				const name = typeof e['name'] === 'string' ? e['name'].trim() : undefined;
+				const modeDescription = typeof e['description'] === 'string' ? e['description'].trim() : undefined;
 				const line = slugLineMap.get(slug) ?? 0;
-				items.push(new BobModeItem(slug, name, fileUri, line));
+				items.push(new BobModeItem(slug, name, fileUri, line, modeDescription));
 			}
 			return items;
 		} catch (err) {
