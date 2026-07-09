@@ -4,7 +4,7 @@ overview: "Add Bob IDE Custom Modes support to vscode-kaoto: a Modes tree view i
 todos:
   - id: wi-1-tree-view
     content: "WI-1: Bob IDE Modes tree view -- BobModesProvider, BobModeItem, package.json views/commands/menus, registration, Try It prompt flow"
-    status: pending
+    status: done
   - id: wi-2-codelens
     content: "WI-2: CodeLens for custom_modes.yaml/.yml -- BobModeCodeLensProvider, Open in Kaoto + Try with Kaoto lenses"
     status: pending

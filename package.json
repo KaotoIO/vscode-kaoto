@@ -510,6 +510,29 @@
         "icon": "$(clear-all)"
       },
       {
+        "command": "kaoto.bobModes.refresh",
+        "title": "Refresh",
+        "category": "Kaoto",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "kaoto.bobModes.showSource",
+        "title": "Show Source",
+        "category": "Kaoto",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "kaoto.bobModes.tryMode",
+        "title": "Try It...",
+        "category": "Kaoto",
+        "icon": "$(play)"
+      },
+      {
+        "command": "kaoto.bobModes.create",
+        "title": "New Custom Mode...",
+        "category": "Kaoto"
+      },
+      {
         "command": "kaoto.openapi.refresh",
         "title": "Refresh",
         "category": "Kaoto",
@@ -791,6 +814,11 @@
           "command": "kaoto.openapi.import",
           "group": "navigation@1",
           "when": "view == kaoto.openapi"
+        },
+        {
+          "command": "kaoto.bobModes.refresh",
+          "group": "navigation",
+          "when": "view == kaoto.bobModes"
         }
       ],
       "view/item/context": [
@@ -893,6 +921,21 @@
           "command": "kaoto.openapi.delete",
           "when": "view == kaoto.openapi && (viewItem == openapi || viewItem =~ /^openapi-folder/)",
           "group": "navigation@2"
+        },
+        {
+          "command": "kaoto.bobModes.tryMode",
+          "when": "view == kaoto.bobModes && viewItem == bobMode",
+          "group": "inline@1"
+        },
+        {
+          "command": "kaoto.bobModes.showSource",
+          "when": "view == kaoto.bobModes && viewItem == bobMode",
+          "group": "inline@2"
+        },
+        {
+          "command": "kaoto.bobModes.showSource",
+          "when": "view == kaoto.bobModes && viewItem == bobMode",
+          "group": "navigation@1"
         }
       ]
     },
@@ -933,6 +976,16 @@
         "view": "kaoto.openapi",
         "contents": "You can import an existing OpenAPI specification to use with your Camel integrations.\n[Import...](command:kaoto.openapi.import)\nTo learn more about OpenAPI and Kaoto [read docs](https://kaoto.io/docs/rest/).",
         "when": "!virtualWorkspace && workspaceFolderCount > 0"
+      },
+      {
+        "view": "kaoto.bobModes",
+        "contents": "Open a folder to manage Bob IDE custom modes.\n[Open Folder](command:vscode.openFolder)",
+        "when": "workspaceFolderCount == 0"
+      },
+      {
+        "view": "kaoto.bobModes",
+        "contents": "No custom modes found in this workspace.\nCreate a custom_modes.yaml file to start designing Bob IDE modes visually with Kaoto.\n[New Custom Mode...](command:kaoto.bobModes.create)\nTo learn more about Bob IDE custom modes [read docs](https://bob.ibm.com/docs/ide/features/custom-modes).",
+        "when": "workspaceFolderCount > 0"
       }
     ],
     "configuration": [
@@ -1295,6 +1348,13 @@
         {
           "id": "kaoto.tests",
           "name": "Tests",
+          "contextualTitle": "Kaoto",
+          "icon": "icons/kaoto.png",
+          "initialSize": 2
+        },
+        {
+          "id": "kaoto.bobModes",
+          "name": "Bob IDE Modes",
           "contextualTitle": "Kaoto",
           "icon": "icons/kaoto.png",
           "initialSize": 2

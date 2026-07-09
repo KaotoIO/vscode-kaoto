@@ -21,6 +21,7 @@ import * as KogitoVsCode from '@kie-tools-core/vscode-extension/dist';
 import { getRedHatService, TelemetryService } from '@redhat-developer/vscode-redhat-telemetry';
 import * as vscode from 'vscode';
 import { KAOTO_FILE_PATH_GLOB } from '../constants';
+import { registerBobModes } from './bob/BobModesRegistrar';
 import { VSCodeKaotoChannelApiProducer } from './../webview/VSCodeKaotoChannelApiProducer';
 import { ExtensionContextHandler } from './ExtensionContextHandler';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
@@ -107,6 +108,11 @@ export async function activate(context: vscode.ExtensionContext) {
 	contextHandler.registerDeploymentsView(portManager);
 	contextHandler.registerTestsView();
 	contextHandler.registerOpenApiView();
+
+	/*
+	 * register Bob IDE Modes view and commands
+	 */
+	registerBobModes(context);
 
 	/*
 	 * register commands for 'Integrations' view

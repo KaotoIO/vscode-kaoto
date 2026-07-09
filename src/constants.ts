@@ -160,6 +160,18 @@ export const VIEW_OPENAPI = 'kaoto.openapi';
 
 export const VIEW_WHATS_NEW = 'kaoto.whatsNew';
 
+// ─── Bob IDE Modes ────────────────────────────────────────────────────────────
+
+export const VIEW_BOB_MODES = 'kaoto.bobModes';
+
+export const COMMAND_BOB_MODES_REFRESH = 'kaoto.bobModes.refresh';
+
+export const COMMAND_BOB_MODES_SHOW_SOURCE = 'kaoto.bobModes.showSource';
+
+export const COMMAND_BOB_MODES_TRY = 'kaoto.bobModes.tryMode';
+
+export const COMMAND_BOB_MODES_CREATE = 'kaoto.bobModes.create';
+
 // ─── Context Keys ────────────────────────────────────────────────────────────
 
 export const CONTEXT_EXECUTOR_AVAILABLE = 'kaoto.executorAvailable';
