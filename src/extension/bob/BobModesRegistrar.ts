@@ -15,8 +15,10 @@
  */
 import * as vscode from 'vscode';
 import { COMMAND_BOB_MODES_CREATE, COMMAND_BOB_MODES_REFRESH, COMMAND_BOB_MODES_SHOW_SOURCE, COMMAND_BOB_MODES_TRY, VIEW_BOB_MODES } from '../../constants';
-import { BobModeItem } from '../../views/bobModeTreeItems/BobModeItem';
-import { BobModesProvider, tryBobMode } from '../../views/providers/BobModesProvider';
+import { BobModeItem } from './BobModeItem';
+import { BobModesProvider } from './BobModesProvider';
+import { tryBobMode } from './BobChatUtils';
+import { BobModeCodeLensProvider } from './BobModeCodeLensProvider';
 
 const BOB_MODES_FILE_TEMPLATE = [
 	'customModes:',
@@ -81,5 +83,10 @@ export function registerBobModes(context: vscode.ExtensionContext): void {
 		provider.refresh();
 	});
 
-	context.subscriptions.push(treeView, dispose, refreshCmd, showSourceCmd, tryCmd, createCmd);
+	const codeLensProvider = vscode.languages.registerCodeLensProvider(
+		{ scheme: 'file', language: 'yaml', pattern: '**/.bob/custom_modes.{yaml,yml}' },
+		new BobModeCodeLensProvider(),
+	);
+
+	context.subscriptions.push(treeView, dispose, refreshCmd, showSourceCmd, tryCmd, createCmd, codeLensProvider);
 }

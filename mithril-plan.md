@@ -6,10 +6,10 @@ todos:
     content: "ST-1: Add VIEW_BOB_MODES and COMMAND_BOB_MODES_* constants to src/constants.ts"
     status: done
   - id: st-2-tree-item
-    content: "ST-2: Create src/views/bobModeTreeItems/BobModeItem.ts"
+    content: "ST-2: Create src/extension/bob/BobModeItem.ts"
     status: done
   - id: st-3-provider
-    content: "ST-3: Create src/views/providers/BobModesProvider.ts"
+    content: "ST-3: Create src/extension/bob/BobModesProvider.ts"
     status: done
   - id: st-4-package-json
     content: "ST-4: Wire package.json — view, commands, menus, viewsWelcome"
@@ -76,14 +76,13 @@ All Bob-specific code lives under `src/extension/bob/`. The only changes to exis
 **Intent:** Create the `TreeItem` subclass that represents a single mode entry. It encapsulates all display and behavior properties so the provider stays thin.
 
 **Expected Outcomes:**
-- New file `src/views/bobModeTreeItems/BobModeItem.ts` compiles without errors
+- New file `src/extension/bob/BobModeItem.ts` compiles without errors
 - Item displays `name` as label and `slug` as description; falls back to `slug` as label if `name` is absent
 - Clicking the item opens the modes file in the Kaoto editor (`vscode.openWith`)
 - `contextValue = 'bobMode'` enables right-click menu and inline button
 
 **Todo List:**
-1. Create directory `src/views/bobModeTreeItems/` (mirrors `integrationTreeItems/`, `testTreeItems/`)
-2. Create `src/views/bobModeTreeItems/BobModeItem.ts`:
+1. Create `src/extension/bob/BobModeItem.ts`:
    - `import { TreeItem, TreeItemCollapsibleState, ThemeIcon, Uri, Command } from 'vscode'`
    - `import { COMMAND_BOB_MODES_TRY } from '../../constants'`
    - Constructor parameters: `slug: string`, `name: string | undefined`, `fileUri: Uri`, `line: number`
@@ -115,7 +114,7 @@ All Bob-specific code lives under `src/extension/bob/`. The only changes to exis
 **Intent:** Implement the `TreeDataProvider` that reads the modes file, exposes items to the tree view, and auto-refreshes when the file changes.
 
 **Expected Outcomes:**
-- New file `src/views/providers/BobModesProvider.ts` compiles without errors
+- New file `src/extension/bob/BobModesProvider.ts` compiles without errors
 - Provider parses `customModes` array from `.bob/custom_modes.yaml` (or `.bob/custom_modes.yml` fallback)
 - Provider returns a flat list of `BobModeItem` at root level; returns `[]` for any non-root call
 - `FileSystemWatcher` on `**/.bob/custom_modes.{yaml,yml}` triggers `refresh()` on create/change/delete
@@ -124,14 +123,14 @@ All Bob-specific code lives under `src/extension/bob/`. The only changes to exis
 
 **Todo List:**
 
-1. Create `src/views/providers/BobModesProvider.ts`
+1. Create `src/extension/bob/BobModesProvider.ts`
 
 2. **Imports:**
    - `vscode` (EventEmitter, Event, TreeDataProvider, TreeItem, FileSystemWatcher, workspace, window, Uri, Range, Position)
    - `{ parse } from 'yaml'`
    - `{ readFileSync, existsSync } from 'fs'`
    - `{ join } from 'path'`
-   - `BobModeItem from '../bobModeTreeItems/BobModeItem'`
+   - `BobModeItem from './BobModeItem'`
    - `KaotoOutputChannel` (existing output channel utility — follow import from `IntegrationsProvider`)
    - constants: `COMMAND_BOB_MODES_TRY`
 
@@ -299,8 +298,8 @@ All Bob-specific code lives under `src/extension/bob/`. The only changes to exis
 
    Imports:
    - `* as vscode from 'vscode'`
-   - `BobModesProvider, tryBobMode` from `'../../views/providers/BobModesProvider'`
-   - `BobModeItem` from `'../../views/bobModeTreeItems/BobModeItem'`
+   - `BobModesProvider, tryBobMode` from `'./BobModesProvider'`
+   - `BobModeItem` from `'./BobModeItem'`
    - `VIEW_BOB_MODES`, `COMMAND_BOB_MODES_REFRESH`, `COMMAND_BOB_MODES_SHOW_SOURCE`, `COMMAND_BOB_MODES_TRY`, `COMMAND_BOB_MODES_CREATE` from `'../../constants'`
 
    Single exported function:
@@ -391,8 +390,8 @@ All Bob-specific code lives under `src/extension/bob/`. The only changes to exis
 
 **Relevant Context:**
 - `src/extension/extension.ts` lines 103–109 — existing "register all views" block; new call goes after line 109
-- `src/views/providers/BobModesProvider.ts` (ST-3) — `BobModesProvider`, `tryBobMode`
-- `src/views/bobModeTreeItems/BobModeItem.ts` (ST-2) — `BobModeItem.fileUri`, `.line`, `.slug`, `.label`
+- `src/extension/bob/BobModesProvider.ts` (ST-3) — `BobModesProvider`, `tryBobMode`
+- `src/extension/bob/BobModeItem.ts` (ST-2) — `BobModeItem.fileUri`, `.line`, `.slug`, `.label`
 
 ---
 

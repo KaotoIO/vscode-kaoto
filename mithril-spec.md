@@ -7,7 +7,7 @@ todos:
     status: done
   - id: wi-2-codelens
     content: "WI-2: CodeLens for custom_modes.yaml/.yml -- BobModeCodeLensProvider, Open in Kaoto + Try with Kaoto lenses"
-    status: pending
+    status: done
   - id: wi-3-editor
     content: "WI-3: Kaoto custom editor for custom_modes.yaml/.yml -- package.json selector, KAOTO_FILE_PATH_GLOB update, Kaoto UI modes designer"
     status: pending
@@ -102,7 +102,7 @@ Add a new flat tree view in the Kaoto sidebar that lists all modes from `.bob/cu
 - Add view/title menu (refresh button) and view/item/context menus (Show Source, inline Try It button)
 - Do not add a view-level `when` clause; the Bob Modes view should always be visible in the Kaoto sidebar so the empty-state welcome content can guide users to create `.bob/custom_modes.yaml`
 
-**New file: `src/views/providers/BobModesProvider.ts`**
+**New file: `src/extension/bob/BobModesProvider.ts`**
 
 - Implements `TreeDataProvider<BobModeItem>`
 - Flat structure: each `- slug:` entry in the YAML becomes a root-level `BobModeItem`
@@ -112,7 +112,7 @@ Add a new flat tree view in the Kaoto sidebar that lists all modes from `.bob/cu
 - Each `BobModeItem` displays the mode `name` as label and `slug` as description; fall back to `slug` as label only if `name` is missing
 - Uses the parsed YAML for mode data and a lightweight source-line scan for `- slug:` lines to resolve the line number used by "Show Source"
 
-**New file: `src/views/bobModeTreeItems/BobModeItem.ts`**
+**New file: `src/extension/bob/BobModeItem.ts`**
 
 - Extends `vscode.TreeItem`
 - Properties: `slug`, `name`, `description`, `line` (line number in YAML for "Show Source")
@@ -181,20 +181,26 @@ customModes:
 
 ---
 
-### WI-2: CodeLens for `custom_modes.yaml` / `custom_modes.yml` Source Editor (Dominik)
+### WI-2: CodeLens for `custom_modes.yaml` / `custom_modes.yml` Source Editor ✅
 
 When `custom_modes.yaml` or `custom_modes.yml` is open in a **text editor** (not Kaoto), show CodeLens buttons above each `- slug:` line.
 
-**New file: `src/commands/BobModeCodeLensProvider.ts`**
+**Implementation (Lars):**
 
-- `BobModeCodeLensProvider` implements `vscode.CodeLensProvider`
-- Registered for `{ language: 'yaml', pattern: '**/.bob/custom_modes.{yaml,yml}' }`
-- Two lenses per slug line: `Open in Kaoto` and `Try with Kaoto`
-- "Try with Kaoto" follows the same prompt flow as the tree view: shows an input box for the actual user prompt, prepends `Switch to <mode-name> mode. ` in the extension, then sends the generated Bob prompt
-
-**Shared logic:**
-
-- Extract `tryBobMode()` and the Bob chat send logic into a shared utility (or keep in the same file) so both the tree view and CodeLens use the same prompt-injection path
+- `src/extension/bob/BobModeCodeLensProvider.ts` — `BobModeCodeLensProvider implements vscode.CodeLensProvider`
+  - Registered for `{ scheme: 'file', language: 'yaml', pattern: '**/.bob/custom_modes.{yaml,yml}' }`
+  - Two lenses per slug line: `$(file-symlink-file) Open in Kaoto` and `$(play) Try with Kaoto`
+  - Scans document line-by-line with regex `/^\s*-\s*slug:\s*(.+)$/`; parses full YAML for name lookup
+  - YAML parse errors are silently swallowed (file may be mid-edit) — returns `[]`
+  - "Try with Kaoto" reuses the existing `kaoto.bobModes.tryMode` command with `{ slug, label }` args
+  - "Open in Kaoto" uses `vscode.openWith` with `webviewEditorsKaoto`
+  - No `resolveCodeLens` needed — all command info available at `provideCodeLenses` time
+- `src/extension/bob/BobChatUtils.ts` — **new shared utility** extracted from `BobModesProvider.ts`
+  - `tryBobMode(slug, modeName)` — input box + Bob prompt construction
+  - `sendToBobChat(prompt)` — Bob v1 → v2 → clipboard fallback
+  - Both tree view and CodeLens use this single implementation
+- `src/extension/bob/BobModesRegistrar.ts` — `registerCodeLensProvider` added; `tryBobMode` import updated to `BobChatUtils`
+- `src/extension/bob/BobModesProvider.ts` — re-exports `tryBobMode` from `BobChatUtils`; own implementation removed
 
 ---
 
@@ -258,15 +264,15 @@ This decision does not block implementation -- the method signature supports bot
 
 | File                                         | Action                                                    | Owner                       |
 | -------------------------------------------- | --------------------------------------------------------- | --------------------------- |
-| `package.json`                               | Add view, commands, menus                                 | Lars (WI-1), Dominik (WI-2) |
+| `package.json`                               | Add view, commands, menus                                 | Lars (WI-1) ✅              |
 | `package.json`                               | Add editor selector for `custom_modes.yaml` / `.yml`      | Dominik (WI-3)              |
-| `src/constants.ts`                           | Add `VIEW_BOB_MODES`, `COMMAND_BOB_MODES_*` constants     | Lars (WI-1)                 |
-| `src/views/providers/BobModesProvider.ts`    | **New** -- tree data provider for modes                   | Lars (WI-1)                 |
-| `src/views/bobModeTreeItems/BobModeItem.ts`  | **New** -- tree item for a single mode                    | Lars (WI-1)                 |
-| `src/commands/BobModeCodeLensProvider.ts`    | **New** -- CodeLens provider for slug lines               | Dominik (WI-2)              |
-| `src/commands/SendPromptToChatCommand.ts`    | **New** -- Bob chat prompt injection                      | Dominik                     |
-| `src/extension/ExtensionContextHandler.ts`   | Add `registerBobModesView()`, `registerBobModeCodeLens()` | Lars (WI-1), Dominik (WI-2) |
-| `src/extension/extension.ts`                 | Call new registration methods                             | Lars (WI-1), Dominik (WI-2) |
+| `src/constants.ts`                           | Add `VIEW_BOB_MODES`, `COMMAND_BOB_MODES_*` constants     | Lars (WI-1) ✅              |
+| `src/extension/bob/BobModeItem.ts`           | **New** -- tree item for a single mode                    | Lars (WI-1) ✅              |
+| `src/extension/bob/BobModesProvider.ts`      | **New** -- tree data provider for modes                   | Lars (WI-1) ✅              |
+| `src/extension/bob/BobChatUtils.ts`          | **New** -- shared Bob chat utilities (tryBobMode, sendToBobChat) | Lars (WI-2) ✅       |
+| `src/extension/bob/BobModeCodeLensProvider.ts` | **New** -- CodeLens provider for slug lines             | Lars (WI-2) ✅              |
+| `src/extension/bob/BobModesRegistrar.ts`     | **New** -- registration (tree view, commands, CodeLens)   | Lars (WI-1, WI-2) ✅        |
+| `src/extension/extension.ts`                 | Call `registerBobModes(context)`                          | Lars (WI-1) ✅              |
 | `src/webview/VSCodeKaotoEditorChannelApi.ts` | Add `tryBobMode()` method prototype                       | Dominik (WI-5)              |
 
 ---
@@ -309,9 +315,9 @@ The split is designed so Lars can work **fully independently** without any depen
 
 **Dominik (after PTO / during PTO when available):**
 
-1. **Bob chat integration** -- contribute `SendPromptToChatCommand.ts`, `TestBobIntegrationCommand.ts`, and their constants/registration. Wire Lars's "Try It..." stub to the real `sendMessageWithHiddenPrompt` call. The key call: `vscode.commands.executeCommand('bob-code.sendMessageWithHiddenPrompt', undefined, bobPrompt)`.
+1. **Bob chat integration** -- contribute `SendPromptToChatCommand.ts`, `TestBobIntegrationCommand.ts`, and their constants/registration. Wire Lars's "Try It..." stub to the real `sendMessageWithHiddenPrompt` call. The key call: `vscode.commands.executeCommand('bob-code.sendMessageWithHiddenPrompt', undefined, bobPrompt)`. (already done by Lars)
 
-2. **WI-2: CodeLens** -- contribute `BobModeCodeLensProvider.ts` with "Open in Kaoto" and "Try with Kaoto" lenses above `- slug:` lines, ensure shared prompt logic between tree view and CodeLens.
+2. **WI-2: CodeLens** -- contribute `BobModeCodeLensProvider.ts` with "Open in Kaoto" and "Try with Kaoto" lenses above `- slug:` lines, ensure shared prompt logic between tree view and CodeLens. (already done by Lars)
 
 3. **WI-5: Channel API method prototype** -- add `tryBobMode(slug, modeName, prompt?)` to `VSCodeKaotoEditorChannelApi.ts` on the extension side. This is the bridge the Kaoto UI team will call from their canvas. The extension-side implementation calls the same `sendMessageWithHiddenPrompt` path. The Kaoto UI team only needs to invoke this method from their button -- they don't touch Bob commands. See WI-5 section for Option A vs Option B UX decision.
 
