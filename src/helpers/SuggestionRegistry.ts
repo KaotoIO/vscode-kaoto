@@ -44,7 +44,7 @@ export async function getSuggestions(topic: string, word: string, context: Sugge
 		return [];
 	}
 	const result = suggestionProvider(word ?? '', context, fsPath);
-	return Promise.resolve(result);
+	return result;
 }
 
 export function filterSuggestionsByWord(suggestions: Suggestion[], word: string): Suggestion[] {
