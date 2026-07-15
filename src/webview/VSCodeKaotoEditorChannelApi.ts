@@ -1,5 +1,19 @@
-import { CatalogKind, KaotoEditorChannelApi, RuntimeMavenInformation, StepUpdateAction, Suggestion, SuggestionRequestContext } from '@kaoto/kaoto';
-import { CanvasLayoutDirection, ColorScheme, ISettingsModel, NodeLabelType, NodeToolbarTrigger, SettingsModel } from '@kaoto/kaoto/models';
+import {
+	CanvasLayoutDirection,
+	CatalogKind,
+	ColorScheme,
+	FileTypes,
+	FileTypesResponse,
+	ISettingsModel,
+	KaotoEditorChannelApi,
+	NodeLabelType,
+	NodeToolbarTrigger,
+	RuntimeMavenInformation,
+	SettingsModel,
+	StepUpdateAction,
+	Suggestion,
+	SuggestionRequestContext,
+} from '@kaoto/kaoto/models';
 import { BackendProxy } from '@kie-tools-core/backend/dist/api';
 import { I18n } from '@kie-tools-core/i18n/dist/core';
 import { DefaultVsCodeKieEditorChannelApiImpl } from '@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl';
@@ -12,22 +26,25 @@ import { JavaCodeCompletionApi } from '@kie-tools-core/vscode-java-code-completi
 import { ResourceContentService } from '@kie-tools-core/workspace/dist/api';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
-import { MavenRuntimeDetector } from '../helpers/MavenRuntimeDetector';
-import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
-import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
-import { getSuggestions } from '../helpers/SuggestionRegistry';
-import { KaotoCatalogService } from '../services/KaotoCatalogService';
-import { RuntimeType } from '../executors/types/ExecutorTypes';
 import {
 	KAOTO_CANVAS_LAYOUT_DIRECTION_SETTING_ID,
 	KAOTO_CATALOG_URL_SETTING_ID,
 	KAOTO_COLOR_THEME_SETTING_ID,
+	KAOTO_LOCAL_KAMELET_DIRECTORIES_SETTING_ID,
 	KAOTO_NODE_LABEL_SETTING_ID,
 	KAOTO_NODE_TOOLBAR_TRIGGER_SETTING_ID,
 	KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID,
 	KAOTO_REST_CUSTOM_MEDIA_TYPES_SETTING_ID,
 } from '../constants';
+import { RuntimeType } from '../executors/types/ExecutorTypes';
+import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
+import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
+import { resolvePaths } from '../helpers/helpers';
+import { readKameletsFromDirectory } from '../helpers/KameletFileReader';
+import { MavenRuntimeDetector } from '../helpers/MavenRuntimeDetector';
+import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
+import { getSuggestions } from '../helpers/SuggestionRegistry';
+import { KaotoCatalogService } from '../services/KaotoCatalogService';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {
 	private readonly currentEditedDocument: vscode.TextDocument | VsCodeKieEditorCustomDocument;
@@ -158,8 +175,26 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 		await vscode.workspace.fs.writeFile(kaotoMetadatafile, new TextEncoder().encode(JSON.stringify(jsonContent, null, '\t')));
 	}
 
-	async getResourcesContentByType(_type: string): Promise<Array<{ filename: string; content: string }>> {
-		return [];
+	async getResourcesContentByType(fileType: FileTypes): Promise<FileTypesResponse[]> {
+		if (fileType !== FileTypes.Kamelets) {
+			return [];
+		}
+
+		const kameletsFolder = vscode.workspace.getConfiguration().get<string[]>(KAOTO_LOCAL_KAMELET_DIRECTORIES_SETTING_ID);
+		if (!Array.isArray(kameletsFolder) || kameletsFolder.length === 0) {
+			return [];
+		}
+
+		const cwd = path.dirname(this.currentEditedDocument.uri.fsPath);
+		const resolvedDirs = resolvePaths(kameletsFolder, cwd);
+		const resources: FileTypesResponse[] = [];
+
+		for (const dir of resolvedDirs) {
+			const dirResources = await readKameletsFromDirectory(dir);
+			resources.push(...dirResources);
+		}
+
+		return resources;
 	}
 
 	async getResourceContent(relativePath: string): Promise<string | undefined> {
