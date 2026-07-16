@@ -32,7 +32,9 @@ export class BobModeCodeLensProvider implements vscode.CodeLensProvider {
 			const modes = parsed?.customModes;
 			if (Array.isArray(modes)) {
 				for (const entry of modes) {
-					if (!entry || typeof entry !== 'object') continue;
+					if (!entry || typeof entry !== 'object') {
+						continue;
+					}
 					const e = entry as Record<string, unknown>;
 					const slug = typeof e['slug'] === 'string' ? e['slug'].trim() : undefined;
 					const name = typeof e['name'] === 'string' ? e['name'].trim() : undefined;
@@ -49,7 +51,9 @@ export class BobModeCodeLensProvider implements vscode.CodeLensProvider {
 
 		for (let i = 0; i < lines.length; i++) {
 			const match = SLUG_LINE_RE.exec(lines[i]);
-			if (!match) continue;
+			if (!match) {
+				continue;
+			}
 
 			const slug = match[1].trim();
 			const label = nameMap.get(slug) ?? slug;
