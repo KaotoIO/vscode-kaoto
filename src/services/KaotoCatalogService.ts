@@ -8,6 +8,7 @@ import { RuntimeType, ExecutorType } from '../executors/types/ExecutorTypes';
 import { isRedHatBuild } from '../helpers/helpers';
 import {
 	COMMAND_SELECT_CAMEL_CATALOG,
+	KAOTO_BOB_CATALOG_NAME_SETTING_ID,
 	KAOTO_CATALOG_URL_SETTING_ID,
 	KAOTO_EXECUTOR_TYPE_SETTING_ID,
 	KAOTO_RUNTIME_CATALOG_NAME_SETTING_ID,
@@ -150,6 +151,8 @@ export class KaotoCatalogService {
 		const normalized = runtime.toLowerCase().replaceAll(/\s+/g, '-');
 		if (normalized.includes('citrus')) {
 			return RuntimeType.CITRUS;
+		} else if (normalized.includes('bob')) {
+			return RuntimeType.BOB;
 		} else if (normalized.includes('spring')) {
 			return RuntimeType.SPRING_BOOT;
 		} else if (normalized.includes('quarkus')) {
@@ -180,6 +183,8 @@ export class KaotoCatalogService {
 		// Determine file type and delegate to appropriate method
 		if (resourceUri && this.isKaotoCitrusTestFile(resourceUri)) {
 			return this.getSelectedTestCatalog(resourceUri);
+		} else if (resourceUri && this.isKaotoBobModeFile(resourceUri)) {
+			return this.getSelectedBobCatalog(resourceUri);
 		} else {
 			return this.getSelectedIntegrationCatalog(resourceUri);
 		}
@@ -231,15 +236,23 @@ export class KaotoCatalogService {
 	}
 
 	/**
+	 * Get the selected Bob mode catalog for a workspace, or default if none selected
+	 */
+	public async getSelectedBobCatalog(resourceUri?: vscode.Uri): Promise<CatalogLibraryEntry | undefined> {
+		return this.getSelectedCatalogByKey('bobCatalogName', 'Bob mode', () => this.getDefaultBobCatalog(), resourceUri);
+	}
+
+	/**
 	 * Set the selected catalog for a workspace
-	 * Automatically determines whether to store as integration or test catalog based on catalog runtime
+	 * Automatically determines whether to store as integration, test, or Bob mode catalog based on catalog runtime
 	 */
 	public async setSelectedCatalog(catalog: CatalogLibraryEntry, resourceUri?: vscode.Uri): Promise<void> {
-		// Determine if this is a Citrus catalog
-		const isCitrusCatalog = this.normalizeRuntime(catalog.runtime) === RuntimeType.CITRUS;
+		const normalizedRuntime = this.normalizeRuntime(catalog.runtime);
 
-		if (isCitrusCatalog) {
+		if (normalizedRuntime === RuntimeType.CITRUS) {
 			await this.setSelectedTestCatalog(catalog, resourceUri);
+		} else if (normalizedRuntime === RuntimeType.BOB) {
+			await this.setSelectedBobCatalog(catalog, resourceUri);
 		} else {
 			await this.setSelectedIntegrationCatalog(catalog, resourceUri);
 		}
@@ -314,16 +327,28 @@ export class KaotoCatalogService {
 	}
 
 	/**
+	 * Set the selected Bob mode catalog for a workspace
+	 */
+	public async setSelectedBobCatalog(catalog: CatalogLibraryEntry, resourceUri?: vscode.Uri): Promise<void> {
+		return this.setSelectedCatalogByType(catalog, resourceUri, {
+			settingKey: 'bobCatalogName',
+			logLabel: 'Bob mode',
+			getPrevious: (uri) => this.getSelectedBobCatalog(uri),
+			isActiveFileMatch: (uri) => this.isKaotoBobModeFile(uri),
+			reopenMessage: 'Bob mode catalog version changed. Reopen editor to apply changes.',
+		});
+	}
+
+	/**
 	 * Get the default catalog based on file type
 	 * - For test files: latest Citrus catalog
 	 * - For integration files: latest Camel Main RedHat version (or latest Main if no RedHat version available)
 	 */
 	public getDefaultCatalog(resourceUri?: vscode.Uri): CatalogLibraryEntry | undefined {
-		// Check if this is a Citrus test file
-		const isCitrusTest = resourceUri ? this.isKaotoCitrusTestFile(resourceUri) : false;
-
-		if (isCitrusTest) {
+		if (resourceUri && this.isKaotoCitrusTestFile(resourceUri)) {
 			return this.getDefaultTestCatalog();
+		} else if (resourceUri && this.isKaotoBobModeFile(resourceUri)) {
+			return this.getDefaultBobCatalog();
 		} else {
 			return this.getDefaultIntegrationCatalog();
 		}
@@ -356,6 +381,14 @@ export class KaotoCatalogService {
 	public getDefaultTestCatalog(): CatalogLibraryEntry | undefined {
 		const citrusCatalogs = this.catalogs.filter((c) => c.runtime.toLowerCase() === RuntimeType.CITRUS);
 		return KaotoCatalogService.getLatestByVersion(citrusCatalogs);
+	}
+
+	/**
+	 * Get the default Bob mode catalog (latest Bob catalog)
+	 */
+	public getDefaultBobCatalog(): CatalogLibraryEntry | undefined {
+		const bobCatalogs = this.catalogs.filter((c) => this.normalizeRuntime(c.runtime) === RuntimeType.BOB);
+		return KaotoCatalogService.getLatestByVersion(bobCatalogs);
 	}
 	/**
 	 * Get the CLI version (JBang version) from catalog selection
@@ -479,7 +512,11 @@ export class KaotoCatalogService {
 			vscode.workspace.onDidChangeConfiguration((e) => {
 				if (e.affectsConfiguration(KAOTO_CATALOG_URL_SETTING_ID)) {
 					void this.loadCatalogs().then(() => this.updateStatusBar());
-				} else if (e.affectsConfiguration(KAOTO_RUNTIME_CATALOG_NAME_SETTING_ID) || e.affectsConfiguration(KAOTO_TESTING_CATALOG_NAME_SETTING_ID)) {
+				} else if (
+					e.affectsConfiguration(KAOTO_RUNTIME_CATALOG_NAME_SETTING_ID) ||
+					e.affectsConfiguration(KAOTO_TESTING_CATALOG_NAME_SETTING_ID) ||
+					e.affectsConfiguration(KAOTO_BOB_CATALOG_NAME_SETTING_ID)
+				) {
 					void this.updateStatusBar();
 				}
 				if (e.affectsConfiguration(KAOTO_RUNTIME_CATALOG_NAME_SETTING_ID)) {
@@ -567,7 +604,7 @@ export class KaotoCatalogService {
 	 * Check if a file is a Kaoto-supported file (integration or test)
 	 */
 	private isKaotoFile(uri: vscode.Uri): boolean {
-		return this.isKaotoIntegrationFile(uri) || this.isKaotoCitrusTestFile(uri);
+		return this.isKaotoIntegrationFile(uri) || this.isKaotoCitrusTestFile(uri) || this.isKaotoBobModeFile(uri);
 	}
 
 	/**
@@ -587,6 +624,14 @@ export class KaotoCatalogService {
 	}
 
 	/**
+	 * Check if a file is a Bob IDE custom modes file
+	 */
+	private isKaotoBobModeFile(uri: vscode.Uri): boolean {
+		const fileName = path.basename(uri.fsPath);
+		return /^custom_modes.*\.yaml$/.test(fileName);
+	}
+
+	/**
 	 * Show the catalog picker QuickPick
 	 * @returns true if a catalog was selected, false if cancelled or no selection made
 	 */
@@ -603,63 +648,22 @@ export class KaotoCatalogService {
 			await this.loadCatalogs();
 		}
 
-		// Determine if current file is a Citrus test file
 		const isCitrusTestFile = resourceUri ? this.isKaotoCitrusTestFile(resourceUri) : false;
+		const isBobModeFile = resourceUri ? this.isKaotoBobModeFile(resourceUri) : false;
 
 		const groupedCatalogs = this.getCatalogsByRuntime();
 		const currentCatalog = await this.getSelectedCatalog(resourceUri);
-
-		// Create QuickPick items grouped by runtime
-		const items: CatalogQuickPickItem[] = [];
-
-		for (const [runtime, catalogs] of Object.entries(groupedCatalogs)) {
-			// Filter catalogs based on file type:
-			// - For Citrus test files: show ONLY Citrus catalogs
-			// - For integration files: show all catalogs EXCEPT Citrus
-			const filteredCatalogs = catalogs.filter((catalog) => {
-				const isCitrusCatalog = catalog.runtime.toLowerCase() === RuntimeType.CITRUS;
-				if (isCitrusTestFile) {
-					// For test files, only show Citrus catalogs
-					return isCitrusCatalog;
-				} else {
-					// For integration files, exclude Citrus catalogs
-					return !isCitrusCatalog;
-				}
-			});
-
-			// Skip runtime group if no catalogs after filtering
-			if (filteredCatalogs.length === 0) {
-				continue;
-			}
-
-			// Add runtime header
-			items.push({
-				label: runtime,
-				kind: vscode.QuickPickItemKind.Separator,
-			});
-
-			// Add catalog items for this runtime
-			for (const catalog of filteredCatalogs) {
-				const displayLabel = KaotoCatalogService.buildDisplayLabel(catalog);
-				const isCurrent =
-					currentCatalog?.version === catalog.version && this.normalizeRuntime(currentCatalog.runtime) === this.normalizeRuntime(catalog.runtime);
-				items.push({
-					label: isCurrent ? `$(check) ${displayLabel}` : displayLabel,
-					detail: isCurrent ? 'Currently selected' : undefined,
-					catalog: catalog,
-				});
-			}
-		}
+		const items = this.buildCatalogPickerItems(groupedCatalogs, currentCatalog, isCitrusTestFile, isBobModeFile);
+		const placeHolder = this.getCatalogPickerPlaceholder(isCitrusTestFile, isBobModeFile);
 
 		const selected = await vscode.window.showQuickPick(items, {
-			placeHolder: isCitrusTestFile ? 'Select Citrus Catalog Version' : 'Select Camel Catalog Version',
+			placeHolder,
 			matchOnDescription: true,
 			matchOnDetail: true,
 		});
 
 		if (selected?.catalog) {
-			const catalog = selected.catalog;
-			await this.setSelectedCatalog(catalog, resourceUri);
+			await this.setSelectedCatalog(selected.catalog, resourceUri);
 
 			// Show Red Hat Maven notification if the selected catalog is a Red Hat version
 			await this.checkAndShowRedHatNotification();
@@ -668,6 +672,59 @@ export class KaotoCatalogService {
 		}
 
 		return false; // No selection made (cancelled or closed)
+	}
+
+	private buildCatalogPickerItems(
+		groupedCatalogs: GroupedCatalogs,
+		currentCatalog: CatalogLibraryEntry | undefined,
+		isCitrusTestFile: boolean,
+		isBobModeFile: boolean,
+	): CatalogQuickPickItem[] {
+		const items: CatalogQuickPickItem[] = [];
+
+		for (const [runtime, catalogs] of Object.entries(groupedCatalogs)) {
+			const filteredCatalogs = catalogs.filter((catalog) => this.isCatalogVisibleForFileType(catalog, isCitrusTestFile, isBobModeFile));
+
+			if (filteredCatalogs.length === 0) {
+				continue;
+			}
+
+			items.push({ label: runtime, kind: vscode.QuickPickItemKind.Separator });
+
+			for (const catalog of filteredCatalogs) {
+				const displayLabel = KaotoCatalogService.buildDisplayLabel(catalog);
+				const isCurrent =
+					currentCatalog?.version === catalog.version && this.normalizeRuntime(currentCatalog.runtime) === this.normalizeRuntime(catalog.runtime);
+				items.push({
+					label: isCurrent ? `$(check) ${displayLabel}` : displayLabel,
+					detail: isCurrent ? 'Currently selected' : undefined,
+					catalog,
+				});
+			}
+		}
+
+		return items;
+	}
+
+	private isCatalogVisibleForFileType(catalog: CatalogLibraryEntry, isCitrusTestFile: boolean, isBobModeFile: boolean): boolean {
+		const normalizedRuntime = this.normalizeRuntime(catalog.runtime);
+		if (isCitrusTestFile) {
+			return normalizedRuntime === RuntimeType.CITRUS;
+		}
+		if (isBobModeFile) {
+			return normalizedRuntime === RuntimeType.BOB;
+		}
+		return normalizedRuntime !== RuntimeType.CITRUS && normalizedRuntime !== RuntimeType.BOB;
+	}
+
+	private getCatalogPickerPlaceholder(isCitrusTestFile: boolean, isBobModeFile: boolean): string {
+		if (isCitrusTestFile) {
+			return 'Select Citrus Catalog Version';
+		}
+		if (isBobModeFile) {
+			return 'Select Bob Catalog Version';
+		}
+		return 'Select Camel Catalog Version';
 	}
 
 	/**

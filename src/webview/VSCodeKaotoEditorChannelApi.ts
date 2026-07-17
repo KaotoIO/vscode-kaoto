@@ -69,6 +69,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 
 		let runtimeCatalogName: string | undefined;
 		let testingCatalogName: string | undefined;
+		let bobCatalogName: string | undefined;
 
 		// Get selected catalog from KaotoCatalogService for standalone projects
 		if (!(await KaotoCatalogService.isMavenProject(this.currentEditedDocument.uri))) {
@@ -76,12 +77,12 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 				const catalogService = KaotoCatalogService.getInstance();
 				const catalog = await catalogService.getSelectedCatalog(this.currentEditedDocument.uri);
 				if (catalog) {
-					// Use the catalog name directly from index.json (e.g., "Camel Main 4.14.7" or "Citrus 4.10.1")
-					// Check runtime to determine if it's a testing catalog (Citrus) or runtime catalog
-					const isCitrusCatalog = catalog.runtime.toLowerCase() === RuntimeType.CITRUS;
-
-					if (isCitrusCatalog) {
+					// Use the catalog name directly from index.json (e.g., "Camel Main 4.14.7", "Citrus 4.10.1", "Bob 1.0.0")
+					// Check runtime to determine if it's a testing catalog (Citrus), Bob mode catalog, or runtime catalog
+					if (catalog.runtime.toLowerCase() === RuntimeType.CITRUS) {
 						testingCatalogName = catalog.name;
+					} else if (catalog.runtime.toLowerCase() === RuntimeType.BOB) {
+						bobCatalogName = catalog.name;
 					} else {
 						runtimeCatalogName = catalog.name;
 					}
@@ -103,6 +104,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 			catalogUrl: catalogUrl ?? '',
 			runtimeCatalogName: runtimeCatalogName,
 			testingCatalogName: testingCatalogName,
+			bobCatalogName: bobCatalogName,
 			nodeLabel: nodeLabel ?? NodeLabelType.Description,
 			nodeToolbarTrigger: nodeToolbarTrigger ?? NodeToolbarTrigger.onHover,
 			colorScheme: colorTheme,

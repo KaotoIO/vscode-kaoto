@@ -290,7 +290,7 @@
       },
       {
         "command": "kaoto.open",
-        "title": "Open with Kaoto Graphical Editor for Camel"
+        "title": "Open with Kaoto"
       },
       {
         "command": "kaoto.open.source",
@@ -307,7 +307,7 @@
         "command": "kaoto.close.source",
         "title": "Close Source Code",
         "shortTitle": "Close Source",
-        "enablement": "(resourceFilename =~ /\\.(camel|kamelet|pipe).yaml$/ || resourceFilename =~ /\\-pipe.yaml$/ || resourceFilename =~ /\\.camel.xml$/ || resourceFilename =~ /\\.citrus(-test|-it|\\.test|\\.it)?\\.yaml$/)",
+        "enablement": "(resourceFilename =~ /\\.(camel|kamelet|pipe).yaml$/ || resourceFilename =~ /\\-pipe.yaml$/ || resourceFilename =~ /\\.camel.xml$/ || resourceFilename =~ /\\.citrus(-test|-it|\\.test|\\.it)?\\.yaml$/ || resourceFilename =~ /custom_modes*.yaml$/)",
         "category": "Kaoto",
         "icon": "./icons/commands/source_active.png"
       },
@@ -744,12 +744,12 @@
         {
           "command": "kaoto.open.source",
           "when": "activeCustomEditorId == webviewEditorsKaoto",
-          "group": "navigation@99"
+          "group": "navigation@999"
         },
         {
           "command": "kaoto.close.source",
-          "when": "(resourceFilename =~ /\\.(camel|kamelet|pipe).yaml$/ || resourceFilename =~ /\\-pipe.yaml$/ || resourceFilename =~ /\\.camel.xml$/ || resourceFilename =~ /\\.citrus(-test|-it|\\.test|\\.it)?\\.yaml$/) && activeCustomEditorId !== webviewEditorsKaoto",
-          "group": "navigation@99"
+          "when": "(resourceFilename =~ /\\.(camel|kamelet|pipe).yaml$/ || resourceFilename =~ /\\-pipe.yaml$/ || resourceFilename =~ /\\.camel.xml$/ || resourceFilename =~ /\\.citrus(-test|-it|\\.test|\\.it)?\\.yaml$/ || resourceFilename =~ /custom_modes*.yaml$/) && activeCustomEditorId !== webviewEditorsKaoto",
+          "group": "navigation@999"
         }
       ],
       "explorer/context": [
@@ -1291,6 +1291,13 @@
             "markdownDescription": "⚠️ **WORKSPACE-ONLY SETTING** - This setting only works in Workspace/Folder settings, not User settings.\n\nSelected testing catalog name for test files (e.g., 'Citrus 4.10.1').\n\n**Note**: Use the status bar to select from available catalogs.",
             "scope": "resource",
             "order": 1
+          },
+          "kaoto.bobCatalogName": {
+            "type": "string",
+            "default": null,
+            "markdownDescription": "⚠️ **WORKSPACE-ONLY SETTING** - This setting only works in Workspace/Folder settings, not User settings.\n\nSelected Bob IDE catalog name for custom mode files (e.g., 'Bob 1.0.0').\n\n**Note**: Use the status bar to select from available catalogs.",
+            "scope": "resource",
+            "order": 2
           }
         }
       }
@@ -1308,6 +1315,9 @@
           },
           {
             "filenamePattern": "*{.citrus,.citrus.test,.citrus.it,.citrus-test,.citrus-it}.yaml"
+          },
+          {
+            "filenamePattern": "**/.bob/custom_modes*.yaml"
           }
         ]
       }

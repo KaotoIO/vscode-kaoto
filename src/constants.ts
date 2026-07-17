@@ -62,6 +62,8 @@ export const KAOTO_RUNTIME_CATALOG_NAME_SETTING_ID = 'kaoto.runtimeCatalogName';
 
 export const KAOTO_TESTING_CATALOG_NAME_SETTING_ID = 'kaoto.testingCatalogName';
 
+export const KAOTO_BOB_CATALOG_NAME_SETTING_ID = 'kaoto.bobCatalogName';
+
 // ─── Command IDs ─────────────────────────────────────────────────────────────
 
 export const COMMAND_CAMEL_NEW_FILE = 'kaoto.new.camel.file';

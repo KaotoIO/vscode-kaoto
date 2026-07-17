@@ -17,6 +17,7 @@ export enum RuntimeType {
 	SPRING_BOOT = 'spring-boot',
 	MAIN = 'camel-main',
 	CITRUS = 'citrus',
+	BOB = 'bob',
 }
 
 /**
