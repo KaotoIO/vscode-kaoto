@@ -59,17 +59,14 @@ export class BobModeCodeLensProvider implements vscode.CodeLensProvider {
 			const label = nameMap.get(slug) ?? slug;
 			const range = new vscode.Range(i, 0, i, 0);
 
-			// Lens 1: Open in Kaoto
 			lenses.push(
+				// Lens 1: Open in Kaoto
 				new vscode.CodeLens(range, {
 					title: '$(file-symlink-file) Open in Kaoto',
 					command: 'vscode.openWith',
 					arguments: [document.uri, 'webviewEditorsKaoto'],
 				}),
-			);
-
-			// Lens 2: Try with Kaoto
-			lenses.push(
+				// Lens 2: Try with Kaoto
 				new vscode.CodeLens(range, {
 					title: '$(play) Try with Kaoto',
 					command: COMMAND_BOB_MODES_TRY,

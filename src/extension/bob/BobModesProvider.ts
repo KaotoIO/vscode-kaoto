@@ -16,7 +16,7 @@
 import { existsSync, readFileSync } from 'fs';
 import { parse } from 'yaml';
 import * as vscode from 'vscode';
-import { tryBobMode } from './BobChatUtils';
+
 import { KaotoOutputChannel } from '../KaotoOutputChannel';
 import { BobModeItem } from './BobModeItem';
 
@@ -115,4 +115,4 @@ export class BobModesProvider implements vscode.TreeDataProvider<BobModeItem> {
 	}
 }
 
-export { tryBobMode };
+export { tryBobMode } from './BobChatUtils';
