@@ -96,15 +96,12 @@ export function registerBobModes(context: vscode.ExtensionContext): void {
 		const bobDir = vscode.Uri.joinPath(wsFolders[0].uri, '.bob');
 		const targetUri = vscode.Uri.joinPath(bobDir, 'custom_modes.yaml');
 
-		const yamlExists = await vscode.workspace.fs.stat(targetUri).then(
-			() => true,
-			() => false,
-		);
-
-		if (!yamlExists) {
-			await vscode.workspace.fs.createDirectory(bobDir);
-			await vscode.workspace.fs.writeFile(targetUri, new TextEncoder().encode(BOB_MODES_FILE_TEMPLATE));
-		}
+		// Always write the template. This command is only reachable via the welcome-view
+		// button, which VS Code hides as soon as the tree has items. So if this command
+		// runs, the file either does not exist or contains no valid modes — either way
+		// it is safe to (re)create it with the default template.
+		await vscode.workspace.fs.createDirectory(bobDir);
+		await vscode.workspace.fs.writeFile(targetUri, new TextEncoder().encode(BOB_MODES_FILE_TEMPLATE));
 
 		await vscode.commands.executeCommand('vscode.openWith', targetUri, 'webviewEditorsKaoto');
 		provider.refresh();
