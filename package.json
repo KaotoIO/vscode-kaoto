@@ -307,7 +307,7 @@
         "command": "kaoto.close.source",
         "title": "Close Source Code",
         "shortTitle": "Close Source",
-        "enablement": "(resourceFilename =~ /\\.(camel|kamelet|pipe).yaml$/ || resourceFilename =~ /\\-pipe.yaml$/ || resourceFilename =~ /\\.camel.xml$/ || resourceFilename =~ /\\.citrus(-test|-it|\\.test|\\.it)?\\.yaml$/ || resourceFilename =~ /custom_modes*.yaml$/)",
+        "enablement": "(resourceFilename =~ /\\.(camel|kamelet|pipe).yaml$/ || resourceFilename =~ /\\-pipe.yaml$/ || resourceFilename =~ /\\.camel.xml$/ || resourceFilename =~ /\\.citrus(-test|-it|\\.test|\\.it)?\\.yaml$/ || resourceFilename == custom_modes.yaml)",
         "category": "Kaoto",
         "icon": "./icons/commands/source_active.png"
       },
@@ -748,7 +748,7 @@
         },
         {
           "command": "kaoto.close.source",
-          "when": "(resourceFilename =~ /\\.(camel|kamelet|pipe).yaml$/ || resourceFilename =~ /\\-pipe.yaml$/ || resourceFilename =~ /\\.camel.xml$/ || resourceFilename =~ /\\.citrus(-test|-it|\\.test|\\.it)?\\.yaml$/ || resourceFilename =~ /custom_modes*.yaml$/) && activeCustomEditorId !== webviewEditorsKaoto",
+          "when": "(resourceFilename =~ /\\.(camel|kamelet|pipe).yaml$/ || resourceFilename =~ /\\-pipe.yaml$/ || resourceFilename =~ /\\.camel.xml$/ || resourceFilename =~ /\\.citrus(-test|-it|\\.test|\\.it)?\\.yaml$/ || resourceFilename == custom_modes.yaml) && activeCustomEditorId !== webviewEditorsKaoto",
           "group": "navigation@999"
         }
       ],
@@ -1317,7 +1317,7 @@
             "filenamePattern": "*{.citrus,.citrus.test,.citrus.it,.citrus-test,.citrus-it}.yaml"
           },
           {
-            "filenamePattern": "**/.bob/custom_modes*.yaml"
+            "filenamePattern": "**/.bob/custom_modes.yaml"
           }
         ]
       }

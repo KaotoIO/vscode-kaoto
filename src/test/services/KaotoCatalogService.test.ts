@@ -238,10 +238,10 @@ suite('KaotoCatalogService Test Suite', () => {
 
 	test('should detect Bob IDE custom modes files', () => {
 		expect(catalogService['isKaotoBobModeFile'](vscode.Uri.file('/path/to/.bob/custom_modes.yaml'))).to.be.true;
-		// Any custom_modes*.yaml/yml variant
-		expect(catalogService['isKaotoBobModeFile'](vscode.Uri.file('/path/to/.bob/custom_modes_v2.yaml'))).to.be.true;
 
 		// Test non-Bob-mode files
+		expect(catalogService['isKaotoBobModeFile'](vscode.Uri.file('/path/to/.bob/custom_modes.yml'))).to.be.false;
+		expect(catalogService['isKaotoBobModeFile'](vscode.Uri.file('/path/to/.bob/custom_modes_v2.yaml'))).to.be.false;
 		expect(catalogService['isKaotoBobModeFile'](vscode.Uri.file('/path/to/custom_mode.yaml'))).to.be.false;
 		expect(catalogService['isKaotoBobModeFile'](vscode.Uri.file('/path/to/route.camel.yaml'))).to.be.false;
 		expect(catalogService['isKaotoBobModeFile'](vscode.Uri.file('/path/to/test.citrus.yaml'))).to.be.false;

@@ -1,15 +1,15 @@
 ---
 name: Bob IDE Custom Modes Support
-overview: "Add Bob IDE Custom Modes support to vscode-kaoto: a Modes tree view in the Kaoto sidebar, CodeLens on slug lines, Kaoto editor for custom_modes.yaml/.yml, and Bob chat integration for testing modes via prompt injection."
+overview: "Add Bob IDE Custom Modes support to vscode-kaoto: a Modes tree view in the Kaoto sidebar, CodeLens on slug lines, Kaoto editor for custom_modes.yaml, and Bob chat integration for testing modes via prompt injection."
 todos:
   - id: wi-1-tree-view
     content: "WI-1: Bob IDE Modes tree view -- BobModesProvider, BobModeItem, package.json views/commands/menus, registration, Try It prompt flow"
     status: done
   - id: wi-2-codelens
-    content: "WI-2: CodeLens for custom_modes.yaml/.yml -- BobModeCodeLensProvider, Open in Kaoto + Try with Kaoto lenses"
+    content: "WI-2: CodeLens for custom_modes.yaml -- BobModeCodeLensProvider, Open in Kaoto + Try with Kaoto lenses"
     status: done
   - id: wi-3-editor
-    content: "WI-3: Kaoto custom editor for custom_modes.yaml/.yml -- package.json selector, KAOTO_FILE_PATH_GLOB update, Kaoto UI modes designer"
+    content: "WI-3: Kaoto custom editor for custom_modes.yaml -- package.json selector, KAOTO_FILE_PATH_GLOB update, Kaoto UI modes designer"
     status: pending
   - id: wi-5-channel-api
     content: "WI-5: Channel API extension -- tryBobMode method in VSCodeKaotoEditorChannelApi, Kaoto UI button integration"
@@ -21,7 +21,7 @@ isProject: false
 
 ## Context
 
-Bob IDE allows users to define custom AI modes in `.bob/custom_modes.yaml` or `.bob/custom_modes.yml`. This plan adds first-class support for these modes in Kaoto: a tree view for browsing/testing them, CodeLens in the source editor, Kaoto visual editor support, and Bob chat integration for trying modes.
+Bob IDE allows users to define custom AI modes in `.bob/custom_modes.yaml`. This plan adds first-class support for these modes in Kaoto: a tree view for browsing/testing them, CodeLens in the source editor, Kaoto visual editor support, and Bob chat integration for trying modes.
 
 ### Existing foundation (prototyped by Dominik)
 
@@ -36,7 +36,7 @@ Two core capabilities have been prototyped and verified working inside Bob IDE:
 
 **2. CodeLens on slug lines**
 
-- `BobModeCodeLensProvider` registered for `**/.bob/custom_modes.{yaml,yml}`
+- `BobModeCodeLensProvider` registered for `**/.bob/custom_modes.yaml`
 - Scans for `- slug:` lines using regex `^(\s*-\s*slug:\s*)(.+)$`
 - Shows `Open in Kaoto | Try with Kaoto` above each slug line
 - "Try with Kaoto" extracts the full YAML mode block and sends it to Bob chat
@@ -47,17 +47,16 @@ Both will be contributed by Dominik to the main repository. Lars does not depend
 
 ## File Format
 
-Supported filenames:
+Supported filename:
 
-- `.bob/custom_modes.yaml` (canonical filename created by Kaoto)
-- `.bob/custom_modes.yml` (fallback only, supported when it already exists)
+- `.bob/custom_modes.yaml` (the only supported Bob IDE custom modes file)
+- Do not support `.bob/custom_modes.yml`
 - Do not support the singular `custom_mode.yaml` / `custom_mode.yml` filename
 
-Filename priority:
+Filename rule:
 
-- Prefer `.bob/custom_modes.yaml` whenever creating or choosing a default file
-- Use `.bob/custom_modes.yml` only as a fallback when that file already exists
-- If both `.yaml` and `.yml` exist in the workspace `.bob` folder, prefer `.yaml`
+- Always use `.bob/custom_modes.yaml` when creating, detecting, or opening the Bob modes file
+- Do not fall back to `.yml`, even if such a file exists in the workspace
 
 Workspace scope:
 
@@ -93,7 +92,7 @@ Field expectations:
 
 ### WI-1: "Bob IDE Modes" Tree View (Lars)
 
-Add a new flat tree view in the Kaoto sidebar that lists all modes from `.bob/custom_modes.yaml` or `.bob/custom_modes.yml`.
+Add a new flat tree view in the Kaoto sidebar that lists all modes from `.bob/custom_modes.yaml`.
 
 **package.json changes:**
 
@@ -106,9 +105,9 @@ Add a new flat tree view in the Kaoto sidebar that lists all modes from `.bob/cu
 
 - Implements `TreeDataProvider<BobModeItem>`
 - Flat structure: each `- slug:` entry in the YAML becomes a root-level `BobModeItem`
-- Parses `custom_modes.yaml` / `custom_modes.yml` using the `yaml` library (already a dependency)
-- `FileSystemWatcher` on `**/.bob/custom_modes.{yaml,yml}` for auto-refresh
-- In the workspace folder, prefer `.bob/custom_modes.yaml`; fall back to `.bob/custom_modes.yml` only if `.yaml` does not exist
+- Parses `custom_modes.yaml` using the `yaml` library (already a dependency)
+- `FileSystemWatcher` on `**/.bob/custom_modes.yaml` for auto-refresh
+- In the workspace folder, only `.bob/custom_modes.yaml` is considered
 - Each `BobModeItem` displays the mode `name` as label and `slug` as description; fall back to `slug` as label only if `name` is missing
 - Uses the parsed YAML for mode data and a lightweight source-line scan for `- slug:` lines to resolve the line number used by "Show Source"
 
@@ -141,7 +140,7 @@ Declared in `package.json` under `contributes.viewsWelcome`:
 **Scaffold command `kaoto.bobModes.create`:**
 
 - Creates `.bob/custom_modes.yaml` with a starter template containing one example mode
-- If `.bob/custom_modes.yaml` or `.bob/custom_modes.yml` already exists, open the existing file instead of creating a second one; prefer `.yaml` if both exist
+- If `.bob/custom_modes.yaml` already exists, open the existing file instead of creating a second one
 - Opens the file in Kaoto editor via `vscode.openWith(uri, 'webviewEditorsKaoto')`
 - Refreshes the tree view
 
@@ -161,7 +160,7 @@ customModes:
 **Registration in `ExtensionContextHandler.ts`:**
 
 - New method `registerBobModesView()` following the same pattern as `registerTestsView()` or `registerIntegrationsView()`
-- No visibility context key is needed; the view is always visible, and the provider returns an empty list when no `.bob/custom_modes.yaml` or `.bob/custom_modes.yml` file exists
+- No visibility context key is needed; the view is always visible, and the provider returns an empty list when no `.bob/custom_modes.yaml` file exists
 - Registers refresh command, show source command, try mode command, and create command
 
 **"Try It..." behavior (final, after Dominik's integration):**
@@ -175,20 +174,20 @@ customModes:
 
 **"Show Source" behavior (right-click):**
 
-- Opens `custom_modes.yaml` / `custom_modes.yml` in text editor
+- Opens `custom_modes.yaml` in text editor
 - Jumps to the line of the corresponding `- slug:` entry using `vscode.window.showTextDocument(uri, { selection: range })`
 - If the slug line cannot be resolved, opens the file without a selection
 
 ---
 
-### WI-2: CodeLens for `custom_modes.yaml` / `custom_modes.yml` Source Editor ✅
+### WI-2: CodeLens for `custom_modes.yaml` Source Editor ✅
 
-When `custom_modes.yaml` or `custom_modes.yml` is open in a **text editor** (not Kaoto), show CodeLens buttons above each `- slug:` line.
+When `custom_modes.yaml` is open in a **text editor** (not Kaoto), show CodeLens buttons above each `- slug:` line.
 
 **Implementation (Lars):**
 
 - `src/extension/bob/BobModeCodeLensProvider.ts` — `BobModeCodeLensProvider implements vscode.CodeLensProvider`
-  - Registered for `{ scheme: 'file', language: 'yaml', pattern: '**/.bob/custom_modes.{yaml,yml}' }`
+  - Registered for `{ scheme: 'file', language: 'yaml', pattern: '**/.bob/custom_modes.yaml' }`
   - Two lenses per slug line: `$(file-symlink-file) Open in Kaoto` and `$(play) Try with Kaoto`
   - Scans document line-by-line with regex `/^\s*-\s*slug:\s*(.+)$/`; parses full YAML for name lookup
   - YAML parse errors are silently swallowed (file may be mid-edit) — returns `[]`
@@ -204,18 +203,18 @@ When `custom_modes.yaml` or `custom_modes.yml` is open in a **text editor** (not
 
 ---
 
-### WI-3: Kaoto Custom Editor for `custom_modes.yaml` / `custom_modes.yml` (Dominik + UI team)
+### WI-3: Kaoto Custom Editor for `custom_modes.yaml` (Dominik + UI team)
 
-Register `custom_modes.yaml` and `custom_modes.yml` as supported file types for the Kaoto editor.
+Register `custom_modes.yaml` as a supported file type for the Kaoto editor.
 
 **Extension side (Dominik):**
 
-- Add `{ "filenamePattern": "custom_modes.{yaml,yml}" }` to `customEditors[0].selector` in `package.json`
+- Add `{ "filenamePattern": "**/.bob/custom_modes.yaml" }` to `customEditors[0].selector` in `package.json`
 - The existing `EditorEnvelopeLocator` glob (`KAOTO_FILE_PATH_GLOB`) may need to include this pattern
 
 **UI side (UI team, separate `@kaoto/kaoto` repo):**
 
-- Render a modes designer canvas when the Kaoto editor opens a `custom_modes.yaml` or `custom_modes.yml` file
+- Render a modes designer canvas when the Kaoto editor opens a `custom_modes.yaml` file
 - This is the visual editor for designing modes on the Kaoto canvas
 
 ---
@@ -224,7 +223,7 @@ Register `custom_modes.yaml` and `custom_modes.yml` as supported file types for 
 
 No activation event is needed for Bob modes.
 
-The Kaoto extension already activates via the existing startup activation path, so do **not** add `"workspaceContains:**/.bob/custom_modes.yaml"` or `"workspaceContains:**/.bob/custom_modes.yml"` to `activationEvents`. Keeping the Bob Modes view always visible also ensures that the native `viewsWelcome` empty state can be shown when the modes file does not exist yet.
+The Kaoto extension already activates via the existing startup activation path, so do **not** add `"workspaceContains:**/.bob/custom_modes.yaml"` to `activationEvents`. Keeping the Bob Modes view always visible also ensures that the native `viewsWelcome` empty state can be shown when the modes file does not exist yet.
 
 ---
 
@@ -265,7 +264,7 @@ This decision does not block implementation -- the method signature supports bot
 | File                                         | Action                                                    | Owner                       |
 | -------------------------------------------- | --------------------------------------------------------- | --------------------------- |
 | `package.json`                               | Add view, commands, menus                                 | Lars (WI-1) ✅              |
-| `package.json`                               | Add editor selector for `custom_modes.yaml` / `.yml`      | Dominik (WI-3)              |
+| `package.json`                               | Add editor selector for `custom_modes.yaml`               | Dominik (WI-3)              |
 | `src/constants.ts`                           | Add `VIEW_BOB_MODES`, `COMMAND_BOB_MODES_*` constants     | Lars (WI-1) ✅              |
 | `src/extension/bob/BobModeItem.ts`           | **New** -- tree item for a single mode                    | Lars (WI-1) ✅              |
 | `src/extension/bob/BobModesProvider.ts`      | **New** -- tree data provider for modes                   | Lars (WI-1) ✅              |
@@ -311,7 +310,7 @@ The split is designed so Lars can work **fully independently** without any depen
    - Wire "Show Source" right-click to open text editor at the slug line
    - **"Try It..." stub**: implement the inline button and input box flow, but use a **placeholder action** (e.g., log to output channel + show info message "Prompt ready: ..."). Do NOT depend on `sendMessageWithHiddenPrompt` or any worktree code. Use a constant like `COMMAND_BOB_MODES_TRY` and a simple handler that Dominik will later replace with the real Bob chat call.
 
-   For the flat tree structure, follow `HelpFeedbackProvider` as the closest pattern -- it implements `TreeDataProvider` directly (no `AbstractFolderTreeProvider`), returns all items at root level, `[]` for children, and uses `TreeItemCollapsibleState.None`. For inline action buttons (play icon), borrow the `view/item/context` menu wiring pattern from Tests/OpenApi in `package.json`, keyed on `contextValue`. For the file watcher and refresh, follow the `EventEmitter` + `onDidChangeTreeData` pattern from `IntegrationsProvider`. The welcome content follows the exact same pattern as `kaoto.integrations` and `kaoto.tests` in `package.json` under `viewsWelcome`. Use the `yaml` npm package (already a project dependency) to parse `custom_modes.yaml` / `custom_modes.yml`.
+   For the flat tree structure, follow `HelpFeedbackProvider` as the closest pattern -- it implements `TreeDataProvider` directly (no `AbstractFolderTreeProvider`), returns all items at root level, `[]` for children, and uses `TreeItemCollapsibleState.None`. For inline action buttons (play icon), borrow the `view/item/context` menu wiring pattern from Tests/OpenApi in `package.json`, keyed on `contextValue`. For the file watcher and refresh, follow the `EventEmitter` + `onDidChangeTreeData` pattern from `IntegrationsProvider`. The welcome content follows the exact same pattern as `kaoto.integrations` and `kaoto.tests` in `package.json` under `viewsWelcome`. Use the `yaml` npm package (already a project dependency) to parse `custom_modes.yaml`.
 
 **Dominik (after PTO / during PTO when available):**
 
@@ -353,7 +352,7 @@ export async function tryBobMode(slug: string, modeName: string): Promise<void> 
 - For the flat tree structure: follow `HelpFeedbackProvider` as the closest pattern -- implements `TreeDataProvider` directly (not `AbstractFolderTreeProvider`), returns all items at root level, `[]` for children. Note: `TestsProvider` / `OpenApiProvider` use a hierarchical folder+files structure via `AbstractFolderTreeProvider` which is overkill for a flat mode list.
 - For inline action buttons: borrow the `view/item/context` menu wiring from Tests/OpenApi in `package.json`, keyed on `contextValue` (e.g. `viewItem == bobMode`).
 - For file watcher and refresh: follow the `EventEmitter` + `onDidChangeTreeData` pattern from `IntegrationsProvider`.
-- Use the `yaml` npm package (already in `package.json` dependencies) to parse `custom_modes.yaml` / `custom_modes.yml`.
+- Use the `yaml` npm package (already in `package.json` dependencies) to parse `custom_modes.yaml`.
 - Do not rely on the YAML parser for source locations; scan the source text for `- slug:` lines and map those slugs to line numbers for "Show Source".
 - The welcome content follows the exact same pattern as `kaoto.integrations` and `kaoto.tests` in `package.json` under `viewsWelcome`.
 

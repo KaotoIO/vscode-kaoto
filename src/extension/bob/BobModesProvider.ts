@@ -30,7 +30,7 @@ export class BobModesProvider implements vscode.TreeDataProvider<BobModeItem> {
 	private readonly fileWatcher: vscode.FileSystemWatcher;
 
 	constructor() {
-		this.fileWatcher = vscode.workspace.createFileSystemWatcher('**/.bob/custom_modes.{yaml,yml}');
+		this.fileWatcher = vscode.workspace.createFileSystemWatcher('**/.bob/custom_modes.yaml');
 		this.fileWatcher.onDidChange(this.refresh.bind(this));
 		this.fileWatcher.onDidCreate(this.refresh.bind(this));
 		this.fileWatcher.onDidDelete(this.refresh.bind(this));
@@ -64,17 +64,9 @@ export class BobModesProvider implements vscode.TreeDataProvider<BobModeItem> {
 		}
 
 		const bobDir = vscode.Uri.joinPath(wsFolders[0].uri, '.bob');
-		const yamlPath = vscode.Uri.joinPath(bobDir, 'custom_modes.yaml').fsPath;
-		const ymlPath = vscode.Uri.joinPath(bobDir, 'custom_modes.yml').fsPath;
+		const filePath = vscode.Uri.joinPath(bobDir, 'custom_modes.yaml').fsPath;
 
-		let filePath: string | undefined;
-		if (existsSync(yamlPath)) {
-			filePath = yamlPath;
-		} else if (existsSync(ymlPath)) {
-			filePath = ymlPath;
-		}
-
-		if (!filePath) {
+		if (!existsSync(filePath)) {
 			return [];
 		}
 

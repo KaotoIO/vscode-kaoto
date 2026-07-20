@@ -628,7 +628,7 @@ export class KaotoCatalogService {
 	 */
 	private isKaotoBobModeFile(uri: vscode.Uri): boolean {
 		const fileName = path.basename(uri.fsPath);
-		return /^custom_modes.*\.yaml$/.test(fileName);
+		return fileName === 'custom_modes.yaml';
 	}
 
 	/**

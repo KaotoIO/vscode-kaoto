@@ -24,7 +24,7 @@ isProject: false
 
 ## Top-Level Overview
 
-Add a "Bob IDE Modes" tree view to the Kaoto sidebar. The view lists every mode entry from `.bob/custom_modes.yaml` (or `.bob/custom_modes.yml` as fallback) in a flat list. Each item shows the mode `name` as label and `slug` as description. Clicking an item opens the file in the Kaoto editor. An inline ▶ button triggers the "Try It…" stub. A "Show Source" right-click action opens the text editor at the `- slug:` line. When no modes file exists a welcome panel guides the user to create one via `kaoto.bobModes.create`.
+Add a "Bob IDE Modes" tree view to the Kaoto sidebar. The view lists every mode entry from `.bob/custom_modes.yaml` in a flat list. Each item shows the mode `name` as label and `slug` as description. Clicking an item opens the file in the Kaoto editor. An inline ▶ button triggers the "Try It…" stub. A "Show Source" right-click action opens the text editor at the `- slug:` line. When no modes file exists a welcome panel guides the user to create one via `kaoto.bobModes.create`.
 
 The implementation follows existing patterns exactly:
 - **Flat provider structure** → `HelpFeedbackProvider` pattern (`TreeDataProvider` directly, no `AbstractFolderTreeProvider`)
@@ -115,9 +115,9 @@ All Bob-specific code lives under `src/extension/bob/`. The only changes to exis
 
 **Expected Outcomes:**
 - New file `src/extension/bob/BobModesProvider.ts` compiles without errors
-- Provider parses `customModes` array from `.bob/custom_modes.yaml` (or `.bob/custom_modes.yml` fallback)
+- Provider parses `customModes` array from `.bob/custom_modes.yaml`
 - Provider returns a flat list of `BobModeItem` at root level; returns `[]` for any non-root call
-- `FileSystemWatcher` on `**/.bob/custom_modes.{yaml,yml}` triggers `refresh()` on create/change/delete
+- `FileSystemWatcher` on `**/.bob/custom_modes.yaml` triggers `refresh()` on create/change/delete
 - `tryBobMode` stub is implemented as an exported function (Dominik replaces body later)
 - Provider has a `dispose()` method that disposes the file watcher
 
@@ -143,7 +143,7 @@ All Bob-specific code lives under `src/extension/bob/`. The only changes to exis
    ```
 
    Constructor:
-   - Create `FileSystemWatcher` for `**/.bob/custom_modes.{yaml,yml}`
+   - Create `FileSystemWatcher` for `**/.bob/custom_modes.yaml`
    - Attach `onDidChange`, `onDidCreate`, `onDidDelete` all to `this.refresh.bind(this)`
 
    `getTreeItem(item: BobModeItem): BobModeItem` — return item as-is (same as `HelpFeedbackProvider`)
@@ -162,7 +162,7 @@ All Bob-specific code lives under `src/extension/bob/`. The only changes to exis
 
    File resolution logic:
    - Get `workspaceFolders[0]` — if none, return `[]`
-   - Check `.bob/custom_modes.yaml` first; if not found, check `.bob/custom_modes.yml`; if neither found, return `[]`
+   - Check `.bob/custom_modes.yaml`; if not found, return `[]`
 
    YAML parsing:
    - Read file with `readFileSync(filePath, 'utf8')`
@@ -341,15 +341,11 @@ All Bob-specific code lives under `src/extension/bob/`. The only changes to exis
          const wsFolders = vscode.workspace.workspaceFolders;
          if (!wsFolders?.length) return;
          const bobDir = vscode.Uri.joinPath(wsFolders[0].uri, '.bob');
-         const yamlUri = vscode.Uri.joinPath(bobDir, 'custom_modes.yaml');
-         const ymlUri  = vscode.Uri.joinPath(bobDir, 'custom_modes.yml');
+         const targetUri = vscode.Uri.joinPath(bobDir, 'custom_modes.yaml');
 
-         // If either file already exists, open it rather than creating a new one
-         const yamlExists = await vscode.workspace.fs.stat(yamlUri).then(() => true, () => false);
-         const ymlExists  = await vscode.workspace.fs.stat(ymlUri).then(() => true, () => false);
-         const targetUri  = yamlExists ? yamlUri : ymlExists ? ymlUri : yamlUri;
+         const yamlExists = await vscode.workspace.fs.stat(targetUri).then(() => true, () => false);
 
-         if (!yamlExists && !ymlExists) {
+         if (!yamlExists) {
            const template = [
              'customModes:',
              '  - slug: my-custom-mode',

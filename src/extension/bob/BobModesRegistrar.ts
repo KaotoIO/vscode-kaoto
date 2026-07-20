@@ -59,22 +59,14 @@ export function registerBobModes(context: vscode.ExtensionContext): void {
 		}
 
 		const bobDir = vscode.Uri.joinPath(wsFolders[0].uri, '.bob');
-		const yamlUri = vscode.Uri.joinPath(bobDir, 'custom_modes.yaml');
-		const ymlUri = vscode.Uri.joinPath(bobDir, 'custom_modes.yml');
+		const targetUri = vscode.Uri.joinPath(bobDir, 'custom_modes.yaml');
 
-		const yamlExists = await vscode.workspace.fs.stat(yamlUri).then(
-			() => true,
-			() => false,
-		);
-		const ymlExists = await vscode.workspace.fs.stat(ymlUri).then(
+		const yamlExists = await vscode.workspace.fs.stat(targetUri).then(
 			() => true,
 			() => false,
 		);
 
-		// Prefer .yaml; fall back to .yml if it already exists; create .yaml otherwise
-		const targetUri = yamlExists ? yamlUri : ymlExists ? ymlUri : yamlUri;
-
-		if (!yamlExists && !ymlExists) {
+		if (!yamlExists) {
 			await vscode.workspace.fs.createDirectory(bobDir);
 			await vscode.workspace.fs.writeFile(targetUri, new TextEncoder().encode(BOB_MODES_FILE_TEMPLATE));
 		}
@@ -84,7 +76,7 @@ export function registerBobModes(context: vscode.ExtensionContext): void {
 	});
 
 	const codeLensProvider = vscode.languages.registerCodeLensProvider(
-		{ scheme: 'file', language: 'yaml', pattern: '**/.bob/custom_modes.{yaml,yml}' },
+		{ scheme: 'file', language: 'yaml', pattern: '**/.bob/custom_modes.yaml' },
 		new BobModeCodeLensProvider(),
 	);
 
