@@ -1037,7 +1037,7 @@
         "properties": {
           "kaoto.catalog.url": {
             "type": "string",
-            "default": null,
+            "default": "https://raw.githubusercontent.com/KaotoIO/camel-catalog/refs/heads/mithril/catalog/index.json",
             "markdownDescription": "URL to a Kaoto catalog. For instance `https://raw.githubusercontent.com/KaotoIO/camel-catalog/refs/heads/main/catalog/index.json `. Documentation to generate your own set of catalog is available [here](https://kaoto.io/docs/designer/04-runtime-selector/).\n\nIt requires to reopen the Kaoto editors to be effective.\n\n**Note**: Use the Kaoto editor status bar to select from a custom catalogs.",
             "scope": "window",
             "order": 0
