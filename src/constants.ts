@@ -174,6 +174,12 @@ export const COMMAND_BOB_MODES_TRY = 'kaoto.bobModes.tryMode';
 
 export const COMMAND_BOB_MODES_CREATE = 'kaoto.bobModes.create';
 
+export const COMMAND_BOB_MODES_CONVERT = 'kaoto.bobModes.convertToKaoto';
+
+export const COMMAND_BOB_MODES_CONVERT_SINGLE = 'kaoto.bobModes.convertToKaotoSingle';
+
+export const CONTEXT_BOB_MODES_FILE_EXISTS = 'kaoto.bobModesFileExists';
+
 // ─── Context Keys ────────────────────────────────────────────────────────────
 
 export const CONTEXT_EXECUTOR_AVAILABLE = 'kaoto.executorAvailable';

@@ -533,6 +533,18 @@
         "category": "Kaoto"
       },
       {
+        "command": "kaoto.bobModes.convertToKaoto",
+        "title": "Convert to Kaoto Format...",
+        "category": "Kaoto",
+        "icon": "$(wand)"
+      },
+      {
+        "command": "kaoto.bobModes.convertToKaotoSingle",
+        "title": "Convert to Kaoto Format",
+        "category": "Kaoto",
+        "icon": "$(wand)"
+      },
+      {
         "command": "kaoto.openapi.refresh",
         "title": "Refresh",
         "category": "Kaoto",
@@ -738,6 +750,14 @@
         {
           "command": "kaoto.openapi.import",
           "when": "false"
+        },
+        {
+          "command": "kaoto.bobModes.convertToKaoto",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.bobModes.convertToKaotoSingle",
+          "when": "false"
         }
       ],
       "editor/title": [
@@ -819,6 +839,11 @@
           "command": "kaoto.bobModes.refresh",
           "group": "navigation",
           "when": "view == kaoto.bobModes"
+        },
+        {
+          "command": "kaoto.bobModes.convertToKaoto",
+          "group": "navigation",
+          "when": "view == kaoto.bobModes && kaoto.bobModesFileExists"
         }
       ],
       "view/item/context": [
@@ -936,6 +961,11 @@
           "command": "kaoto.bobModes.showSource",
           "when": "view == kaoto.bobModes && viewItem == bobMode",
           "group": "navigation@1"
+        },
+        {
+          "command": "kaoto.bobModes.convertToKaotoSingle",
+          "when": "view == kaoto.bobModes && viewItem == bobMode",
+          "group": "navigation@2"
         }
       ]
     },
