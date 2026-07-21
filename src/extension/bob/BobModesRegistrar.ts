@@ -32,63 +32,44 @@ import { convertModeToKaotoFormat, readModeSlugs } from './BobModeConverter';
 /**
  * Default file content written by `kaoto.bobModes.create`.
  *
- * Uses the folded scalar (`>`) style for `customInstructions`, which is what
- * the Kaoto designer itself produces. Key folded-scalar rules that must hold:
- *   - A blank line between two content lines preserves a real \n in the value.
- *   - Two consecutive blank lines produce a paragraph break (\n\n).
- *   - A line containing only spaces (the step-body indent line) preserves a \n
- *     followed by those spaces — built programmatically below so no editor can
- *     strip the trailing whitespace.
- *
- * Body indent is 6 spaces (4-space list-item depth + 2-space key depth).
+ * Uses the literal scalar (`|`) style for `customInstructions` — every line is
+ * preserved exactly as written. Blank separator lines inside the scalar must be
+ * built programmatically so editors / Prettier cannot strip the required
+ * trailing spaces.
  */
 function buildFileTemplate(): string {
-	// The step body indent line: 6 spaces (scalar base) + 3 spaces (list continuation)
-	// = "         " — must be built in code; editors strip trailing spaces in literals.
-	const stepBodyIndentLine = ' '.repeat(9);
+	// Blank-line separators inside a literal scalar (|):
+	//   sep         — 6 spaces (scalar base indent): produces a blank line between blocks
+	//   stepBodySep — 9 spaces (base + 3 continuation): blank line inside a step body
+	const sep = ' '.repeat(6);
+	const stepBodySep = ' '.repeat(9);
 
 	return [
 		'customModes:',
 		'  - slug: new-mode',
 		'    name: New Mode',
 		'    description: Describe what this mode does',
-		"    roleDefinition: Define the AI's role and expertise",
+		'    roleDefinition: "Define the AI\'s role and expertise"',
 		'    whenToUse: Describe when this mode should be used',
-		'    customInstructions: >',
+		'    customInstructions: |',
 		'      system instructions:',
-		'',
-		'      Follow the below instructions strictly. These directives are mandatory and',
-		'      non-negotiable.',
-		'',
-		'      - You MUST call switch_mode AND spawn_subagent as actual tool calls for',
-		'      EVERY specialist step. Performing the specialist work yourself inline is',
-		'      STRICTLY FORBIDDEN.',
-		'',
-		"      - For each specialist step: (1) call switch_mode with the stage's mode_id,",
-		'      then (2) immediately call spawn_subagent with a self-contained description',
-		"      that includes the target mode's role and the exact JSON payload verbatim.",
-		'',
-		'      - The spawn_subagent description MUST start with: "You are running as the',
-		'      <mode name> stage of the pipeline. Your input payload is:" followed by the',
-		'      raw JSON block. Set fork_context: false.',
-		'',
-		"      - Collect the subagent's output as the $RESULT variable for that step",
-		'      before proceeding. Never fabricate or infer subagent output — wait for the',
-		'      actual tool response.',
-		'',
-		'      - Never skip either tool call. If a step requires both, both must be',
-		'      issued as real tool invocations before moving to the next step.',
-		'',
-		'',
+		'      Follow the below instructions strictly. These directives are mandatory and non-negotiable.',
+		'      - You MUST call switch_mode AND spawn_subagent as actual tool calls for EVERY specialist step. Performing the specialist work yourself inline is STRICTLY FORBIDDEN.',
+		"      - For each specialist step: (1) call switch_mode with the stage's mode_id, then (2) immediately call spawn_subagent with a self-contained description that includes the target mode's role and the exact JSON payload verbatim.",
+		'      - The spawn_subagent description MUST start with: "You are running as the <mode name> stage of the pipeline. Your input payload is:" followed by the raw JSON block. Set fork_context: false.',
+		"      - Collect the subagent's output as the $RESULT variable for that step before proceeding. Never fabricate or infer subagent output — wait for the actual tool response.",
+		'      - Never skip either tool call. If a step requires both, both must be issued as real tool invocations before moving to the next step.',
+		sep,
 		'      1. First step',
-		stepBodyIndentLine,
+		stepBodySep,
 		'         - Describe what this step does',
-		'',
+		sep,
 		'      > Hard rules',
-		'',
-		'      > - Do not invent content not present in the input.',
-		'',
-		'      > - Follow the output format specified in the final step exactly.',
+		'      > - Never call any external API or query any live data source.',
+		'      > - Do NOT alter names, dates, email addresses, phone numbers, or any non-monetary text.',
+		'      > - If no target data is found, set the relevant count to 0 and return the content unchanged with a note.',
+		'      > - Never fabricate or skip a step — always wait for actual tool responses before proceeding.',
+		sep,
 		'    groups:',
 		'      - read',
 	].join('\n');
