@@ -740,6 +740,18 @@
           "when": "false"
         },
         {
+          "command": "kaoto.bobModes.showSource",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.bobModes.tryMode",
+          "when": "false"
+        },
+        {
+          "command": "kaoto.bobModes.create",
+          "when": "false"
+        },
+        {
           "command": "kaoto.openapi.showSource",
           "when": "false"
         },
