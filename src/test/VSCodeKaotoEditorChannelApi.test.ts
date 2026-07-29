@@ -3,7 +3,7 @@
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License", destination); you may not use this file except in compliance with
+ * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
  *      https://www.apache.org/licenses/LICENSE-2.0
@@ -483,138 +483,6 @@ suite('VSCodeKaotoEditorChannelApi', function () {
 		});
 
 		test('should handle null metadata values', function () {
-			suite('Deprecated Methods', function () {
-				test('should handle getCatalogURL for backward compatibility', async function () {
-					// This deprecated method should return custom catalog URL or undefined
-					const config = vscode.workspace.getConfiguration();
-					const catalogUrl = config.get<string>(KAOTO_CATALOG_URL_SETTING_ID);
-
-					// Should be string or undefined
-					if (catalogUrl !== undefined && catalogUrl !== null) {
-						expect(typeof catalogUrl).to.be.oneOf(['string', 'object']);
-					}
-				});
-			});
-
-			// Settings Model Construction tests removed - these were testing hardcoded values
-			// Real settings should be tested through VS Code configuration API
-
-			// Step Update Actions tests removed - these were testing hardcoded arrays
-			// These enums should be tested by importing from @kaoto/kaoto if needed
-
-			suite('URI and Path Utilities', function () {
-				test('should handle forward slash conversion', function () {
-					const windowsPath = 'path\\to\\file.txt';
-					const unixPath = windowsPath.replace(/\\/g, '/');
-
-					expect(unixPath).to.equal('path/to/file.txt');
-					expect(unixPath.includes('\\')).to.be.false;
-				});
-
-				test('should handle already normalized paths', function () {
-					const normalizedPath = 'path/to/file.txt';
-					const result = normalizedPath.replace(/\\/g, '/');
-
-					expect(result).to.equal(normalizedPath);
-				});
-
-				test('should handle mixed path separators', function () {
-					const mixedPath = 'path\\to/mixed\\file.txt';
-					const normalized = mixedPath.replace(/\\/g, '/');
-
-					expect(normalized).to.equal('path/to/mixed/file.txt');
-				});
-
-				test('should handle empty path strings', function () {
-					const emptyPath = '';
-					const normalized = emptyPath.replace(/\\/g, '/');
-
-					expect(normalized).to.equal('');
-				});
-			});
-
-			suite('Metadata File Path Normalization', function () {
-				test('should normalize filePath arrays in metadata', function () {
-					const metadata = {
-						filePath: ['path\\to\\schema1.xsd', 'path\\to\\schema2.xsd'],
-					};
-
-					const normalized = {
-						filePath: metadata.filePath.map((p) => p.replace(/\\/g, '/')),
-					};
-
-					expect(normalized.filePath[0]).to.equal('path/to/schema1.xsd');
-					expect(normalized.filePath[1]).to.equal('path/to/schema2.xsd');
-				});
-
-				test('should handle nested metadata structures with filePath', function () {
-					const metadata = {
-						schemas: {
-							filePath: ['schema\\file.xsd'],
-						},
-						other: 'value',
-					};
-
-					const normalizeFilePaths = (obj: any): any => {
-						if (obj === null || obj === undefined || typeof obj !== 'object') {
-							return obj;
-						}
-						if (Array.isArray(obj)) {
-							return obj.map((v) => normalizeFilePaths(v));
-						}
-						const result: any = {};
-						for (const [k, v] of Object.entries(obj)) {
-							if (k === 'filePath' && Array.isArray(v)) {
-								result[k] = v.map((p: any) => (typeof p === 'string' ? p.replace(/\\/g, '/') : p));
-							} else {
-								result[k] = normalizeFilePaths(v);
-							}
-						}
-						return result;
-					};
-
-					const normalized = normalizeFilePaths(metadata);
-					expect(normalized.schemas.filePath[0]).to.equal('schema/file.xsd');
-					expect(normalized.other).to.equal('value');
-				});
-
-				test('should preserve non-filePath arrays', function () {
-					const metadata = {
-						filePath: ['path\\to\\file.xsd'],
-						otherArray: ['item1', 'item2'],
-						nested: {
-							filePath: ['nested\\path.xsd'],
-						},
-					};
-
-					const normalizeFilePaths = (obj: any): any => {
-						if (obj === null || obj === undefined || typeof obj !== 'object') {
-							return obj;
-						}
-						if (Array.isArray(obj)) {
-							return obj.map((v) => normalizeFilePaths(v));
-						}
-						const result: any = {};
-						for (const [k, v] of Object.entries(obj)) {
-							if (k === 'filePath' && Array.isArray(v)) {
-								result[k] = v.map((p: any) => (typeof p === 'string' ? p.replace(/\\/g, '/') : p));
-							} else {
-								result[k] = normalizeFilePaths(v);
-							}
-						}
-						return result;
-					};
-
-					const normalized = normalizeFilePaths(metadata);
-					expect(normalized.filePath[0]).to.equal('path/to/file.xsd');
-					expect(normalized.otherArray).to.deep.equal(['item1', 'item2']);
-					expect(normalized.nested.filePath[0]).to.equal('nested/path.xsd');
-				});
-			});
-
-			// Color Scheme Conversion tests removed - these were testing hardcoded string values
-			// Color scheme conversion is already tested in 'Color Scheme Detection' suite above
-
 			const metadata = { nullKey: null };
 			expect(metadata.nullKey).to.be.null;
 		});
@@ -624,6 +492,138 @@ suite('VSCodeKaotoEditorChannelApi', function () {
 			expect(metadata.undefinedKey).to.be.undefined;
 		});
 	});
+
+	suite('Deprecated Methods', function () {
+		test('should handle getCatalogURL for backward compatibility', async function () {
+			// This deprecated method should return custom catalog URL or undefined
+			const config = vscode.workspace.getConfiguration();
+			const catalogUrl = config.get<string>(KAOTO_CATALOG_URL_SETTING_ID);
+
+			// Should be string or undefined
+			if (catalogUrl !== undefined && catalogUrl !== null) {
+				expect(typeof catalogUrl).to.be.oneOf(['string', 'object']);
+			}
+		});
+	});
+
+	// Settings Model Construction tests removed - these were testing hardcoded values
+	// Real settings should be tested through VS Code configuration API
+
+	// Step Update Actions tests removed - these were testing hardcoded arrays
+	// These enums should be tested by importing from @kaoto/kaoto if needed
+
+	suite('URI and Path Utilities', function () {
+		test('should handle forward slash conversion', function () {
+			const windowsPath = 'path\\to\\file.txt';
+			const unixPath = windowsPath.replace(/\\/g, '/');
+
+			expect(unixPath).to.equal('path/to/file.txt');
+			expect(unixPath.includes('\\')).to.be.false;
+		});
+
+		test('should handle already normalized paths', function () {
+			const normalizedPath = 'path/to/file.txt';
+			const result = normalizedPath.replace(/\\/g, '/');
+
+			expect(result).to.equal(normalizedPath);
+		});
+
+		test('should handle mixed path separators', function () {
+			const mixedPath = 'path\\to/mixed\\file.txt';
+			const normalized = mixedPath.replace(/\\/g, '/');
+
+			expect(normalized).to.equal('path/to/mixed/file.txt');
+		});
+
+		test('should handle empty path strings', function () {
+			const emptyPath = '';
+			const normalized = emptyPath.replace(/\\/g, '/');
+
+			expect(normalized).to.equal('');
+		});
+	});
+
+	suite('Metadata File Path Normalization', function () {
+		test('should normalize filePath arrays in metadata', function () {
+			const metadata = {
+				filePath: ['path\\to\\schema1.xsd', 'path\\to\\schema2.xsd'],
+			};
+
+			const normalized = {
+				filePath: metadata.filePath.map((p) => p.replace(/\\/g, '/')),
+			};
+
+			expect(normalized.filePath[0]).to.equal('path/to/schema1.xsd');
+			expect(normalized.filePath[1]).to.equal('path/to/schema2.xsd');
+		});
+
+		test('should handle nested metadata structures with filePath', function () {
+			const metadata = {
+				schemas: {
+					filePath: ['schema\\file.xsd'],
+				},
+				other: 'value',
+			};
+
+			const normalizeFilePaths = (obj: any): any => {
+				if (obj === null || obj === undefined || typeof obj !== 'object') {
+					return obj;
+				}
+				if (Array.isArray(obj)) {
+					return obj.map((v) => normalizeFilePaths(v));
+				}
+				const result: any = {};
+				for (const [k, v] of Object.entries(obj)) {
+					if (k === 'filePath' && Array.isArray(v)) {
+						result[k] = v.map((p: any) => (typeof p === 'string' ? p.replace(/\\/g, '/') : p));
+					} else {
+						result[k] = normalizeFilePaths(v);
+					}
+				}
+				return result;
+			};
+
+			const normalized = normalizeFilePaths(metadata);
+			expect(normalized.schemas.filePath[0]).to.equal('schema/file.xsd');
+			expect(normalized.other).to.equal('value');
+		});
+
+		test('should preserve non-filePath arrays', function () {
+			const metadata = {
+				filePath: ['path\\to\\file.xsd'],
+				otherArray: ['item1', 'item2'],
+				nested: {
+					filePath: ['nested\\path.xsd'],
+				},
+			};
+
+			const normalizeFilePaths = (obj: any): any => {
+				if (obj === null || obj === undefined || typeof obj !== 'object') {
+					return obj;
+				}
+				if (Array.isArray(obj)) {
+					return obj.map((v) => normalizeFilePaths(v));
+				}
+				const result: any = {};
+				for (const [k, v] of Object.entries(obj)) {
+					if (k === 'filePath' && Array.isArray(v)) {
+						result[k] = v.map((p: any) => (typeof p === 'string' ? p.replace(/\\/g, '/') : p));
+					} else {
+						result[k] = normalizeFilePaths(v);
+					}
+				}
+				return result;
+			};
+
+			const normalized = normalizeFilePaths(metadata);
+			expect(normalized.filePath[0]).to.equal('path/to/file.xsd');
+			expect(normalized.otherArray).to.deep.equal(['item1', 'item2']);
+			expect(normalized.nested.filePath[0]).to.equal('nested/path.xsd');
+		});
+	});
+
+	// Color Scheme Conversion tests removed - these were testing hardcoded string values
+	// Color scheme conversion is already tested in 'Color Scheme Detection' suite above
 
 	suite('Path Resolution', function () {
 		test('should resolve paths relative to workspace', function () {
