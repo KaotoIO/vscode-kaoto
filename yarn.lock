@@ -891,10 +891,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/camel-catalog@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@kaoto/camel-catalog@npm:0.7.0"
-  checksum: 10/228cf4e7190700e9d16bcd8f87497cac0e886a54daf01a10213b5c1d9d5fbde9616a396686f8c967e2c5d4d1576a24e0e68893ccce6ac5c1178c789911bfdf22
+"@kaoto/camel-catalog@npm:^0.8.2":
+  version: 0.8.2
+  resolution: "@kaoto/camel-catalog@npm:0.8.2"
+  checksum: 10/8217ffcdbe5f16126d3173fef74c75e20e9cf7d267af25f1b888f47e524f72e1f1cd9e822b42254b7087295e667ce15cf9b35a8e7cf63356bbdd46f458bafb2b
   languageName: node
   linkType: hard
 
@@ -916,9 +916,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kaoto/kaoto@npm:2.11.0":
-  version: 2.11.0
-  resolution: "@kaoto/kaoto@npm:2.11.0"
+"@kaoto/kaoto@npm:2.12.0-RC1":
+  version: 2.12.0-RC1
+  resolution: "@kaoto/kaoto@npm:2.12.0-RC1"
   dependencies:
     "@carbon/icons-react": "npm:^11.67.0"
     "@carbon/react": "npm:^1.102.0"
@@ -964,7 +964,7 @@ __metadata:
     monaco-yaml: ^5.5.1
     react: ^19.2.4
     react-dom: ^19.2.4
-  checksum: 10/32737c27e86a276fc4180cc4f92d0b39dcd3d5ba99cc5f84e5843a3b8a94bd0d6df8f0b55fc051b29feb6222089c98ccd96025467c2588a58fbfb0dfeb4f650e
+  checksum: 10/7ccfb06fc8317ce9e8fab1b89cf1a14ffa6890a4dce9a7dc94709b4a25ba464050fbda3f2909f4d78d1a7be936da209585867a8b1607eba8c5ae08c7282db78b
   languageName: node
   linkType: hard
 
@@ -13522,8 +13522,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vscode-kaoto@workspace:."
   dependencies:
-    "@kaoto/camel-catalog": "npm:^0.7.0"
-    "@kaoto/kaoto": "npm:2.11.0"
+    "@kaoto/camel-catalog": "npm:^0.8.2"
+    "@kaoto/kaoto": "npm:2.12.0-RC1"
     "@kie-tools-core/backend": "npm:10.0.0"
     "@kie-tools-core/editor": "npm:10.0.0"
     "@kie-tools-core/i18n": "npm:10.0.0"
