@@ -35,7 +35,7 @@
     "test:it:clean": "rimraf ./test-resources && rimraf ./out && rimraf *.vsix"
   },
   "dependencies": {
-    "@kaoto/camel-catalog": "^0.5.5",
+    "@kaoto/camel-catalog": "^0.7.0",
     "@kaoto/kaoto": "2.11.0",
     "@kie-tools-core/backend": "10.0.0",
     "@kie-tools-core/editor": "10.0.0",
@@ -1354,7 +1354,7 @@
     "ts-loader": "9.4.4",
     "tsconfig-paths-webpack-plugin": "^4.2.0",
     "typescript": "^5.9.3",
-    "vscode-extension-tester": "^8.23.0",
+    "vscode-extension-tester": "^8.24.0",
     "web-worker": "^1.5.0",
     "webpack": "5.108.3",
     "webpack-cli": "7.1.0",
