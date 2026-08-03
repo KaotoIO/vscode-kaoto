@@ -39,12 +39,7 @@ export type RestMethods = 'get' | 'head' | 'post' | 'put' | 'patch' | 'delete';
  * Union type of all REST method definition types.
  */
 export type RestMethodDefinitions =
-	| Flatten<Rest['get']>
-	| Flatten<Rest['head']>
-	| Flatten<Rest['post']>
-	| Flatten<Rest['put']>
-	| Flatten<Rest['patch']>
-	| Flatten<Rest['delete']>;
+	Flatten<Rest['get']> | Flatten<Rest['head']> | Flatten<Rest['post']> | Flatten<Rest['put']> | Flatten<Rest['patch']> | Flatten<Rest['delete']>;
 
 /**
  * Array of supported REST DSL verbs.
