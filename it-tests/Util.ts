@@ -21,6 +21,7 @@ import {
 	ActivityBar,
 	BottomBarPanel,
 	By,
+	createWaitHelper,
 	CustomEditor,
 	EditorView,
 	ExtensionsViewItem,
@@ -32,15 +33,16 @@ import {
 	TerminalView,
 	TextEditor,
 	TreeItem,
-	until,
 	ViewControl,
 	ViewItemAction,
 	ViewPanelAction,
 	ViewSection,
 	VSBrowser,
 	WebDriver,
+	WebElement,
 	WebView,
 } from 'vscode-extension-tester';
+import { KaotoEditor } from './pageObjects/KaotoEditor';
 
 export const CATALOG_VERSION_ID = 'kaoto.camelJbang.version';
 
@@ -144,7 +146,7 @@ export async function switchToKaotoFrame(driver: WebDriver, checkNotDirty: boole
 			try {
 				kaotoEditor = new CustomEditor();
 				kaotoWebview = kaotoEditor.getWebView();
-				await kaotoWebview.switchToFrame();
+				await kaotoWebview.switchToFrame(10_000);
 				return true;
 			} catch (exception) {
 				console.log('failed to switch to frame ' + exception);
@@ -159,12 +161,11 @@ export async function switchToKaotoFrame(driver: WebDriver, checkNotDirty: boole
 }
 
 export async function checkEmptyCanvasLoaded(driver: WebDriver, timeout: number = 10_000) {
-	await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='visualization-empty-state']")), timeout, 'Empty Kaoto Canvas was not loaded properly');
+	await KaotoEditor.waitForEmptyCanvas(driver, timeout);
 }
 
 export async function checkTopologyLoaded(driver: WebDriver, timeout: number = 10_000) {
-	await driver.wait(until.elementLocated(By.xpath("//div[@data-test-id='topology']")), timeout, 'Kaoto topology was not loaded properly');
-	await driver.sleep(1_000); // stabilize tests which are sometimes failing on macOS CI
+	await KaotoEditor.waitForTopology(driver, timeout);
 }
 
 // Enforce same default storage setup as ExTester - see https://github.com/redhat-developer/vscode-extension-tester/wiki/Test-Setup#useful-env-variables
@@ -201,6 +202,30 @@ export async function closeEditor(title: string, save?: boolean) {
 			await dialog.pushButton("Don't Save");
 		}
 	}
+}
+
+export async function dismissHoverOverlay(driver: WebDriver) {
+	const waitHelper = createWaitHelper(driver);
+	const hoverContents = await driver.findElements(By.css('.hover-contents'));
+	for (const hoverContent of hoverContents) {
+		if (await hoverContent.isDisplayed()) {
+			await driver
+				.actions()
+				.move({ x: 5, y: 5, origin: driver.findElement(By.css('body')) })
+				.perform();
+			await waitHelper.forNotVisible(hoverContent, { timeout: 2_000, message: 'Hover overlay is still visible' });
+			break;
+		}
+	}
+}
+
+export async function clickWhenClickable(driver: WebDriver, element: WebElement, timeout = 5_000) {
+	const waitHelper = createWaitHelper(driver);
+	await waitHelper.forVisible(element, { timeout });
+	await waitHelper.forEnabled(element, { timeout });
+	await waitHelper.forStable(element, { timeout });
+	await waitHelper.forClickable(element, { timeout });
+	await element.click();
 }
 
 export async function openResourcesAndWaitForActivation(

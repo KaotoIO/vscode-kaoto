@@ -17,18 +17,14 @@ import {
 	ActivityBar,
 	after,
 	before,
-	By,
 	EditorView,
 	InputBox,
-	Key,
 	ModalDialog,
 	NotificationType,
 	StatusBar,
 	TextSetting,
-	until,
 	VSBrowser,
 	WebDriver,
-	WebElement,
 	WebView,
 	Workbench,
 } from 'vscode-extension-tester';
@@ -36,6 +32,7 @@ import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame, resetUserS
 import { join } from 'path';
 import { rmSync } from 'fs';
 import { expect } from 'chai';
+import { CatalogModal } from '../pageObjects';
 
 describe('User Settings', function () {
 	this.timeout(240_000);
@@ -46,28 +43,6 @@ describe('User Settings', function () {
 
 	let driver: WebDriver;
 	let kaotoWebview: WebView;
-
-	const locators = {
-		KaotoView: {
-			catalogButton: By.xpath(`//button[@id='topology-control-bar-catalog-button']`),
-			catalog: {
-				window: By.xpath(`//div[@data-ouia-component-id='CatalogModal']`),
-				list: By.className('pf-v6-c-data-list'),
-				gallery: By.className('pf-v6-l-gallery pf-m-gutter'),
-				listItem: By.className('pf-v6-c-data-list__item-row'),
-				listItemProvider: By.className('catalog-data-list-item__provider'),
-				listButton: By.xpath(`//button[@id='toggle-layout-button-List']`),
-				galleryButton: By.xpath(`//button[@id='toggle-layout-button-Gallery']`),
-				closeButton: By.xpath(`//button[@data-ouia-component-id='CatalogModal-ModalBoxCloseButton']`),
-			},
-			catalogProviderSelector: {
-				dropdown: By.xpath(`//button[@data-testid='provider-filter-toggle']`),
-				menu: By.id('providers-select-menu'),
-				menuItem: By.className('pf-v6-c-menu__list-item'),
-				selector: (label: string) => By.xpath(`//li[@data-testid='providers-select-item-${label}']`),
-			},
-		},
-	};
 
 	before(function () {
 		driver = VSBrowser.instance.driver;
@@ -227,18 +202,19 @@ describe('User Settings', function () {
 			kaotoWebview = (await switchToKaotoFrame(driver, false)).kaotoWebview;
 			await checkTopologyLoaded(driver, 15_000);
 
-			const catalogWindow = await openCatalogInListView();
+			const catalogWindow = await CatalogModal.open(driver, 15_000).then((w) => CatalogModal.switchToListView(driver, w, 10_000));
 
-			const providers = await getCatalogProvidersList(catalogWindow);
+			const providers = await CatalogModal.getProviderNames(driver, catalogWindow);
 			expect(providers).to.not.contain('Red Hat');
 			expect(providers).to.contain('Community');
 
 			// check first component does not contain 'Red Hat' flag
-			const provider = await getFirstCatalogItemProvider(catalogWindow);
+			const provider = await CatalogModal.getFirstItemProvider(catalogWindow);
 			expect(provider).to.not.be.equal('Red Hat');
 
 			// switch catalog window back to gallery view
-			await switchBackCatalogToGalleryViewAndClose(catalogWindow);
+			await CatalogModal.switchToGalleryView(driver, catalogWindow);
+			await CatalogModal.close(catalogWindow);
 		});
 
 		it(`Select 'redhat' catalog and check new components are available`, async function () {
@@ -269,101 +245,23 @@ describe('User Settings', function () {
 			kaotoWebview = (await switchToKaotoFrame(driver, false)).kaotoWebview;
 			await checkTopologyLoaded(driver, 15_000);
 
-			const catalogWindow = await openCatalogInListView();
+			const catalogWindow = await CatalogModal.open(driver, 15_000).then((w) => CatalogModal.switchToListView(driver, w, 10_000));
 
-			const providers = await getCatalogProvidersList(catalogWindow);
+			const providers = await CatalogModal.getProviderNames(driver, catalogWindow);
 			expect(providers).to.contain('Red Hat');
 			expect(providers).to.contain('Community');
 
-			await clickCatalogProviderCheckboxItem(catalogWindow, 'Community'); // uncheck 'Community' provider
+			await CatalogModal.toggleProvider(driver, catalogWindow, 'Community'); // uncheck 'Community' provider
 
 			// check first component contains 'Red Hat' flag
-			const provider = await getFirstCatalogItemProvider(catalogWindow);
+			const provider = await CatalogModal.getFirstItemProvider(catalogWindow);
 			expect(provider).to.be.equal('Red Hat');
 
 			// switch catalog window back to gallery view
-			await switchBackCatalogToGalleryViewAndClose(catalogWindow);
+			await CatalogModal.switchToGalleryView(driver, catalogWindow);
+			await CatalogModal.close(catalogWindow);
 		});
 	});
-
-	async function clickCatalogProviderDropdown(open: boolean, catalogWindow: WebElement) {
-		const dropdown = await catalogWindow.findElement(locators.KaotoView.catalogProviderSelector.dropdown);
-		await dropdown.click();
-		await driver.sleep(1_000); // time to reflect changes in DOM
-
-		if (open) {
-			await driver.wait(until.elementLocated(locators.KaotoView.catalogProviderSelector.menu), 5_000);
-		} else {
-			try {
-				await driver.wait(until.elementLocated(locators.KaotoView.catalogProviderSelector.menu), 5_000);
-			} catch (error) {
-				if (error instanceof Error && error.name !== 'TimeoutError') {
-					throw new Error(error.message);
-				}
-			}
-		}
-	}
-
-	async function clickCatalogProviderCheckboxItem(catalogWindow: WebElement, provider: string) {
-		await clickCatalogProviderDropdown(true, catalogWindow); // open menu
-
-		const menu = await catalogWindow.findElement(locators.KaotoView.catalogProviderSelector.menu);
-		const item = await menu.findElement(locators.KaotoView.catalogProviderSelector.selector(provider));
-		await item.click();
-
-		await clickCatalogProviderDropdown(false, catalogWindow); // close menu
-	}
-
-	async function getCatalogProvidersList(catalogWindow: WebElement): Promise<string[]> {
-		await clickCatalogProviderDropdown(true, catalogWindow); // open menu
-
-		const menu = await catalogWindow.findElement(locators.KaotoView.catalogProviderSelector.menu);
-		const items = await menu.findElements(locators.KaotoView.catalogProviderSelector.menuItem);
-		const labels = await Promise.all(items.map(async (item) => await item.getText()));
-
-		await clickCatalogProviderDropdown(false, catalogWindow); // close menu
-		return labels;
-	}
-
-	async function getFirstCatalogItemProvider(catalogWindow: WebElement): Promise<string> {
-		const listItem = await catalogWindow.findElement(locators.KaotoView.catalog.list).findElement(locators.KaotoView.catalog.listItem);
-		const provider = await listItem.findElement(locators.KaotoView.catalog.listItemProvider).getText();
-		return provider;
-	}
-
-	async function openCatalogInListView(): Promise<WebElement> {
-		// wait for the catalog button to be visible and clickable
-		const catalog = await driver.wait(until.elementLocated(locators.KaotoView.catalogButton), 10_000, 'Catalog button was not located');
-		await driver.wait(until.elementIsVisible(catalog), 10_000, 'Catalog button was not visible');
-		await driver.wait(until.elementIsEnabled(catalog), 10_000, 'Catalog button was not enabled');
-		await catalog.click();
-
-		// wait catalog modal dialog is open
-		await driver.wait(until.elementLocated(locators.KaotoView.catalog.window), 15_000);
-		const catalogWindow = await driver.findElement(locators.KaotoView.catalog.window);
-
-		// switch to list view
-		await catalogWindow.findElement(locators.KaotoView.catalog.listButton).click();
-		await driver.wait(until.elementLocated(locators.KaotoView.catalog.list), 10_000);
-
-		return catalogWindow;
-	}
-
-	async function switchBackCatalogToGalleryViewAndClose(catalogWindow: WebElement): Promise<void> {
-		try {
-			await catalogWindow.findElement(locators.KaotoView.catalog.galleryButton).click();
-			await driver.wait(until.elementLocated(locators.KaotoView.catalog.gallery), 5_000);
-		} catch (error) {
-			// it can happen that because of hover text for list view button
-			// the gallery view button is overlapped and it is not clickable at the moment
-			await driver.actions().sendKeys(Key.ENTER).perform(); // WORKAROUND
-			await catalogWindow.findElement(locators.KaotoView.catalog.galleryButton).click();
-			await driver.wait(until.elementLocated(locators.KaotoView.catalog.gallery), 5_000);
-		}
-
-		// close catalog view
-		await catalogWindow.findElement(locators.KaotoView.catalog.closeButton).click();
-	}
 
 	async function clickCatalogStatusBarItem(): Promise<void> {
 		const statusBar = new StatusBar();
