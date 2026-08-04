@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ActivityBar, after, before, By, ComboSetting, until, VSBrowser, WebDriver, WebView, Workbench } from 'vscode-extension-tester';
-import { checkTopologyLoaded, closeEditor, dismissBlockingModal, openAndSwitchToKaotoFrame, resetUserSettings } from '../Util';
-import { join } from 'path';
 import { expect } from 'chai';
+import { join } from 'path';
+import { ActivityBar, after, before, ComboSetting, VSBrowser, WebDriver, WebView, Workbench } from 'vscode-extension-tester';
+import { KaotoCanvas } from '../pageObjects';
+import { checkTopologyLoaded, closeEditor, dismissBlockingModal, openAndSwitchToKaotoFrame, resetUserSettings } from '../Util';
 
 describe('User Settings', function () {
 	this.timeout(90_000);
@@ -26,12 +27,6 @@ describe('User Settings', function () {
 
 	let driver: WebDriver;
 	let kaotoWebview: WebView;
-
-	const locators = {
-		TimerComponent: {
-			label: `//*[name()='g' and @data-testid='custom-node__route.from']//*[contains(@class,'custom-node__label__text')]`,
-		},
-	};
 
 	before(async function () {
 		driver = VSBrowser.instance.driver;
@@ -77,7 +72,7 @@ describe('User Settings', function () {
 
 	it(`Check 'id' Node Label is used instead of default 'description'`, async function () {
 		this.timeout(60_000);
-		const timer = await driver.wait(until.elementLocated(By.xpath(locators.TimerComponent.label)), 10_000);
+		const timer = await KaotoCanvas.findNodeLabelText(driver, 'custom-node__route.from', 10_000);
 		const label = await timer.getText();
 
 		expect(label.split('\n')).to.contains('timerID');

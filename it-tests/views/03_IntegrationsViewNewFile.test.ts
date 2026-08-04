@@ -21,10 +21,8 @@ import {
 	afterEach,
 	before,
 	beforeEach,
-	By,
 	EditorView,
 	InputBox,
-	until,
 	ViewControl,
 	ViewPanelActionDropdown,
 	ViewSection,
@@ -41,6 +39,7 @@ import {
 	openResourcesAndWaitForActivation,
 	switchToKaotoFrame,
 } from '../Util';
+import { KaotoCanvas } from '../pageObjects';
 
 describe('Integrations View', function () {
 	this.timeout(240_000);
@@ -177,14 +176,6 @@ describe('Integrations View', function () {
 			await switchToKaotoAndCheckIntegrationType(PIPE_FILE, 'Pipe', 'timer-source');
 		});
 
-		async function checkStepWithNodeLabelPresent(nodeLabel: string, timeout: number = 10_000) {
-			await driver.wait(
-				until.elementLocated(By.xpath(`//*[name()='g' and @data-nodelabel='${nodeLabel}']`)),
-				timeout,
-				`'${nodeLabel}' was not found in current topology.`,
-			);
-		}
-
 		async function switchToKaotoAndCheckIntegrationType(filename: string, type: string, nodeLabel: string): Promise<void> {
 			await driver.wait(
 				async function () {
@@ -195,7 +186,7 @@ describe('Integrations View', function () {
 			);
 
 			const { kaotoWebview } = await switchToKaotoFrame(driver, true);
-			await checkStepWithNodeLabelPresent(nodeLabel);
+			await KaotoCanvas.waitForNodeByLabel(driver, nodeLabel);
 			await kaotoWebview.switchBack();
 		}
 	});
