@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { By, EditorView, until, VSBrowser, WebDriver, WebView, logging, InputBox } from 'vscode-extension-tester';
+import { By, EditorView, until, VSBrowser, WebDriver, WebView, logging } from 'vscode-extension-tester';
 import { assert } from 'chai';
 import * as path from 'path';
 import {
@@ -23,6 +23,7 @@ import {
 	openResourcesAndWaitForActivation,
 	workaroundToRedrawContextualMenu,
 } from './Util';
+import { KaotoCanvas, KaotoEditor, kaotoLocators, DataMapperEditor } from './pageObjects';
 import { waitUntil } from 'async-wait-until';
 import * as fs from 'fs-extra';
 
@@ -132,7 +133,7 @@ describe('Kaoto basic development flow', function () {
 		// TODO: Add a target xsd
 		// TODO: Map an element
 
-		await (await driver.findElement(By.css('a[data-testid="design-tab"]'))).click();
+		await KaotoEditor.clickDesignTab(driver);
 
 		const files = fs.readdirSync(workspaceFolder);
 		const xslFiles = files.filter((file) => file.endsWith('.xsl'));
@@ -175,90 +176,27 @@ describe('Kaoto basic development flow', function () {
 });
 
 async function addXsdForSource(driver: WebDriver, kaotoWebview: WebView) {
-	await driver.wait(
-		until.elementLocated(By.css('button[data-testid="attach-schema-sourceBody-Body-button"]')),
-		5000,
-		'Cannot find the button to attach the schema',
-	);
-	await (await driver.findElement(By.css('button[data-testid="attach-schema-sourceBody-Body-button"]'))).click();
-
-	await waitForXsdAttachModal(driver);
-	const schemaButton = await driver.findElement(By.xpath("//button[@data-testid='attach-schema-modal-btn-file']"));
-	await schemaButton.click();
-
-	await kaotoWebview.switchBack();
-	const xsdInputbox = await InputBox.create(10000);
-	await xsdInputbox.setText('shiporder.xsd');
-	try {
-		const checkboxes = await xsdInputbox.getCheckboxes();
-		if (checkboxes.length > 0) {
-			await checkboxes[0].select();
-		}
-	} catch (error) {
-		const message = error instanceof Error ? error.message : String(error);
-		if (!/NoSuchElement/i.test(message) && !/checkbox/i.test(message)) {
-			throw error;
-		}
-		// Fallback for Kaoto <2.10.0 (no checkboxes)
-	}
-	await xsdInputbox.confirm();
-	await kaotoWebview.switchToFrame();
-
-	await waitForXsdAttachModal(driver);
-	const attachButton = await driver.findElement(By.xpath("//button[@data-testid='attach-schema-modal-btn-attach']"));
-	await attachButton.click();
-
-	await driver.wait(
-		until.elementLocated(
-			// Kaoto 2.6- using -field-, Kaoto 2.7+ using -fx-
-			By.xpath('//div[starts-with(@data-testid, "node-source-field-shiporder-")] | //div[starts-with(@data-testid, "node-source-fx-shiporder-")]'),
-		),
-		5000,
-		'Root of the imported xsd is not displayed in the UI',
-	);
-}
-
-async function waitForXsdAttachModal(driver: WebDriver, timeout: number = 3_000): Promise<void> {
-	await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='attach-schema-modal']")), timeout, 'Cannot find XSD schema modal dialog');
+	await DataMapperEditor.attachXsdSchema(driver, kaotoWebview, 'sourceBody-Body', 'shiporder.xsd');
+	await DataMapperEditor.waitForSourceField(driver, 5_000);
 }
 
 async function openDataMapperEditor(driver: WebDriver) {
-	const kaotoNode = await driver.findElement(
-		By.css(
-			`g[data-testid^="custom-node__kaoto-datamapper"],g[data-testid="custom-node__route.from.steps.0.kaoto-datamapper"],g[data-testid="${DATA_TEST_ID_DATAMAPPERSTEP_2_5}"]`,
-		),
-	);
-	await kaotoNode.click();
-	await driver.wait(
-		until.elementLocated(By.css('button[title="Click to launch the Kaoto DataMapper editor"]')),
-		5000,
-		'Cannot find the button to open the datamapper',
-	);
-	await (await driver.findElement(By.css('button[title="Click to launch the Kaoto DataMapper editor"]'))).click();
+	const nodeSelector = `g[data-testid^="custom-node__kaoto-datamapper"],g[data-testid="custom-node__route.from.steps.0.kaoto-datamapper"],g[data-testid="${DATA_TEST_ID_DATAMAPPERSTEP_2_5}"]`;
+	await DataMapperEditor.openFromNode(driver, nodeSelector);
 }
 
 async function deleteDataMapperStep(driver: WebDriver, workspaceFolder: string, kaotoWebview: WebView) {
 	await checkStepWithTestIdOrNodeLabelPresent(driver, 'custom-node__kaoto-datamapper', 'kaoto-datamapper');
 
-	const kaotoNodeConfigured = await driver.findElement(
-		By.xpath(`//*[name()='g' and starts-with(@data-testid,'custom-node__kaoto-datamapper') or @data-nodelabel='kaoto-datamapper']`),
-	);
+	const kaotoNodeConfigured = await KaotoCanvas.findNodeByTestIdOrLabel(driver, 'custom-node__kaoto-datamapper', 'kaoto-datamapper');
 	await kaotoNodeConfigured.click();
 
 	await workaroundToRedrawContextualMenu(kaotoWebview);
 
-	await driver.wait(until.elementLocated(By.css("button[id='reset-view']")), 5000, 'Cannot find the reset view button');
-	await (await driver.findElement(By.css("button[id='reset-view']"))).click(); // reset view nodes position to see the delete button
+	await KaotoCanvas.resetView(driver, 5_000);
+	await KaotoCanvas.deleteStep(driver, 'kaoto-datamapper', 5_000);
+	await KaotoCanvas.confirmDeleteStepAndFile(driver, 5_000);
 
-	await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='step-toolbar']")), 5000, 'Cannot find the step toolbar');
-	await (await driver.findElement(By.css('button[data-testid="kaoto-datamapper|step-toolbar-button-delete"]'))).click();
-
-	await driver.wait(
-		until.elementLocated(By.xpath("//div[@data-ouia-component-id='ActionConfirmationModal']")),
-		5000,
-		'Cannot find the modal to delete the data mapper step',
-	);
-	await (await driver.findElement(By.css('button[data-testid="action-confirmation-modal-btn-del-step-and-file"]'))).click();
 	await driver.wait(
 		async () => {
 			const filesAfterDeletion = fs.readdirSync(workspaceFolder);
@@ -271,63 +209,50 @@ async function deleteDataMapperStep(driver: WebDriver, workspaceFolder: string, 
 }
 
 async function createNewRoute(driver: WebDriver) {
-	await (await driver.findElement(By.xpath("//button[@data-testid='dsl-list-btn']"))).click();
+	await KaotoCanvas.clickDslListButton(driver);
 }
 
 async function addAMQPStep(driver: WebDriver) {
+	const canvasNode = await KaotoCanvas.findTimerOrFromNode(driver);
+	await KaotoCanvas.openContextMenu(driver, canvasNode);
+	await KaotoCanvas.clickReplaceInContextMenu(driver);
+
 	await driver.wait(
-		until.elementLocated(By.css('g[data-testid^="custom-node__timer"],g[data-testid="custom-node__route.from"]')),
+		until.elementLocated(By.xpath(kaotoLocators.KaotoCatalog.tileHeaderByTestId('amqp'))),
 		5000,
-		'Cannot find the node for the timer',
+		'Cannot find the tile header for the AMQP step',
 	);
-
-	const canvasNode = await driver.findElement(By.css('g[data-testid^="custom-node__timer"],g[data-testid="custom-node__route.from"]'));
-	await driver.actions().contextClick(canvasNode).perform();
-
-	await driver.wait(until.elementLocated(By.className('pf-topology-context-menu__c-dropdown__menu')), 5000, 'Cannot find the context menu');
-	await (await driver.findElement(By.xpath("//\*[@data-testid='context-menu-item-replace']"))).click();
-
-	await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='tile-header-amqp']")), 5000, 'Cannot find the tile header for the AMQP step');
-	await (await driver.findElement(By.xpath("//div[@data-testid='tile-header-amqp']"))).click();
+	await (await driver.findElement(By.xpath(kaotoLocators.KaotoCatalog.tileHeaderByTestId('amqp')))).click();
 }
 
 async function addDatamapperStep(driver: WebDriver, kaotoWebview: WebView) {
-	await driver.wait(
-		until.elementLocated(By.css('g[data-testid^="custom-node__log"],g[data-testid="custom-node__route.from.steps.0.log"]')),
-		5000,
-		'Cannot find the node for the log',
-	);
-
-	const canvasNode = await driver.findElement(By.css('g[data-testid^="custom-node__log"],g[data-testid="custom-node__route.from.steps.0.log"]'));
-	await driver.actions().contextClick(canvasNode).perform();
+	const canvasNode = await KaotoCanvas.findLogNode(driver);
+	await KaotoCanvas.openContextMenu(driver, canvasNode);
 
 	await workaroundToRedrawContextualMenu(kaotoWebview);
 
-	await driver.wait(until.elementLocated(By.className('pf-topology-context-menu__c-dropdown__menu')), 5000, 'Cannot find the context menu');
-	await (await driver.findElement(By.xpath("//*[@data-testid='context-menu-item-replace']"))).click();
+	await KaotoCanvas.clickReplaceInContextMenu(driver);
 
-	await driver.wait(until.elementLocated(By.xpath("//input[@placeholder='Filter by name, description or tag']")), 5000, 'Cannot find the filter input');
-	const filterInput = await driver.findElement(By.xpath("//input[@placeholder='Filter by name, description or tag']"));
+	await driver.wait(until.elementLocated(By.xpath(kaotoLocators.KaotoCatalog.filterInput)), 5000, 'Cannot find the filter input');
+	const filterInput = await driver.findElement(By.xpath(kaotoLocators.KaotoCatalog.filterInput));
 	await filterInput.sendKeys('datamapper');
-	await driver.wait(until.elementLocated(By.xpath("//div[@data-testid='tile-kaoto-datamapper']")), 5000, 'Cannot find the tile for the DataMapper step');
-
-	await (await driver.findElement(By.xpath("//div[@data-testid='tile-kaoto-datamapper']"))).click();
+	await driver.wait(
+		until.elementLocated(By.xpath(kaotoLocators.KaotoCatalog.tileHeaderByTestId('kaoto-datamapper'))),
+		5000,
+		'Cannot find the tile for the DataMapper step',
+	);
+	await (await driver.findElement(By.xpath(kaotoLocators.KaotoCatalog.tileHeaderByTestId('kaoto-datamapper')))).click();
 }
 
 /**
- *
  * @param driver
  * @param testId used for Kaoto 2.3
  * @param nodeLabel used for Kaoto 2.4
  */
 async function checkStepWithTestIdOrNodeLabelPresent(driver: WebDriver, testId: string, nodeLabel: string) {
-	await driver.wait(until.elementLocated(By.xpath(`//*[name()='g' and starts-with(@data-testid,'${testId}') or @data-nodelabel='${nodeLabel}']`)), 5_000);
+	await KaotoCanvas.findNodeByTestIdOrLabel(driver, testId, nodeLabel);
 }
 
 async function checkIntegrationNameInTopBarLoaded(driver: WebDriver, name: string) {
-	await driver.wait(
-		until.elementLocated(By.xpath(`//span[@data-testid='flows-list-route-id' and contains(., '${name}')]`)),
-		5_000,
-		`Unable to locate integration name '${name} in top bar!'`,
-	);
+	await KaotoEditor.waitForIntegrationName(driver, name);
 }
