@@ -12,6 +12,6 @@
     "container.image-push=true",
     "--trait",
     "container.image-pull-policy=IfNotPresent",
-    "--camel-version=4.20.0"
+    "--camel-version=4.21.0"
   ]
 }

@@ -1,6 +1,6 @@
 // ─── Default Values ──────────────────────────────────────────────────────────
 
-export const DEFAULT_CAMEL_VERSION_FALLBACK: string = '4.20.0';
+export const DEFAULT_CAMEL_VERSION_FALLBACK: string = '4.21.0';
 
 // ─── Editor Type ─────────────────────────────────────────────────────────────
 
