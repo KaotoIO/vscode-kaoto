@@ -41,7 +41,6 @@ export abstract class AbstractFolderTreeProvider<TFolder extends IFolderTreeItem
 	readonly onDidChangeTreeData: Event<TreeItemType> = this._onDidChangeTreeData.event;
 
 	protected fileWatcher!: FileSystemWatcher;
-	protected filePattern: string;
 
 	/** Debounce timer for refresh operations */
 	private refreshDebounceTimer?: NodeJS.Timeout;
@@ -58,8 +57,8 @@ export abstract class AbstractFolderTreeProvider<TFolder extends IFolderTreeItem
 	 * Initialize the file watcher. Must be called by subclasses after their constructor initialization.
 	 */
 	protected initFileWatcher(): void {
-		this.filePattern = this.getFilePattern();
-		this.fileWatcher = workspace.createFileSystemWatcher(this.filePattern);
+		const filePattern = this.getFilePattern();
+		this.fileWatcher = workspace.createFileSystemWatcher(filePattern);
 		const invalidateAndRefresh = () => {
 			this.invalidateCache();
 			this.refresh();
