@@ -131,9 +131,14 @@ describe('Maven dependency update pom.xml', function () {
 
 			const notificationsCenter = await new Workbench().openNotificationsCenter();
 			const notifications = await notificationsCenter.getNotifications(NotificationType.Warning);
-			const camelDependenciesUpdateNotification = notifications.find(async (notification) =>
-				(await notification.getMessage()).includes('The pom.xml file has unsaved changes. Please save it before updating Camel dependencies.'),
-			);
+			let camelDependenciesUpdateNotification;
+			for (const notification of notifications) {
+				const message = await notification.getMessage();
+				if (message.includes('The pom.xml file has unsaved changes. Please save it before updating Camel dependencies.')) {
+					camelDependenciesUpdateNotification = notification;
+					break;
+				}
+			}
 			await camelDependenciesUpdateNotification?.takeAction('Save and Continue');
 
 			await waitForNotifications();
