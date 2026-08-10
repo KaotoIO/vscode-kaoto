@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { ActivityBar, after, before, ComboSetting, VSBrowser, WebDriver, WebView, Workbench } from 'vscode-extension-tester';
-import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame, resetUserSettings } from '../Util';
+import { checkTopologyLoaded, closeEditor, dismissBlockingModal, openAndSwitchToKaotoFrame, resetUserSettings } from '../Util';
 import { join } from 'path';
 import { expect } from 'chai';
 import { KaotoCanvas } from '../pageObjects';
@@ -64,6 +64,10 @@ describe('User Settings', function () {
 		// the editor in this step needs to be closed using command palette
 		// because in some cases, specially on Windows, there was hover displayed which was blocking the editor close button
 		await new Workbench().executeCommand('View: Close Editor');
+		// resetUserSettings rewrites settings.json on disk while VS Code still has it open, so
+		// closing can raise "Do you want to save the changes you made to settings.json?". Left up,
+		// its backdrop blocks every click for the rest of the run.
+		await dismissBlockingModal(driver);
 	});
 
 	it(`Check 'id' Node Label is used instead of default 'description'`, async function () {
