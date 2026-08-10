@@ -30,7 +30,6 @@ import {
 	SideBarView,
 	StatusBar,
 	TerminalView,
-	TextEditor,
 	TreeItem,
 	until,
 	ViewControl,
@@ -186,22 +185,60 @@ export function resetUserSettings(id: string): void {
 }
 
 /**
+ * Dismiss a modal dialog if one is currently blocking the workbench.
+ *
+ * VS Code renders modals behind a full-window backdrop (`.monaco-dialog-modal-block`)
+ * that swallows every click. A single undismissed dialog therefore fails every later
+ * test in the run with `ElementClickInterceptedError`, naming whatever element that
+ * test happened to click rather than anything to do with the real cause -- and the
+ * suites that only *read* the UI keep passing, which makes the pattern hard to spot.
+ *
+ * The tests hit this with the "Do you want to save the changes you made to
+ * settings.json?" prompt, because the settings helpers rewrite `settings.json` on disk
+ * while VS Code still has it open.
+ *
+ * Best effort and safe to call unconditionally: it returns immediately when no dialog
+ * is up, and reports whether it dismissed one.
+ *
+ * Falls back to 'Cancel' rather than to the opposite answer when the preferred button is
+ * missing: 'Cancel' still clears the backdrop, while answering "Don't Save" to a caller
+ * that asked to save would silently discard the change the test depends on.
+ *
+ * @param driver The WebDriver instance.
+ * @param preferredButton Button to press when the dialog offers it.
+ * @returns true when a dialog was dismissed.
+ */
+export async function dismissBlockingModal(driver: WebDriver, preferredButton: string = "Don't Save"): Promise<boolean> {
+	if ((await driver.findElements(By.css('.monaco-dialog-modal-block'))).length === 0) {
+		return false;
+	}
+	for (const button of [preferredButton, 'Cancel']) {
+		try {
+			await new ModalDialog().pushButton(button);
+			return true;
+		} catch {
+			// dialog does not offer this button, try the next one
+		}
+	}
+	console.log('a modal dialog is blocking the workbench and could not be dismissed');
+	return false;
+}
+
+/**
  * Close editor with handling of 'Save/Don't Save' Modal dialog.
+ *
+ * Whether the dialog appears is decided by looking for it after the close, rather than
+ * by probing the active editor with `TextEditor().isDirty()` beforehand: the editor
+ * being closed is not always a text editor -- the Settings UI is the common case here --
+ * so the old check could report "not dirty" and leave the prompt on screen, blocking
+ * every subsequent test.
  *
  * @param title Title of opened active editor.
  * @param save true/false
  */
 export async function closeEditor(title: string, save?: boolean) {
-	const dirty = await new TextEditor().isDirty();
 	await new EditorView().closeEditor(title);
-	if (dirty) {
-		const dialog = new ModalDialog();
-		if (save) {
-			await dialog.pushButton('Save');
-		} else {
-			await dialog.pushButton("Don't Save");
-		}
-	}
+	await dismissBlockingModal(VSBrowser.instance.driver, save ? 'Save' : "Don't Save");
 }
 
 export async function openResourcesAndWaitForActivation(
