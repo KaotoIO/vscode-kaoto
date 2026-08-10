@@ -112,9 +112,8 @@ export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
 	protected context: vscode.ExtensionContext;
 
-	protected testsProvider: TestsProvider;
-	protected deploymentsProvider: DeploymentsProvider;
-	protected openApiProvider: OpenApiProvider;
+	protected testsProvider!: TestsProvider;
+	protected deploymentsProvider!: DeploymentsProvider;
 
 	constructor(
 		context: vscode.ExtensionContext,
@@ -455,18 +454,18 @@ export class ExtensionContextHandler {
 	}
 
 	public registerOpenApiView() {
-		this.openApiProvider = new OpenApiProvider();
+		const openApiProvider = new OpenApiProvider();
 		const openApiTreeView = vscode.window.createTreeView(VIEW_OPENAPI, {
-			treeDataProvider: this.openApiProvider,
+			treeDataProvider: openApiProvider,
 			showCollapseAll: true,
 		});
 		const dispose = {
-			dispose: () => this.openApiProvider.dispose(),
+			dispose: () => openApiProvider.dispose(),
 		};
-		const refreshCommand = vscode.commands.registerCommand(COMMAND_OPENAPI_REFRESH, () => this.openApiProvider.refresh());
+		const refreshCommand = vscode.commands.registerCommand(COMMAND_OPENAPI_REFRESH, () => openApiProvider.refresh());
 		this.context.subscriptions.push(openApiTreeView, dispose, refreshCommand);
 
-		this.registerViewItemContextMenu(this.openApiProvider, COMMAND_OPENAPI_SHOW_SOURCE, COMMAND_OPENAPI_DELETE);
+		this.registerViewItemContextMenu(openApiProvider, COMMAND_OPENAPI_SHOW_SOURCE, COMMAND_OPENAPI_DELETE);
 	}
 
 	public registerOpenApiImportCommand() {
