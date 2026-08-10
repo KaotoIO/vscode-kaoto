@@ -177,11 +177,12 @@ export const storageFolder = process.env.TEST_RESOURCES ? process.env.TEST_RESOU
  */
 export function resetUserSettings(id: string): void {
 	const settingsPath = path.resolve(storageFolder, 'settings', 'User', 'settings.json');
-	const reset = fs
-		.readFileSync(settingsPath, 'utf-8')
-		.replace(new RegExp(`"${id}.*`), '')
-		.replace(/,(?=[^,]*$)/, '');
-	fs.writeFileSync(settingsPath, reset, 'utf-8');
+	const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
+	if (!(id in settings)) {
+		return;
+	}
+	delete settings[id];
+	fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 4), 'utf-8');
 }
 
 /**
