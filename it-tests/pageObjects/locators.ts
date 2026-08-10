@@ -49,6 +49,15 @@ import type { LocatorDiff } from 'vscode-extension-tester';
 export const kaotoLocators = {
 	/** Main Kaoto webview canvas & editor state */
 	KaotoEditor: {
+		/**
+		 * Root element the Kaoto editor envelope renders into
+		 * (see `src/webview/KaotoEditorEnvelopeApp.ts`).
+		 *
+		 * Present in the Kaoto webview for every supported file type, and absent from
+		 * both the workbench DOM and any other extension webview (such as "What's New").
+		 * Used to prove that `switchToFrame()` really landed in the Kaoto editor.
+		 */
+		envelopeApp: `#envelope-app`,
 		emptyCanvas: `//div[@data-testid='visualization-empty-state']`,
 		topology: `//div[@data-test-id='topology']`,
 		designTabLink: `a[data-testid="design-tab"]`,
@@ -187,8 +196,47 @@ export const kaotoLocators = {
  * `MyClass.locators.Kaoto*.*` to access these selectors.
  */
 export const locators: LocatorDiff['locators'] = {
+	/**
+	 * Override of the built-in ExTester webview locator.
+	 *
+	 * ExTester ships (`@redhat-developer/locators`, 1.90.0 profile):
+	 *   //div[not(@data-parent-flow-to-element-id)]/iframe[@class='webview ready']
+	 *
+	 * Since VS Code 1.132.0 the webview container always carries
+	 * `data-parent-flow-to-element-id`, empty when there is no parent flow target:
+	 *   <div class="webview-overlay-content" data-parent-flow-to-element-id="">
+	 *
+	 * XPath `not(@attr)` tests attribute *existence*, not its value, so the shipped
+	 * locator matches zero elements. `WebView.switchToFrame()` then silently returns
+	 * without switching, and every webview query afterwards runs against the workbench
+	 * DOM -- surfacing as a `NoSuchElementError` for a perfectly valid app selector.
+	 *
+	 * Measured on VS Code 1.132.0, the container of an editor webview is:
+	 *   <div class="webview-overlay-content"
+	 *        data-parent-flow-to-element-id="webview-editor-element-73e4fa48-...">
+	 *
+	 * The attribute is present and holds the editor element id, so `not(@attr)` -- which
+	 * tests attribute *existence* -- excludes every editor webview and the shipped locator
+	 * matches nothing. `WebView.switchToFrame()` then hits its `if (!view) return;` branch
+	 * and silently does not switch, leaving the driver in the workbench DOM; the failure
+	 * only surfaces later as a `NoSuchElementError` naming a perfectly valid Kaoto selector.
+	 *
+	 * Matching the iframe directly sidesteps the attribute entirely and works on both DOM
+	 * shapes. Upstream added that predicate to exclude the Welcome/walkthrough webview
+	 * (redhat-developer/vscode-extension-tester#1492); dropping it is safe here because
+	 * `it-tests/vscode-settings.json` sets `workbench.startupEditor: none`, so no
+	 * walkthrough is ever open, and ExTester still resolves between multiple matches by
+	 * rect overlap with the editor under test.
+	 *
+	 * Upstream issue: https://github.com/redhat-developer/vscode-extension-tester/issues/2450
+	 */
+	WebView: {
+		iframe: By.css(`iframe.webview.ready`),
+	},
+
 	KaotoEditor: {
 		constructor: By.xpath(`//div[@data-testid='visualization-empty-state']`),
+		envelopeApp: By.css(`#envelope-app`),
 		emptyCanvas: By.xpath(`//div[@data-testid='visualization-empty-state']`),
 		topology: By.xpath(`//div[@data-test-id='topology']`),
 		designTabLink: By.css(`a[data-testid="design-tab"]`),
