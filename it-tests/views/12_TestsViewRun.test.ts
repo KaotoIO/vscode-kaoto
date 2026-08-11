@@ -28,7 +28,10 @@ import {
 	waitUntilTerminalHasText,
 } from '../Util';
 
-describe('Tests View', function () {
+// TODO(#1477): temporarily disabled — Citrus 5.0.0 broke Camel JBang's `camel test`
+// shim (`package org.citrusframework.jbang.cli does not exist`), failing these tests on
+// every branch and OS. Re-enable once #1477 is resolved.
+describe.skip('Tests View', function () {
 	this.timeout(240_000);
 
 	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars', 'kaoto-view', 'example-tests');
