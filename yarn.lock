@@ -13458,7 +13458,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vscode-extension-tester@npm:^8.24.0":
+"vscode-extension-tester@npm:8.24.0":
   version: 8.24.0
   resolution: "vscode-extension-tester@npm:8.24.0"
   dependencies:
@@ -13485,6 +13485,36 @@ __metadata:
   bin:
     extest: out/cli.js
   checksum: 10/f7592f655fe4ba22841c4cffdeb1d22f074d7a93152ae57407922f28a65580952fd355d09f896cf1b2b7c4a267386c668c3093aa04356a32afb9cded0324085d
+  languageName: node
+  linkType: hard
+
+"vscode-extension-tester@patch:vscode-extension-tester@npm%3A8.24.0#~/.yarn/patches/vscode-extension-tester-npm-8.24.0-62b74258e3.patch":
+  version: 8.24.0
+  resolution: "vscode-extension-tester@patch:vscode-extension-tester@npm%3A8.24.0#~/.yarn/patches/vscode-extension-tester-npm-8.24.0-62b74258e3.patch::version=8.24.0&hash=24b6e6"
+  dependencies:
+    "@redhat-developer/locators": "npm:^1.21.0"
+    "@redhat-developer/page-objects": "npm:^1.21.0"
+    "@types/selenium-webdriver": "npm:^4.35.6"
+    "@vscode/vsce": "npm:^3.9.2"
+    c8: "npm:^12.0.0"
+    commander: "npm:^14.0.3"
+    compare-versions: "npm:^6.1.1"
+    find-up: "npm:8.0.0"
+    fs-extra: "npm:^11.4.0"
+    glob: "npm:^13.0.6"
+    got: "npm:^15.1.0"
+    hpagent: "npm:^1.2.0"
+    js-yaml: "npm:^5.2.2"
+    sanitize-filename: "npm:^1.6.4"
+    selenium-webdriver: "npm:^4.46.0"
+    targz: "npm:^1.0.1"
+    unzipper: "npm:^0.12.5"
+  peerDependencies:
+    mocha: ">=5.2.0"
+    typescript: ">=4.6.2"
+  bin:
+    extest: out/cli.js
+  checksum: 10/481e839be0f9e95035d8d2f3a4e6f87ab6fa08aeca717379b20959b52bfdd2698f8e65ed95fe9bd590d0fd2225916ee4f310faf8432e06789426145e0d776889
   languageName: node
   linkType: hard
 
@@ -13559,7 +13589,7 @@ __metadata:
     typescript: "npm:^5.9.3"
     unzipper: "npm:^0.12.5"
     valid-filename: "npm:4.0.0"
-    vscode-extension-tester: "npm:^8.24.0"
+    vscode-extension-tester: "patch:vscode-extension-tester@npm%3A8.24.0#~/.yarn/patches/vscode-extension-tester-npm-8.24.0-62b74258e3.patch"
     wait-on: "npm:^9.0.10"
     web-worker: "npm:^1.5.0"
     webpack: "npm:5.108.3"
