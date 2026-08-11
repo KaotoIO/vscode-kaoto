@@ -70,7 +70,11 @@ jobs:
     timeout-minutes: 60
 
     env:
-      CODE_VERSION: max
+      # Pinned instead of `max`: VS Code >= 1.123 ships Chromium 148, which duplicates every
+      # 256 KiB chunk of a webview resource while chromedriver is attached. The Kaoto bundle
+      # then fails to parse and the editor renders blank. See KaotoIO/vscode-kaoto#1468.
+      # 1.122.0 is the newest release still on Chromium 142. Revert to `max` once fixed upstream.
+      CODE_VERSION: '1.122.0'
       TEST_RESOURCES: test-resources
 
     steps:
@@ -112,7 +116,11 @@ jobs:
     timeout-minutes: 60
 
     env:
-      CODE_VERSION: max
+      # Pinned instead of `max`: VS Code >= 1.123 ships Chromium 148, which duplicates every
+      # 256 KiB chunk of a webview resource while chromedriver is attached. The Kaoto bundle
+      # then fails to parse and the editor renders blank. See KaotoIO/vscode-kaoto#1468.
+      # 1.122.0 is the newest release still on Chromium 142. Revert to `max` once fixed upstream.
+      CODE_VERSION: '1.122.0'
       TEST_RESOURCES: test-resources
 
     steps:
@@ -148,7 +156,11 @@ jobs:
     timeout-minutes: 60
 
     env:
-      CODE_VERSION: max
+      # Pinned instead of `max`: VS Code >= 1.123 ships Chromium 148, which duplicates every
+      # 256 KiB chunk of a webview resource while chromedriver is attached. The Kaoto bundle
+      # then fails to parse and the editor renders blank. See KaotoIO/vscode-kaoto#1468.
+      # 1.122.0 is the newest release still on Chromium 142. Revert to `max` once fixed upstream.
+      CODE_VERSION: '1.122.0'
       TEST_RESOURCES: test-resources
 
     steps:
