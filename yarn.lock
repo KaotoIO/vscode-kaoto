@@ -10842,12 +10842,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:3.9.4":
-  version: 3.9.4
-  resolution: "prettier@npm:3.9.4"
+"prettier@npm:3.9.6":
+  version: 3.9.6
+  resolution: "prettier@npm:3.9.6"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10/4a0dc4389d442f5aca0beb12778c90b6ceb9831940b01a1df5eba9150b5ce96fa52eda9074a10a370e732adc03e2f645597dfd8b7e3f1e94dee28df01004a0fd
+  checksum: 10/1dd1a1e0e40ec3b91cda9d294c4a95022aef61880ca3f441aad99b1252279f58a766c4cece81132c01550dcff1fd445efbd8812ea4a2374313e7fc6c8136f11f
   languageName: node
   linkType: hard
 
@@ -13575,7 +13575,7 @@ __metadata:
     npm-link-shared: "npm:^0.5.6"
     os-browserify: "npm:^0.3.0"
     path-browserify: "npm:^1.0.1"
-    prettier: "npm:3.9.4"
+    prettier: "npm:3.9.6"
     react: "npm:19.2.4"
     react-dom: "npm:19.2.4"
     react-monaco-editor: "npm:0.56.2"
