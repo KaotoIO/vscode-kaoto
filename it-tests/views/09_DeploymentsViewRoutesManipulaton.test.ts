@@ -17,6 +17,7 @@ import { expect } from 'chai';
 import { join } from 'path';
 import { after, EditorView, TreeItem, ViewControl, ViewItemAction, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
 import {
+	activateTerminalView,
 	collapseItemsInsideTreeStructuredView,
 	expandViews,
 	getKaotoViewControl,
@@ -24,7 +25,6 @@ import {
 	getTreeItemActionButton,
 	killTerminal,
 	openResourcesAndWaitForActivation,
-	waitUntilTerminalHasText,
 } from '../Util';
 
 describe('Deployments View', function () {
@@ -64,10 +64,12 @@ describe('Deployments View', function () {
 	];
 
 	const routeManipulations = [
-		{ state: 'Stopped', button: 'Stop', allowedButtons: ['Start'] },
-		{ state: 'Started', button: 'Start', allowedButtons: ['Suspend', 'Stop'] },
-		{ state: 'Suspended', button: 'Suspend', allowedButtons: ['Resume', 'Stop'] },
-		{ state: 'Started', button: 'Resume', allowedButtons: ['Suspend', 'Stop'] },
+		{ state: 'Stopped', button: 'Stop', allowedButtons: ['Start'], terminalText: 'Stopped' },
+		{ state: 'Started', button: 'Start', allowedButtons: ['Suspend', 'Stop'], terminalText: 'Started' },
+		{ state: 'Suspended', button: 'Suspend', allowedButtons: ['Resume', 'Stop'], terminalText: 'Suspended' },
+		// Camel does not emit a new "Started route-XXX" log line on resume, so there is no
+		// terminal text to assert on; the route state and button checks below are sufficient.
+		{ state: 'Started', button: 'Resume', allowedButtons: ['Suspend', 'Stop'], terminalText: null },
 	];
 
 	parameters.forEach((p) => {
@@ -86,14 +88,45 @@ describe('Deployments View', function () {
 
 			routeManipulations.forEach((rm) => {
 				it(`click '${rm.button}' on ${p.route}`, async function () {
+					const textToLookFor = rm.terminalText !== null ? `${rm.terminalText} ${p.route}` : null;
+					const initialCount = textToLookFor !== null ? await getTerminalOccurrences(textToLookFor) : 0;
+
 					await clickRouteActionButton(rm.button);
 
-					await waitUntilTerminalHasText(driver, [`${rm.state} ${p.route}`], 1_000, 30_000);
+					if (textToLookFor !== null) {
+						await waitUntilTerminalHasMoreOccurrences(textToLookFor, initialCount);
+					}
 					await waitUntilRouteHasState(rm.state);
 					await waitUntilRouteHasButtons(rm.allowedButtons);
 				});
 			});
 		});
+
+		async function getTerminalOccurrences(text: string): Promise<number> {
+			try {
+				const terminal = await activateTerminalView();
+				const terminalText = await terminal.getText();
+				return terminalText.split(text).length - 1;
+			} catch (err) {
+				return 0;
+			}
+		}
+
+		async function waitUntilTerminalHasMoreOccurrences(text: string, initialCount: number, interval = 1000, timeout = 30000): Promise<void> {
+			await driver.wait(
+				async function () {
+					try {
+						const currentCount = await getTerminalOccurrences(text);
+						return currentCount > initialCount;
+					} catch (err) {
+						return false;
+					}
+				},
+				timeout,
+				`Failed waiting for terminal to have more than ${initialCount} occurrences of "${text}"`,
+				interval,
+			);
+		}
 
 		async function clickRouteActionButton(action: string, timeout = 30_000): Promise<void> {
 			let clicked = false;
