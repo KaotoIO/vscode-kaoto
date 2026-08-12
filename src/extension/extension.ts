@@ -33,6 +33,7 @@ let telemetryService: TelemetryService;
 
 export async function activate(context: vscode.ExtensionContext) {
 	KaotoOutputChannel.logInfo('Kaoto extension is alive.');
+	KaotoOutputChannel.logStartupInfo(context);
 
 	// Initialize executor factory with extension context
 	CamelExecutorFactory.initialize(context);
