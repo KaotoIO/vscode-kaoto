@@ -175,7 +175,7 @@ jobs:
           command: |
             Set-DisplayResolution -Width 1920 -Height 1080 -Force
             yarn run test:it:with-prebuilt-vsix
-          on_retry_command: Remove-Item -Recurse -Force "$env:RUNNER_TEMP\extest-code" -ErrorAction SilentlyContinue
+          on_retry_command: Remove-Item -Recurse -Force "$env:RUNNER_TEMP\extest-code"
       - uses: ./.github/actions/upload-test-artifacts
         if: failure()
         with:
