@@ -28,6 +28,7 @@ let backendProxy: VsCodeBackendProxy;
 
 export async function activate(context: vscode.ExtensionContext) {
 	KaotoOutputChannel.logInfo('Kaoto extension is alive.');
+	KaotoOutputChannel.logStartupInfo(context, 'web');
 
 	const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
 	backendProxy = new VsCodeBackendProxy(context, backendI18n);
