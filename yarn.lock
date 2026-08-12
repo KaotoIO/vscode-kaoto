@@ -13582,7 +13582,7 @@ __metadata:
     wait-on: "npm:^9.0.10"
     web-worker: "npm:^1.5.0"
     webpack: "npm:5.109.2"
-    webpack-cli: "npm:7.1.0"
+    webpack-cli: "npm:7.2.2"
     webpack-merge: "npm:6.0.1"
     webpack-permissions-plugin: "npm:^1.0.10"
     yaml: "npm:^2.9.0"
@@ -13655,9 +13655,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-cli@npm:7.1.0":
-  version: 7.1.0
-  resolution: "webpack-cli@npm:7.1.0"
+"webpack-cli@npm:7.2.2":
+  version: 7.2.2
+  resolution: "webpack-cli@npm:7.2.2"
   dependencies:
     "@discoveryjs/json-ext": "npm:^1.1.0"
     commander: "npm:^14.0.3"
@@ -13673,7 +13673,7 @@ __metadata:
     toml: ^3.0.0 || ^4.0.0
     webpack: ^5.101.0
     webpack-bundle-analyzer: ^4.0.0 || ^5.0.0
-    webpack-dev-server: ^5.0.0
+    webpack-dev-server: ^5.0.0 || ^6.0.0
   peerDependenciesMeta:
     js-yaml:
       optional: true
@@ -13687,7 +13687,7 @@ __metadata:
       optional: true
   bin:
     webpack-cli: bin/cli.js
-  checksum: 10/74d404728b057e5887a822dc5abb41b825e2a819da26891ecb7eb125282d5041b99c8d0f90f3e910c128813ddfe5d5d946ce0106aab1fb7bbb236a94223f897a
+  checksum: 10/c010aabe502e2c1caa1fa7ea42ce4b107b96e47ed5b2b3761283ef1c9bd508b3f51e6cce7365833346a85ae0dd50419160c2be0001f37d83a950269073e738a7
   languageName: node
   linkType: hard
 
