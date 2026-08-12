@@ -2880,16 +2880,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vscode/test-electron@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@vscode/test-electron@npm:3.0.0"
+"@vscode/test-electron@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@vscode/test-electron@npm:3.1.0"
   dependencies:
     http-proxy-agent: "npm:^7.0.2"
     https-proxy-agent: "npm:^7.0.5"
     jszip: "npm:^3.10.1"
     ora: "npm:^8.1.0"
     semver: "npm:^7.6.2"
-  checksum: 10/e539a8ed35dffdbb0591bf6c92e36cbf93381e35f861d87fcebd63ac537afaf60aa7e9af90d500f34ce6d0ed032cfdc46cff307b727d3a49538a8019993f47f4
+  checksum: 10/93ea29df15f0ffe625d259c0c3e175fb3daf49d1060f548e4231d5c82a9af7c09ba8974db8aa2bc129a1a261f1f30ddbafcb10754cf647c3440af33c05703459
   languageName: node
   linkType: hard
 
@@ -13550,7 +13550,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:^8.62.1"
     "@typescript-eslint/parser": "npm:^8.62.1"
     "@vscode/test-cli": "npm:^0.0.15"
-    "@vscode/test-electron": "npm:^3.0.0"
+    "@vscode/test-electron": "npm:^3.1.0"
     "@vscode/test-web": "npm:^0.0.81"
     "@vscode/vsce": "npm:^3.9.2"
     async-wait-until: "npm:^2.0.31"
