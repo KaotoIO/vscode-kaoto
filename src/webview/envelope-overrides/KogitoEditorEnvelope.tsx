@@ -64,8 +64,8 @@ export class KogitoEditorEnvelope<
 
 	private renderView(container: HTMLElement): Promise<() => EditorEnvelopeViewApi<E>> {
 		return new Promise<() => EditorEnvelopeViewApi<E>>((resolve) => {
-			const callback = (ref: RefObject<EditorEnvelopeViewApi<E>>) => {
-				resolve(() => ref.current!);
+			const callback = (ref: RefObject<EditorEnvelopeViewApi<Editor> | null>) => {
+				resolve(() => ref.current! as unknown as EditorEnvelopeViewApi<E>);
 			};
 
 			setTimeout(() => {
