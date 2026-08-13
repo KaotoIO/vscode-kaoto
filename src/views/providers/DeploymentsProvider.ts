@@ -54,17 +54,12 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 				const ready = await this.waitForIntegrationReady(def.port);
 				if (ready) {
 					console.log(`[DeploymentsProvider] Camel integration running on port ${def.port}`);
-					this.refresh();
+					void this.refresh();
 				}
 			}
 		});
 		tasks.onDidEndTaskProcess((e) => {
-			const def = e.execution.task.definition as CamelTaskDefinition;
-			if (def.type === 'camel' && def.port > 0) {
-				console.log(`[DeploymentsProvider] Task ended on port ${def.port}`);
-				this.portManager.releasePort(def.port);
-				this.refresh();
-			}
+			this.handleTaskEnd(e.execution.task.definition as CamelTaskDefinition);
 		});
 	}
 
@@ -72,9 +67,18 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 		this.stopAutoRefresh();
 	}
 
-	refresh(): void {
+	/** Exposed for testing: handles task-end events — releases the port and triggers a refresh. */
+	handleTaskEnd(def: CamelTaskDefinition): void {
+		if (def.type === 'camel' && def.port > 0) {
+			console.log(`[DeploymentsProvider] Task ended on port ${def.port}`);
+			this.portManager.releasePort(def.port);
+			void this.refresh();
+		}
+	}
+
+	refresh(): Promise<void> {
 		console.log('[DeploymentsProvider] Refreshing data...');
-		void this.updateData();
+		return this.updateData();
 	}
 
 	getTreeItem(element: TreeItem): TreeItem {
