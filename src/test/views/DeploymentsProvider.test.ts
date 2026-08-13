@@ -93,11 +93,11 @@ suite('DeploymentsProvider — port guard (NO_PORT = -1 is skipped)', function (
 		assert.deepStrictEqual(releasePortCalls, [], 'releasePort must not be called for NO_PORT');
 	});
 
-	test('releasePort IS called exactly once when a task ends with a valid port', async function () {
+	test('releasePort IS called exactly once when a task ends with a valid port', function () {
 		const { portManager, releasePortCalls } = makePortManager(false);
 		const provider = new DeploymentsProvider(portManager);
 
-		await provider.handleTaskEnd(makeCamelTaskDef(8080));
+		provider.handleTaskEnd(makeCamelTaskDef(8080));
 
 		provider.dispose();
 		assert.deepStrictEqual(releasePortCalls, [8080], 'releasePort must be called exactly once for a valid port');
