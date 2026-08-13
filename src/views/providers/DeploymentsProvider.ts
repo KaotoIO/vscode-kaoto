@@ -49,7 +49,7 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 
 		tasks.onDidStartTaskProcess(async (e) => {
 			const def = e.execution.task.definition as CamelTaskDefinition;
-			if (def.type === 'camel' && def.port) {
+			if (def.type === 'camel' && def.port > 0) {
 				console.log(`[DeploymentsProvider] Task started on port ${def.port}`);
 				const ready = await this.waitForIntegrationReady(def.port);
 				if (ready) {
@@ -60,7 +60,7 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 		});
 		tasks.onDidEndTaskProcess((e) => {
 			const def = e.execution.task.definition as CamelTaskDefinition;
-			if (def.type === 'camel' && def.port) {
+			if (def.type === 'camel' && def.port > 0) {
 				console.log(`[DeploymentsProvider] Task ended on port ${def.port}`);
 				this.portManager.releasePort(def.port);
 				this.refresh();
@@ -170,9 +170,8 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 
 		const fetchTasks = ports.map(async (port) => {
 			try {
-				const reachable = await this.portManager.waitForPortReachable(port);
+				const reachable = await this.portManager.waitForPortReachable(port, 3_000);
 				if (!reachable) {
-					this.portManager.releasePort(port);
 					return;
 				}
 
@@ -193,7 +192,6 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 				}
 			} catch (err) {
 				KaotoOutputChannel.logError(`[DeploymentsProvider] Port ${port} fetch error:`, err);
-				this.portManager.releasePort(port);
 			}
 		});
 
