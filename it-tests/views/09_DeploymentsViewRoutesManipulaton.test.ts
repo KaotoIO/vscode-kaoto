@@ -89,7 +89,7 @@ describe('Deployments View', function () {
 			routeManipulations.forEach((rm) => {
 				it(`click '${rm.button}' on ${p.route}`, async function () {
 					const textToLookFor = rm.terminalText !== null ? `${rm.terminalText} ${p.route}` : null;
-					const initialCount = textToLookFor !== null ? await getTerminalOccurrences(textToLookFor) : 0;
+					const initialCount = textToLookFor !== null ? await getInitialTerminalOccurrences(textToLookFor) : 0;
 
 					await clickRouteActionButton(rm.button);
 
@@ -102,6 +102,11 @@ describe('Deployments View', function () {
 			});
 		});
 
+		/**
+		 * Reads the current terminal occurrence count for `text`.
+		 * Used by the post-action polling loop — failures are treated as 0
+		 * so the poll keeps retrying without aborting the wait.
+		 */
 		async function getTerminalOccurrences(text: string): Promise<number> {
 			try {
 				const terminal = await activateTerminalView();
@@ -110,6 +115,29 @@ describe('Deployments View', function () {
 			} catch (err) {
 				return 0;
 			}
+		}
+
+		/**
+		 * Reads the terminal occurrence count before an action fires.
+		 * Retries on transient errors (e.g. terminal not yet visible) so that
+		 * a read failure does not silently produce initialCount = 0 and allow
+		 * the post-action assertion to pass vacuously.
+		 * Throws if a clean read cannot be obtained within `timeout` ms.
+		 */
+		async function getInitialTerminalOccurrences(text: string, interval = 500, timeout = 15_000): Promise<number> {
+			const deadline = Date.now() + timeout;
+			let lastErr: unknown;
+			while (Date.now() < deadline) {
+				try {
+					const terminal = await activateTerminalView();
+					const terminalText = await terminal.getText();
+					return terminalText.split(text).length - 1;
+				} catch (err) {
+					lastErr = err;
+					await driver.sleep(interval);
+				}
+			}
+			throw new Error(`getInitialTerminalOccurrences: could not read terminal for "${text}" within ${timeout}ms. Last error: ${lastErr}`);
 		}
 
 		async function waitUntilTerminalHasMoreOccurrences(text: string, initialCount: number, interval = 1000, timeout = 30000): Promise<void> {
