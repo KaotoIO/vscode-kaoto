@@ -16,7 +16,7 @@
 import { assert } from 'chai';
 import { DeploymentsProvider, PortFileKey } from '../../views/providers/DeploymentsProvider';
 import { PortManager } from '../../helpers/PortManager';
-import { CamelTask } from '../../tasks/CamelTask';
+import { CamelTask, CamelTaskDefinition } from '../../tasks/CamelTask';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -45,6 +45,11 @@ function makePortManager(reachable: boolean): {
 	};
 
 	return { portManager, releasePortCalls, waitForPortReachableCalls };
+}
+
+/** Builds a minimal CamelTaskDefinition for use with handleTaskEnd. */
+function makeCamelTaskDef(port: number): CamelTaskDefinition {
+	return { type: 'camel', label: 'test-task', port };
 }
 
 // ─── PortFileKey ─────────────────────────────────────────────────────────────
@@ -78,32 +83,24 @@ suite('DeploymentsProvider — port guard (NO_PORT = -1 is skipped)', function (
 		assert.isTrue(8080 > 0, 'a real port must pass the port > 0 guard');
 	});
 
-	test('releasePort is NOT called when a task ends with NO_PORT (-1)', async function () {
+	test('releasePort is NOT called when a task ends with NO_PORT (-1)', function () {
 		const { portManager, releasePortCalls } = makePortManager(false);
 		const provider = new DeploymentsProvider(portManager);
+
+		provider.handleTaskEnd(makeCamelTaskDef(CamelTask.NO_PORT));
+
 		provider.dispose();
-
-		// Simulate the guarded logic from onDidEndTaskProcess
-		const port: number = CamelTask.NO_PORT; // -1
-		if (/* def.type === 'camel' && */ port > 0) {
-			portManager.releasePort(port);
-		}
-
 		assert.deepStrictEqual(releasePortCalls, [], 'releasePort must not be called for NO_PORT');
 	});
 
-	test('releasePort IS called when a task ends with a valid port', function () {
+	test('releasePort IS called exactly once when a task ends with a valid port', async function () {
 		const { portManager, releasePortCalls } = makePortManager(false);
 		const provider = new DeploymentsProvider(portManager);
+
+		await provider.handleTaskEnd(makeCamelTaskDef(8080));
+
 		provider.dispose();
-
-		// Simulate the guarded logic from onDidEndTaskProcess
-		const port = 8080;
-		if (port > 0) {
-			portManager.releasePort(port);
-		}
-
-		assert.deepStrictEqual(releasePortCalls, [8080]);
+		assert.deepStrictEqual(releasePortCalls, [8080], 'releasePort must be called exactly once for a valid port');
 	});
 });
 
@@ -117,10 +114,7 @@ suite('DeploymentsProvider — ports are NOT released on transient poll failures
 		portManager.getUsedPorts().add(8080);
 
 		const provider = new DeploymentsProvider(portManager);
-		provider.refresh();
-
-		// Allow the async refresh to settle
-		await new Promise((r) => setTimeout(r, 20));
+		await provider.refresh();
 
 		provider.dispose();
 
@@ -141,8 +135,7 @@ suite('DeploymentsProvider — ports are NOT released on transient poll failures
 
 		try {
 			const provider = new DeploymentsProvider(portManager);
-			provider.refresh();
-			await new Promise((r) => setTimeout(r, 20));
+			await provider.refresh();
 			provider.dispose();
 
 			assert.deepStrictEqual(releasePortCalls, [], 'releasePort must NOT be called on a fetch error');
@@ -162,8 +155,7 @@ suite('DeploymentsProvider — reachability poll uses 3-second timeout', functio
 		portManager.getUsedPorts().add(8080);
 
 		const provider = new DeploymentsProvider(portManager);
-		provider.refresh();
-		await new Promise((r) => setTimeout(r, 20));
+		await provider.refresh();
 		provider.dispose();
 
 		assert.isTrue(
