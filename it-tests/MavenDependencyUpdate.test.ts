@@ -25,7 +25,6 @@ import {
 	workaroundToRedrawContextualMenu,
 } from './Util';
 import {
-	By,
 	EditorView,
 	VSBrowser,
 	WebDriver,
@@ -274,7 +273,7 @@ describe('Maven dependency update pom.xml', function () {
 		).kaotoWebview;
 
 		// right click on SQL component node
-		const sqlNode = await driver.findElement(By.css('g[data-nodelabel="sql"]'));
+		const sqlNode = await KaotoCanvas.findNodeByCss(driver, 'custom-node__sql', 'sql');
 		await KaotoCanvas.openContextMenu(driver, sqlNode);
 
 		await workaroundToRedrawContextualMenu(kaotoWebview);

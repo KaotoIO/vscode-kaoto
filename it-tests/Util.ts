@@ -165,9 +165,6 @@ export async function switchToKaotoFrame(
 	expectedTitle?: string,
 ): Promise<{ kaotoWebview: WebView; kaotoEditor: CustomEditor }> {
 	let kaotoEditor = new CustomEditor();
-	if (checkNotDirty) {
-		assert.isFalse(await kaotoEditor.isDirty(), 'The Kaoto editor should not be dirty when opening it.');
-	}
 	let kaotoWebview: WebView = kaotoEditor.getWebView();
 	await driver.wait(
 		async () => {
@@ -177,6 +174,11 @@ export async function switchToKaotoFrame(
 				kaotoWebview = kaotoEditor.getWebView();
 				await kaotoWebview.switchToFrame(10_000);
 				if (await isInsideKaotoWebview(driver)) {
+					if (checkNotDirty) {
+						await kaotoWebview.switchBack();
+						assert.isFalse(await kaotoEditor.isDirty(), 'The Kaoto editor should not be dirty when opening it.');
+						await kaotoWebview.switchToFrame(10_000);
+					}
 					return true;
 				}
 				// Landed in the workbench DOM or in a foreign webview -- get back out and retry.
