@@ -1,4 +1,4 @@
-import { exec } from 'child_process';
+import { exec } from 'child_process'; // NOSONAR: node: prefix is unsupported by the webpack path-browserify polyfill fallback
 import { Disposable, tasks, window } from 'vscode';
 import { CamelInfraJBang, InfraRunningServiceDetails, InfraServiceDefinition } from '../../helpers/CamelInfraJBang';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';

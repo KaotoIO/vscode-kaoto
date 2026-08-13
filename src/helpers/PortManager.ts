@@ -36,7 +36,7 @@ export class PortManager {
 
 	public releasePort(port: number): void {
 		this.usedPorts.delete(port);
-		console.log(`[PortManager] Port ${port} released and marked as FREE.`);
+		KaotoOutputChannel.logInfo(`Port ${port} released and marked as free`);
 	}
 
 	public async waitForPortReachable(port: number, timeout: number = 120_000, interval: number = 250): Promise<boolean> {
@@ -47,12 +47,10 @@ export class PortManager {
 				timeout,
 				tcpTimeout: 1_000,
 			});
-			console.log(`[PortManager] Port ${port} is now reachable`);
+			KaotoOutputChannel.logInfo(`Port ${port} is now reachable`);
 			return true;
 		} catch (err) {
-			const message = `[PortManager] Timeout ${timeout}ms reached. Port ${port} not reachable.`;
-			KaotoOutputChannel.logError(message, err);
-			console.error(message, err);
+			KaotoOutputChannel.logError(`Timeout ${timeout}ms reached. Port ${port} not reachable.`, err);
 			return false;
 		}
 	}

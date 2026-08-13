@@ -79,10 +79,10 @@ describe('Tests View', function () {
 		expect(labels).to.include.members(CITRUS_TEST_FILE_LABELS);
 	});
 
-	it('jbang.properties loaded', async function () {
-		const properties = labels.find((label) => label === 'jbang.properties');
+	it('citrus-application.properties loaded', async function () {
+		const properties = labels.find((label) => label === 'citrus-application.properties');
 
 		expect(properties).to.not.be.undefined;
-		expect(properties).to.equal('jbang.properties');
+		expect(properties).to.equal('citrus-application.properties');
 	});
 });

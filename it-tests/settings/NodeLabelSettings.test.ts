@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ActivityBar, after, before, By, ComboSetting, VSBrowser, WebDriver, WebView, Workbench } from 'vscode-extension-tester';
-import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame, resetUserSettings } from '../Util';
-import { join } from 'path';
 import { expect } from 'chai';
+import { join } from 'path';
+import { ActivityBar, after, before, ComboSetting, VSBrowser, WebDriver, WebView, Workbench } from 'vscode-extension-tester';
+import { KaotoCanvas } from '../pageObjects';
+import { checkTopologyLoaded, closeEditor, dismissBlockingModal, openAndSwitchToKaotoFrame, resetUserSettings } from '../Util';
 
 describe('User Settings', function () {
 	this.timeout(90_000);
@@ -27,22 +28,18 @@ describe('User Settings', function () {
 	let driver: WebDriver;
 	let kaotoWebview: WebView;
 
-	const locators = {
-		TimerComponent: {
-			timer_2_3: `g[data-id^='timer'][data-kind='node']`,
-			timer_2_4: `g[data-nodelabel='timerID']`,
-			label: `.custom-node__label`,
-		},
-	};
-
 	before(async function () {
 		driver = VSBrowser.instance.driver;
 
 		// provide the Node Label using Settings UI editor
 		const settings = await new Workbench().openSettings();
-		const textSetting = await driver.wait(async () => {
-			return (await settings.findSetting('Node Label', 'Kaoto')) as ComboSetting;
-		});
+		const textSetting = await driver.wait(
+			async () => {
+				return (await settings.findSetting('Node Label', 'Kaoto')) as ComboSetting;
+			},
+			10_000,
+			'Looking for "Kaoto > Node Label" combo setting.',
+		);
 		await textSetting.setValue('id');
 		await driver.sleep(1_000); // stabilize tests which are sometimes failing on macOS CI
 		await closeEditor('Settings', true);
@@ -67,16 +64,15 @@ describe('User Settings', function () {
 		// the editor in this step needs to be closed using command palette
 		// because in some cases, specially on Windows, there was hover displayed which was blocking the editor close button
 		await new Workbench().executeCommand('View: Close Editor');
+		// resetUserSettings rewrites settings.json on disk while VS Code still has it open, so
+		// closing can raise "Do you want to save the changes you made to settings.json?". Left up,
+		// its backdrop blocks every click for the rest of the run.
+		await dismissBlockingModal(driver);
 	});
 
 	it(`Check 'id' Node Label is used instead of default 'description'`, async function () {
 		this.timeout(60_000);
-		let timer;
-		try {
-			timer = await driver.findElement(By.css(`${locators.TimerComponent.timer_2_3} ${locators.TimerComponent.label}`));
-		} catch {
-			timer = await driver.findElement(By.css(`${locators.TimerComponent.timer_2_4} ${locators.TimerComponent.label}`));
-		}
+		const timer = await KaotoCanvas.findNodeLabelText(driver, 'custom-node__route.from', 10_000);
 		const label = await timer.getText();
 
 		expect(label.split('\n')).to.contains('timerID');

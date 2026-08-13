@@ -15,8 +15,7 @@
  */
 
 import { ShellExecution, ShellExecutionOptions, workspace } from 'vscode';
-import { CamelJBang } from './CamelJBang';
-import { KAOTO_CAMEL_JBANG_INFRA_ARGUMENTS_SETTING_ID } from './helpers';
+import { KAOTO_CAMEL_JBANG_INFRA_ARGUMENTS_SETTING_ID } from '../constants';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 
 export interface InfraServiceDefinition {
@@ -38,13 +37,15 @@ export interface InfraRunConfiguration {
 	args: string[];
 }
 
-export class CamelInfraJBang extends CamelJBang {
-	constructor(jbang: string = 'jbang') {
-		super(jbang);
-	}
+/**
+ * Provides JBang shell executions for Camel infra commands (list, run, stop, ps).
+ */
+export class CamelInfraJBang {
+	private static readonly JBANG_EXECUTABLE = 'jbang';
+	private static readonly CAMEL_INFRA_ARGS = ['camel@apache/camel'];
 
 	public list(): ShellExecution {
-		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'infra', 'list', '--json']);
+		return new ShellExecution(CamelInfraJBang.JBANG_EXECUTABLE, [...CamelInfraJBang.CAMEL_INFRA_ARGS, 'infra', 'list', '--json']);
 	}
 
 	public start(service: string, config: InfraRunConfiguration, cwd?: string): ShellExecution {
@@ -57,15 +58,15 @@ export class CamelInfraJBang extends CamelJBang {
 			args.unshift(`--port=${config.port}`);
 		}
 
-		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'infra', 'run', service, ...args], shellExecOptions);
+		return new ShellExecution(CamelInfraJBang.JBANG_EXECUTABLE, [...CamelInfraJBang.CAMEL_INFRA_ARGS, 'infra', 'run', service, ...args], shellExecOptions);
 	}
 
 	public stop(service: string): ShellExecution {
-		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'infra', 'stop', service]);
+		return new ShellExecution(CamelInfraJBang.JBANG_EXECUTABLE, [...CamelInfraJBang.CAMEL_INFRA_ARGS, 'infra', 'stop', service]);
 	}
 
 	public ps(): ShellExecution {
-		return new ShellExecution(this.jbang, [...this.defaultJbangArgs, 'infra', 'ps', '--json']);
+		return new ShellExecution(CamelInfraJBang.JBANG_EXECUTABLE, [...CamelInfraJBang.CAMEL_INFRA_ARGS, 'infra', 'ps', '--json']);
 	}
 
 	public getConfiguredDefaultArgs(): string[] {
@@ -119,7 +120,6 @@ export class CamelInfraJBang extends CamelJBang {
 
 		const services: InfraRunningServiceDetails[] = [];
 		for (const service of parsed) {
-			// Use alias if present, otherwise fall back to name
 			const identifier = service.alias?.trim() || service.name?.trim();
 
 			if (!identifier) {
@@ -166,8 +166,6 @@ export class CamelInfraJBang extends CamelJBang {
 				continue;
 			}
 
-			// Matches port numbers in URLs like "http://host:8080" or "host:8080/path"
-			// Captures digits after a colon, followed by either a slash or end of string
 			const match = /:(\d+)(?:\/|$)/.exec(value);
 			if (match) {
 				return Number(match[1]);
@@ -192,8 +190,6 @@ export class CamelInfraJBang extends CamelJBang {
 				continue;
 			}
 
-			// Matches hostnames in URLs like "http://hostname:8080" or "hostname:8080"
-			// Captures the hostname part (excluding protocol, port, and whitespace)
 			const match = /^(?:[a-z]+:\/\/)?([^:/\s]+):\d+/i.exec(value);
 			if (match) {
 				return match[1];

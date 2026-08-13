@@ -1,9 +1,22 @@
+# 2.13.0
+
+- Add `Infrastructure` section into Kaoto view
+  - list running infrastructure services (including services started outside of Kaoto)
+  - start/stop infrastructure service with configurable port
+  - follow logs of running infrastructure service
+  - copy service URL and port to clipboard
+  - Docker/Podman requirement handling with user-friendly error messages
+  - configurable default arguments via `kaoto.camelJbang.infraArguments` setting
+
+# 2.12.0
+
+- Add launch config for a simple run of exported Camel (Maven) Application
+
 # 2.11.0
 
-- Upgrade default Camel JBang version from 4.18.0 to 4.19.0
-- Add `Infrastructure` section into Kaoto view
-  - list running infrastructure services
-  - start/stop/restart infrastructure service
+- Upgrade default Camel JBang version from 4.18.0 to 4.20.0
+- Upgrade to Kaoto 2.11.0
+- Support two executors - Camel CLI (default) and Camel Launcher (experimental)
 
 # 2.10.2
 

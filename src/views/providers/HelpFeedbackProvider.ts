@@ -22,7 +22,7 @@ export class HelpFeedbackProvider implements TreeDataProvider<HelpFeedbackItem> 
 	private static readonly HELP_ITEMS = [
 		{ label: 'Apache Camel', icon: 'camel-logo.svg', url: 'https://camel.apache.org/camel-core/getting-started/index.html' },
 		{ label: 'Camel Testing Plugin', icon: 'camel-logo.svg', url: 'https://camel.apache.org/manual/camel-jbang-test.html' },
-		{ label: 'Kaoto Documentation', icon: new ThemeIcon('book'), url: 'https://kaoto.io/docs/manual/' },
+		{ label: 'Kaoto Documentation', icon: new ThemeIcon('book'), url: 'https://kaoto.io/docs/' },
 		{ label: 'Enterprise Integration Explorer', icon: 'integration.svg', url: 'https://camel.solutionpatterns.io/#/patterns' },
 		{ label: 'Kaoto Examples', icon: new ThemeIcon('github'), url: 'https://github.com/KaotoIO/kaoto-examples' },
 		{ label: 'Citrus Examples', icon: 'citrus-logo.png', url: 'https://github.com/citrusframework/citrus-samples' },

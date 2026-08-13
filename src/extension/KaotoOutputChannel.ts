@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import * as vscode from 'vscode';
+import { KAOTO_EXECUTOR_TYPE_SETTING_ID } from '../constants';
 
 export class KaotoOutputChannel {
 	private static instance: vscode.OutputChannel;
@@ -41,6 +42,42 @@ export class KaotoOutputChannel {
 		}
 		const errorMsg = error instanceof Error ? error.message : String(error);
 		this.logMessage('ERROR', `${message}\n${errorMsg}`);
+	}
+
+	/**
+	 * Log a structured block of startup diagnostic information.
+	 * All values are privacy-safe: no paths, usernames, or identifiers.
+	 *
+	 * @param context - The VS Code extension context
+	 * @param mode - Pass 'web' when called from the web entry point
+	 */
+	public static logStartupInfo(context: vscode.ExtensionContext, mode?: 'web'): void {
+		let extensionModeLabel: string;
+		if (mode === 'web') {
+			extensionModeLabel = 'web';
+		} else if (context.extensionMode === vscode.ExtensionMode.Development) {
+			extensionModeLabel = 'Development';
+		} else if (context.extensionMode === vscode.ExtensionMode.Test) {
+			extensionModeLabel = 'Test';
+		} else {
+			extensionModeLabel = 'Production';
+		}
+
+		const executorType = vscode.workspace.getConfiguration().get<string>(KAOTO_EXECUTOR_TYPE_SETTING_ID) ?? 'unknown';
+
+		const remote = vscode.env.remoteName ?? 'none';
+		const workspaceFolderCount = vscode.workspace.workspaceFolders?.length ?? 0;
+
+		this.logInfo(`Editor app: ${vscode.env.appName}`);
+		this.logInfo(`Editor version: ${vscode.version}`);
+		this.logInfo(`Kaoto version: ${context.extension.packageJSON.version}`);
+		this.logInfo(`Extension mode: ${extensionModeLabel}`);
+		this.logInfo(`App host: ${vscode.env.appHost}`);
+		this.logInfo(`Remote: ${remote}`);
+		const osPlatform = typeof process !== 'undefined' ? process.platform : 'unavailable';
+		this.logInfo(`OS platform: ${osPlatform}`);
+		this.logInfo(`Executor type: ${executorType}`);
+		this.logInfo(`Workspace folders: ${workspaceFolderCount}`);
 	}
 
 	// Log a formatted message with a timestamp

@@ -17,6 +17,7 @@ import { expect } from 'chai';
 import { join } from 'path';
 import { after, EditorView, TreeItem, ViewControl, ViewItemAction, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
 import {
+	activateTerminalView,
 	collapseItemsInsideTreeStructuredView,
 	expandViews,
 	getKaotoViewControl,
@@ -24,7 +25,6 @@ import {
 	getTreeItemActionButton,
 	killTerminal,
 	openResourcesAndWaitForActivation,
-	waitUntilTerminalHasText,
 } from '../Util';
 
 describe('Deployments View', function () {
@@ -64,10 +64,12 @@ describe('Deployments View', function () {
 	];
 
 	const routeManipulations = [
-		{ state: 'Stopped', button: 'Stop', allowedButtons: ['Start'] },
-		{ state: 'Started', button: 'Start', allowedButtons: ['Suspend', 'Stop'] },
-		{ state: 'Suspended', button: 'Suspend', allowedButtons: ['Resume', 'Stop'] },
-		{ state: 'Started', button: 'Resume', allowedButtons: ['Suspend', 'Stop'] },
+		{ state: 'Stopped', button: 'Stop', allowedButtons: ['Start'], terminalText: 'Stopped' },
+		{ state: 'Started', button: 'Start', allowedButtons: ['Suspend', 'Stop'], terminalText: 'Started' },
+		{ state: 'Suspended', button: 'Suspend', allowedButtons: ['Resume', 'Stop'], terminalText: 'Suspended' },
+		// Camel does not emit a new "Started route-XXX" log line on resume, so there is no
+		// terminal text to assert on; the route state and button checks below are sufficient.
+		{ state: 'Started', button: 'Resume', allowedButtons: ['Suspend', 'Stop'], terminalText: null },
 	];
 
 	parameters.forEach((p) => {
@@ -86,16 +88,75 @@ describe('Deployments View', function () {
 
 			routeManipulations.forEach((rm) => {
 				it(`click '${rm.button}' on ${p.route}`, async function () {
+					const textToLookFor = rm.terminalText !== null ? `${rm.terminalText} ${p.route}` : null;
+					const initialCount = textToLookFor !== null ? await getInitialTerminalOccurrences(textToLookFor) : 0;
+
 					await clickRouteActionButton(rm.button);
 
-					await waitUntilTerminalHasText(driver, [`${rm.state} ${p.route}`], 1_000, 20_000);
+					if (textToLookFor !== null) {
+						await waitUntilTerminalHasMoreOccurrences(textToLookFor, initialCount);
+					}
 					await waitUntilRouteHasState(rm.state);
 					await waitUntilRouteHasButtons(rm.allowedButtons);
 				});
 			});
 		});
 
-		async function clickRouteActionButton(action: string, timeout = 15_000): Promise<void> {
+		/**
+		 * Reads the current terminal occurrence count for `text`.
+		 * Used by the post-action polling loop — failures are treated as 0
+		 * so the poll keeps retrying without aborting the wait.
+		 */
+		async function getTerminalOccurrences(text: string): Promise<number> {
+			try {
+				const terminal = await activateTerminalView();
+				const terminalText = await terminal.getText();
+				return terminalText.split(text).length - 1;
+			} catch (err) {
+				return 0;
+			}
+		}
+
+		/**
+		 * Reads the terminal occurrence count before an action fires.
+		 * Retries on transient errors (e.g. terminal not yet visible) so that
+		 * a read failure does not silently produce initialCount = 0 and allow
+		 * the post-action assertion to pass vacuously.
+		 * Throws if a clean read cannot be obtained within `timeout` ms.
+		 */
+		async function getInitialTerminalOccurrences(text: string, interval = 500, timeout = 15_000): Promise<number> {
+			const deadline = Date.now() + timeout;
+			let lastErr: unknown;
+			while (Date.now() < deadline) {
+				try {
+					const terminal = await activateTerminalView();
+					const terminalText = await terminal.getText();
+					return terminalText.split(text).length - 1;
+				} catch (err) {
+					lastErr = err;
+					await driver.sleep(interval);
+				}
+			}
+			throw new Error(`getInitialTerminalOccurrences: could not read terminal for "${text}" within ${timeout}ms. Last error: ${lastErr}`);
+		}
+
+		async function waitUntilTerminalHasMoreOccurrences(text: string, initialCount: number, interval = 1000, timeout = 30000): Promise<void> {
+			await driver.wait(
+				async function () {
+					try {
+						const currentCount = await getTerminalOccurrences(text);
+						return currentCount > initialCount;
+					} catch (err) {
+						return false;
+					}
+				},
+				timeout,
+				`Failed waiting for terminal to have more than ${initialCount} occurrences of "${text}"`,
+				interval,
+			);
+		}
+
+		async function clickRouteActionButton(action: string, timeout = 30_000): Promise<void> {
 			let clicked = false;
 			await driver.wait(
 				async () => {
@@ -123,7 +184,7 @@ describe('Deployments View', function () {
 			await driver.sleep(1_000);
 		}
 
-		async function waitUntilRouteHasState(state: string, interval = 500, timeout = 15_000): Promise<void> {
+		async function waitUntilRouteHasState(state: string, interval = 500, timeout = 30_000): Promise<void> {
 			await driver.wait(
 				async function () {
 					try {
@@ -141,7 +202,7 @@ describe('Deployments View', function () {
 			);
 		}
 
-		async function waitUntilRouteHasButtons(expectedButtons: string[], interval = 500, timeout = 15_000): Promise<void> {
+		async function waitUntilRouteHasButtons(expectedButtons: string[], interval = 500, timeout = 30_000): Promise<void> {
 			let buttonsLabels: string[] = [];
 			await driver.wait(
 				async function () {

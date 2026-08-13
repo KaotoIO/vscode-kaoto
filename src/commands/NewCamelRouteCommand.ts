@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { commands, QuickPickItem, Uri, window } from 'vscode';
-import { CamelInitJBangTask } from '../tasks/CamelInitJBangTask';
+import { QuickPickItem, window } from 'vscode';
+import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
 import path from 'path';
 
@@ -35,18 +35,13 @@ export class NewCamelRouteCommand extends AbstractNewCamelRouteCommand {
 		if (wsFolder || this.singleWorkspaceFolder) {
 			const targetFolder = await this.showDialogToPickFolder(wsFolder?.uri);
 			if (targetFolder) {
-				const name = await this.showInputBoxForFileName(targetFolder ? targetFolder.fsPath : undefined);
+				const name = await this.showInputBoxForFileName(targetFolder.fsPath);
 				if (name && this.camelDSL && this.singleWorkspaceFolder) {
 					const fileName = this.getFullName(name, this.camelDSL.extension);
 					const filePath = this.computeFullPath(targetFolder.fsPath, fileName);
-
 					const wsFolderTarget = wsFolder || this.singleWorkspaceFolder;
-					await new CamelInitJBangTask(path.relative(wsFolderTarget.uri.fsPath, filePath), wsFolderTarget).executeAndWaitWithProgress(
-						NewCamelRouteCommand.PROGRESS_NOTIFICATION_MESSAGE,
-					);
-					const targetFileURI = Uri.file(filePath);
-					await this.waitForFileExists(targetFileURI);
-					await commands.executeCommand('kaoto.open', targetFileURI);
+					const result = await CamelCommandAPI.init(path.relative(wsFolderTarget.uri.fsPath, filePath));
+					await this.executeInitAndOpen(result, fileName, filePath, wsFolderTarget, NewCamelRouteCommand.PROGRESS_NOTIFICATION_MESSAGE);
 				}
 			}
 		} else {

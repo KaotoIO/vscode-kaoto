@@ -1,0 +1,182 @@
+# Kaoto AGENTS.md
+
+This file provides guidance to agents when working with code in this repository.
+
+## Project Overview
+
+This is a VS Code extension for **Kaoto**, a visual low-code editor for Apache Camel integrations. The extension integrates the Kaoto UI into VS Code and provides tooling for creating, editing, and managing Camel routes, pipes, and kamelets.
+
+## AI Agent Contribution Guidelines
+
+Claude Code users and other AI-assisted contributors are welcome to Kaoto. When contributing code with AI assistance:
+
+### Human Oversight Required
+
+- AI agents **cannot** submit PRs independently
+- A human must review, approve, and sign all AI-generated code
+- The human reviewer is responsible for:
+  - Code quality and correctness
+  - Responding to maintainer feedback
+  - Following up on PR comments
+
+### Git Workflow
+
+When contributing to vscode-kaoto:
+
+- **Never push to branches you didn't create** without explicit permission from the branch owner
+- Use **forks** to avoid cluttering the main repository
+- **Branch naming conventions**:
+  - Bug fixes: `fix/issue-123-description` (e.g., `fix/issue-456-webview-crash`)
+  - Features: `feature/description` (e.g., `feature/citrus-support`)
+  - Refactors: `refactor/description` (e.g., `refactor/command-structure`)
+- **Delete branches** after PR merge or rejection
+
+### Volume and Quality Limits
+
+- **Maximum 10 PRs per day** per contributor (human or AI-assisted)
+- **Fewer well-tested PRs are better than many shallow ones**
+- Focus on quality over quantity
+
+### Disclosure and Documentation
+
+- Disclosing AI tool usage is **optional but recommended**
+- Mentioning your AI tool helps us improve AGENTS.md and CLAUDE.md
+- If you discover gaps in our agent documentation, please suggest improvements
+
+### PR Lifecycle
+
+- PRs require active follow-up from the human contributor
+- PRs without response after **2 weeks** will be closed
+- If you need more time, communicate with maintainers
+
+### Quality Standards
+
+Before submitting AI-generated PRs, ensure:
+
+1. **Build the extension**:
+
+   ```bash
+   yarn run build:dev
+   ```
+
+2. **Run linting**:
+
+   ```bash
+   yarn run lint
+   ```
+
+3. **Run unit tests**:
+
+   ```bash
+   yarn run test:unit
+   ```
+
+4. **Build and test the VSIX** (for significant changes):
+   ```bash
+   yarn run build:vsix
+   yarn run test:it:with-prebuilt-vsix
+   ```
+
+**Additional Requirements**:
+
+- Ensure all tests pass
+- Fix any linter errors
+- Verify changes work as expected in a VS Code instance
+- For UI changes, test the webview editor functionality
+- **Avoid introducing code smells or technical debt**
+- **Do not introduce security vulnerabilities** (XSS, injection attacks, OWASP top 10)
+- **Avoid using deprecated APIs or patterns**
+- Changes should aim to **preserve or improve overall code quality**
+
+## Development Commands
+
+### Build and Development
+
+- `yarn run compile` - Compile TypeScript and webpack the extension
+- `yarn run watch` - Watch mode for development (with dev webpack config)
+- `yarn run build:prod` - Production build (clean, compile, lint)
+- `yarn run build:dev` - Development build (clean, watch, lint)
+
+### Linting and Code Quality
+
+- `yarn run lint` - Lint TypeScript files in `src` and `it-tests`
+- ESLint configuration in `eslint.config.mjs` with TypeScript and Prettier integration
+
+### Testing
+
+- `yarn run test:unit` - Run unit tests using VS Code test framework
+- `yarn run test:it` - Run integration tests using extension tester
+- `yarn run build:test:unit` - Build unit tests
+- `yarn run build:test:it` - Build integration tests
+- Unit tests located in `src/test/`
+- Integration tests in `it-tests/`
+
+#### How to run Integration tests
+
+1. yarn build:dev
+2. yarn build:vsix
+3. yarn run test:it:with-prebuilt-vsix
+   3.1 For headless: `xvfb-run -a yarn run test:it:with-prebuilt-vsix`
+
+### Web Mode Testing
+
+- `yarn run run:webmode` - Run extension in browser environment for testing
+
+## Architecture
+
+### Extension Structure
+
+- **Entry Points:**
+  - `src/extension/extension.ts` - Main extension activation for desktop VS Code
+  - `src/extension/extensionWeb.ts` - Web extension entry point
+  - `src/webview/KaotoEditorEnvelopeApp.ts` - Webview editor application
+
+- **Key Directories:**
+  - `src/commands/` - VS Code commands for creating Camel files
+  - `src/views/` - Tree view providers for integrations and deployments
+  - `src/tasks/` - Generic Camel task implementations for CLI operations
+  - `src/helpers/` - Utility functions and managers
+  - `src/webview/` - Webview integration with Kaoto editor
+
+### Webpack Configuration
+
+- Multi-target build: Web worker + Web UI
+- Builds to `dist/` directory
+- Uses TypeScript with webpack for bundling
+- SASS/CSS support for webview UI components
+
+### Dependencies
+
+- **Core Editor:** `@kaoto/kaoto` (v2.7.1) - The main Kaoto editor library, [repository](https://github.com/KaotoIO/kaoto)
+- **VS Code Integration:** `@kie-tools-core/*` packages for editor envelope and backend, [repository](https://github.com/apache/incubator-kie-tools)
+- **UI Framework:** PatternFly React components
+- **Camel Support:** Uses Camel JBang CLI or Camel Launcher CLI for operations
+
+## File Types Supported
+
+- `*.camel.yaml`, `*.camel.yml` - Camel route files
+- `*.camel.xml` - Camel XML route files
+- `*.kamelet.yaml`, `*.kamelet.yml` - Kamelet files
+- `*.pipe.yaml`, `*.pipe.yml`, `*-pipe.yaml`, `*-pipe.yml` - Pipe files
+- `*.citrus.yaml`, `*.citrus.test.yaml`, `*.citrus.it.yaml`, `*.citrus-test.yaml`, `*.citrus-it.yaml` - Citrus test files
+
+## VS Code Integration
+
+- Custom editor for supported file types
+- Tree views for integrations and deployments
+- Commands for creating new Camel files
+- Integration with Camel JBang CLI or Camel Launcher for running and deploying
+
+## TypeScript Configuration
+
+- Target ES6 with React JSX support
+- Strict null checks and no implicit any
+- Module resolution set to "Bundler"
+- Source maps enabled for debugging
+
+## Testing Framework
+
+- Unit tests use VS Code test framework with Mocha
+- Integration tests use `vscode-extension-tester`
+- Chai assertions with chai-friendly ESLint rules
+- Test configuration in `.vscode-test.mjs`

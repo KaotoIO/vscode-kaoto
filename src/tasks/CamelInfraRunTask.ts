@@ -1,0 +1,31 @@
+/**
+ * Copyright 2026 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { TaskRevealKind, TaskScope } from 'vscode';
+import { CamelTask } from './CamelTask';
+import { CamelInfraJBang, InfraRunConfiguration } from '../helpers/CamelInfraJBang';
+
+export class CamelInfraRunTask extends CamelTask {
+	private constructor(service: string, shellExecution: ReturnType<CamelInfraJBang['start']>) {
+		super(TaskScope.Workspace, `Infrastructure - ${service}`, shellExecution, true, TaskRevealKind.Silent);
+		this.isBackground = true;
+	}
+
+	static create(service: string, config: InfraRunConfiguration, cwd?: string): CamelInfraRunTask {
+		const execution = new CamelInfraJBang().start(service, config, cwd);
+		return new CamelInfraRunTask(service, execution);
+	}
+}

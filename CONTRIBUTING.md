@@ -208,3 +208,41 @@ To install a `.vsix` binary, refer to the [official VS Code guide](https://code.
   - Add new What's new page in `resources/whats-new/<next-iteration-version>`
   - Push changes in a Pull Request
   - Follow Pull Request until it is approved/merged
+
+## AI-Assisted Contributions
+
+We welcome contributions created with AI assistance! AI tools can help accelerate development, but all contributions require human oversight and responsibility.
+
+### Guidelines for AI-Assisted Contributions
+
+- **AI Use is Permitted**: You may use AI tools (like GitHub Copilot, Claude Code, ChatGPT, etc.) to help write code, documentation, or tests.
+
+- **Disclosure is Optional but Encouraged**: While not required, mentioning your AI tool helps us improve our AI-specific documentation (CLAUDE.md). If you discover gaps in our agent documentation, please suggest improvements.
+
+- **Human Responsibility Required**:
+  - AI agents cannot submit PRs independently
+  - A human must review, approve, and sign all AI-generated code
+  - The human contributor is responsible for:
+    - Code quality and correctness
+    - Responding to maintainer feedback
+    - Following up on PR comments and requested changes
+
+- **Active Participation Expected**:
+  - PRs require active follow-up from the human contributor
+  - PRs without response after **2 weeks** will be closed
+  - We know sometimes things happen. If you need more time, please communicate with maintainers to make the necessary adjustments
+
+- **Quality Standards Apply**:
+  - All AI-generated code must pass linting and tests
+  - Follow the same code style and guidelines as manual contributions
+  - See the Testing and Code Style sections above
+
+For technical details on using AI tools with Kaoto, see [CLAUDE.md](CLAUDE.md).
+
+## Questions or Need Help?
+
+If you have any questions or need assistance, feel free to create an issue on GitHub or contact the project maintainers directly.
+
+---
+
+Your contributions make Kaoto better, and we sincerely appreciate your support and collaboration. Happy coding!

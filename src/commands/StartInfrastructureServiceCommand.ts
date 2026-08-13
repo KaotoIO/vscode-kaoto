@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { exec } from 'child_process';
+import { exec } from 'child_process'; // NOSONAR: node: prefix is unsupported by the webpack path-browserify polyfill fallback
 import * as vscode from 'vscode';
 import { CamelInfraJBang } from '../helpers/CamelInfraJBang';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
-import { CamelInfraRunJBangTask } from '../tasks/CamelInfraRunJBangTask';
+import { CamelInfraRunTask } from '../tasks/CamelInfraRunTask';
 import { InfrastructureProvider } from '../views/providers/InfrastructureProvider';
 import { DockerErrorDetector } from '../helpers/DockerErrorDetector';
 
@@ -133,7 +133,7 @@ export class StartInfrastructureServiceCommand {
 		return true;
 	}
 
-	private async handleExternalServiceConflict(serviceName: string, existingService: any): Promise<boolean> {
+	private async handleExternalServiceConflict(serviceName: string, existingService: { url?: string; port?: number; isExternal?: boolean }): Promise<boolean> {
 		const action = await vscode.window.showWarningMessage(
 			`Infrastructure service "${serviceName}" is already running externally at ${this.getServiceTargetUrl(existingService) || 'unknown location'}. What would you like to do?`,
 			'Use Existing',
@@ -212,7 +212,7 @@ export class StartInfrastructureServiceCommand {
 		const args = [...new CamelInfraJBang().getConfiguredDefaultArgs()];
 		const port = portValue ? Number(portValue) : undefined;
 
-		const runTask = CamelInfraRunJBangTask.create(
+		const runTask = CamelInfraRunTask.create(
 			selectedService.label,
 			{
 				port,

@@ -20,11 +20,17 @@ import { TestResult } from '../../types/testTreeItemType';
 import { TestFolder } from '../testTreeItems/TestFolder';
 import { basename, dirname, join } from 'path';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
-import { KAOTO_TESTS_FILES_REGEXP_SETTING_ID } from '../../helpers/helpers';
+import {
+	COMMAND_TESTS_DELETE,
+	COMMAND_TESTS_SHOW_SOURCE,
+	CONTEXT_TEST_EXISTS,
+	CONTEXT_TEST_RESULTS_EXIST,
+	KAOTO_TESTS_FILES_REGEXP_SETTING_ID,
+} from '../../constants';
 
 export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
-	public readonly VIEW_ITEM_SHOW_SOURCE_COMMAND_ID: string = 'kaoto.tests.showSource';
-	public readonly VIEW_ITEM_DELETE_COMMAND_ID: string = 'kaoto.tests.delete';
+	public readonly VIEW_ITEM_SHOW_SOURCE_COMMAND_ID: string = COMMAND_TESTS_SHOW_SOURCE;
+	public readonly VIEW_ITEM_DELETE_COMMAND_ID: string = COMMAND_TESTS_DELETE;
 
 	private static readonly TEST_FILE_PATTERN = '{**/*.citrus.yaml,**/*.citrus.test.yaml,**/*.citrus.it.yaml,**/*.citrus-test.yaml,**/*.citrus-it.yaml}';
 	private static readonly SCHEDULE_REFRESH_MS = 100;
@@ -72,13 +78,13 @@ export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
 	protected async toTreeItemForFile(file: Uri, isUnderMavenRoot: boolean, _isTopLevelWithinWorkspace: boolean): Promise<TreeItem> {
 		const fileName = basename(file.fsPath);
 
-		// Handle jbang.properties files - simple tree item with default icon
-		if (fileName === 'jbang.properties') {
+		// Handle testing properties files - simple tree item with default icon
+		if (fileName === 'jbang.properties' || fileName === 'citrus-application.properties') {
 			const item = new TreeItem(fileName, TreeItemCollapsibleState.None);
 			item.resourceUri = file;
 			item.tooltip = file.fsPath;
 			item.command = { command: 'vscode.open', title: 'Open File', arguments: [file] };
-			item.contextValue = 'jbang-properties-file';
+			item.contextValue = 'testing-properties-file';
 			return item;
 		}
 
@@ -104,7 +110,7 @@ export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
 	}
 
 	protected setContext(hasFiles: boolean): void {
-		commands.executeCommand('setContext', 'kaoto.testExists', hasFiles);
+		commands.executeCommand('setContext', CONTEXT_TEST_EXISTS, hasFiles);
 	}
 
 	/**
@@ -147,13 +153,13 @@ export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
 	}
 
 	/**
-	 * Find all test files under a specific folder path (excludes jbang.properties)
+	 * Find all test files under a specific folder path (excludes testing properties)
 	 * @param folderPath The folder path to search in
 	 * @returns Array of test file paths
 	 */
 	async getTestFilesInFolder(folderPath: string): Promise<string[]> {
 		const folderUri = Uri.file(folderPath);
-		// Use TEST_FILE_PATTERN to only get actual test files, not jbang.properties
+		// Use TEST_FILE_PATTERN to only get actual test files, not testing properties
 		const pattern = new RelativePattern(folderUri, TestsProvider.TEST_FILE_PATTERN);
 		const files = await workspace.findFiles(pattern, this.getExcludePattern());
 		return files.map((file) => file.fsPath);
@@ -222,7 +228,7 @@ export class TestsProvider extends AbstractFolderTreeProvider<TestFolder> {
 
 	private updateResultsContext(): void {
 		const hasResults = Array.from(this.testResults.values()).some((r) => r !== 'none');
-		commands.executeCommand('setContext', 'kaoto.testResultsExist', hasResults);
+		commands.executeCommand('setContext', CONTEXT_TEST_RESULTS_EXIST, hasResults);
 	}
 
 	/**

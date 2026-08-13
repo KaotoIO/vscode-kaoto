@@ -27,7 +27,6 @@ import {
 import {
 	By,
 	EditorView,
-	until,
 	VSBrowser,
 	WebDriver,
 	Workbench,
@@ -38,6 +37,7 @@ import {
 	CheckboxSetting,
 	before,
 } from 'vscode-extension-tester';
+import { KaotoCanvas } from './pageObjects';
 import { assert, expect } from 'chai';
 import * as fs from 'fs';
 
@@ -131,9 +131,14 @@ describe('Maven dependency update pom.xml', function () {
 
 			const notificationsCenter = await new Workbench().openNotificationsCenter();
 			const notifications = await notificationsCenter.getNotifications(NotificationType.Warning);
-			const camelDependenciesUpdateNotification = notifications.find(async (notification) =>
-				(await notification.getMessage()).includes('The pom.xml file has unsaved changes. Please save it before updating Camel dependencies.'),
-			);
+			let camelDependenciesUpdateNotification;
+			for (const notification of notifications) {
+				const message = await notification.getMessage();
+				if (message.includes('The pom.xml file has unsaved changes. Please save it before updating Camel dependencies.')) {
+					camelDependenciesUpdateNotification = notification;
+					break;
+				}
+			}
 			await camelDependenciesUpdateNotification?.takeAction('Save and Continue');
 
 			await waitForNotifications();
@@ -250,26 +255,13 @@ describe('Maven dependency update pom.xml', function () {
 	 * Add the SQL component step to the topology.
 	 */
 	async function addSqlComponentStep() {
-		// hover over edge to show add step button
-		const setBodyToLogEdge = await driver.findElement(By.css('g[data-id^="my-camel-quarkus-route|route.from.steps.0.setBody >>> route.from.steps.1.log"]'));
-		await driver.actions().move({ origin: setBodyToLogEdge, duration: 2_000 }).perform();
-
-		// click Add Step button
-		const addStepButton = await setBodyToLogEdge.findElement(By.className('custom-edge__add-step add-step-icon'));
+		// hover over edge to show add step button and click Add Step button
+		const edgeSelector = 'g[data-id^="my-camel-quarkus-route|route.from.steps.0.setBody >>> route.from.steps.1.log"]';
+		const addStepButton = await KaotoCanvas.getAddStepButton(driver, edgeSelector);
 		await addStepButton.click();
 
-		// add text into catalog filter
-		await driver.wait(until.elementLocated(By.className('pf-v6-c-text-input-group__text-input')), 5_000);
-		const textInput = await driver.findElement(By.className('pf-v6-c-text-input-group__text-input'));
-		await textInput.click();
-		await textInput.clear();
-		await textInput.sendKeys('sql');
-
-		await driver.wait(until.elementLocated(By.css('div[data-testid="tile-sql"]')), 5_000);
-
-		// select SQL component from catalog
-		const sqlComponent = await driver.findElement(By.css('div[data-testid="tile-sql"]'));
-		await sqlComponent.click();
+		// filter catalog and select SQL component
+		await KaotoCanvas.filterCatalogAndSelectTile(driver, 'sql', 'sql');
 	}
 
 	/**
@@ -282,14 +274,13 @@ describe('Maven dependency update pom.xml', function () {
 		).kaotoWebview;
 
 		// right click on SQL component node
-		const sqlComponent = await driver.findElement(By.css('g[data-nodelabel="sql"]'));
-		await driver.actions().contextClick(sqlComponent).perform();
+		const sqlNode = await driver.findElement(By.css('g[data-nodelabel="sql"]'));
+		await KaotoCanvas.openContextMenu(driver, sqlNode);
 
 		await workaroundToRedrawContextualMenu(kaotoWebview);
 
 		// click Delete button
-		const deleteButton = await driver.findElement(By.css('li[data-testid="context-menu-item-delete"]'));
-		await deleteButton.click();
+		await KaotoCanvas.clickDeleteInContextMenu(driver);
 
 		// save editor
 		await kaotoWebview.switchBack();

@@ -14,54 +14,50 @@
  * limitations under the License.
  */
 
-import { ProgressLocation, window, workspace, WorkspaceFolder } from 'vscode';
+import { ExtensionContext, window, workspace, WorkspaceFolder } from 'vscode';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import * as path from 'path';
 import fs from 'fs';
+import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 
 /**
- * Utilizes constants, methods, ... used in both, desktop or web extension context
+ * Utilizes helper methods used in both, desktop or web extension context
  */
 
-export const KAOTO_FILE_PATH_GLOB: string = '**/*.{yml,yaml,xml}';
+export function safeGlobalStateGet<T>(context: ExtensionContext, key: string, defaultValue: T): T {
+	try {
+		return context.globalState.get<T>(key, defaultValue);
+	} catch (err) {
+		KaotoOutputChannel.logWarning(`Unable to read global state for key '${key}': ${String(err)}`);
+		return defaultValue;
+	}
+}
 
-export const KAOTO_CAMEL_JBANG_VERSION_SETTING_ID: string = 'kaoto.camelJbang.version';
+export async function safeGlobalStateUpdate(context: ExtensionContext, key: string, value: any): Promise<void> {
+	try {
+		await context.globalState.update(key, value);
+	} catch (err) {
+		KaotoOutputChannel.logWarning(`Unable to update global state for key '${key}': ${String(err)}`);
+	}
+}
 
-export const KAOTO_CAMEL_JBANG_RUN_ARGUMENTS_SETTING_ID: string = 'kaoto.camelJbang.runArguments';
+export function normalizeVersionForSemver(version: string): string {
+	return version.replace(/\.redhat-\d+$/, '');
+}
 
-export const KAOTO_CAMEL_JBANG_RUN_SOURCE_DIR_ARGUMENTS_SETTING_ID: string = 'kaoto.camelJbang.runFolderOrWorkspaceArguments';
-
-export const KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_SETTING_ID: string = 'kaoto.camelJbang.redHatMavenRepository';
-
-export const KAOTO_CAMEL_JBANG_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID: string = 'kaoto.camelJbang.redHatMavenRepository.global';
-
-export const KAOTO_CAMEL_JBANG_KUBERNETES_RUN_ARGUMENTS_SETTING_ID: string = 'kaoto.camelJbang.kubernetesRunArguments';
-
-export const KAOTO_CAMEL_JBANG_INFRA_ARGUMENTS_SETTING_ID: string = 'kaoto.camelJbang.infraArguments';
-
-export const KAOTO_MAVEN_CAMEL_JBANG_EXPORT_FOLDER_ARGUMENTS_SETTING_ID: string = 'kaoto.maven.camelJbang.exportProjectArguments';
-
-export const KAOTO_LOCAL_KAMELET_DIRECTORIES_SETTING_ID: string = 'kaoto.localKameletDirectories';
-
-export const KAOTO_INTEGRATIONS_FILES_REGEXP_SETTING_ID: string = 'kaoto.integrations.files.regexp';
-
-export const KAOTO_TESTS_FILES_REGEXP_SETTING_ID: string = 'kaoto.tests.files.regexp';
-
-export const KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID: string = 'kaoto.openapi.files.regexp';
-
-export const DEFAULT_KAOTO_OPENAPI_FILES_REGEXP: string[] = ['*openapi.yaml', '*openapi.yml', '*openapi.json'];
-
-export const KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID: string = 'kaoto.restConfiguration.apicurioRegistryUrl';
-
-export const KAOTO_REST_CUSTOM_MEDIA_TYPES_SETTING_ID: string = 'kaoto.restConfiguration.customMediaTypes';
-
-export const CAMEL_TRUSTED_SOURCE_URL: string = 'https://github.com/apache/camel/';
-
-export const CITRUS_TRUSTED_SOURCE_URL: string = 'https://github.com/citrusframework/citrus/';
+export function isRedHatBuild(version: string): boolean {
+	return version.includes('.redhat-');
+}
 
 export async function verifyJBangExists(): Promise<boolean> {
-	return await runJBangCommandWithStatusBar(`version`, `Checking JBang executable on PATH...`).then((output) => !output.stderr.includes('command not found')); // JBang exists
+	const output = await runJBangCommandWithStatusBar(`version`, `Checking JBang executable on PATH...`);
+	return output.success;
+}
+
+export async function verifyJavaExists(): Promise<boolean> {
+	const output = await runCommandWithStatusBar('java -version', 'Checking Java executable on PATH...');
+	return output.success;
 }
 
 export async function verifyCamelPluginsAreInstalled(plugins: string[]): Promise<{ plugin: string; installed: boolean }[]> {
@@ -76,25 +72,28 @@ export async function verifyJBangTrustedSources(urls: string[]): Promise<{ url: 
 	});
 }
 
-export async function runJBangCommandWithStatusBar(args: string, msg: string): Promise<{ stdout: string; stderr: string }> {
+export interface CommandOutput {
+	stdout: string;
+	stderr: string;
+	success: boolean;
+}
+
+export async function runJBangCommandWithStatusBar(args: string, msg: string): Promise<CommandOutput> {
+	return runCommandWithStatusBar(`jbang ${args}`, msg);
+}
+
+export async function runCommandWithStatusBar(command: string, msg: string): Promise<CommandOutput> {
 	const execPromise = promisify(exec);
-	return await window.withProgress(
-		{
-			location: ProgressLocation.Window,
-			cancellable: false,
-			title: `Kaoto: ${msg}`,
-		},
-		async (progress) => {
-			progress.report({ increment: 0 });
-			try {
-				const { stdout, stderr } = await execPromise(`jbang ${args}`);
-				progress.report({ increment: 100 });
-				return { stdout, stderr };
-			} catch (error) {
-				return { stdout: '', stderr: error instanceof Error ? error.message : String(error) };
-			}
-		},
-	);
+	const statusBarMessage = window.setStatusBarMessage(`Kaoto: ${msg}`);
+	try {
+		const { stdout, stderr } = await execPromise(command);
+		return { stdout, stderr, success: true };
+	} catch (error) {
+		const message = error instanceof Error ? error.message : String(error);
+		return { stdout: '', stderr: message, success: false };
+	} finally {
+		statusBarMessage.dispose();
+	}
 }
 
 /**

@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/vscode-extension-tester/resources/extester.schema.json",
+  "setup": {
+    "extensionsDir": "./test-resources",
+    "packageOptions": {
+      "useYarn": true,
+      "dependencies": false
+    }
+  },
+  "run": {
+    "testFiles": ["out/**/*.test.js"],
+    "resources": ["./test Fixture with speci@l chars"],
+    "extensionsDir": "./test-resources",
+    "settings": "./it-tests/vscode-settings.json",
+    "customPageObjects": "./out/pageObjects/locators.js"
+  }
+}

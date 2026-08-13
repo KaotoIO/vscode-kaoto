@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { Event, EventEmitter, FileSystemWatcher, TreeDataProvider, TreeItem, TreeItemLabel, Uri, workspace } from 'vscode';
+import { KAOTO_EXCLUDE_PATTERN } from '../../constants';
 import { join, relative, sep } from 'path';
 
 /**
@@ -34,13 +35,12 @@ export abstract class AbstractFolderTreeProvider<TFolder extends IFolderTreeItem
 	public abstract readonly VIEW_ITEM_SHOW_SOURCE_COMMAND_ID: string;
 	public abstract readonly VIEW_ITEM_DELETE_COMMAND_ID: string;
 
-	public static readonly EXCLUDE_PATTERN = '{**/node_modules/**,**/.vscode/**,**/out/**,**/.citrus-jbang*/**,**/target/**,**/.mvn/**}';
+	public static readonly EXCLUDE_PATTERN = KAOTO_EXCLUDE_PATTERN;
 
 	protected readonly _onDidChangeTreeData: EventEmitter<TreeItemType> = new EventEmitter<TreeItemType>();
 	readonly onDidChangeTreeData: Event<TreeItemType> = this._onDidChangeTreeData.event;
 
 	protected fileWatcher!: FileSystemWatcher;
-	protected filePattern: string;
 
 	/** Debounce timer for refresh operations */
 	private refreshDebounceTimer?: NodeJS.Timeout;
@@ -57,8 +57,8 @@ export abstract class AbstractFolderTreeProvider<TFolder extends IFolderTreeItem
 	 * Initialize the file watcher. Must be called by subclasses after their constructor initialization.
 	 */
 	protected initFileWatcher(): void {
-		this.filePattern = this.getFilePattern();
-		this.fileWatcher = workspace.createFileSystemWatcher(this.filePattern);
+		const filePattern = this.getFilePattern();
+		this.fileWatcher = workspace.createFileSystemWatcher(filePattern);
 		const invalidateAndRefresh = () => {
 			this.invalidateCache();
 			this.refresh();

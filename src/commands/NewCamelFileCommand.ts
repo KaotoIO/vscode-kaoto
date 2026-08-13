@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 import { QuickPickItem, commands, window } from 'vscode';
-import { NewCamelRouteCommand } from './NewCamelRouteCommand';
-import { NewCamelKameletCommand } from './NewCamelKameletCommand';
-import { NewCamelPipeCommand } from './NewCamelPipeCommand';
+import { COMMAND_CAMEL_KAMELET_YAML, COMMAND_CAMEL_PIPE_YAML, COMMAND_CAMEL_ROUTE } from '../constants';
 
 export class NewCamelFileCommand {
-	public static readonly ID_COMMAND_CAMEL_NEW_FILE = 'kaoto.new.camel.file';
-
 	public async create(): Promise<void> {
 		const selection = await this.showQuickPickForCamelFileType();
 		if (selection) {
@@ -48,11 +44,11 @@ export class NewCamelFileCommand {
 	protected getCamelRouteCommandFromSelection(selection: string): string | undefined {
 		switch (selection) {
 			case 'Camel Route':
-				return NewCamelRouteCommand.ID_COMMAND_CAMEL_ROUTE;
+				return COMMAND_CAMEL_ROUTE;
 			case 'Kamelet':
-				return NewCamelKameletCommand.ID_COMMAND_CAMEL_KAMELET_YAML;
+				return COMMAND_CAMEL_KAMELET_YAML;
 			case 'Pipe':
-				return NewCamelPipeCommand.ID_COMMAND_CAMEL_PIPE_YAML;
+				return COMMAND_CAMEL_PIPE_YAML;
 			default:
 				break;
 		}

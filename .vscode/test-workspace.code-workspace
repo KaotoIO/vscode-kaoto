@@ -4,5 +4,8 @@
 			"path": "../test Fixture with speci@l chars",
 		},
 	],
-	"settings": {},
+	"settings": {
+		"kaoto.runtimeCatalogName": "Camel Main 4.20.0",
+		"kaoto.testingCatalogName": "Citrus 4.10.3"
+	},
 }

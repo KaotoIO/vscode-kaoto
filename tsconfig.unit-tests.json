@@ -2,9 +2,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "module": "CommonJS",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
+    "rootDir": ".",
     "paths": {
-      "@kaoto/camel-catalog/types": ["./node_modules/@kaoto/camel-catalog/dist/types/index.ts"]
+      "@kaoto/camel-catalog/types": ["./node_modules/@kaoto/camel-catalog/dist/types/index.ts"],
+      "@kaoto/kaoto/models": ["./node_modules/@kaoto/kaoto/lib/models-api.d.ts"]
     },
     "strict": true,
     "experimentalDecorators": true,

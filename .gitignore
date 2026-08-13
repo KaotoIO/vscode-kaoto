@@ -45,3 +45,9 @@ yarn-error.log*
 .camel-jbang
 .camel-jbang-run
 .citrus-jbang
+
+# AI agent delegation run logs
+.bob-runs
+
+# AI agent planning and design docs (local only)
+docs/superpowers/

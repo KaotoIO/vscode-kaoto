@@ -1,0 +1,26 @@
+diff --git a/out/browser.js b/out/browser.js
+index 1bd673e101e4d1b3e8fd9ef427c4de675d3961e6..b23512577e05517b0154e7c21718bd280b1cdc9f 100644
+--- a/out/browser.js
++++ b/out/browser.js
+@@ -312,6 +312,21 @@ class VSBrowser {
+         if (paths.length === 0) {
+             return;
+         }
++        // Workaround for microsoft/vscode#330243 (see also
++        // redhat-developer/vscode-extension-tester#2454): `CodeUtil.open` spawns a
++        // second-instance CLI call, and when that lands while VS Code is still
++        // starting up, VS Code >= 1.123.0 duplicates every 256 KiB chunk of every
++        // webview resource in the window AND the webview service worker caches the
++        // corrupted responses, permanently poisoning the profile. Waiting for the
++        // workbench element alone is not enough - it appears while the race window
++        // is still open - so the first open of a session additionally waits for the
++        // instance to settle.
++        if (!VSBrowser._openResourcesSettled) {
++            await this.waitForWorkbench();
++            const settleMs = Number(process.env.EXTESTER_OPEN_RESOURCE_SETTLE_MS ?? 10000);
++            await new Promise((resolve) => setTimeout(resolve, settleMs));
++            VSBrowser._openResourcesSettled = true;
++        }
+         const code = new codeUtil_1.CodeUtil(this.storagePath, this.releaseType, this.extensionsFolder);
+         code.open(...paths);
+         await this.waitForWorkbench(undefined, waitForFn);

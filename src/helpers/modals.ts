@@ -45,10 +45,8 @@ export async function confirmDestructiveActionInSelectedFolder(outputPath: strin
  * Shows a modal asking for user confirmation of stopping an infrastructure service.
  * VS Code automatically provides a 'Cancel' option which return `undefined`.
  * The continue option will return the string `Stop`.
- * The function will return `undefined` if the user cancels the operation.
  *
  * @param serviceName name of the service to be stopped.
- *
  * @returns string | undefined
  */
 export async function confirmInfrastructureServiceStop(serviceName: string) {

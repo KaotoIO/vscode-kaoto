@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { TreeItem, Uri, TreeItemCollapsibleState } from 'vscode';
+import { COMMAND_OPEN_WITH_KAOTO } from '../../constants';
 import { IntegrationFileDSL, IntegrationFileIcon, IntegrationFileType } from '../../types/IntegrationTreeItemType';
 
 export class Integration extends TreeItem {
@@ -46,6 +47,6 @@ export class Integration extends TreeItem {
 
 		this.contextValue = Integration.resolveContextValue(isTopLevelWithinWorkspace, isUnderMavenRoot);
 
-		this.command = { command: 'kaoto.open', title: 'Open with Kaoto', arguments: [this.filepath] };
+		this.command = { command: COMMAND_OPEN_WITH_KAOTO, title: 'Open with Kaoto', arguments: [this.filepath] };
 	}
 }

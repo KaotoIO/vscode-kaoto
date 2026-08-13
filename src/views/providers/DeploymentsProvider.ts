@@ -16,7 +16,7 @@
 import { EventEmitter, tasks, TreeDataProvider, TreeItem, TreeItemCollapsibleState, workspace } from 'vscode';
 import { basename } from 'path';
 import { PortManager } from '../../helpers/PortManager';
-import { CamelJBangTaskDefinition } from '../../tasks/CamelJBangTask';
+import { CamelTaskDefinition } from '../../tasks/CamelTask';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
 import { Route } from '../deploymentTreeItems/Route';
 import { RootItem } from '../deploymentTreeItems/RootItem';
@@ -27,7 +27,7 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 	private readonly _onDidChangeTreeData = new EventEmitter<TreeItem | undefined | null | void>();
 	readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
-	private static readonly SETTINGS_REFRESH_INTERVAL = 'kaoto.views.refresh.interval';
+	private static readonly SETTINGS_REFRESH_INTERVAL = 'kaoto.deployments.refresh.interval';
 
 	private readonly CONTEXT_LOCALHOST_ITEM = 'root-localhost';
 	private readonly CONTEXT_INTEGRATION_LOCALHOST_ITEM = 'parent-localhost';
@@ -48,23 +48,18 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 		});
 
 		tasks.onDidStartTaskProcess(async (e) => {
-			const def = e.execution.task.definition as CamelJBangTaskDefinition;
-			if (def.type === 'camel-jbang' && def.port) {
+			const def = e.execution.task.definition as CamelTaskDefinition;
+			if (def.type === 'camel' && def.port > 0) {
 				console.log(`[DeploymentsProvider] Task started on port ${def.port}`);
 				const ready = await this.waitForIntegrationReady(def.port);
 				if (ready) {
 					console.log(`[DeploymentsProvider] Camel integration running on port ${def.port}`);
-					this.refresh();
+					void this.refresh();
 				}
 			}
 		});
 		tasks.onDidEndTaskProcess((e) => {
-			const def = e.execution.task.definition as CamelJBangTaskDefinition;
-			if (def.type === 'camel-jbang' && def.port) {
-				console.log(`[DeploymentsProvider] Task ended on port ${def.port}`);
-				this.portManager.releasePort(def.port);
-				this.refresh();
-			}
+			this.handleTaskEnd(e.execution.task.definition as CamelTaskDefinition);
 		});
 	}
 
@@ -72,9 +67,18 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 		this.stopAutoRefresh();
 	}
 
-	refresh(): void {
+	/** Exposed for testing: handles task-end events — releases the port and triggers a refresh. */
+	handleTaskEnd(def: CamelTaskDefinition): void {
+		if (def.type === 'camel' && def.port > 0) {
+			console.log(`[DeploymentsProvider] Task ended on port ${def.port}`);
+			this.portManager.releasePort(def.port);
+			void this.refresh();
+		}
+	}
+
+	refresh(): Promise<void> {
 		console.log('[DeploymentsProvider] Refreshing data...');
-		void this.updateData();
+		return this.updateData();
 	}
 
 	getTreeItem(element: TreeItem): TreeItem {
@@ -170,9 +174,8 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 
 		const fetchTasks = ports.map(async (port) => {
 			try {
-				const reachable = await this.portManager.waitForPortReachable(port);
+				const reachable = await this.portManager.waitForPortReachable(port, 3_000);
 				if (!reachable) {
-					this.portManager.releasePort(port);
 					return;
 				}
 
@@ -193,7 +196,6 @@ export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 				}
 			} catch (err) {
 				KaotoOutputChannel.logError(`[DeploymentsProvider] Port ${port} fetch error:`, err);
-				this.portManager.releasePort(port);
 			}
 		});
 

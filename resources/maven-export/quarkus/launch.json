@@ -2,6 +2,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Run (quarkus:dev)",
+            "type": "node",
+            "request": "launch",
+            "runtimeArgs": ["-e", "process.exit(0)"],
+            "preLaunchTask": "Run (quarkus:dev)",
+            "console": "internalConsole",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
             "name": "Deploy on OpenShift (Quarkus)",
             "type": "node",
             "request": "launch",

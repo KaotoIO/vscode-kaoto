@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import * as vscode from 'vscode';
+import { VIEW_WHATS_NEW } from '../constants';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 
 export class WhatsNewPanel {
@@ -28,10 +29,10 @@ export class WhatsNewPanel {
 			const bytes = await vscode.workspace.fs.readFile(indexMdUri);
 			const markdown = new TextDecoder('utf-8').decode(bytes);
 
-			const htmlContent: string = (await vscode.commands.executeCommand('markdown.api.render', markdown)) as string;
+			const htmlContent: string = await vscode.commands.executeCommand('markdown.api.render', markdown);
 
 			const panel = vscode.window.createWebviewPanel(
-				'kaoto.whatsNew',
+				VIEW_WHATS_NEW,
 				`What's New in Kaoto ${folderVersion}`,
 				{
 					viewColumn: vscode.ViewColumn.Active,
@@ -88,7 +89,6 @@ export class WhatsNewPanel {
 			'</style>',
 			'</head>',
 			'<body>',
-			`<img class="logo" src="https://raw.githubusercontent.com/KaotoIO/vscode-kaoto/57103641d7c3f2d7ac6be9433d1d360d9732a926/images/logo-kaoto.png" alt="Kaoto">`,
 			htmlBody,
 			`<div class="blog-note">Read the full blog post on our official site - <a href="${blogUrl}" target="_blank" rel="noreferrer noopener">${blogUrl}</a></div>`,
 			'</body>',

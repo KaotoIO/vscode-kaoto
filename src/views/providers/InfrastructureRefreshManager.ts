@@ -6,7 +6,7 @@ import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
  * Handles periodic refresh intervals and configuration changes.
  */
 export class InfrastructureRefreshManager implements Disposable {
-	private static readonly SETTINGS_REFRESH_INTERVAL = 'kaoto.views.refresh.interval';
+	private static readonly SETTINGS_REFRESH_INTERVAL = 'kaoto.infrastructure.refresh.interval';
 
 	private refreshInterval: number;
 	private autoRefreshHandle?: NodeJS.Timeout;
