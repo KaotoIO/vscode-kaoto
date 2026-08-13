@@ -74,7 +74,7 @@ export class KaotoOutputChannel {
 		this.logInfo(`Extension mode: ${extensionModeLabel}`);
 		this.logInfo(`App host: ${vscode.env.appHost}`);
 		this.logInfo(`Remote: ${remote}`);
-		const osPlatform = process?.platform ?? 'unavailable';
+		const osPlatform = typeof process !== 'undefined' ? process.platform : 'unavailable';
 		this.logInfo(`OS platform: ${osPlatform}`);
 		this.logInfo(`Executor type: ${executorType}`);
 		this.logInfo(`Workspace folders: ${workspaceFolderCount}`);
