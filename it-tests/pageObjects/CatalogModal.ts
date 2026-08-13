@@ -102,12 +102,9 @@ export class CatalogModal extends AbstractElement {
 		if (open) {
 			await driver.wait(until.elementLocated(By.id(kaotoLocators.CatalogModal.providerSelectMenu)), timeout);
 		} else {
-			try {
-				await driver.wait(until.elementLocated(By.id(kaotoLocators.CatalogModal.providerSelectMenu)), timeout);
-			} catch (error) {
-				if (error instanceof Error && error.name !== 'TimeoutError') {
-					throw error;
-				}
+			const menu = await driver.findElements(By.id(kaotoLocators.CatalogModal.providerSelectMenu));
+			if (menu.length > 0) {
+				await driver.wait(until.stalenessOf(menu[0]), timeout);
 			}
 		}
 	}

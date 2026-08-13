@@ -178,9 +178,11 @@ export class KaotoCanvas extends AbstractElement {
 	 *
 	 * @param edgeSelector  CSS selector for the edge `<g>` element
 	 */
-	static async getAddStepButton(driver: WebDriver, edgeSelector: string, _timeout = 5_000): Promise<WebElement> {
+	static async getAddStepButton(driver: WebDriver, edgeSelector: string, timeout = 5_000): Promise<WebElement> {
+		await driver.wait(until.elementLocated(By.css(edgeSelector)), timeout);
 		const edge = await driver.findElement(By.css(edgeSelector));
 		await driver.actions().move({ origin: edge, duration: 2_000 }).perform();
+		await driver.wait(until.elementLocated(By.className(kaotoLocators.KaotoEdge.addStepIcon)), timeout);
 		return edge.findElement(By.className(kaotoLocators.KaotoEdge.addStepIcon));
 	}
 
