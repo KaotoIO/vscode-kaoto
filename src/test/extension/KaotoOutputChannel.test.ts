@@ -109,14 +109,14 @@ suite('KaotoOutputChannel - logStartupInfo', function () {
 	test('logs OS platform: unavailable when process is undefined', function () {
 		const context = makeContext(vscode.ExtensionMode.Production);
 
-		// Simulate the webworker environment where process is not polyfilled
-		const originalPlatform = process.platform;
-		Object.defineProperty(process, 'platform', { value: undefined, configurable: true });
+		// Simulate the webworker environment where process global is not defined at all
+		const originalProcess = (globalThis as Record<string, unknown>).process;
+		delete (globalThis as Record<string, unknown>).process;
 
 		try {
 			KaotoOutputChannel.logStartupInfo(context, 'web');
 		} finally {
-			Object.defineProperty(process, 'platform', { value: originalPlatform, configurable: true });
+			(globalThis as Record<string, unknown>).process = originalProcess;
 		}
 
 		const lines = getInfoLines();
