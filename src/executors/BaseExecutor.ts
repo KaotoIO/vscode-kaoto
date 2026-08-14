@@ -22,7 +22,7 @@ export abstract class BaseExecutor implements ICamelExecutor {
 			throw new Error(`Executor ${this.config.type} is not available`);
 		}
 
-		const builderConfig = await this.buildCommandBuilderConfig(context);
+		const builderConfig = await this.buildCommandBuilderConfig({ ...context, command });
 		const builder = new CamelCommandBuilder(builderConfig);
 		return builder.buildCommand(command, args, context);
 	}
