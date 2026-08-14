@@ -32,9 +32,14 @@ suite('Executor Implementation Tests', () => {
 				assert.equal(JBangExecutor.enforceMinVersion('3.99.9', '4.22.0'), '4.22.0');
 			});
 
-			test('treats non-numeric segments (e.g. redhat builds) as 0 — below minimum', () => {
+			test('treats non-numeric segments (e.g. redhat builds) as invalid — always replaced with minVersion', () => {
+				// below minimum prefix with non-numeric suffix
 				assert.equal(JBangExecutor.enforceMinVersion('4.20.0.redhat-00019', '4.22.0'), '4.22.0');
 				assert.equal(JBangExecutor.enforceMinVersion('4.18.1.redhat-00019', '4.22.0'), '4.22.0');
+				// equal-to-minimum prefix with non-numeric suffix — still replaced
+				assert.equal(JBangExecutor.enforceMinVersion('4.22.0.redhat-00019', '4.22.0'), '4.22.0');
+				// above-minimum prefix with non-numeric suffix — still replaced
+				assert.equal(JBangExecutor.enforceMinVersion('5.0.0.redhat-00019', '4.22.0'), '4.22.0');
 			});
 		});
 

@@ -77,15 +77,28 @@ export class JBangExecutor extends BaseExecutor {
 	 * always considered below the minimum and replaced.
 	 */
 	static enforceMinVersion(version: string, minVersion: string): string {
-		const toSegments = (v: string) => v.split('.').map((s) => parseInt(s, 10) || 0);
+		const toSegments = (v: string): number[] | undefined => {
+			const segments = v.split('.');
+			if (segments.some((s) => !/^\d+$/.test(s))) {
+				return undefined;
+			}
+			return segments.map((s) => Number.parseInt(s, 10));
+		};
 		const cur = toSegments(version);
 		const min = toSegments(minVersion);
+		if (!cur || !min) {
+			return minVersion;
+		}
 		const len = Math.max(cur.length, min.length);
 		for (let i = 0; i < len; i++) {
 			const c = cur[i] ?? 0;
 			const m = min[i] ?? 0;
-			if (c > m) return version;
-			if (c < m) return minVersion;
+			if (c > m) {
+				return version;
+			}
+			if (c < m) {
+				return minVersion;
+			}
 		}
 		return version; // equal
 	}
