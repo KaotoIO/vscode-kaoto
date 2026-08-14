@@ -28,10 +28,7 @@ import {
 	waitUntilTerminalHasText,
 } from '../Util';
 
-// TODO(#1477): temporarily disabled — Citrus 5.0.0 broke Camel JBang's `camel test`
-// shim (`package org.citrusframework.jbang.cli does not exist`), failing these tests on
-// every branch and OS. Re-enable once #1477 is resolved.
-describe.skip('Tests View', function () {
+describe('Tests View', function () {
 	this.timeout(240_000);
 
 	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars', 'kaoto-view', 'example-tests');
@@ -71,7 +68,7 @@ describe.skip('Tests View', function () {
 			const button = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, 'Run');
 			await button?.click();
 
-			await waitUntilTerminalHasText(driver, ['myTest.citrus-flow.json', 'Tests finished'], 4_000, 180_000);
+			await waitUntilTerminalHasText(driver, ['myTest.citrus', 'Tests finished'], 4_000, 180_000);
 		});
 	});
 
@@ -89,7 +86,7 @@ describe.skip('Tests View', function () {
 			const button = await getTreeItemActionButton(kaotoViewContainer, item as TreeItem, 'Run: Folder');
 			await button?.click();
 
-			await waitUntilTerminalHasText(driver, ['myFolderTest.citrus-flow.json', 'myFolderTest.citrus.test-flow.json', 'Tests finished'], 4_000, 180_000);
+			await waitUntilTerminalHasText(driver, ['myFolderTest.citrus', 'myFolderTest.citrus.test', 'Tests finished'], 4_000, 180_000);
 		});
 	});
 });

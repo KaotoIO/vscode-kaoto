@@ -29,6 +29,8 @@ export type CamelCommand = 'run' | 'export' | 'init' | 'bind' | 'stop' | 'depend
  */
 export interface CommandContext {
 	readonly cwd?: string;
+	/** The Camel command being executed (e.g. 'run', 'test'). Used by executors that need per-command version constraints. */
+	readonly command?: CamelCommand;
 }
 
 /**

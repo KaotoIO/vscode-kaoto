@@ -6,7 +6,7 @@ import { CamelCommandBuilder, CommandBuilderConfig } from './builders/CamelComma
 import { JBangExecutorConfig } from './types/ExecutorConfig';
 import { CommandContext, RuntimeType } from './types/ExecutorTypes';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
-import { DEFAULT_CAMEL_VERSION_FALLBACK } from '../constants';
+import { DEFAULT_CAMEL_VERSION_FALLBACK, MIN_CAMEL_VERSION_FOR_TEST } from '../constants';
 import { isRedHatBuild } from '../helpers/helpers';
 
 export class JBangExecutor extends BaseExecutor {
@@ -24,7 +24,8 @@ export class JBangExecutor extends BaseExecutor {
 		const resourceUri = context?.cwd ? Uri.file(context.cwd) : undefined;
 		const catalog = await catalogService.getSelectedIntegrationCatalog(resourceUri);
 
-		const cliVersion = catalogService.getCliVersionForJBang(catalog) || DEFAULT_CAMEL_VERSION_FALLBACK;
+		const rawCliVersion = catalogService.getCliVersionForJBang(catalog) || DEFAULT_CAMEL_VERSION_FALLBACK;
+		const cliVersion = context?.command === 'test' ? JBangExecutor.enforceMinVersion(rawCliVersion, MIN_CAMEL_VERSION_FOR_TEST) : rawCliVersion;
 		const runtimeSystemProps = this.getRuntimeSystemProperties(catalogService, catalog);
 
 		return {
@@ -68,6 +69,25 @@ export class JBangExecutor extends BaseExecutor {
 		}
 
 		return properties;
+	}
+
+	/**
+	 * Returns `version` if it is >= `minVersion`, otherwise returns `minVersion`.
+	 * Compares dot-separated numeric segments; non-numeric (e.g. redhat) builds are
+	 * always considered below the minimum and replaced.
+	 */
+	static enforceMinVersion(version: string, minVersion: string): string {
+		const toSegments = (v: string) => v.split('.').map((s) => parseInt(s, 10) || 0);
+		const cur = toSegments(version);
+		const min = toSegments(minVersion);
+		const len = Math.max(cur.length, min.length);
+		for (let i = 0; i < len; i++) {
+			const c = cur[i] ?? 0;
+			const m = min[i] ?? 0;
+			if (c > m) return version;
+			if (c < m) return minVersion;
+		}
+		return version; // equal
 	}
 
 	async isAvailable(): Promise<boolean> {

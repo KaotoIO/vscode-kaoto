@@ -15,6 +15,29 @@ suite('Executor Implementation Tests', () => {
 			});
 		});
 
+		suite('enforceMinVersion', () => {
+			test('returns version when already above minimum', () => {
+				assert.equal(JBangExecutor.enforceMinVersion('4.22.1', '4.22.0'), '4.22.1');
+				assert.equal(JBangExecutor.enforceMinVersion('4.23.0', '4.22.0'), '4.23.0');
+				assert.equal(JBangExecutor.enforceMinVersion('5.0.0', '4.22.0'), '5.0.0');
+			});
+
+			test('returns version when equal to minimum', () => {
+				assert.equal(JBangExecutor.enforceMinVersion('4.22.0', '4.22.0'), '4.22.0');
+			});
+
+			test('returns minVersion when version is below minimum', () => {
+				assert.equal(JBangExecutor.enforceMinVersion('4.20.0', '4.22.0'), '4.22.0');
+				assert.equal(JBangExecutor.enforceMinVersion('4.21.0', '4.22.0'), '4.22.0');
+				assert.equal(JBangExecutor.enforceMinVersion('3.99.9', '4.22.0'), '4.22.0');
+			});
+
+			test('treats non-numeric segments (e.g. redhat builds) as 0 — below minimum', () => {
+				assert.equal(JBangExecutor.enforceMinVersion('4.20.0.redhat-00019', '4.22.0'), '4.22.0');
+				assert.equal(JBangExecutor.enforceMinVersion('4.18.1.redhat-00019', '4.22.0'), '4.22.0');
+			});
+		});
+
 		test('Should have correct configuration', () => {
 			const config = executor.getConfig();
 			assert.equal(config.type, 'jbang');
