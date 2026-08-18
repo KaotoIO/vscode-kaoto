@@ -226,6 +226,6 @@ export class ApicurioRegistryService {
 		} catch {
 			throw new ApicurioRegistryUrlError(`Invalid URL: "${registryUrl}"`);
 		}
-		return registryUrl.replace(/[/]+$/, '');
+		return registryUrl.replace(/\/+$/, '');
 	}
 }
