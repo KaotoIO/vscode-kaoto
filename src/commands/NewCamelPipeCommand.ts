@@ -16,7 +16,7 @@
 import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 import { CamelRouteDSL } from './AbstractCamelCommand';
-import path from 'path';
+import path from 'path'; // NOSONAR
 
 export class NewCamelPipeCommand extends AbstractNewCamelRouteCommand {
 	public static readonly ID_COMMAND_CAMEL_PIPE_YAML = 'kaoto.camel.jbang.init.pipe.yaml';

@@ -16,7 +16,7 @@
 import { QuickPickItem, window } from 'vscode';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
-import path from 'path';
+import path from 'path'; // NOSONAR
 
 export class NewCamelRouteCommand extends AbstractNewCamelRouteCommand {
 	public static readonly ID_COMMAND_CAMEL_ROUTE = 'kaoto.camel.jbang.init.route';

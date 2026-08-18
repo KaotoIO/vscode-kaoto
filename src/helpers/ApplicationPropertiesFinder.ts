@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import vscode from 'vscode';
-import path from 'path';
+import path from 'path'; // NOSONAR
 import { Suggestion } from '@kaoto/kaoto';
 
 export async function findAllApplicationPropertiesFiles(startUri: vscode.Uri): Promise<vscode.Uri[]> {

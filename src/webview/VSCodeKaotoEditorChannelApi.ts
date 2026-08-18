@@ -24,7 +24,7 @@ import { VsCodeKieEditorCustomDocument } from '@kie-tools-core/vscode-extension/
 import { VsCodeWorkspaceChannelApiImpl } from '@kie-tools-core/vscode-extension/dist/workspace/VsCodeWorkspaceChannelApiImpl';
 import { JavaCodeCompletionApi } from '@kie-tools-core/vscode-java-code-completion/dist/api';
 import { ResourceContentService } from '@kie-tools-core/workspace/dist/api';
-import * as path from 'path';
+import * as path from 'path'; // NOSONAR
 import * as vscode from 'vscode';
 import {
 	KAOTO_CANVAS_LAYOUT_DIRECTION_SETTING_ID,

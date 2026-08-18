@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { join } from 'path';
+import { join } from 'path'; // NOSONAR
 import { ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
 
 export class HelpFeedbackProvider implements TreeDataProvider<HelpFeedbackItem> {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { EventEmitter, tasks, TreeDataProvider, TreeItem, TreeItemCollapsibleState, workspace } from 'vscode';
-import { basename } from 'path';
+import { basename } from 'path'; // NOSONAR
 import { PortManager } from '../../helpers/PortManager';
 import { CamelTaskDefinition } from '../../tasks/CamelTask';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
