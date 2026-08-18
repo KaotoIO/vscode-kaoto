@@ -615,50 +615,54 @@ export class OpenApiImportService {
 		}
 
 		// Group operations by HTTP method
+		const restByMethod = rest as Pick<Rest, RestMethods>;
 		for (const operation of operations) {
 			const methodKey = operation.method;
-			const methodArray = (rest[methodKey] as RestMethodDefinitions[]) ?? [];
-
-			const operationDef: Partial<RestMethodDefinitions> = {
-				id: operation.operationId,
-				path: operation.path,
-				routeId: `route-${operation.operationId}`,
-				to: `direct:${operation.operationId}`,
-			};
-
-			if (operation.description?.trim()) {
-				operationDef.description = operation.description;
-			}
-
-			if (operation.consumes?.trim()) {
-				operationDef.consumes = operation.consumes;
-			}
-
-			if (operation.produces?.trim()) {
-				operationDef.produces = operation.produces;
-			}
-
-			if (operation.parameters.length > 0) {
-				operationDef.param = operation.parameters;
-			}
-
-			if (operation.responseMessages.length > 0) {
-				operationDef.responseMessage = operation.responseMessages;
-			}
-
-			if (operation.security.length > 0) {
-				operationDef.security = operation.security;
-			}
-
-			if (operation.deprecated !== undefined) {
-				operationDef.deprecated = operation.deprecated;
-			}
-
-			methodArray.push(operationDef as RestMethodDefinitions);
-			(rest as any)[methodKey] = methodArray;
+			const methodArray = (restByMethod[methodKey] as RestMethodDefinitions[]) ?? [];
+			methodArray.push(this.buildOperationDefinition(operation));
+			restByMethod[methodKey] = methodArray as Rest[typeof methodKey];
 		}
 
 		return rest;
+	}
+
+	private buildOperationDefinition(operation: ParsedOperation): RestMethodDefinitions {
+		const operationDef: Partial<RestMethodDefinitions> = {
+			id: operation.operationId,
+			path: operation.path,
+			routeId: `route-${operation.operationId}`,
+			to: `direct:${operation.operationId}`,
+		};
+
+		if (operation.description?.trim()) {
+			operationDef.description = operation.description;
+		}
+
+		if (operation.consumes?.trim()) {
+			operationDef.consumes = operation.consumes;
+		}
+
+		if (operation.produces?.trim()) {
+			operationDef.produces = operation.produces;
+		}
+
+		if (operation.parameters.length > 0) {
+			operationDef.param = operation.parameters;
+		}
+
+		if (operation.responseMessages.length > 0) {
+			operationDef.responseMessage = operation.responseMessages;
+		}
+
+		if (operation.security.length > 0) {
+			operationDef.security = operation.security;
+		}
+
+		if (operation.deprecated !== undefined) {
+			operationDef.deprecated = operation.deprecated;
+		}
+
+		return operationDef as RestMethodDefinitions;
 	}
 
 	/**
