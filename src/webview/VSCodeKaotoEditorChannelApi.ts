@@ -50,6 +50,7 @@ export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelAp
 	private readonly currentEditedDocument: vscode.TextDocument | VsCodeKieEditorCustomDocument;
 
 	constructor(
+		/* NOSONAR — parameter count is dictated by the parent class DefaultVsCodeKieEditorChannelApiImpl */
 		editor: VsCodeKieEditorController,
 		resourceContentService: ResourceContentService,
 		workspaceApi: VsCodeWorkspaceChannelApiImpl,
