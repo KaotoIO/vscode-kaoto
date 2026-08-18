@@ -58,7 +58,7 @@ export class WhatsNewPanel {
 	}
 
 	private static extractMajorMinor(version: string): string {
-		const regExp = new RegExp(/(\d+)\.(\d+)/);
+		const regExp = new RegExp(/^(\d+)\.(\d+)/);
 		const match = regExp.exec(version);
 		if (match) {
 			return `${match[1]}.${match[2]}`;
