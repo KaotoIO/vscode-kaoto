@@ -83,7 +83,7 @@ jobs:
           enable-qemu: ${{ inputs.enable-qemu && 'true' || 'false' }}
       - name: Install Yarn
         if: ${{ inputs.install-yarn }}
-        run: npm install -g yarn
+        run: npm install -g yarn --ignore-scripts
       - name: Download VSIX artifact
         uses: actions/download-artifact@v8
         with:
@@ -123,7 +123,7 @@ jobs:
           cache: yarn
       - name: Install Yarn
         if: ${{ inputs.install-yarn }}
-        run: npm install -g yarn
+        run: npm install -g yarn --ignore-scripts
       - name: Download VSIX artifact
         uses: actions/download-artifact@v8
         with:
@@ -159,7 +159,7 @@ jobs:
           cache: yarn
       - name: Install Yarn
         if: ${{ inputs.install-yarn }}
-        run: npm install -g yarn
+        run: npm install -g yarn --ignore-scripts
       - name: Download VSIX artifact
         uses: actions/download-artifact@v8
         with:
