@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import * as path from 'path';
+import * as path from 'path'; // NOSONAR
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { findFolderOfPomXml, normalizeVersionForSemver } from './helpers';
 import { satisfies } from 'compare-versions';

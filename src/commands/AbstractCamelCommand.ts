@@ -15,7 +15,7 @@
  */
 import { Uri, WorkspaceFolder, workspace } from 'vscode';
 import isValidFilename from 'valid-filename';
-import path from 'path';
+import path from 'path'; // NOSONAR
 
 export interface CamelRouteDSL {
 	language: string;

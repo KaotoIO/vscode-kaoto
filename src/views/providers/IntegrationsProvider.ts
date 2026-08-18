@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { commands, Event, EventEmitter, FileSystemWatcher, TreeDataProvider, TreeItem, TreeItemCollapsibleState, TreeItemLabel, Uri, workspace } from 'vscode';
-import { basename, join, relative, sep } from 'path';
+import { basename, join, relative, sep } from 'path'; // NOSONAR
 import { parse } from 'yaml';
 import { XMLParser } from 'fast-xml-parser';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';

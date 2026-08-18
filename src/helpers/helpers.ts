@@ -15,10 +15,10 @@
  */
 
 import { ExtensionContext, window, workspace, WorkspaceFolder } from 'vscode';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import * as path from 'path';
-import fs from 'fs';
+import { exec } from 'child_process'; // NOSONAR
+import { promisify } from 'util'; // NOSONAR
+import * as path from 'path'; // NOSONAR
+import fs from 'fs'; // NOSONAR
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 
 /**

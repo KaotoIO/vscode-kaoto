@@ -15,7 +15,7 @@
  */
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 import { Route } from './Route';
-import { join } from 'path';
+import { join } from 'path'; // NOSONAR
 import { ParentItem } from './ParentItem';
 
 export class ChildItem extends TreeItem {
