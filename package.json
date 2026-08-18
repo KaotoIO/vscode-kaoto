@@ -25,6 +25,7 @@
     "build:test:unit": "rimraf ./out && tsc --project tsconfig.unit-tests.json --skipLibCheck --sourceMap true && yarn run lint",
     "build:vsix": "yarn vsce package --no-dependencies --yarn",
     "compile": "webpack",
+    "sbom:generate": "cdxgen -o manifest.json",
     "watch": "webpack --env dev",
     "run:webmode": "yarn vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --open-devtools ./resources",
     "test:unit": "yarn build:test:unit && vscode-test",
@@ -60,6 +61,9 @@
     "valid-filename": "4.0.0",
     "wait-on": "^9.1.0",
     "yaml": "^2.9.0"
+  },
+  "devDependencies": {
+    "@cyclonedx/cdxgen": "12.8.4"
   },
   "icon": "icon.png",
   "main": "./dist/extension/extension.js",
@@ -1310,6 +1314,7 @@
     }
   },
   "devDependencies": {
+    "@cyclonedx/cdxgen": "12.8.4",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/chai": "^4.3.20",
     "@types/fs-extra": "^11.0.4",

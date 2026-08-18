@@ -81,9 +81,9 @@ jobs:
       - uses: ./.github/actions/setup-minikube
         with:
           enable-qemu: ${{ inputs.enable-qemu && 'true' || 'false' }}
-      - name: Install Yarn
+      - name: Activate repo Yarn via Corepack
         if: ${{ inputs.install-yarn }}
-        run: npm install -g yarn --ignore-scripts
+        run: corepack install # packageManager: yarn@4.8.1
       - name: Download VSIX artifact
         uses: actions/download-artifact@v8
         with:
@@ -121,9 +121,9 @@ jobs:
       - uses: ./.github/actions/setup-tools
         with:
           cache: yarn
-      - name: Install Yarn
+      - name: Activate repo Yarn via Corepack
         if: ${{ inputs.install-yarn }}
-        run: npm install -g yarn --ignore-scripts
+        run: corepack install # packageManager: yarn@4.8.1
       - name: Download VSIX artifact
         uses: actions/download-artifact@v8
         with:
@@ -157,9 +157,9 @@ jobs:
       - uses: ./.github/actions/setup-tools
         with:
           cache: yarn
-      - name: Install Yarn
+      - name: Activate repo Yarn via Corepack
         if: ${{ inputs.install-yarn }}
-        run: npm install -g yarn --ignore-scripts
+        run: corepack install # packageManager: yarn@4.8.1
       - name: Download VSIX artifact
         uses: actions/download-artifact@v8
         with:

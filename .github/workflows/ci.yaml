@@ -28,9 +28,7 @@ jobs:
       - name: vsix package
         run: yarn build:vsix
       - name: Generate SBOM
-        run: |
-          npm install -g @cyclonedx/cdxgen --ignore-scripts
-          cdxgen -o manifest.json
+        run: yarn sbom:generate
       - name: Upload VSIX artifact
         uses: actions/upload-artifact@v7
         with:
