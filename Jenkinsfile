@@ -8,6 +8,8 @@ def installBuildRequirements(){
 }
 
 node('rhel9'){
+	final String STRING_BINDING = 'StringBinding'
+	final String VSIX_GLOB = '**.vsix'
 
 	stage 'Checkout vscode-kaoto code'
 	deleteDir()
@@ -27,7 +29,7 @@ node('rhel9'){
 	}
 	stage('UI Tests') {
 		wrap([$class: 'Xvnc']) {
-			withCredentials([[$class: 'StringBinding', credentialsId: 'oc_developer_token', variable: 'TOKEN']]) {
+			withCredentials([[$class: STRING_BINDING, credentialsId: 'oc_developer_token', variable: 'TOKEN']]) {
 				sh 'oc login --token=${TOKEN} --server=https://api.ft-421-a.fuse.integration-qe.com:6443 --insecure-skip-tls-verify=true'
 				sh 'oc project kaoto'
 			}
@@ -44,7 +46,7 @@ node('rhel9'){
 	sh "yarn build:vsix -o vscode-kaoto-${packageJson.version}-${env.BUILD_NUMBER}.vsix"
 
 	stage 'Upload vscode-kaoto to staging'
-	def vsix = findFiles(glob: '**.vsix')
+	def vsix = findFiles(glob: VSIX_GLOB)
 	sh "sftp -C ${UPLOAD_LOCATION}/snapshots/vscode-kaoto/ <<< \$'put -p \"${vsix[0].path}\"'"
 	stash name:'vsix', includes:vsix[0].path
 
@@ -59,23 +61,26 @@ node('rhel9'){
 			input message:'Approve deployment?', submitter: 'apupier, djelinek, mdinizde, ricmarti, toigaras, mmelko'
 		}
 
+		final String STRING_BINDING = 'StringBinding'
+		final String VSIX_GLOB = '**.vsix'
+
 		stage 'Publish to Marketplaces'
 		unstash 'vsix';
-		def vsix = findFiles(glob: '**.vsix')
+		def vsix = findFiles(glob: VSIX_GLOB)
 		// VS Code Marketplace
-		withCredentials([[$class: 'StringBinding', credentialsId: 'vscode_java_marketplace', variable: 'TOKEN']]) {
+		withCredentials([[$class: STRING_BINDING, credentialsId: 'vscode_java_marketplace', variable: 'TOKEN']]) {
 			sh 'yarn vsce publish -p ${TOKEN} --packagePath' + " ${vsix[0].path}"
 		}
 
 		// Open-vsx Marketplace
 		sh "npm install -g ovsx"
-		withCredentials([[$class: 'StringBinding', credentialsId: 'open-vsx-access-token', variable: 'OVSX_TOKEN']]) {
+		withCredentials([[$class: STRING_BINDING, credentialsId: 'open-vsx-access-token', variable: 'OVSX_TOKEN']]) {
 			sh 'ovsx publish -p ${OVSX_TOKEN}' + " ${vsix[0].path}"
 		}
-		archive includes:"**.vsix"
+		archive includes:VSIX_GLOB
 
 		stage ('Promote the build to stable') {
-			vsix = findFiles(glob: '**.vsix')
+			vsix = findFiles(glob: VSIX_GLOB)
 			sh "sftp -C ${UPLOAD_LOCATION}/stable/vscode-kaoto/ <<< \$'put -p \"${vsix[0].path}\"'"
 		}
 	}
