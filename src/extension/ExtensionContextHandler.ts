@@ -167,8 +167,6 @@ export class ExtensionContextHandler {
 			vscode.commands.registerCommand(COMMAND_UNDO, async () => {
 				// do nothing
 			}),
-		);
-		this.context.subscriptions.push(
 			vscode.commands.registerCommand(COMMAND_REDO, async () => {
 				// do nothing
 			}),
@@ -296,8 +294,6 @@ export class ExtensionContextHandler {
 					await this.sendCommandTrackingEvent(OPEN_SOURCE_COMMAND_ID);
 				}
 			}),
-		);
-		this.context.subscriptions.push(
 			vscode.commands.registerCommand(CLOSE_SOURCE_COMMAND_ID, async () => {
 				await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
 				await this.sendCommandTrackingEvent(CLOSE_SOURCE_COMMAND_ID);
@@ -441,9 +437,9 @@ export class ExtensionContextHandler {
 			dispose: () => this.deploymentsProvider.dispose(),
 		};
 
-		const refreshVisibilityChange = deploymentsTreeView.onDidChangeVisibility((event) => {
+		const refreshVisibilityChange = deploymentsTreeView.onDidChangeVisibility(async (event) => {
 			if (event.visible) {
-				this.deploymentsProvider.refresh();
+				await this.deploymentsProvider.refresh();
 			} else {
 				console.warn('[DeploymentsProvider] Auto-refresh stopped');
 				this.deploymentsProvider.dispose();
@@ -555,21 +551,16 @@ export class ExtensionContextHandler {
 				await this.sendCommandTrackingEvent(COMMAND_CAMEL_NEW_FILE);
 			}),
 		);
-		// register commands for new Camel files creation using YAML or XML DSL - Camel Routes
+		// register commands for new Camel files creation using YAML or XML DSL - Camel Routes, Kamelets, Pipes
 		this.context.subscriptions.push(
 			vscode.commands.registerCommand(NewCamelRouteCommand.ID_COMMAND_CAMEL_ROUTE, async () => {
 				await new NewCamelRouteCommand().create();
 				await this.sendCommandTrackingEvent(NewCamelRouteCommand.ID_COMMAND_CAMEL_ROUTE);
 			}),
-		);
-		// register commands for new Camel files creation using YAML DSL - Kamelets, Pipes
-		this.context.subscriptions.push(
 			vscode.commands.registerCommand(NewCamelKameletCommand.ID_COMMAND_CAMEL_KAMELET_YAML, async () => {
 				await new NewCamelKameletCommand('YAML').create();
 				await this.sendCommandTrackingEvent(NewCamelKameletCommand.ID_COMMAND_CAMEL_KAMELET_YAML);
 			}),
-		);
-		this.context.subscriptions.push(
 			vscode.commands.registerCommand(NewCamelPipeCommand.ID_COMMAND_CAMEL_PIPE_YAML, async () => {
 				await new NewCamelPipeCommand('YAML').create();
 				await this.sendCommandTrackingEvent(NewCamelPipeCommand.ID_COMMAND_CAMEL_PIPE_YAML);
@@ -677,9 +668,6 @@ export class ExtensionContextHandler {
 				await stopTask.executeAndWait();
 				await this.sendCommandTrackingEvent(COMMAND_DEPLOYMENTS_STOP);
 			}),
-		);
-
-		this.context.subscriptions.push(
 			vscode.commands.registerCommand(COMMAND_DEPLOYMENTS_LOGS, async (integration: ParentItem) => {
 				const portSuffix = `::${integration.port}`;
 				const terminal = vscode.window.terminals.find((t) => t.name.startsWith('Running - ') && t.name.endsWith(portSuffix));
@@ -702,7 +690,7 @@ export class ExtensionContextHandler {
 				const task = CamelTaskFactory.createSilent(`${operation} - ${integrationName}: ${routeName}`, result);
 				await task.executeAndWait();
 				await this.deploymentsProvider.waitUntilRouteHasState(route.parentIntegration.port, routeName, expectedState);
-				this.deploymentsProvider.refresh();
+				await this.deploymentsProvider.refresh();
 				await this.sendCommandTrackingEvent(commandId);
 			});
 
