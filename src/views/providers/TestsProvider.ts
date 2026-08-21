@@ -16,7 +16,7 @@
 import { AbstractFolderTreeProvider } from './AbstractFolderTreeProvider';
 import { commands, Disposable, RelativePattern, TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
 import { Test } from '../testTreeItems/Test';
-import { TestResult } from '../../types/testTreeItemType';
+import { TestResult } from '../../types/TestTreeItemType';
 import { TestFolder } from '../testTreeItems/TestFolder';
 import { basename, dirname, join } from 'path';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
