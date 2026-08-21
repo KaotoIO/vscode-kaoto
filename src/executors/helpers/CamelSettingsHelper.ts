@@ -15,9 +15,9 @@ import {
 	KAOTO_EXECUTOR_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID,
 	KAOTO_EXECUTOR_TYPE_SETTING_ID,
 } from '../../constants';
-import { resolvePaths } from '../../utils/path';
-import { normalizeVersionForSemver } from '../../utils/version';
-import { isRedHatBuild } from '../../utils/vscode';
+import { resolvePaths } from '../../utils/Path';
+import { normalizeVersionForSemver } from '../../utils/Version';
+import { isRedHatBuild } from '../../utils/Vscode';
 
 export interface ProcessedArguments {
 	args: string[];

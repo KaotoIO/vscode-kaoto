@@ -5,8 +5,8 @@ import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
 import { CamelExecutorFactory } from '../executors/CamelExecutorFactory';
 import { CamelLauncherExecutor } from '../executors/CamelLauncherExecutor';
-import { findFolderOfPomXml } from './path';
-import { normalizeVersionForSemver } from './version';
+import { findFolderOfPomXml } from './Path';
+import { normalizeVersionForSemver } from './Version';
 import { DEFAULT_CAMEL_VERSION_FALLBACK } from '../constants';
 
 /**

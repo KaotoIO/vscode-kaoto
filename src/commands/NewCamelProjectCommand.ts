@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 import { commands, QuickPickItem, Uri, window, workspace } from 'vscode';
-import { arePathsEqual } from '../utils/path';
+import { arePathsEqual } from '../utils/Path';
 import { CamelTaskFactory } from '../tasks/CamelTaskFactory';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
-import { confirmDestructiveActionInSelectedFolder } from '../utils/modals';
+import { confirmDestructiveActionInSelectedFolder } from '../utils/Modals';
 import path from 'path';
 import { RuntimeType } from '../executors/types/ExecutorTypes';
 

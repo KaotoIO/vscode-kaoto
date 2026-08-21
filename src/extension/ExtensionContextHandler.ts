@@ -77,12 +77,12 @@ import {
 	VIEW_HELP,
 	VIEW_DEPLOYMENTS,
 } from '../constants';
-import { findFolderOfPomXml } from '../utils/path';
-import { runJBangCommandWithStatusBar, verifyJavaExists, verifyJBangExists, verifyJBangTrustedSources, verifyCamelPluginsAreInstalled } from '../utils/process';
-import { safeGlobalStateGet, safeGlobalStateUpdate } from '../utils/vscode';
+import { findFolderOfPomXml } from '../utils/Path';
+import { runJBangCommandWithStatusBar, verifyJavaExists, verifyJBangExists, verifyJBangTrustedSources, verifyCamelPluginsAreInstalled } from '../utils/Process';
+import { safeGlobalStateGet, safeGlobalStateUpdate } from '../utils/Vscode';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { NewCamelFileCommand } from '../commands/NewCamelFileCommand';
-import { confirmFileDeleteDialog, confirmInfrastructureServiceStop } from '../utils/modals';
+import { confirmFileDeleteDialog, confirmInfrastructureServiceStop } from '../utils/Modals';
 import { TelemetryEvent, TelemetryService } from '@redhat-developer/vscode-redhat-telemetry';
 import { NewCamelProjectCommand } from '../commands/NewCamelProjectCommand';
 import { CamelTaskFactory } from '../tasks/CamelTaskFactory';
