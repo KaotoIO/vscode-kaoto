@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import * as vscode from 'vscode';
 import { CatalogLibraryEntry } from '@kaoto/camel-catalog/types';
 import { KaotoCatalogService } from '../../services/KaotoCatalogService';
-import { initializeKaotoCatalogService, getExtensionContext } from '../helpers/TestSetup';
+import { initializeKaotoCatalogService, getExtensionContext } from '../utils/TestSetup';
 import { RuntimeType } from '../../executors/types/ExecutorTypes';
 import { KAOTO_CATALOG_URL_SETTING_ID } from '../../constants';
 

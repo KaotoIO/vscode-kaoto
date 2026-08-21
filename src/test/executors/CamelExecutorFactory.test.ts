@@ -6,7 +6,7 @@ import { CamelExecutorFactory } from '../../executors/CamelExecutorFactory';
 import { JBangExecutor } from '../../executors/JBangExecutor';
 import { CamelLauncherExecutor } from '../../executors/CamelLauncherExecutor';
 import { CamelLauncherDownloader } from '../../services/CamelLauncherDownloader';
-import { initializeKaotoCatalogService } from '../helpers/TestSetup';
+import { initializeKaotoCatalogService } from '../utils/TestSetup';
 
 suite('CamelExecutorFactory Tests', () => {
 	let testStoragePath: string;

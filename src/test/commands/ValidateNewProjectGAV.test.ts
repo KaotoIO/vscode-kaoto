@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { NewCamelProjectCommand } from '../commands/NewCamelProjectCommand';
+import { NewCamelProjectCommand } from '../../commands/NewCamelProjectCommand';
 
 suite('New Camel Project GAV Validation', function () {
 	const command = new NewCamelProjectCommand();
