@@ -16,7 +16,7 @@
  */
 import path from 'path';
 import { expect } from 'chai';
-import { filterSuggestionsByWord, getSuggestions } from '../../utils/SuggestionRegistry';
+import { filterSuggestionsByWord, getSuggestions } from '../../services/SuggestionRegistry';
 import { Suggestion } from '@kaoto/kaoto';
 
 suite('Channel API', () => {
