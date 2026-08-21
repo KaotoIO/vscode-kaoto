@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { basename } from 'path';
-import { TestResult } from '../../types/testTreeItemType';
+import { TestResult } from '../../types/TestTreeItemType';
 import { TreeItem, TreeItemCollapsibleState, Uri, ThemeIcon, ThemeColor } from 'vscode';
 
 export class Test extends TreeItem {
