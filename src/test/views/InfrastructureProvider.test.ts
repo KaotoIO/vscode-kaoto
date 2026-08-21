@@ -123,7 +123,7 @@ suite('InfrastructureProvider — markServiceStopping', function () {
 suite('InfrastructureProvider — updateRunningService', function () {
 	test('updates fields on a known service', function () {
 		const provider = new InfrastructureProvider();
-		provider.registerRunningService(makeService('kafka', { status: 'starting' }));
+		provider.registerRunningService(makeService('kafka', { status: 'running' }));
 
 		provider.updateRunningService('kafka', { port: 9092 });
 
@@ -133,7 +133,7 @@ suite('InfrastructureProvider — updateRunningService', function () {
 
 	test('skipRefresh=true does NOT fire onDidChangeTreeData after update', function (done) {
 		const provider = new InfrastructureProvider();
-		provider.registerRunningService(makeService('kafka', { status: 'starting' }));
+		provider.registerRunningService(makeService('kafka', { status: 'running' }));
 
 		let extraFires = 0;
 		provider.onDidChangeTreeData(() => extraFires++);

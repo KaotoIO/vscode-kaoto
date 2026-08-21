@@ -20,12 +20,14 @@ export class InfrastructureServiceManager implements Disposable {
 	private readonly disposables: Disposable[] = [];
 	private isStartingService = false;
 	private manualOperationInProgress = false;
+	private disposed = false;
 
 	constructor(private readonly onServiceChange: () => void) {
 		this.registerTaskListeners();
 	}
 
 	dispose(): void {
+		this.disposed = true;
 		this.disposables.forEach((disposable) => disposable.dispose());
 		this.disposables.length = 0;
 	}
@@ -274,6 +276,7 @@ export class InfrastructureServiceManager implements Disposable {
 	private async handleTaskFailure(name: string, exitCode: number): Promise<void> {
 		KaotoOutputChannel.logWarning(`[InfrastructureServiceManager] Task for service "${name}" failed with exit code ${exitCode}`);
 
+		let notified = false;
 		// Attempt to read actual CLI output to detect Docker errors from real stderr
 		try {
 			await CamelCommandAPI.captureInfraPs();
@@ -285,7 +288,12 @@ export class InfrastructureServiceManager implements Disposable {
 					`[InfrastructureServiceManager] Infrastructure service "${name}" failed to start. Docker environment not available.`,
 				);
 				window.showErrorMessage(`Failed to start ${name}: ${dockerError.userMessage}`);
+				notified = true;
 			}
+		}
+
+		if (!notified) {
+			window.showErrorMessage(`Failed to start ${name} (exit code ${exitCode}). See the Kaoto output channel for details.`);
 		}
 
 		// Remove the service from running services
@@ -300,7 +308,7 @@ export class InfrastructureServiceManager implements Disposable {
 
 	private async waitForRunningService(name: string, timeoutMs: number = 30000, intervalMs: number = 1000): Promise<void> {
 		const start = Date.now();
-		while (Date.now() - start < timeoutMs) {
+		while (!this.disposed && Date.now() - start < timeoutMs) {
 			const changed = await this.refreshRunningServicesFromCli();
 
 			const service = this.runningServices.get(name);

@@ -772,7 +772,7 @@ export class ExtensionContextHandler {
 			} catch (error) {
 				KaotoOutputChannel.logError(`[Infrastructure] Failed to stop service "${serviceName}"`, error);
 				vscode.window.showErrorMessage(`Failed to stop ${serviceName}: ${String(error)}`);
-				this.infrastructureProvider.unregisterRunningService(serviceName);
+				// Do not unregister: the service may still be running; a CLI refresh will reconcile state
 			} finally {
 				this.infrastructureProvider.setManualOperationInProgress(false);
 			}

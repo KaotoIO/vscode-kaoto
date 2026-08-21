@@ -117,10 +117,10 @@ export class InfrastructureProvider implements TreeDataProvider<TreeItem>, Dispo
 		await this.refreshRunningServicesFromCli();
 	}
 
-	private async refreshRunningServicesFromCli(fireChangeEvent: boolean = true): Promise<void> {
+	private async refreshRunningServicesFromCli(): Promise<void> {
 		const changed = await this.serviceManager.refreshRunningServicesFromCli();
 		this.updateAutoRefreshState();
-		if (changed && fireChangeEvent) {
+		if (changed) {
 			this._onDidChangeTreeData.fire();
 		}
 	}
@@ -128,7 +128,9 @@ export class InfrastructureProvider implements TreeDataProvider<TreeItem>, Dispo
 	private updateAutoRefreshState(): void {
 		const hasRunningServices = this.serviceManager.getRunningServices().size > 0;
 		if (hasRunningServices) {
-			this.refreshManager.startAutoRefresh();
+			if (!this.refreshManager.isAutoRefreshActive()) {
+				this.refreshManager.startAutoRefresh();
+			}
 		} else {
 			this.refreshManager.stopAutoRefresh();
 		}
