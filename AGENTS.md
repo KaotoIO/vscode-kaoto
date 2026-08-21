@@ -136,7 +136,16 @@ Before submitting AI-generated PRs, ensure:
   - `src/commands/` - VS Code commands for creating Camel files and projects
   - `src/constants/` - Domain-grouped constants (commands, settings, views, patterns, …)
   - `src/executors/` - Executor implementations (JBang, Camel Launcher) and their helpers
-  - `src/extension/` - Extension lifecycle: activation, output channel, What's New panel
+  - `src/extension/` - Extension lifecycle: activation, output channel, What's New panel, and domain registrars:
+    - `registrars/EditorRegistrar.ts` - toggle source code, open with Kaoto, undo/redo commands
+    - `registrars/ExecutorRegistrar.ts` - executor setup, JBang/Java path checks, trusted sources
+    - `registrars/LifecycleRegistrar.ts` - What's New panel, recommended extensions
+    - `registrars/IntegrationsRegistrar.ts` - integrations view, run/project/Kubernetes/Maven commands
+    - `registrars/DeploymentsRegistrar.ts` - deployments view, route stop/start/resume/suspend commands
+    - `registrars/TestsRegistrar.ts` - tests view, run and init commands
+    - `registrars/InfrastructureRegistrar.ts` - infrastructure view, start/stop/logs/copy commands
+    - `registrars/OpenApiRegistrar.ts` - OpenAPI view and import command
+    - `registrars/TrackingEvent.ts` - shared `sendCommandTrackingEvent` helper used by all registrars
   - `src/services/` - Domain services with stateful lifecycle or business logic:
     - `ApicurioRegistryService`, `CamelLauncherDownloader`, `KaotoCatalogService`, `OpenApiImportService`, `RedHatMavenNotificationService`
     - `ApplicationPropertiesFinder`, `KameletFileReader`, `MavenRuntimeDetector`, `PortManager`, `StepsOnSaveManager`, `SuggestionRegistry`, `TestFolderResolver`
