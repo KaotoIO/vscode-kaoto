@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { ApicurioRegistryParseError, ApicurioRegistryService, ApicurioRegistryUrlError, type ApicurioArtifact } from '../services/apicurio-registry.service';
+import { ApicurioRegistryParseError, ApicurioRegistryService, ApicurioRegistryUrlError, type ApicurioArtifact } from '../../services/ApicurioRegistryService';
 
 suite('ApicurioRegistryService', function () {
 	let service: ApicurioRegistryService;

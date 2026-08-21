@@ -25,7 +25,7 @@ import {
 	DEFAULT_KAOTO_OPENAPI_FILES_REGEXP,
 	KAOTO_OPENAPI_FILES_REGEXP_SETTING_ID,
 } from '../../constants';
-import { OpenApiImportService } from '../../services/openapi-import.service';
+import { OpenApiImportService } from '../../services/OpenApiImportService';
 
 export class OpenApiProvider extends AbstractFolderTreeProvider<OpenApiFolder> {
 	public readonly VIEW_ITEM_SHOW_SOURCE_COMMAND_ID: string = COMMAND_OPENAPI_SHOW_SOURCE;
