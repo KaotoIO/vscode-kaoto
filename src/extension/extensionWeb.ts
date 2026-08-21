@@ -19,10 +19,14 @@ import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from '@ki
 import { I18n } from '@kie-tools-core/i18n/dist/core';
 import * as KogitoVsCode from '@kie-tools-core/vscode-extension/dist';
 import * as vscode from 'vscode';
-import { KAOTO_EDITOR_VIEW_TYPE, KAOTO_FILE_PATH_GLOB } from '../constants';
+import { KAOTO_EDITOR_VIEW_TYPE, KAOTO_FILE_PATH_GLOB, VIEW_HELP, VIEW_INTEGRATIONS, COMMAND_INTEGRATIONS_REFRESH } from '../constants';
 import { VSCodeKaotoChannelApiProducer } from './../webview/VSCodeKaotoChannelApiProducer';
-import { ExtensionContextHandler } from './ExtensionContextHandler';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
+import { HelpFeedbackProvider } from '../views/help/HelpFeedbackProvider';
+import { IntegrationsProvider } from '../views/integrations/IntegrationsProvider';
+import { EditorRegistrar } from './registrars/EditorRegistrar';
+import { LifecycleRegistrar } from './registrars/LifecycleRegistrar';
+import { TestsRegistrar } from './registrars/TestsRegistrar';
 
 let backendProxy: VsCodeBackendProxy;
 
@@ -52,37 +56,38 @@ export async function activate(context: vscode.ExtensionContext) {
 		backendProxy: backendProxy,
 	});
 
-	const contextHandler = new ExtensionContextHandler(context, kieEditorStore, undefined);
-
 	/*
 	 * register commands for a toggle source code (open/close camel file in a side textual editor)
+	 * and open with Kaoto Editor
 	 */
-	await contextHandler.registerToggleSourceCode();
-
-	/*
-	 * register open with Kaoto Editor
-	 */
-	contextHandler.registerOpenWithKaoto();
+	await new EditorRegistrar(context, kieEditorStore, undefined).register();
 
 	/*
 	 * register 'Integrations' view provider
 	 */
-	contextHandler.registerIntegrationsView();
+	const integrationsProvider = new IntegrationsProvider(context.extensionUri.path);
+	const integrationsTreeView = vscode.window.createTreeView(VIEW_INTEGRATIONS, {
+		treeDataProvider: integrationsProvider,
+		showCollapseAll: true,
+	});
+	const integrationsDispose = { dispose: () => integrationsProvider.dispose() };
+	const integrationsRefreshCommand = vscode.commands.registerCommand(COMMAND_INTEGRATIONS_REFRESH, () => integrationsProvider.refresh());
+	context.subscriptions.push(integrationsTreeView, integrationsDispose, integrationsRefreshCommand);
 
 	/*
 	 * register 'Tests' view provider
 	 */
-	contextHandler.registerTestsView();
+	new TestsRegistrar(context, undefined).registerTestsView();
 
 	/*
 	 * register 'Help & Feedback' view provider
 	 */
-	contextHandler.registerHelpAndFeedbackView();
+	context.subscriptions.push(vscode.window.registerTreeDataProvider(VIEW_HELP, new HelpFeedbackProvider(context.extensionUri.path)));
 
 	/*
 	 * Show What's New on first start for this version
 	 */
-	await contextHandler.showWhatsNewIfNeeded();
+	await new LifecycleRegistrar(context, undefined).showWhatsNewIfNeeded();
 
 	KaotoOutputChannel.logInfo('Kaoto extension is successfully setup.');
 }

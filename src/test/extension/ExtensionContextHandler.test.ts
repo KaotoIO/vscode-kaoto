@@ -16,10 +16,10 @@
  */
 import { assert } from 'chai';
 import * as vscode from 'vscode';
-import { ExtensionContextHandler } from '../../extension/ExtensionContextHandler';
+import { LifecycleRegistrar } from '../../extension/registrars/LifecycleRegistrar';
 import { RecommendationCore, IRecommendationService, UserChoice } from '@redhat-developer/vscode-extension-proposals';
 
-suite('ExtensionContextHandler - showRecommendedExtensions', function () {
+suite('LifecycleRegistrar - showRecommendedExtensions', function () {
 	let originalGetService: typeof RecommendationCore.getService;
 	let createdRecommendations: Array<{ extensionId: string; extensionDisplayName: string; shouldShowOnStartup: boolean }>;
 	let registeredRecommendations: any[];
@@ -61,11 +61,10 @@ suite('ExtensionContextHandler - showRecommendedExtensions', function () {
 
 	test('should create and register XML and YAML extension recommendations', async function () {
 		const context = {} as vscode.ExtensionContext;
-		const kieEditorStore = {} as any;
 		const telemetryService = undefined;
 
-		const handler = new ExtensionContextHandler(context, kieEditorStore, telemetryService);
-		await handler.showRecommendedExtensions();
+		const registrar = new LifecycleRegistrar(context, telemetryService);
+		await registrar.showRecommendedExtensions();
 
 		// Assert that exactly two recommendations were created
 		assert.strictEqual(createdRecommendations.length, 2, 'Expected exactly 2 recommendations to be created');

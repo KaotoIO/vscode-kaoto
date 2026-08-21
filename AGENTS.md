@@ -72,9 +72,10 @@ Before submitting AI-generated PRs, ensure:
    ```
 
 4. **Build and test the VSIX** (for significant changes):
+
    ```bash
    yarn run build:vsix
-   yarn run test:it:with-prebuilt-vsix
+   yarn run test:ui:with-prebuilt-vsix
    ```
 
 **Additional Requirements**:
@@ -99,24 +100,24 @@ Before submitting AI-generated PRs, ensure:
 
 ### Linting and Code Quality
 
-- `yarn run lint` - Lint TypeScript files in `src` and `it-tests`
+- `yarn run lint` - Lint TypeScript files in `src` and `ui-tests`
 - ESLint configuration in `eslint.config.mjs` with TypeScript and Prettier integration
 
 ### Testing
 
 - `yarn run test:unit` - Run unit tests using VS Code test framework
-- `yarn run test:it` - Run integration tests using extension tester
+- `yarn run test:ui` - Run UI/integration tests using extension tester
 - `yarn run build:test:unit` - Build unit tests
-- `yarn run build:test:it` - Build integration tests
+- `yarn run build:test:ui` - Build UI/integration tests
 - Unit tests located in `src/test/`
-- Integration tests in `it-tests/`
+- UI/integration tests in `ui-tests/`
 
-#### How to run Integration tests
+#### How to run UI/integration tests
 
 1. yarn build:dev
 2. yarn build:vsix
-3. yarn run test:it:with-prebuilt-vsix
-   3.1 For headless: `xvfb-run -a yarn run test:it:with-prebuilt-vsix`
+3. yarn run test:ui:with-prebuilt-vsix
+   3.1 For headless: `xvfb-run -a yarn run test:ui:with-prebuilt-vsix`
 
 ### Web Mode Testing
 
@@ -131,12 +132,46 @@ Before submitting AI-generated PRs, ensure:
   - `src/extension/extensionWeb.ts` - Web extension entry point
   - `src/webview/KaotoEditorEnvelopeApp.ts` - Webview editor application
 
-- **Key Directories:**
-  - `src/commands/` - VS Code commands for creating Camel files
-  - `src/views/` - Tree view providers for integrations and deployments
-  - `src/tasks/` - Generic Camel task implementations for CLI operations
-  - `src/helpers/` - Utility functions and managers
-  - `src/webview/` - Webview integration with Kaoto editor
+- **Source Directories:**
+  - `src/commands/` - VS Code commands for creating Camel files and projects
+  - `src/constants/` - Domain-grouped constants (commands, settings, views, patterns, …)
+  - `src/executors/` - Executor implementations (JBang, Camel Launcher) and their helpers
+  - `src/extension/` - Extension lifecycle: activation, output channel, What's New panel, and domain registrars:
+    - `registrars/EditorRegistrar.ts` - toggle source code, open with Kaoto, undo/redo commands
+    - `registrars/ExecutorRegistrar.ts` - executor setup, JBang/Java path checks, trusted sources
+    - `registrars/LifecycleRegistrar.ts` - What's New panel, recommended extensions
+    - `registrars/IntegrationsRegistrar.ts` - integrations view, run/project/Kubernetes/Maven commands
+    - `registrars/DeploymentsRegistrar.ts` - deployments view, route stop/start/resume/suspend commands
+    - `registrars/TestsRegistrar.ts` - tests view, run and init commands
+    - `registrars/InfrastructureRegistrar.ts` - infrastructure view, start/stop/logs/copy commands
+    - `registrars/OpenApiRegistrar.ts` - OpenAPI view and import command
+    - `registrars/TrackingEvent.ts` - shared `sendCommandTrackingEvent` helper used by all registrars
+  - `src/services/` - Domain services with stateful lifecycle or business logic:
+    - `ApicurioRegistryService`, `CamelLauncherDownloader`, `KaotoCatalogService`, `OpenApiImportService`, `RedHatMavenNotificationService`
+    - `ApplicationPropertiesFinder`, `KameletFileReader`, `MavenRuntimeDetector`, `PortManager`, `StepsOnSaveManager`, `SuggestionRegistry`, `TestFolderResolver`
+  - `src/tasks/` - Camel task definitions for the VS Code task system
+  - `src/types/` - Shared TypeScript types and enums
+  - `src/utils/` - Pure, stateless helper modules (no domain logic):
+    - `ArgumentConflictDetector`, `ClasspathRootFinder`, `DockerErrorDetector`, `Modals`, `Path`, `Process`, `Version`, `Vscode`
+  - `src/views/` - Tree view providers, organized by domain feature:
+    - `deployments/` - Deployments view and items
+    - `help/` - Help & Feedback view
+    - `infrastructure/` - Infrastructure services view
+    - `integrations/` - Integrations view and items
+    - `openapi/` - OpenAPI files view
+    - `shared/` - Shared base classes (`AbstractFolderTreeProvider`, `AbstractFolder`)
+    - `tests/` - Citrus tests view and items
+  - `src/webview/` - Webview integration with the Kaoto editor envelope
+
+- **Test Directory (`src/test/`)** mirrors the source structure:
+  - `commands/`, `executors/`, `extension/`, `services/`, `utils/`, `views/`, `webview/`
+
+- **UI/Integration Tests (`ui-tests/`):**
+  - `editor/` - Editor interaction tests
+  - `pageObjects/` - Page object models
+  - `settings/` - Settings tests
+  - `utils/` - Shared test helpers (editor, extension, settings, terminal, tree-view, workbench)
+  - `views/` - View-level UI tests
 
 ### Webpack Configuration
 
@@ -147,7 +182,7 @@ Before submitting AI-generated PRs, ensure:
 
 ### Dependencies
 
-- **Core Editor:** `@kaoto/kaoto` (v2.7.1) - The main Kaoto editor library, [repository](https://github.com/KaotoIO/kaoto)
+- **Core Editor:** `@kaoto/kaoto` (v2.11.0) - The main Kaoto editor library, [repository](https://github.com/KaotoIO/kaoto)
 - **VS Code Integration:** `@kie-tools-core/*` packages for editor envelope and backend, [repository](https://github.com/apache/incubator-kie-tools)
 - **UI Framework:** PatternFly React components
 - **Camel Support:** Uses Camel JBang CLI or Camel Launcher CLI for operations

@@ -36,7 +36,7 @@ node('rhel9'){
 			env.TEST_RESOURCES = 'test-resources'
 			env.CODE_VERSION = 'max'
 			sh "yarn build:vsix"
-			sh "yarn test:it:with-prebuilt-vsix"
+			sh "yarn test:ui:with-prebuilt-vsix"
 			sh "rm -rf *.vsix"
 		}
 	}

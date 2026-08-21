@@ -19,7 +19,7 @@ export default defineConfig([
 			parserOptions: {
 				ecmaVersion: 2022,
 				sourceType: 'commonjs',
-				project: ['./tsconfig.json', './tsconfig.it-tests.json', './tsconfig.unit-tests.json'],
+				project: ['./tsconfig.json', './tsconfig.ui-tests.json', './tsconfig.unit-tests.json'],
 				ecmaFeatures: {
 					impliedStrict: true,
 				},
