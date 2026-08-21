@@ -14,93 +14,15 @@
  * limitations under the License.
  */
 
-import { ExtensionContext, window, workspace, WorkspaceFolder } from 'vscode';
-import { exec } from 'child_process'; // NOSONAR
-import { promisify } from 'util'; // NOSONAR
 import * as path from 'path'; // NOSONAR
 import fs from 'fs'; // NOSONAR
-import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
-
-/**
- * Utilizes helper methods used in both, desktop or web extension context
- */
-
-export function safeGlobalStateGet<T>(context: ExtensionContext, key: string, defaultValue: T): T {
-	try {
-		return context.globalState.get<T>(key, defaultValue);
-	} catch (err) {
-		KaotoOutputChannel.logWarning(`Unable to read global state for key '${key}': ${String(err)}`);
-		return defaultValue;
-	}
-}
-
-export async function safeGlobalStateUpdate(context: ExtensionContext, key: string, value: any): Promise<void> {
-	try {
-		await context.globalState.update(key, value);
-	} catch (err) {
-		KaotoOutputChannel.logWarning(`Unable to update global state for key '${key}': ${String(err)}`);
-	}
-}
-
-export function normalizeVersionForSemver(version: string): string {
-	return version.replace(/\.redhat-\d+$/, '');
-}
-
-export function isRedHatBuild(version: string): boolean {
-	return version.includes('.redhat-');
-}
-
-export async function verifyJBangExists(): Promise<boolean> {
-	const output = await runJBangCommandWithStatusBar(`version`, `Checking JBang executable on PATH...`);
-	return output.success;
-}
-
-export async function verifyJavaExists(): Promise<boolean> {
-	const output = await runCommandWithStatusBar('java -version', 'Checking Java executable on PATH...');
-	return output.success;
-}
-
-export async function verifyCamelPluginsAreInstalled(plugins: string[]): Promise<{ plugin: string; installed: boolean }[]> {
-	return await runJBangCommandWithStatusBar(`camel@apache/camel plugin get`, `Checking Camel JBang plugins...`).then((output) => {
-		return plugins.map((plugin) => ({ plugin, installed: output.stdout.includes(plugin) }));
-	});
-}
-
-export async function verifyJBangTrustedSources(urls: string[]): Promise<{ url: string; exists: boolean }[]> {
-	return await runJBangCommandWithStatusBar(`trust list`, `Checking JBang Trusted Sources...`).then((output) => {
-		return urls.map((url) => ({ url, exists: output.stdout.includes(url) }));
-	});
-}
-
-export interface CommandOutput {
-	stdout: string;
-	stderr: string;
-	success: boolean;
-}
-
-export async function runJBangCommandWithStatusBar(args: string, msg: string): Promise<CommandOutput> {
-	return runCommandWithStatusBar(`jbang ${args}`, msg);
-}
-
-export async function runCommandWithStatusBar(command: string, msg: string): Promise<CommandOutput> {
-	const execPromise = promisify(exec);
-	const statusBarMessage = window.setStatusBarMessage(`Kaoto: ${msg}`);
-	try {
-		const { stdout, stderr } = await execPromise(command);
-		return { stdout, stderr, success: true };
-	} catch (error) {
-		const message = error instanceof Error ? error.message : String(error);
-		return { stdout: '', stderr: message, success: false };
-	} finally {
-		statusBarMessage.dispose();
-	}
-}
+import { workspace, WorkspaceFolder } from 'vscode';
 
 /**
  * Compare two given paths to see if they are the same. Normalizes the string and takes case-sensitive OSes into account.
  *
  * @param path1 string representing the first path to be compared
- * @param path2 string representing t,he second path to be compared
+ * @param path2 string representing the second path to be compared
  * @returns `true` if paths are equal `false` otherwise.
  */
 export function arePathsEqual(path1: string, path2: string): boolean {

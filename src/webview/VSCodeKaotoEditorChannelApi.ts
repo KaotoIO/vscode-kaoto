@@ -38,12 +38,12 @@ import {
 } from '../constants';
 import { RuntimeType } from '../executors/types/ExecutorTypes';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
-import { findClasspathRoot } from '../helpers/ClasspathRootFinder';
-import { resolvePaths } from '../helpers/helpers';
-import { readKameletsFromDirectory } from '../helpers/KameletFileReader';
-import { MavenRuntimeDetector } from '../helpers/MavenRuntimeDetector';
-import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
-import { getSuggestions } from '../helpers/SuggestionRegistry';
+import { findClasspathRoot } from '../utils/ClasspathRootFinder';
+import { resolvePaths } from '../utils/path';
+import { readKameletsFromDirectory } from '../utils/KameletFileReader';
+import { MavenRuntimeDetector } from '../utils/MavenRuntimeDetector';
+import { StepsOnSaveManager } from '../utils/StepsOnSaveManager';
+import { getSuggestions } from '../utils/SuggestionRegistry';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
 
 export class VSCodeKaotoEditorChannelApi extends DefaultVsCodeKieEditorChannelApiImpl implements KaotoEditorChannelApi {

@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { ArgumentConflictDetector, ArgumentConflict } from '../../helpers/ArgumentConflictDetector';
+import { ArgumentConflictDetector, ArgumentConflict } from '../../utils/ArgumentConflictDetector';
 
 // Test data constants
 const TEST_ARGS = {

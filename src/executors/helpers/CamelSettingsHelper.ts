@@ -2,7 +2,7 @@ import { workspace, window, Uri, RelativePattern } from 'vscode';
 import { dirname } from 'path';
 import { satisfies } from 'compare-versions';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
-import { ArgumentConflict, ArgumentConflictDetector } from '../../helpers/ArgumentConflictDetector';
+import { ArgumentConflict, ArgumentConflictDetector } from '../../utils/ArgumentConflictDetector';
 import { KaotoCatalogService } from '../../services/KaotoCatalogService';
 import { RuntimeType, ExecutorType } from '../types/ExecutorTypes';
 import {
@@ -15,7 +15,9 @@ import {
 	KAOTO_EXECUTOR_RED_HAT_MAVEN_REPOSITORY_GLOBAL_SETTING_ID,
 	KAOTO_EXECUTOR_TYPE_SETTING_ID,
 } from '../../constants';
-import { resolvePaths, normalizeVersionForSemver, isRedHatBuild } from '../../helpers/helpers';
+import { resolvePaths } from '../../utils/path';
+import { normalizeVersionForSemver } from '../../utils/version';
+import { isRedHatBuild } from '../../utils/vscode';
 
 export interface ProcessedArguments {
 	args: string[];

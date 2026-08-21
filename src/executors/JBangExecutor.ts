@@ -7,7 +7,7 @@ import { JBangExecutorConfig } from './types/ExecutorConfig';
 import { CommandContext, RuntimeType } from './types/ExecutorTypes';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
 import { DEFAULT_CAMEL_VERSION_FALLBACK, MIN_CAMEL_VERSION_FOR_TEST } from '../constants';
-import { isRedHatBuild } from '../helpers/helpers';
+import { isRedHatBuild } from '../utils/vscode';
 
 export class JBangExecutor extends BaseExecutor {
 	private static readonly JBANG_EXECUTABLE = 'jbang';

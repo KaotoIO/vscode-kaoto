@@ -16,7 +16,7 @@
 import { EventEmitter, tasks, TreeDataProvider, TreeItem, TreeItemCollapsibleState, workspace } from 'vscode';
 import { basename } from 'path'; // NOSONAR
 import { KAOTO_VIEWS_REFRESH_INTERVAL_SETTING_ID } from '../../constants';
-import { PortManager } from '../../helpers/PortManager';
+import { PortManager } from '../../utils/PortManager';
 import { CamelTaskDefinition } from '../../tasks/CamelTask';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
 import { Route } from '../deploymentTreeItems/Route';

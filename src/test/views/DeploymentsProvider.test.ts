@@ -15,7 +15,7 @@
  */
 import { assert } from 'chai';
 import { DeploymentsProvider, PortFileKey } from '../../views/providers/DeploymentsProvider';
-import { PortManager } from '../../helpers/PortManager';
+import { PortManager } from '../../utils/PortManager';
 import { CamelTask, CamelTaskDefinition } from '../../tasks/CamelTask';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────

@@ -19,7 +19,7 @@ import { assert } from 'chai';
 import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { readKameletsFromDirectory } from '../../helpers/KameletFileReader';
+import { readKameletsFromDirectory } from '../../utils/KameletFileReader';
 
 suite('KameletFileReader', () => {
 	let tmpDir: vscode.Uri;
