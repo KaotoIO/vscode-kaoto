@@ -2,7 +2,7 @@ import type { Get, Rest, RouteDefinition } from '@kaoto/camel-catalog/types';
 import { expect } from 'chai';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { OpenApiImportService, OpenApiParseError, OpenApiValidationError } from '../services/openapi-import.service';
+import { OpenApiImportService, OpenApiParseError, OpenApiValidationError } from '../../services/OpenApiImportService';
 
 suite('OpenApiImportService', function () {
 	let service: OpenApiImportService;
