@@ -17,15 +17,15 @@ import { expect } from 'chai';
 import { join } from 'path';
 import fs from 'fs';
 import { after, before, EditorView, InputBox, ViewControl, ViewPanelActionDropdown, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
+import { openResourcesAndWaitForActivation } from '../utils/extension';
 import {
 	collapseItemsInsideTreeStructuredView,
 	expandFolderItemsInTreeStructuredView,
 	expandViews,
 	getKaotoViewControl,
 	getTreeItem,
-	openResourcesAndWaitForActivation,
-	handleInputPathSelection,
-} from '../Util';
+} from '../utils/tree-view';
+import { handleInputPathSelection } from '../utils/workbench';
 
 describe('Tests View', function () {
 	this.timeout(240_000);

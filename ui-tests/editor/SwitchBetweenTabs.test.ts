@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { By, EditorView, until, VSBrowser, WebDriver, WebView } from 'vscode-extension-tester';
-import { openAndSwitchToKaotoFrame } from '../Util';
+import { openAndSwitchToKaotoFrame } from '../utils/editor';
 import { join } from 'path';
 import { expect } from 'chai';
 import { EditorTabs, kaotoLocators } from '../pageObjects';

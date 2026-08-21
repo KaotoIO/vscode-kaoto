@@ -16,13 +16,8 @@
 import { By, EditorView, until, VSBrowser, WebDriver, WebView, logging } from 'vscode-extension-tester';
 import { assert } from 'chai';
 import * as path from 'path';
-import {
-	checkEmptyCanvasLoaded,
-	checkTopologyLoaded,
-	openAndSwitchToKaotoFrame,
-	openResourcesAndWaitForActivation,
-	workaroundToRedrawContextualMenu,
-} from '../Util';
+import { checkEmptyCanvasLoaded, checkTopologyLoaded, openAndSwitchToKaotoFrame, workaroundToRedrawContextualMenu } from '../utils/editor';
+import { openResourcesAndWaitForActivation } from '../utils/extension';
 import { KaotoCanvas, KaotoEditor, kaotoLocators, DataMapperEditor } from '../pageObjects';
 import { waitUntil } from 'async-wait-until';
 import * as fs from 'fs-extra';

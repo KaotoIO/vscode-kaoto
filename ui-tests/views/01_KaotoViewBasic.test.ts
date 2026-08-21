@@ -16,7 +16,8 @@
 import { expect } from 'chai';
 import { join } from 'path';
 import { SideBarView, ViewControl, ViewItem, ViewSection } from 'vscode-extension-tester';
-import { expandViews, getKaotoViewControl, openResourcesAndWaitForActivation } from '../Util';
+import { openResourcesAndWaitForActivation } from '../utils/extension';
+import { expandViews, getKaotoViewControl } from '../utils/tree-view';
 
 describe('Kaoto View Container', function () {
 	this.timeout(180_000);

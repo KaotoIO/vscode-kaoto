@@ -15,7 +15,7 @@
  */
 import { EditorView, VSBrowser, WebDriver, WebView } from 'vscode-extension-tester';
 import * as path from 'path';
-import { clickWhenClickable, dismissHoverOverlay, openAndSwitchToKaotoFrame } from '../Util';
+import { clickWhenClickable, dismissHoverOverlay, openAndSwitchToKaotoFrame } from '../utils/editor';
 import { KaotoCanvas, KaotoEditor } from '../pageObjects';
 
 describe('Property panel loading test', function () {

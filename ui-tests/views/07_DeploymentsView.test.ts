@@ -16,15 +16,9 @@
 import { expect, assert } from 'chai';
 import { join } from 'path';
 import { after, before, EditorView, SideBarView, TreeItem, ViewControl, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
-import {
-	expandViews,
-	getKaotoViewControl,
-	getTreeItem,
-	getTreeItemActionButton,
-	killTerminal,
-	openResourcesAndWaitForActivation,
-	waitUntilTerminalHasText,
-} from '../Util';
+import { openResourcesAndWaitForActivation } from '../utils/extension';
+import { killTerminal, waitUntilTerminalHasText } from '../utils/terminal';
+import { expandViews, getKaotoViewControl, getTreeItem, getTreeItemActionButton } from '../utils/tree-view';
 
 describe('Deployments View', function () {
 	this.timeout(1_200_000); // 20 minutes

@@ -15,7 +15,7 @@
  */
 import { assert } from 'chai';
 import { ThemeIcon } from 'vscode';
-import { InfrastructureItem, RunningInfrastructureService } from '../../views/infrastructure/InfrastructureItem';
+import { InfrastructureItem, RunningInfrastructureService } from '../../../views/infrastructure/InfrastructureItem';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
