@@ -1,12 +1,12 @@
 import * as vscode from 'vscode';
 import * as path from 'path'; // NOSONAR
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
-import { findFolderOfPomXml } from './Path';
-import { normalizeVersionForSemver } from './Version';
+import { findFolderOfPomXml } from '../utils/Path';
+import { normalizeVersionForSemver } from '../utils/Version';
 import { satisfies } from 'compare-versions';
 import { CamelTaskFactory } from '../tasks/CamelTaskFactory';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
-import { KaotoCatalogService } from '../services/KaotoCatalogService';
+import { KaotoCatalogService } from './KaotoCatalogService';
 import { DEFAULT_CAMEL_VERSION_FALLBACK, KAOTO_EXECUTOR_TYPE_SETTING_ID, KAOTO_MAVEN_DEPENDENCIES_UPDATE_ON_SAVE_SETTING_ID } from '../constants';
 import { ExecutorType } from '../executors/types/ExecutorTypes';
 

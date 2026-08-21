@@ -2,11 +2,11 @@ import { execSync } from 'child_process';
 import { satisfies } from 'compare-versions';
 import { RuntimeMavenInformation } from '@kaoto/kaoto';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
-import { KaotoCatalogService } from '../services/KaotoCatalogService';
+import { KaotoCatalogService } from './KaotoCatalogService';
 import { CamelExecutorFactory } from '../executors/CamelExecutorFactory';
 import { CamelLauncherExecutor } from '../executors/CamelLauncherExecutor';
-import { findFolderOfPomXml } from './Path';
-import { normalizeVersionForSemver } from './Version';
+import { findFolderOfPomXml } from '../utils/Path';
+import { normalizeVersionForSemver } from '../utils/Version';
 import { DEFAULT_CAMEL_VERSION_FALLBACK } from '../constants';
 
 /**
