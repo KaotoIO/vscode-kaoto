@@ -4,18 +4,25 @@ import { CamelLauncherDownloader } from '../services/CamelLauncherDownloader';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { DEFAULT_CAMEL_VERSION_FALLBACK, KAOTO_EXECUTOR_TYPE_SETTING_ID } from '../constants';
-import { ExtensionContextHandler } from '../extension/ExtensionContextHandler';
+
+export interface IExecutorHandler {
+	checkJbangOnPath(): Promise<boolean>;
+	checkJavaOnPath(): Promise<boolean>;
+	checkJBangTrustedSources(): Promise<void>;
+	checkCamelJBangPlugins(): Promise<void>;
+	setExecutorAvailable(available: boolean): Promise<void>;
+}
 
 /**
  * Ensure executor is available and configured.
  * Handles both JBang and Camel Launcher setup with status bar feedback.
  * @param context - Extension context
- * @param contextHandler - Extension context handler
+ * @param contextHandler - Executor handler providing tool checks and availability control
  * @param forceReinitialize - Force re-initialization even if executor is already available
  */
 export async function ensureExecutorAvailable(
 	context: vscode.ExtensionContext,
-	contextHandler: ExtensionContextHandler,
+	contextHandler: IExecutorHandler,
 	forceReinitialize: boolean = false,
 ): Promise<void> {
 	await contextHandler.setExecutorAvailable(false);
