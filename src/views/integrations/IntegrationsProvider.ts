@@ -18,10 +18,10 @@ import { basename, join, relative, sep } from 'path'; // NOSONAR
 import { parse } from 'yaml';
 import { XMLParser } from 'fast-xml-parser';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
-import { Integration } from '../integrationTreeItems/Integration';
-import { Route } from '../integrationTreeItems/Route';
-import { Folder } from '../integrationTreeItems/Folder';
-import { File } from '../integrationTreeItems/File';
+import { Integration } from './Integration';
+import { Route } from './Route';
+import { Folder } from './Folder';
+import { File } from './File';
 import { CONTEXT_INTEGRATION_EXISTS, KAOTO_EXCLUDE_PATTERN, KAOTO_INTEGRATIONS_FILES_REGEXP_SETTING_ID } from '../../constants';
 import { IntegrationFile, IntegrationFileIcon, IntegrationFileIconType, IntegrationFileDSL } from '../../types/IntegrationTreeItemType';
 

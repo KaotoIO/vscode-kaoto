@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Uri } from 'vscode';
-import { AbstractFolder } from '../treeItems/AbstractFolder';
+import { AbstractFolder } from '../shared/AbstractFolder';
 
 export class TestFolder extends AbstractFolder {
 	constructor(labelName: string, folderUri: Uri, isUnderMavenRoot: boolean = false, isMavenRoot: boolean = false, isWorkspaceRoot: boolean = false) {

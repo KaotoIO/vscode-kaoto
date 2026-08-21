@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { assert } from 'chai';
-import { DeploymentsProvider, PortFileKey } from '../../views/providers/DeploymentsProvider';
+import { DeploymentsProvider, PortFileKey } from '../../views/deployments/DeploymentsProvider';
 import { PortManager } from '../../utils/PortManager';
 import { CamelTask, CamelTaskDefinition } from '../../tasks/CamelTask';
 

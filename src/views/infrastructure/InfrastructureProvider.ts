@@ -1,6 +1,6 @@
 import { commands, Disposable, Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
 import { InfraRunningServiceDetails, InfraServiceDefinition } from '../../executors/types/ExecutorTypes';
-import { InfrastructureItem, RunningInfrastructureService } from '../infrastructureTreeItems/InfrastructureItem';
+import { InfrastructureItem, RunningInfrastructureService } from './InfrastructureItem';
 import { InfrastructureServiceManager } from './InfrastructureServiceManager';
 import { InfrastructureRefreshManager } from './InfrastructureRefreshManager';
 

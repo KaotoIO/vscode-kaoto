@@ -16,9 +16,9 @@
 import { promises as fsPromises } from 'fs';
 import { Disposable, TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
 import { basename, normalize } from 'path';
-import { OpenApiFile } from '../openApiTreeItems/OpenApiFile';
-import { OpenApiFolder } from '../openApiTreeItems/OpenApiFolder';
-import { AbstractFolderTreeProvider } from './AbstractFolderTreeProvider';
+import { OpenApiFile } from './OpenApiFile';
+import { OpenApiFolder } from './OpenApiFolder';
+import { AbstractFolderTreeProvider } from '../shared/AbstractFolderTreeProvider';
 import {
 	COMMAND_OPENAPI_DELETE,
 	COMMAND_OPENAPI_SHOW_SOURCE,

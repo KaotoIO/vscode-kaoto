@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
-import { IFolderTreeItem } from '../providers/AbstractFolderTreeProvider';
+import { IFolderTreeItem } from './AbstractFolderTreeProvider';
 
 /**
  * Abstract base class for folder tree items.
