@@ -3,7 +3,7 @@ import { InfraRunningServiceDetails, InfraServiceDefinition } from '../../execut
 import { CamelCommandAPI } from '../../executors/api/CamelCommandAPI';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
 import { RunningInfrastructureService } from '../infrastructureTreeItems/InfrastructureItem';
-import { DockerErrorDetector } from '../../helpers/DockerErrorDetector';
+import { DockerErrorDetector } from '../../utils/DockerErrorDetector';
 
 /**
  * Manages infrastructure service lifecycle operations including:

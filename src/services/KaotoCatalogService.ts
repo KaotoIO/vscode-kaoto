@@ -5,7 +5,7 @@ import { CatalogLibrary, CatalogLibraryEntry } from '@kaoto/camel-catalog/types'
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { RedHatMavenNotificationService } from './RedHatMavenNotificationService';
 import { RuntimeType, ExecutorType } from '../executors/types/ExecutorTypes';
-import { isRedHatBuild } from '../helpers/helpers';
+import { isRedHatBuild } from '../utils/vscode';
 import {
 	COMMAND_SELECT_CAMEL_CATALOG,
 	KAOTO_CATALOG_URL_SETTING_ID,

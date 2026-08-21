@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { DockerErrorDetector } from '../../helpers/DockerErrorDetector';
+import { DockerErrorDetector } from '../../utils/DockerErrorDetector';
 
 suite('DockerErrorDetector', () => {
 	suite('detectDockerError', () => {

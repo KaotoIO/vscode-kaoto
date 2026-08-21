@@ -77,32 +77,25 @@ import {
 	VIEW_HELP,
 	VIEW_DEPLOYMENTS,
 } from '../constants';
-import {
-	findFolderOfPomXml,
-	runJBangCommandWithStatusBar,
-	verifyJavaExists,
-	verifyJBangExists,
-	verifyJBangTrustedSources,
-	verifyCamelPluginsAreInstalled,
-	safeGlobalStateGet,
-	safeGlobalStateUpdate,
-} from '../helpers/helpers';
+import { findFolderOfPomXml } from '../utils/path';
+import { runJBangCommandWithStatusBar, verifyJavaExists, verifyJBangExists, verifyJBangTrustedSources, verifyCamelPluginsAreInstalled } from '../utils/process';
+import { safeGlobalStateGet, safeGlobalStateUpdate } from '../utils/vscode';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { NewCamelFileCommand } from '../commands/NewCamelFileCommand';
-import { confirmFileDeleteDialog, confirmInfrastructureServiceStop } from '../helpers/modals';
+import { confirmFileDeleteDialog, confirmInfrastructureServiceStop } from '../utils/modals';
 import { TelemetryEvent, TelemetryService } from '@redhat-developer/vscode-redhat-telemetry';
 import { NewCamelProjectCommand } from '../commands/NewCamelProjectCommand';
 import { CamelTaskFactory } from '../tasks/CamelTaskFactory';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 import { DeploymentsProvider } from '../views/providers/DeploymentsProvider';
-import { PortManager } from '../helpers/PortManager';
+import { PortManager } from '../utils/PortManager';
 import { ParentItem } from '../views/deploymentTreeItems/ParentItem';
 import { RouteOperation } from '../types/RouteOperation';
 import { ChildItem } from '../views/deploymentTreeItems/ChildItem';
 import { RecommendationCore } from '@redhat-developer/vscode-extension-proposals';
 import { WhatsNewPanel } from './WhatsNewPanel';
 import { satisfies } from 'compare-versions';
-import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
+import { StepsOnSaveManager } from '../utils/StepsOnSaveManager';
 import { Folder } from '../views/integrationTreeItems/Folder';
 import { TestsProvider } from '../views/providers/TestsProvider';
 import { AbstractFolderTreeProvider } from '../views/providers/AbstractFolderTreeProvider';
