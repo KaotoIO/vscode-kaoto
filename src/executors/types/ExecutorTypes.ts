@@ -22,7 +22,7 @@ export enum RuntimeType {
 /**
  * Camel command types
  */
-export type CamelCommand = 'run' | 'export' | 'init' | 'bind' | 'stop' | 'dependency' | 'cmd' | 'plugin' | 'test' | 'kubernetes';
+export type CamelCommand = 'run' | 'export' | 'init' | 'bind' | 'stop' | 'dependency' | 'cmd' | 'plugin' | 'test' | 'kubernetes' | 'infra';
 
 /**
  * Command execution context
@@ -51,3 +51,19 @@ export type CommandArg = string | ShellQuotedString;
  * Generic command arguments -- supports mixed plain strings and explicitly-quoted args.
  */
 export type CommandArguments = CommandArg[];
+
+// ─── Infrastructure types ────────────────────────────────────────────────────
+
+export interface InfraServiceDefinition {
+	name: string;
+	description?: string;
+}
+
+export interface InfraRunningServiceDetails {
+	name: string;
+	description?: string;
+	host?: string;
+	port?: number;
+	url?: string;
+	serviceData?: Record<string, unknown>;
+}

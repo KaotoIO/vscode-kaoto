@@ -20,9 +20,9 @@
   "editor.codeActionsOnSave": ["source.fixAll.eslint"],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "typescript.tsc.autoDetect": "off",
-  "extesterRunner.testFileGlob": "**/it-tests/**/*.test.ts",
-  "extesterRunner.rootFolder": "it-tests",
+  "js/ts.tsc.autoDetect": "off",
+  "extesterRunner.testFileGlob": "**/ui-tests/**/*.test.ts",
+  "extesterRunner.rootFolder": "ui-tests",
   "extesterRunner.additionalArgs": [
     "--yarn",
     "--uninstall_extension",

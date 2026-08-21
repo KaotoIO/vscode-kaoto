@@ -16,9 +16,9 @@
 import * as vscode from 'vscode';
 import path from 'path';
 import * as KogitoVsCode from '@kie-tools-core/vscode-extension/dist';
-import { HelpFeedbackProvider } from '../views/providers/HelpFeedbackProvider';
-import { IntegrationsProvider } from '../views/providers/IntegrationsProvider';
-import { Integration } from '../views/integrationTreeItems/Integration';
+import { HelpFeedbackProvider } from '../views/help/HelpFeedbackProvider';
+import { IntegrationsProvider } from '../views/integrations/IntegrationsProvider';
+import { Integration } from '../views/integrations/Integration';
 import { NewCamelRouteCommand } from '../commands/NewCamelRouteCommand';
 import { NewCamelKameletCommand } from '../commands/NewCamelKameletCommand';
 import { NewCamelPipeCommand } from '../commands/NewCamelPipeCommand';
@@ -34,6 +34,12 @@ import {
 	COMMAND_DEPLOYMENTS_ROUTE_STOP,
 	COMMAND_DEPLOYMENTS_ROUTE_SUSPEND,
 	COMMAND_DEPLOYMENTS_STOP,
+	COMMAND_INFRASTRUCTURE_COPY_PORT,
+	COMMAND_INFRASTRUCTURE_COPY_URL,
+	COMMAND_INFRASTRUCTURE_LOGS,
+	COMMAND_INFRASTRUCTURE_REFRESH,
+	COMMAND_INFRASTRUCTURE_START,
+	COMMAND_INFRASTRUCTURE_STOP,
 	COMMAND_INTEGRATIONS_DELETE,
 	COMMAND_INTEGRATIONS_KUBERNETES_RUN,
 	COMMAND_INTEGRATIONS_REFRESH,
@@ -60,6 +66,7 @@ import {
 	COMMAND_WHATS_NEW_SHOW,
 	CONTEXT_EXECUTOR_AVAILABLE,
 	CONTEXT_WORKSPACE_HAS_POM_XML,
+	VIEW_INFRASTRUCTURE,
 	VIEW_OPENAPI,
 	STATE_LAST_WHATS_NEW_SHOWN_VERSION,
 	STATE_SHOW_RUN_ALL_FOLDERS_MESSAGE,
@@ -70,43 +77,39 @@ import {
 	VIEW_HELP,
 	VIEW_DEPLOYMENTS,
 } from '../constants';
-import {
-	findFolderOfPomXml,
-	runJBangCommandWithStatusBar,
-	verifyJavaExists,
-	verifyJBangExists,
-	verifyJBangTrustedSources,
-	verifyCamelPluginsAreInstalled,
-	safeGlobalStateGet,
-	safeGlobalStateUpdate,
-} from '../helpers/helpers';
+import { findFolderOfPomXml } from '../utils/Path';
+import { runJBangCommandWithStatusBar, verifyJavaExists, verifyJBangExists, verifyJBangTrustedSources, verifyCamelPluginsAreInstalled } from '../utils/Process';
+import { safeGlobalStateGet, safeGlobalStateUpdate } from '../utils/Vscode';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { NewCamelFileCommand } from '../commands/NewCamelFileCommand';
-import { confirmFileDeleteDialog } from '../helpers/modals';
+import { confirmFileDeleteDialog, confirmInfrastructureServiceStop } from '../utils/Modals';
 import { TelemetryEvent, TelemetryService } from '@redhat-developer/vscode-redhat-telemetry';
 import { NewCamelProjectCommand } from '../commands/NewCamelProjectCommand';
 import { CamelTaskFactory } from '../tasks/CamelTaskFactory';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
-import { DeploymentsProvider } from '../views/providers/DeploymentsProvider';
-import { PortManager } from '../helpers/PortManager';
-import { ParentItem } from '../views/deploymentTreeItems/ParentItem';
+import { DeploymentsProvider } from '../views/deployments/DeploymentsProvider';
+import { PortManager } from '../services/PortManager';
+import { ParentItem } from '../views/deployments/ParentItem';
 import { RouteOperation } from '../types/RouteOperation';
-import { ChildItem } from '../views/deploymentTreeItems/ChildItem';
+import { ChildItem } from '../views/deployments/ChildItem';
 import { RecommendationCore } from '@redhat-developer/vscode-extension-proposals';
 import { WhatsNewPanel } from './WhatsNewPanel';
 import { satisfies } from 'compare-versions';
-import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
-import { Folder } from '../views/integrationTreeItems/Folder';
-import { TestsProvider } from '../views/providers/TestsProvider';
-import { AbstractFolderTreeProvider } from '../views/providers/AbstractFolderTreeProvider';
+import { StepsOnSaveManager } from '../services/StepsOnSaveManager';
+import { Folder } from '../views/integrations/Folder';
+import { TestsProvider } from '../views/tests/TestsProvider';
+import { AbstractFolderTreeProvider } from '../views/shared/AbstractFolderTreeProvider';
 import { NewCamelTestCommand } from '../commands/NewCamelTestCommand';
-import { TestFolder } from '../views/testTreeItems/TestFolder';
+import { TestFolder } from '../views/tests/TestFolder';
 import { CamelTask, CamelTaskDefinition } from '../tasks/CamelTask';
-import { Test } from '../views/testTreeItems/Test';
-import { OpenApiProvider } from '../views/providers/OpenApiProvider';
+import { Test } from '../views/tests/Test';
+import { OpenApiProvider } from '../views/openapi/OpenApiProvider';
 import { ImportOpenApiCommand } from '../commands/ImportOpenApiCommand';
 import { ensureExecutorAvailable } from '../executors/ExecutorInitializer';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
+import { InfrastructureProvider } from '../views/infrastructure/InfrastructureProvider';
+import { InfrastructureItem } from '../views/infrastructure/InfrastructureItem';
+import { StartInfrastructureServiceCommand } from '../commands/StartInfrastructureServiceCommand';
 
 export class ExtensionContextHandler {
 	protected kieEditorStore: KogitoVsCode.VsCodeKieEditorStore;
@@ -114,6 +117,7 @@ export class ExtensionContextHandler {
 
 	protected testsProvider!: TestsProvider;
 	protected deploymentsProvider!: DeploymentsProvider;
+	protected infrastructureProvider!: InfrastructureProvider;
 
 	constructor(
 		context: vscode.ExtensionContext,
@@ -349,6 +353,31 @@ export class ExtensionContextHandler {
 		this.context.subscriptions.push(testsTreeView, dispose, refreshCommand, clearResultsCommand, refreshOnVisibilityChange);
 
 		this.registerViewItemContextMenu(this.testsProvider, COMMAND_TESTS_SHOW_SOURCE, COMMAND_TESTS_DELETE);
+	}
+
+	public registerInfrastructureView() {
+		this.infrastructureProvider = new InfrastructureProvider();
+		const infrastructureTreeView = vscode.window.createTreeView(VIEW_INFRASTRUCTURE, {
+			treeDataProvider: this.infrastructureProvider,
+			showCollapseAll: false,
+		});
+
+		const refreshCommand = vscode.commands.registerCommand(COMMAND_INFRASTRUCTURE_REFRESH, async () => {
+			await this.infrastructureProvider.refresh();
+		});
+
+		const visibilityChange = infrastructureTreeView.onDidChangeVisibility(async (event) => {
+			if (event.visible) {
+				try {
+					await this.infrastructureProvider.ensureAvailableServicesLoaded();
+				} catch (error) {
+					vscode.window.showWarningMessage(`Unable to load infrastructure services: ${String(error)}`);
+				}
+				await this.infrastructureProvider.refresh();
+			}
+		});
+
+		this.context.subscriptions.push(infrastructureTreeView, this.infrastructureProvider, refreshCommand, visibilityChange);
 	}
 
 	public registerTestsInitCommands() {
@@ -700,6 +729,80 @@ export class ExtensionContextHandler {
 			registerRouteCommand(COMMAND_DEPLOYMENTS_ROUTE_RESUME, RouteOperation.resume, 'Started'),
 			registerRouteCommand(COMMAND_DEPLOYMENTS_ROUTE_SUSPEND, RouteOperation.suspend, 'Suspended'),
 		);
+	}
+
+	public registerInfrastructureCommands() {
+		const startInfrastructureServiceCommand = new StartInfrastructureServiceCommand(this.infrastructureProvider);
+		const startCommand = vscode.commands.registerCommand(COMMAND_INFRASTRUCTURE_START, async () => {
+			await startInfrastructureServiceCommand.execute();
+			await this.sendCommandTrackingEvent(COMMAND_INFRASTRUCTURE_START);
+		});
+
+		const stopCommand = vscode.commands.registerCommand(COMMAND_INFRASTRUCTURE_STOP, async (item: InfrastructureItem) => {
+			// CRITICAL: Capture service name at the VERY START before ANY async operation
+			// This prevents issues when tree refreshes (triggered by other stop operations) invalidate the item reference
+			const serviceName = item?.service?.name;
+
+			if (!serviceName) {
+				KaotoOutputChannel.logWarning('[Infrastructure] Stop command called with invalid item');
+				return;
+			}
+
+			const confirmation = await confirmInfrastructureServiceStop(serviceName);
+
+			if (confirmation !== 'Stop') {
+				return;
+			}
+
+			// Block auto-refresh for the full duration of the async stop to prevent race conditions
+			this.infrastructureProvider.setManualOperationInProgress(true);
+			try {
+				this.infrastructureProvider.markServiceStopping(serviceName);
+				const result = await CamelCommandAPI.infraStop(serviceName);
+				await CamelTaskFactory.createSilent(`Infrastructure Stop - ${serviceName}`, result).executeAndWait();
+				this.infrastructureProvider.unregisterRunningService(serviceName);
+				await this.sendCommandTrackingEvent(COMMAND_INFRASTRUCTURE_STOP);
+			} catch (error) {
+				KaotoOutputChannel.logError(`[Infrastructure] Failed to stop service "${serviceName}"`, error);
+				vscode.window.showErrorMessage(`Failed to stop ${serviceName}: ${String(error)}`);
+				// Do not unregister: the service may still be running; a CLI refresh will reconcile state
+			} finally {
+				this.infrastructureProvider.setManualOperationInProgress(false);
+			}
+		});
+
+		const logsCommand = vscode.commands.registerCommand(COMMAND_INFRASTRUCTURE_LOGS, async (item: InfrastructureItem) => {
+			const terminal = vscode.window.terminals.find((t) => t.name === item.service.terminalName);
+			if (terminal) {
+				terminal.show();
+			} else {
+				KaotoOutputChannel.logWarning(`Terminal with a name "${item.service.terminalName}" was not found.`);
+				vscode.window.showWarningMessage(`Terminal for "${item.service.name}" was not found.`);
+			}
+			await this.sendCommandTrackingEvent(COMMAND_INFRASTRUCTURE_LOGS);
+		});
+
+		const copyUrlCommand = vscode.commands.registerCommand(COMMAND_INFRASTRUCTURE_COPY_URL, async (item: InfrastructureItem) => {
+			if (item.service.url) {
+				await vscode.env.clipboard.writeText(item.service.url);
+				vscode.window.showInformationMessage(`URL copied to clipboard: ${item.service.url}`);
+				await this.sendCommandTrackingEvent(COMMAND_INFRASTRUCTURE_COPY_URL);
+			} else {
+				vscode.window.showWarningMessage(`No URL available for service "${item.service.name}"`);
+			}
+		});
+
+		const copyPortCommand = vscode.commands.registerCommand(COMMAND_INFRASTRUCTURE_COPY_PORT, async (item: InfrastructureItem) => {
+			if (item.service.port) {
+				await vscode.env.clipboard.writeText(item.service.port.toString());
+				vscode.window.showInformationMessage(`Port copied to clipboard: ${item.service.port}`);
+				await this.sendCommandTrackingEvent(COMMAND_INFRASTRUCTURE_COPY_PORT);
+			} else {
+				vscode.window.showWarningMessage(`No port available for service "${item.service.name}"`);
+			}
+		});
+
+		this.context.subscriptions.push(startCommand, stopCommand, logsCommand, copyUrlCommand, copyPortCommand);
 	}
 
 	public async hideIntegrationsViewButtonsForMavenProjects() {

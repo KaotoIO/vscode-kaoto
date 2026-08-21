@@ -95,8 +95,8 @@ export class CamelCommandBuilder {
 		});
 		if (portArg) {
 			const value = typeof portArg === 'string' ? portArg : portArg.value;
-			const match = value.match(/=(-?\d+)/);
-			return match ? parseInt(match[1], 10) : undefined;
+			const match = new RegExp(/=(-?\d+)/).exec(value);
+			return match ? Number.parseInt(match[1], 10) : undefined;
 		}
 		return undefined;
 	}
