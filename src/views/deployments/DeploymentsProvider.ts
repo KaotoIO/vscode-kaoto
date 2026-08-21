@@ -19,10 +19,10 @@ import { KAOTO_VIEWS_REFRESH_INTERVAL_SETTING_ID } from '../../constants';
 import { PortManager } from '../../utils/PortManager';
 import { CamelTaskDefinition } from '../../tasks/CamelTask';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
-import { Route } from '../deploymentTreeItems/Route';
-import { RootItem } from '../deploymentTreeItems/RootItem';
-import { ParentItem } from '../deploymentTreeItems/ParentItem';
-import { ChildItem } from '../deploymentTreeItems/ChildItem';
+import { Route } from './Route';
+import { RootItem } from './RootItem';
+import { ParentItem } from './ParentItem';
+import { ChildItem } from './ChildItem';
 
 export class DeploymentsProvider implements TreeDataProvider<TreeItem> {
 	private readonly _onDidChangeTreeData = new EventEmitter<TreeItem | undefined | null | void>();

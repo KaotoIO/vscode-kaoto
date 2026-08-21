@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AbstractFolderTreeProvider } from './AbstractFolderTreeProvider';
+import { AbstractFolderTreeProvider } from '../shared/AbstractFolderTreeProvider';
 import { commands, Disposable, RelativePattern, TreeItem, TreeItemCollapsibleState, Uri, workspace } from 'vscode';
-import { Test } from '../testTreeItems/Test';
+import { Test } from './Test';
 import { TestResult } from '../../types/TestTreeItemType';
-import { TestFolder } from '../testTreeItems/TestFolder';
+import { TestFolder } from './TestFolder';
 import { basename, dirname, join } from 'path';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
 import {

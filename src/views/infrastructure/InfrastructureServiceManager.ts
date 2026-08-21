@@ -2,7 +2,7 @@ import { Disposable, tasks, window } from 'vscode';
 import { InfraRunningServiceDetails, InfraServiceDefinition } from '../../executors/types/ExecutorTypes';
 import { CamelCommandAPI } from '../../executors/api/CamelCommandAPI';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
-import { RunningInfrastructureService } from '../infrastructureTreeItems/InfrastructureItem';
+import { RunningInfrastructureService } from './InfrastructureItem';
 import { DockerErrorDetector } from '../../utils/DockerErrorDetector';
 
 /**

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { assert } from 'chai';
-import { InfrastructureRefreshManager } from '../../views/providers/InfrastructureRefreshManager';
+import { InfrastructureRefreshManager } from '../../views/infrastructure/InfrastructureRefreshManager';
 
 // ─── startAutoRefresh / stopAutoRefresh ───────────────────────────────────────
 

@@ -19,7 +19,7 @@ import { COMMAND_INFRASTRUCTURE_START } from '../constants';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
 import { CamelTaskFactory } from '../tasks/CamelTaskFactory';
-import { InfrastructureProvider } from '../views/providers/InfrastructureProvider';
+import { InfrastructureProvider } from '../views/infrastructure/InfrastructureProvider';
 import { DockerErrorDetector } from '../utils/DockerErrorDetector';
 
 export class StartInfrastructureServiceCommand {

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import { assert } from 'chai';
-import { InfrastructureServiceManager } from '../../views/providers/InfrastructureServiceManager';
+import { InfrastructureServiceManager } from '../../views/infrastructure/InfrastructureServiceManager';
 import { CamelCommandAPI } from '../../executors/api/CamelCommandAPI';
-import { RunningInfrastructureService } from '../../views/infrastructureTreeItems/InfrastructureItem';
+import { RunningInfrastructureService } from '../../views/infrastructure/InfrastructureItem';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
