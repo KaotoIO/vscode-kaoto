@@ -124,7 +124,7 @@ The command `Developer: Toggle Developer Tools` gives access to classic develope
 
 ### How to launch automated tests
 
-`yarn run test-it`
+`yarn run test:ui`
 
 It is launching UI tests. Beware that it can take several minutes to start. Stay tuned for improvements to come later.
 

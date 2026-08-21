@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 import { By, EditorView, until, VSBrowser, WebDriver, WebView } from 'vscode-extension-tester';
-import { openAndSwitchToKaotoFrame } from './Util';
+import { openAndSwitchToKaotoFrame } from '../Util';
 import { join } from 'path';
 import { expect } from 'chai';
-import { EditorTabs, kaotoLocators } from './pageObjects';
+import { EditorTabs, kaotoLocators } from '../pageObjects';
 
 describe('Switching between editor tabs', function () {
 	this.timeout(90_000);

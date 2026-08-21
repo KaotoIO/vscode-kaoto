@@ -74,7 +74,7 @@ Before submitting AI-generated PRs, ensure:
 4. **Build and test the VSIX** (for significant changes):
    ```bash
    yarn run build:vsix
-   yarn run test:it:with-prebuilt-vsix
+   yarn run test:ui:with-prebuilt-vsix
    ```
 
 **Additional Requirements**:
@@ -107,16 +107,16 @@ Before submitting AI-generated PRs, ensure:
 - `yarn run test:unit` - Run unit tests using VS Code test framework
 - `yarn run test:it` - Run integration tests using extension tester
 - `yarn run build:test:unit` - Build unit tests
-- `yarn run build:test:it` - Build integration tests
+- `yarn run build:test:ui` - Build integration tests
 - Unit tests located in `src/test/`
-- Integration tests in `it-tests/`
+- Integration tests in `ui-tests/`
 
 #### How to run Integration tests
 
 1. yarn build:dev
 2. yarn build:vsix
-3. yarn run test:it:with-prebuilt-vsix
-   3.1 For headless: `xvfb-run -a yarn run test:it:with-prebuilt-vsix`
+3. yarn run test:ui:with-prebuilt-vsix
+   3.1 For headless: `xvfb-run -a yarn run test:ui:with-prebuilt-vsix`
 
 ### Web Mode Testing
 

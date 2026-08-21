@@ -23,7 +23,7 @@ import {
 	openResourcesAndWaitForActivation,
 	resetUserSettings,
 	workaroundToRedrawContextualMenu,
-} from './Util';
+} from '../Util';
 import {
 	EditorView,
 	VSBrowser,
@@ -36,7 +36,7 @@ import {
 	CheckboxSetting,
 	before,
 } from 'vscode-extension-tester';
-import { KaotoCanvas } from './pageObjects';
+import { KaotoCanvas } from '../pageObjects';
 import { assert, expect } from 'chai';
 import * as fs from 'fs';
 

@@ -22,8 +22,8 @@ import {
 	openAndSwitchToKaotoFrame,
 	openResourcesAndWaitForActivation,
 	workaroundToRedrawContextualMenu,
-} from './Util';
-import { KaotoCanvas, KaotoEditor, kaotoLocators, DataMapperEditor } from './pageObjects';
+} from '../Util';
+import { KaotoCanvas, KaotoEditor, kaotoLocators, DataMapperEditor } from '../pageObjects';
 import { waitUntil } from 'async-wait-until';
 import * as fs from 'fs-extra';
 
