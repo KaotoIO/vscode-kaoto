@@ -4,7 +4,7 @@ import * as https from 'https';
 import * as os from 'os';
 import { ExtensionContext } from 'vscode';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
-import { isRedHatBuild } from '../utils/vscode';
+import { isRedHatBuild } from '../utils/Vscode';
 
 /**
  * Error thrown when Camel Launcher version is not found (404)
