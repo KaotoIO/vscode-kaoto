@@ -79,10 +79,6 @@ suite('DeploymentsProvider — port guard (NO_PORT = -1 is skipped)', function (
 		assert.isFalse(CamelTask.NO_PORT > 0, 'NO_PORT (-1) must NOT pass the port > 0 guard');
 	});
 
-	test('a valid port passes the port > 0 guard', function () {
-		assert.isTrue(8080 > 0, 'a real port must pass the port > 0 guard');
-	});
-
 	test('releasePort is NOT called when a task ends with NO_PORT (-1)', function () {
 		const { portManager, releasePortCalls } = makePortManager(false);
 		const provider = new DeploymentsProvider(portManager);

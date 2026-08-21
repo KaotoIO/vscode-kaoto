@@ -35,6 +35,8 @@ export const KAOTO_REST_CUSTOM_MEDIA_TYPES_SETTING_ID = 'kaoto.restConfiguration
 
 export const KAOTO_DEPLOYMENTS_REFRESH_INTERVAL_SETTING_ID = 'kaoto.deployments.refresh.interval';
 
+export const KAOTO_VIEWS_REFRESH_INTERVAL_SETTING_ID = 'kaoto.views.refresh.interval';
+
 export const KAOTO_CATALOG_URL_SETTING_ID = 'kaoto.catalog.url';
 
 export const KAOTO_NODE_LABEL_SETTING_ID = 'kaoto.nodeLabel';
@@ -61,9 +63,13 @@ export const KAOTO_EXECUTOR_KUBERNETES_RUN_ARGUMENTS_SETTING_ID = 'kaoto.executo
 
 export const KAOTO_EXECUTOR_EXPORT_ARGUMENTS_SETTING_ID = 'kaoto.maven.executor.exportProjectArguments';
 
+export const KAOTO_EXECUTOR_INFRA_ARGUMENTS_SETTING_ID = 'kaoto.executor.infraArguments';
+
 export const KAOTO_RUNTIME_CATALOG_NAME_SETTING_ID = 'kaoto.runtimeCatalogName';
 
 export const KAOTO_TESTING_CATALOG_NAME_SETTING_ID = 'kaoto.testingCatalogName';
+
+export const KAOTO_INFRASTRUCTURE_ENABLED_SETTING_ID = 'kaoto.infrastructure.enabled';
 
 // ─── Command IDs ─────────────────────────────────────────────────────────────
 
@@ -149,6 +155,18 @@ export const COMMAND_DEPLOYMENTS_ROUTE_RESUME = 'kaoto.deployments.route.resume'
 
 export const COMMAND_DEPLOYMENTS_ROUTE_SUSPEND = 'kaoto.deployments.route.suspend';
 
+export const COMMAND_INFRASTRUCTURE_START = 'kaoto.infrastructure.start';
+
+export const COMMAND_INFRASTRUCTURE_STOP = 'kaoto.infrastructure.stop';
+
+export const COMMAND_INFRASTRUCTURE_REFRESH = 'kaoto.infrastructure.refresh';
+
+export const COMMAND_INFRASTRUCTURE_LOGS = 'kaoto.infrastructure.logs';
+
+export const COMMAND_INFRASTRUCTURE_COPY_URL = 'kaoto.infrastructure.copyUrl';
+
+export const COMMAND_INFRASTRUCTURE_COPY_PORT = 'kaoto.infrastructure.copyPort';
+
 // ─── View IDs ────────────────────────────────────────────────────────────────
 
 export const VIEW_HELP = 'kaoto.help';
@@ -160,6 +178,8 @@ export const VIEW_TESTS = 'kaoto.tests';
 export const VIEW_DEPLOYMENTS = 'kaoto.deployments';
 
 export const VIEW_OPENAPI = 'kaoto.openapi';
+
+export const VIEW_INFRASTRUCTURE = 'kaoto.infrastructure';
 
 export const VIEW_WHATS_NEW = 'kaoto.whatsNew';
 

@@ -1,10 +1,23 @@
-import { dirname, relative } from 'path';
+import { execFile } from 'child_process'; // NOSONAR
+import { promisify } from 'util'; // NOSONAR
+import { dirname, relative } from 'path'; // NOSONAR
+import { workspace } from 'vscode';
 import { CamelExecutorFactory } from '../CamelExecutorFactory';
 import { CamelCommandBuilder } from '../builders/CamelCommandBuilder';
-import { CamelCommand, CommandArg, CommandArguments, CommandResult, RuntimeType } from '../types/ExecutorTypes';
+import {
+	CamelCommand,
+	CommandArg,
+	CommandArguments,
+	CommandResult,
+	InfraRunningServiceDetails,
+	InfraServiceDefinition,
+	RuntimeType,
+} from '../types/ExecutorTypes';
 import { CamelSettingsHelper } from '../helpers/CamelSettingsHelper';
 import { TestFolderResolver } from '../../helpers/TestFolderResolver';
 import { arePathsEqual } from '../../helpers/helpers';
+import { KAOTO_EXECUTOR_INFRA_ARGUMENTS_SETTING_ID } from '../../constants';
+import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
 
 interface ResolvedSettings {
 	camelVersionArg: string;
@@ -46,6 +59,26 @@ export class CamelCommandAPI {
 	private static async executeSimple(command: CamelCommand, args: CommandArguments, cwd?: string): Promise<CommandResult> {
 		const executor = await CamelExecutorFactory.createExecutor();
 		return await executor.execute(command, args, { cwd });
+	}
+
+	/**
+	 * Execute a Camel command and capture its stdout output as a string.
+	 * Used for commands that need to read CLI output in-process (e.g. infra list, infra ps).
+	 *
+	 * Builds the command via the executor system (preserving executor type, version, and
+	 * quoting), then runs it with execFile so each argument keeps its own boundaries
+	 * without shell interpolation.
+	 */
+	private static async captureOutput(command: CamelCommand, args: CommandArguments, cwd?: string): Promise<string> {
+		const execFilePromise = promisify(execFile);
+		const result = await this.executeSimple(command, args, cwd);
+		const { execution } = result;
+
+		const binary = typeof execution.command === 'string' ? execution.command : (execution.command?.value ?? 'jbang');
+		const argList = execution.args?.map((arg) => (typeof arg === 'string' ? arg : arg.value)) ?? [];
+
+		const { stdout, stderr } = await execFilePromise(binary, argList, { cwd });
+		return stdout || stderr;
 	}
 
 	/**
@@ -248,5 +281,178 @@ export class CamelCommandAPI {
 			...additionalArgs,
 		]);
 		return await executor.execute('kubernetes', args, { cwd });
+	}
+
+	/**
+	 * List available infrastructure services (infra list --json)
+	 */
+	static async infraList(cwd?: string): Promise<CommandResult> {
+		return this.executeSimple('infra', ['list', '--json'], cwd);
+	}
+
+	/**
+	 * Capture the JSON output of `infra list` directly as a string.
+	 * Use this for in-process parsing instead of running via a VS Code task.
+	 */
+	static async captureInfraList(cwd?: string): Promise<string> {
+		return this.captureOutput('infra', ['list', '--json'], cwd);
+	}
+
+	/**
+	 * Start an infrastructure service (infra run <service> [args])
+	 */
+	static async infraRun(service: string, port?: number, additionalArgs: CommandArguments = [], cwd?: string): Promise<CommandResult> {
+		const args: CommandArguments = ['run', service];
+		if (port !== undefined) {
+			args.push(`--port=${port}`);
+		}
+		args.push(...additionalArgs);
+		return this.executeSimple('infra', args, cwd);
+	}
+
+	/**
+	 * Stop an infrastructure service (infra stop <service>)
+	 */
+	static async infraStop(service: string, cwd?: string): Promise<CommandResult> {
+		return this.executeSimple('infra', ['stop', service], cwd);
+	}
+
+	/**
+	 * List running infrastructure services (infra ps --json)
+	 */
+	static async infraPs(cwd?: string): Promise<CommandResult> {
+		return this.executeSimple('infra', ['ps', '--json'], cwd);
+	}
+
+	/**
+	 * Capture the JSON output of `infra ps` directly as a string.
+	 * Use this for in-process parsing instead of running via a VS Code task.
+	 */
+	static async captureInfraPs(cwd?: string): Promise<string> {
+		return this.captureOutput('infra', ['ps', '--json'], cwd);
+	}
+
+	/**
+	 * Returns the user-configured default arguments for infra commands.
+	 */
+	static getInfraDefaultArgs(): string[] {
+		const args = workspace.getConfiguration().get<string[]>(KAOTO_EXECUTOR_INFRA_ARGUMENTS_SETTING_ID);
+		return Array.isArray(args) ? args : [];
+	}
+
+	/**
+	 * Parse the JSON output of `infra list` into service definitions.
+	 */
+	static extractAvailableServices(output: string): InfraServiceDefinition[] {
+		type AvailableServiceEntry = { name?: string; alias?: string; description?: string; aliasImplementation?: string };
+		let parsed: AvailableServiceEntry[];
+		try {
+			const raw: unknown = JSON.parse(output);
+			if (!Array.isArray(raw)) {
+				KaotoOutputChannel.logError('Available services JSON is not an array. Raw output: ' + output);
+				return [];
+			}
+			parsed = raw as AvailableServiceEntry[];
+		} catch (error) {
+			KaotoOutputChannel.logError('Failed to parse available services JSON. Raw output: ' + output, error);
+			return [];
+		}
+
+		const services: InfraServiceDefinition[] = [];
+		for (const service of parsed) {
+			const name = service.alias ?? service.name;
+			if (typeof name !== 'string' || name.trim().length === 0) {
+				continue;
+			}
+			const aliasImplementation = service.aliasImplementation?.trim();
+			const description = [service.description?.trim(), aliasImplementation ? `Implementations: ${aliasImplementation}` : undefined]
+				.filter(Boolean)
+				.join(' — ');
+			services.push({ name: name.trim(), description: description || undefined });
+		}
+		return services.sort((a, b) => a.name.localeCompare(b.name));
+	}
+
+	/**
+	 * Parse the JSON output of `infra ps` into running service details.
+	 */
+	static extractRunningServices(output: string): InfraRunningServiceDetails[] {
+		type RunningServiceEntry = { name?: string; alias?: string; description?: string; serviceData?: Record<string, unknown> };
+		let parsed: RunningServiceEntry[];
+		try {
+			const raw: unknown = JSON.parse(output);
+			if (!Array.isArray(raw)) {
+				KaotoOutputChannel.logError('Running services JSON is not an array. Raw output: ' + output);
+				return [];
+			}
+			parsed = raw as RunningServiceEntry[];
+		} catch (error) {
+			KaotoOutputChannel.logError('Failed to parse running services JSON. Raw output: ' + output, error);
+			return [];
+		}
+
+		const services: InfraRunningServiceDetails[] = [];
+		for (const service of parsed) {
+			const identifier = service.alias?.trim() || service.name?.trim();
+			if (!identifier) {
+				continue;
+			}
+			const serviceData = service.serviceData;
+			const host = CamelCommandAPI.extractInfraHost(serviceData);
+			const port = CamelCommandAPI.extractInfraPort(serviceData);
+			const url = host && port ? `${host}:${port}` : undefined;
+			services.push({ name: identifier, description: service.description?.trim() || undefined, host, port, url, serviceData });
+		}
+		return services.sort((a, b) => a.name.localeCompare(b.name));
+	}
+
+	private static extractInfraPort(serviceData?: Record<string, unknown>): number | undefined {
+		if (!serviceData) {
+			return undefined;
+		}
+		const directPort = serviceData.port;
+		if (typeof directPort === 'number' && Number.isFinite(directPort)) {
+			return directPort;
+		}
+		if (typeof directPort === 'string') {
+			const parsed = Number(directPort);
+			if (Number.isFinite(parsed)) {
+				return parsed;
+			}
+		}
+		for (const value of Object.values(serviceData)) {
+			if (typeof value !== 'string') {
+				continue;
+			}
+			// Matches port numbers in URLs like "http://host:8080" or "host:8080/path"
+			const match = /:(\d+)(?:\/|$)/.exec(value);
+			if (match) {
+				return Number(match[1]);
+			}
+		}
+		return undefined;
+	}
+
+	private static extractInfraHost(serviceData?: Record<string, unknown>): string | undefined {
+		if (!serviceData) {
+			return undefined;
+		}
+		const directHost = serviceData.host;
+		if (typeof directHost === 'string' && directHost.trim().length > 0) {
+			return directHost.trim();
+		}
+		for (const value of Object.values(serviceData)) {
+			if (typeof value !== 'string') {
+				continue;
+			}
+			// Normalize compound URI schemes like "jdbc:postgresql://host:5432/db" → "postgresql://host:5432/db"
+			const normalized = /^[a-z][a-z0-9+.-]*:[a-z]/i.test(value) ? value.replace(/^[^:]+:/, '') : value;
+			// Matches hostnames in URLs like "http://hostname:8080" or "hostname:8080"
+			const match = /^(?:[a-z][a-z0-9+.-]*:\/\/)?([^:/\s]+):\d+/i.exec(normalized);
+			if (match) {
+				return match[1];
+			}
+		}
+		return undefined;
 	}
 }
