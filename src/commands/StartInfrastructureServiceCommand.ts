@@ -49,19 +49,19 @@ export class StartInfrastructureServiceCommand {
 
 			const selectedService = await this.selectService();
 			if (!selectedService) {
-				this.infrastructureProvider.setStartingService(false);
 				return;
 			}
 
 			const shouldContinue = await this.handleExistingService(selectedService.label);
 			if (!shouldContinue) {
-				this.infrastructureProvider.setStartingService(false);
 				return;
 			}
 
 			await this.configureAndStartService(selectedService);
 		} catch (error) {
 			this.handleError(error);
+		} finally {
+			this.infrastructureProvider.setStartingService(false);
 		}
 	}
 
@@ -94,7 +94,6 @@ export class StartInfrastructureServiceCommand {
 				// It's a managed service already running
 				const target = this.getServiceTargetUrl(existingService);
 				this.showServiceAlreadyRunningMessage(serviceName, target);
-				this.infrastructureProvider.setStartingService(false);
 				return false;
 			}
 		}
@@ -142,12 +141,10 @@ export class StartInfrastructureServiceCommand {
 		);
 
 		if (action === 'Cancel' || !action) {
-			this.infrastructureProvider.setStartingService(false);
 			return false;
 		}
 
 		if (action === 'Use Existing') {
-			this.infrastructureProvider.setStartingService(false);
 			return false;
 		}
 
@@ -166,8 +163,14 @@ export class StartInfrastructureServiceCommand {
 				},
 			);
 
-			// Wait a moment for the service to fully stop
-			await new Promise((resolve) => setTimeout(resolve, 1000));
+			// Poll until the CLI no longer reports the service, up to a bounded timeout
+			const deadline = Date.now() + 15000;
+			while (Date.now() < deadline) {
+				if (!(await this.infrastructureProvider.getCliRunningService(serviceName))) {
+					break;
+				}
+				await new Promise((resolve) => setTimeout(resolve, 500));
+			}
 
 			// Remove from tracked services
 			this.infrastructureProvider.unregisterRunningService(serviceName);
@@ -175,7 +178,6 @@ export class StartInfrastructureServiceCommand {
 		} catch (error) {
 			KaotoOutputChannel.logError(`[Infrastructure] Failed to stop external service "${serviceName}"`, error);
 			vscode.window.showErrorMessage(`Failed to stop external service: ${String(error)}`);
-			this.infrastructureProvider.setStartingService(false);
 			return false;
 		}
 	}
@@ -195,7 +197,6 @@ export class StartInfrastructureServiceCommand {
 		});
 
 		if (portValue === undefined) {
-			this.infrastructureProvider.setStartingService(false);
 			return;
 		}
 
@@ -207,9 +208,6 @@ export class StartInfrastructureServiceCommand {
 		const runTask = CamelTaskFactory.createBackgroundSilent(`Infrastructure - ${selectedService.label}`, result);
 
 		await runTask.execute();
-
-		// Clear the starting flag after task is executed - the service is now starting in background
-		this.infrastructureProvider.setStartingService(false);
 
 		this.infrastructureProvider.registerRunningService({
 			name: selectedService.label,
@@ -233,8 +231,5 @@ export class StartInfrastructureServiceCommand {
 			KaotoOutputChannel.logError('[Infrastructure] Failed to start infrastructure service.', error);
 			vscode.window.showWarningMessage(`Unable to start infrastructure service: ${errorMessage}`);
 		}
-
-		// Clear the starting flag on error
-		this.infrastructureProvider.setStartingService(false);
 	}
 }

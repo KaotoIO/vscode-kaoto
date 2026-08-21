@@ -9,6 +9,7 @@ import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
 export class InfrastructureRefreshManager implements Disposable {
 	private refreshInterval: number;
 	private autoRefreshHandle?: NodeJS.Timeout;
+	private refreshInFlight = false;
 	private readonly disposables: Disposable[] = [];
 
 	constructor(private readonly onRefresh: () => Promise<void>) {
@@ -22,13 +23,25 @@ export class InfrastructureRefreshManager implements Disposable {
 		this.disposables.length = 0;
 	}
 
+	isAutoRefreshActive(): boolean {
+		return this.autoRefreshHandle !== undefined;
+	}
+
 	startAutoRefresh(): void {
 		this.stopAutoRefresh();
 		this.autoRefreshHandle = setInterval(() => {
 			// Auto-refresh will be skipped if manual operation is in progress
-			this.onRefresh().catch((error) => {
-				KaotoOutputChannel.logError('[Infrastructure] Auto-refresh failed', error);
-			});
+			if (this.refreshInFlight) {
+				return;
+			}
+			this.refreshInFlight = true;
+			this.onRefresh()
+				.catch((error) => {
+					KaotoOutputChannel.logError('[Infrastructure] Auto-refresh failed', error);
+				})
+				.finally(() => {
+					this.refreshInFlight = false;
+				});
 		}, this.refreshInterval);
 	}
 
@@ -47,7 +60,8 @@ export class InfrastructureRefreshManager implements Disposable {
 	}
 
 	private getRefreshInterval(): number {
-		return workspace.getConfiguration().get(KAOTO_VIEWS_REFRESH_INTERVAL_SETTING_ID, 5000);
+		const configured = workspace.getConfiguration().get<number>(KAOTO_VIEWS_REFRESH_INTERVAL_SETTING_ID, 5000);
+		return Number.isFinite(configured) ? Math.max(1000, configured) : 5000;
 	}
 
 	private registerConfigurationListener(): void {

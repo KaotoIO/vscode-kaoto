@@ -1,6 +1,6 @@
-import { exec } from 'child_process'; // NOSONAR
-import { dirname, relative } from 'path';
+import { execFile } from 'child_process'; // NOSONAR
 import { promisify } from 'util'; // NOSONAR
+import { dirname, relative } from 'path'; // NOSONAR
 import { workspace } from 'vscode';
 import { CamelExecutorFactory } from '../CamelExecutorFactory';
 import { CamelCommandBuilder } from '../builders/CamelCommandBuilder';
@@ -65,19 +65,19 @@ export class CamelCommandAPI {
 	 * Execute a Camel command and capture its stdout output as a string.
 	 * Used for commands that need to read CLI output in-process (e.g. infra list, infra ps).
 	 *
-	 * Builds the full shell command via the executor system (preserving executor type,
-	 * version, quoting, and cwd) then runs it with child_process.exec for output capture.
+	 * Builds the command via the executor system (preserving executor type, version, and
+	 * quoting), then runs it with execFile so each argument keeps its own boundaries
+	 * without shell interpolation.
 	 */
 	private static async captureOutput(command: CamelCommand, args: CommandArguments, cwd?: string): Promise<string> {
-		const execPromise = promisify(exec);
+		const execFilePromise = promisify(execFile);
 		const result = await this.executeSimple(command, args, cwd);
 		const { execution } = result;
 
 		const binary = typeof execution.command === 'string' ? execution.command : (execution.command?.value ?? 'jbang');
-		const argString = execution.args?.map((arg) => (typeof arg === 'string' ? arg : arg.value)).join(' ') ?? '';
-		const fullCommand = `${binary} ${argString}`;
+		const argList = execution.args?.map((arg) => (typeof arg === 'string' ? arg : arg.value)) ?? [];
 
-		const { stdout, stderr } = await execPromise(fullCommand, { cwd });
+		const { stdout, stderr } = await execFilePromise(binary, argList, { cwd });
 		return stdout || stderr;
 	}
 
@@ -344,9 +344,15 @@ export class CamelCommandAPI {
 	 * Parse the JSON output of `infra list` into service definitions.
 	 */
 	static extractAvailableServices(output: string): InfraServiceDefinition[] {
-		let parsed: Array<{ name?: string; alias?: string; description?: string; aliasImplementation?: string }>;
+		type AvailableServiceEntry = { name?: string; alias?: string; description?: string; aliasImplementation?: string };
+		let parsed: AvailableServiceEntry[];
 		try {
-			parsed = JSON.parse(output);
+			const raw: unknown = JSON.parse(output);
+			if (!Array.isArray(raw)) {
+				KaotoOutputChannel.logError('Available services JSON is not an array. Raw output: ' + output);
+				return [];
+			}
+			parsed = raw as AvailableServiceEntry[];
 		} catch (error) {
 			KaotoOutputChannel.logError('Failed to parse available services JSON. Raw output: ' + output, error);
 			return [];
@@ -371,9 +377,15 @@ export class CamelCommandAPI {
 	 * Parse the JSON output of `infra ps` into running service details.
 	 */
 	static extractRunningServices(output: string): InfraRunningServiceDetails[] {
-		let parsed: Array<{ name?: string; alias?: string; description?: string; serviceData?: Record<string, unknown> }>;
+		type RunningServiceEntry = { name?: string; alias?: string; description?: string; serviceData?: Record<string, unknown> };
+		let parsed: RunningServiceEntry[];
 		try {
-			parsed = JSON.parse(output);
+			const raw: unknown = JSON.parse(output);
+			if (!Array.isArray(raw)) {
+				KaotoOutputChannel.logError('Running services JSON is not an array. Raw output: ' + output);
+				return [];
+			}
+			parsed = raw as RunningServiceEntry[];
 		} catch (error) {
 			KaotoOutputChannel.logError('Failed to parse running services JSON. Raw output: ' + output, error);
 			return [];
@@ -433,8 +445,10 @@ export class CamelCommandAPI {
 			if (typeof value !== 'string') {
 				continue;
 			}
+			// Normalize compound URI schemes like "jdbc:postgresql://host:5432/db" → "postgresql://host:5432/db"
+			const normalized = /^[a-z][a-z0-9+.-]*:[a-z]/i.test(value) ? value.replace(/^[^:]+:/, '') : value;
 			// Matches hostnames in URLs like "http://hostname:8080" or "hostname:8080"
-			const match = /^(?:[a-z]+:\/\/)?([^:/\s]+):\d+/i.exec(value);
+			const match = /^(?:[a-z][a-z0-9+.-]*:\/\/)?([^:/\s]+):\d+/i.exec(normalized);
 			if (match) {
 				return match[1];
 			}
