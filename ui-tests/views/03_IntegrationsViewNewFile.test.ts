@@ -29,16 +29,16 @@ import {
 	VSBrowser,
 	WebDriver,
 } from 'vscode-extension-tester';
+import { switchToKaotoFrame } from '../utils/editor';
+import { openResourcesAndWaitForActivation } from '../utils/extension';
 import {
 	collapseItemsInsideTreeStructuredView,
 	expandFolderItemsInTreeStructuredView,
 	expandViews,
 	getKaotoViewControl,
 	getTreeItem,
-	handleInputPathSelection,
-	openResourcesAndWaitForActivation,
-	switchToKaotoFrame,
-} from '../Util';
+} from '../utils/tree-view';
+import { handleInputPathSelection } from '../utils/workbench';
 import { KaotoCanvas } from '../pageObjects';
 
 describe('Integrations View', function () {

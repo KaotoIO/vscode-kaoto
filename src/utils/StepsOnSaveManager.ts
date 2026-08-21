@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path'; // NOSONAR
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
-import { findFolderOfPomXml, normalizeVersionForSemver } from './helpers';
+import { findFolderOfPomXml } from './path';
+import { normalizeVersionForSemver } from './version';
 import { satisfies } from 'compare-versions';
 import { CamelTaskFactory } from '../tasks/CamelTaskFactory';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';

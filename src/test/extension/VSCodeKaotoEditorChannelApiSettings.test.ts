@@ -26,7 +26,7 @@ import {
 	KAOTO_REST_CUSTOM_MEDIA_TYPES_SETTING_ID,
 	KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID,
 	KAOTO_LOCAL_KAMELET_DIRECTORIES_SETTING_ID,
-} from '../constants';
+} from '../../constants';
 
 suite('VSCodeKaotoEditorChannelApi', function () {
 	let testDocument: vscode.TextDocument;

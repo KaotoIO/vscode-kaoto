@@ -15,16 +15,9 @@
  */
 import { join } from 'path';
 import { EditorView, TreeItem, ViewControl, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
-import {
-	collapseItemsInsideTreeStructuredView,
-	expandViews,
-	getKaotoViewControl,
-	getTreeItem,
-	getTreeItemActionButton,
-	killTerminal,
-	openResourcesAndWaitForActivation,
-	waitUntilTerminalHasText,
-} from '../Util';
+import { openResourcesAndWaitForActivation } from '../utils/extension';
+import { killTerminal, waitUntilTerminalHasText } from '../utils/terminal';
+import { collapseItemsInsideTreeStructuredView, expandViews, getKaotoViewControl, getTreeItem, getTreeItemActionButton } from '../utils/tree-view';
 import { expect } from 'chai';
 
 describe('Integrations View', function () {

@@ -27,7 +27,8 @@ import {
 } from 'vscode-extension-tester';
 import { assert, expect } from 'chai';
 import * as path from 'path';
-import { checkEmptyCanvasLoaded, openResourcesAndWaitForActivation, switchToKaotoFrame } from '../Util';
+import { checkEmptyCanvasLoaded, switchToKaotoFrame } from '../utils/editor';
+import { openResourcesAndWaitForActivation } from '../utils/extension';
 
 describe('Contextual menu opening', function () {
 	this.timeout(60_000);

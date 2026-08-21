@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 import * as path from 'path';
-import {
-	checkTopologyLoaded,
-	closeEditor,
-	expandFolderItemsInTreeStructuredView,
-	getTreeItem,
-	openAndSwitchToKaotoFrame,
-	openResourcesAndWaitForActivation,
-	resetUserSettings,
-	workaroundToRedrawContextualMenu,
-} from '../Util';
+import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame, workaroundToRedrawContextualMenu } from '../utils/editor';
+import { openResourcesAndWaitForActivation } from '../utils/extension';
+import { resetUserSettings } from '../utils/settings';
+import { expandFolderItemsInTreeStructuredView, getTreeItem } from '../utils/tree-view';
 import {
 	EditorView,
 	VSBrowser,

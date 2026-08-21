@@ -21,7 +21,7 @@ import {
 	KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID,
 } from '../constants';
 import { ApicurioRegistryService, ApicurioRegistryUrlError, type ApicurioArtifact } from '../services/ApicurioRegistryService';
-import { OpenApiImportService, OpenApiParseError, OpenApiValidationError, type ParsedOperation } from '../services/openapi-import.service';
+import { OpenApiImportService, OpenApiParseError, OpenApiValidationError, type ParsedOperation } from '../services/OpenApiImportService';
 import { AbstractNewCamelRouteCommand } from './AbstractNewCamelRouteCommand';
 
 interface OutputOptions {

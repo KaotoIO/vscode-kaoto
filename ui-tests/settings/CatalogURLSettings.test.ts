@@ -28,7 +28,9 @@ import {
 	WebView,
 	Workbench,
 } from 'vscode-extension-tester';
-import { checkTopologyLoaded, closeEditor, dismissBlockingModal, openAndSwitchToKaotoFrame, resetUserSettings, switchToKaotoFrame } from '../Util';
+import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame, switchToKaotoFrame } from '../utils/editor';
+import { resetUserSettings } from '../utils/settings';
+import { dismissBlockingModal } from '../utils/workbench';
 import { join } from 'path';
 import { rmSync } from 'fs';
 import { expect } from 'chai';

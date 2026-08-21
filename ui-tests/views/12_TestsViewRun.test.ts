@@ -16,6 +16,8 @@
 import { expect } from 'chai';
 import { join } from 'path';
 import { after, before, EditorView, TreeItem, ViewControl, ViewSection, VSBrowser, WebDriver } from 'vscode-extension-tester';
+import { openResourcesAndWaitForActivation } from '../utils/extension';
+import { killTerminal, waitUntilTerminalHasText } from '../utils/terminal';
 import {
 	collapseItemsInsideTreeStructuredView,
 	expandFolderItemsInTreeStructuredView,
@@ -23,10 +25,7 @@ import {
 	getKaotoViewControl,
 	getTreeItem,
 	getTreeItemActionButton,
-	killTerminal,
-	openResourcesAndWaitForActivation,
-	waitUntilTerminalHasText,
-} from '../Util';
+} from '../utils/tree-view';
 
 describe('Tests View', function () {
 	this.timeout(240_000);

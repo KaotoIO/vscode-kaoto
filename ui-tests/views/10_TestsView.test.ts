@@ -16,13 +16,8 @@
 import { expect } from 'chai';
 import { join } from 'path';
 import { EditorView, TreeItem, ViewControl, ViewSection } from 'vscode-extension-tester';
-import {
-	collapseItemsInsideTreeStructuredView,
-	expandFolderItemsInTreeStructuredView,
-	expandViews,
-	getKaotoViewControl,
-	openResourcesAndWaitForActivation,
-} from '../Util';
+import { openResourcesAndWaitForActivation } from '../utils/extension';
+import { collapseItemsInsideTreeStructuredView, expandFolderItemsInTreeStructuredView, expandViews, getKaotoViewControl } from '../utils/tree-view';
 
 describe('Tests View', function () {
 	this.timeout(60_000);

@@ -17,7 +17,9 @@ import { expect } from 'chai';
 import { join } from 'path';
 import { ActivityBar, after, before, ComboSetting, VSBrowser, WebDriver, WebView, Workbench } from 'vscode-extension-tester';
 import { KaotoCanvas } from '../pageObjects';
-import { checkTopologyLoaded, closeEditor, dismissBlockingModal, openAndSwitchToKaotoFrame, resetUserSettings } from '../Util';
+import { checkTopologyLoaded, closeEditor, openAndSwitchToKaotoFrame } from '../utils/editor';
+import { resetUserSettings } from '../utils/settings';
+import { dismissBlockingModal } from '../utils/workbench';
 
 describe('User Settings', function () {
 	this.timeout(90_000);
