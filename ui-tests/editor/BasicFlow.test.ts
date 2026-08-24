@@ -27,7 +27,7 @@ const DATA_TEST_ID_DATAMAPPERSTEP_2_5 = 'custom-node__route.from.steps.0.step:ka
 describe('Kaoto basic development flow', function () {
 	this.timeout(90_000);
 
-	const workspaceFolder = path.join(__dirname, '../test Fixture with speci@l chars');
+	const workspaceFolder = path.join(__dirname, '../../test Fixture with speci@l chars');
 
 	let driver: WebDriver;
 	let globalKaotoWebView: WebView;

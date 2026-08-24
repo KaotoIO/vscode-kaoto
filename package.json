@@ -31,8 +31,8 @@
     "test:unit": "yarn build:test:unit && vscode-test",
     "test:ui": "yarn build:test:ui && extest setup-and-run",
     "setup:test:ui:with-prebuilt-vsix": "yarn build:test:ui && extest get-vscode && extest get-chromedriver && extest install-vsix --vsix_file vscode-kaoto-$npm_package_version.vsix --extensions_dir ./test-resources && extest run-tests --uninstall_extension --extensions_dir ./test-resources --open_resource './test Fixture with speci@l chars' --custom_page_objects './out/pageObjects/locators.js'",
-    "test:ui:with-prebuilt-vsix": "yarn setup:test:ui:with-prebuilt-vsix --code_settings ./ui-tests/vscode-settings.json 'out/**/*.test.js'",
-    "test:ui:with-prebuilt-vsix:minikube": "yarn setup:test:ui:with-prebuilt-vsix --code_settings ./ui-tests/vscode-settings-minikube.json 'out/**/*.test.js'",
+    "test:ui:with-prebuilt-vsix": "yarn setup:test:ui:with-prebuilt-vsix --code_settings ./ui-tests/vscode-settings.json 'out/settings/*.test.js' 'out/views/*.test.js' 'out/editor/*.test.js' 'out/**/*NewProject.test.js'",
+    "test:ui:with-prebuilt-vsix:minikube": "yarn setup:test:ui:with-prebuilt-vsix --code_settings ./ui-tests/vscode-settings-minikube.json 'out/settings/*.test.js' 'out/views/*.test.js' 'out/editor/*.test.js' 'out/**/*NewProject.test.js'",
     "test:ui:clean": "rimraf ./test-resources && rimraf ./out && rimraf *.vsix"
   },
   "dependencies": {

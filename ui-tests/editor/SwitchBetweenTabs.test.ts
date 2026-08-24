@@ -22,7 +22,7 @@ import { EditorTabs, kaotoLocators } from '../pageObjects';
 describe('Switching between editor tabs', function () {
 	this.timeout(90_000);
 
-	const WORKSPACE_FOLDER = join(__dirname, '../test Fixture with speci@l chars');
+	const WORKSPACE_FOLDER = join(__dirname, '../../test Fixture with speci@l chars');
 
 	let driver: WebDriver;
 	let kaotoWebview: WebView;

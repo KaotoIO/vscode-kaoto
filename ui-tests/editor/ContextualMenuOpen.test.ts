@@ -33,7 +33,7 @@ import { openResourcesAndWaitForActivation } from '../utils/extension';
 describe('Contextual menu opening', function () {
 	this.timeout(60_000);
 
-	const workspaceFolder = path.join(__dirname, '../test Fixture with speci@l chars');
+	const workspaceFolder = path.join(__dirname, '../../test Fixture with speci@l chars');
 
 	let driver: WebDriver;
 

@@ -37,7 +37,7 @@ import * as fs from 'fs';
 describe('Maven dependency update pom.xml', function () {
 	this.timeout(180_000);
 
-	const workspaceFolder = path.join(__dirname, '../test Fixture with speci@l chars', 'camel-maven-quarkus-project');
+	const workspaceFolder = path.join(__dirname, '../../test Fixture with speci@l chars', 'camel-maven-quarkus-project');
 
 	let driver: WebDriver;
 	let kaotoWebview: WebView;

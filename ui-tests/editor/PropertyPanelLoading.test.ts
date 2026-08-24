@@ -21,7 +21,7 @@ import { KaotoCanvas, KaotoEditor } from '../pageObjects';
 describe('Property panel loading test', function () {
 	this.timeout(60_000);
 
-	const workspaceFolder = path.join(__dirname, '../test Fixture with speci@l chars');
+	const workspaceFolder = path.join(__dirname, '../../test Fixture with speci@l chars');
 
 	let driver: WebDriver;
 	let kaotoWebview: WebView;

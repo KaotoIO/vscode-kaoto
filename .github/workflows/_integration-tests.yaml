@@ -100,7 +100,7 @@ jobs:
           max_attempts: 2
           command: |
             eval $(minikube -p minikube docker-env)
-            xvfb-run -a yarn run test:it:with-prebuilt-vsix:minikube
+            xvfb-run -a yarn run test:ui:with-prebuilt-vsix:minikube
           on_retry_command: rm -rf "${RUNNER_TEMP}/extest-code"
       - uses: ./.github/actions/upload-test-artifacts
         if: failure()

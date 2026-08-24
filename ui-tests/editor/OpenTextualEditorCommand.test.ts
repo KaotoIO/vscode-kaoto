@@ -21,7 +21,7 @@ import * as os from 'os';
 describe('Toggle Source Code', function () {
 	this.timeout(30_000);
 
-	const WORKSPACE_FOLDER: string = path.join(__dirname, '../test Fixture with speci@l chars');
+	const WORKSPACE_FOLDER: string = path.join(__dirname, '../../test Fixture with speci@l chars');
 	const CAMEL_FILE: string = 'my.camel.yaml';
 
 	let editorView: EditorView;
