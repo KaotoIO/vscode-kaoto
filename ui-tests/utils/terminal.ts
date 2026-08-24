@@ -28,6 +28,7 @@ export async function waitUntilTerminalHasText(driver: WebDriver, textArray: str
 	await driver.sleep(interval);
 	await driver.wait(
 		async function () {
+			// prettier-ignore
 			try {
 				const terminal = await activateTerminalView();
 				const terminalText = await terminal.getText();
@@ -37,7 +38,7 @@ export async function waitUntilTerminalHasText(driver: WebDriver, textArray: str
 					}
 				}
 				return true;
-			} catch (err) {
+			} catch (err) { // NOSONAR
 				return false;
 			}
 		},

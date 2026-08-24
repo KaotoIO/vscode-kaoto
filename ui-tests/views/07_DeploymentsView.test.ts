@@ -68,7 +68,8 @@ describe('Deployments View', function () {
 		expect(item).to.not.be.undefined;
 	});
 
-	it(`stop running integration (kill terminal)`, async function () {
+	// prettier-ignore
+	it(`stop running integration (kill terminal)`, async function () { // NOSONAR - intentional action step: killTerminal throws if it fails; completing without error is the expected outcome
 		await killTerminal();
 	});
 

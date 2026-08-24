@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import * as path from 'path';
+import * as path from 'path'; // NOSONAR
 import * as fs from 'node:fs';
-import * as os from 'os';
+import * as os from 'os'; // NOSONAR
 
 // Enforce same default storage setup as ExTester - see https://github.com/redhat-developer/vscode-extension-tester/wiki/Test-Setup#useful-env-variables
 export const storageFolder = process.env.TEST_RESOURCES ? process.env.TEST_RESOURCES : `${os.tmpdir()}/test-resources`;

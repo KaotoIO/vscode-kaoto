@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AbstractElement, By, until, WebDriver, WebView } from 'vscode-extension-tester';
-import { InputBox } from 'vscode-extension-tester';
+import { AbstractElement, By, InputBox, until, WebDriver, WebView } from 'vscode-extension-tester';
 import { kaotoLocators } from './locators';
 
 /**

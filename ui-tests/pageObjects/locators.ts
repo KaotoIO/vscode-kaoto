@@ -121,7 +121,7 @@ export const kaotoLocators = {
 	/** Kaoto topology context menu */
 	KaotoContextMenu: {
 		menu: `pf-topology-context-menu__c-dropdown__menu`,
-		replaceItem: `//\*[@data-testid='context-menu-item-replace']`,
+		replaceItem: `//*[@data-testid='context-menu-item-replace']`,
 		deleteItem: `li[data-testid="context-menu-item-delete"]`,
 	},
 
@@ -254,7 +254,7 @@ export const locators: LocatorDiff['locators'] = {
 	KaotoContextMenu: {
 		constructor: By.className(`pf-topology-context-menu__c-dropdown__menu`),
 		menu: By.className(`pf-topology-context-menu__c-dropdown__menu`),
-		replaceItem: By.xpath(`//\*[@data-testid='context-menu-item-replace']`),
+		replaceItem: By.xpath(`//*[@data-testid='context-menu-item-replace']`),
 		deleteItem: By.css(`li[data-testid="context-menu-item-delete"]`),
 	},
 

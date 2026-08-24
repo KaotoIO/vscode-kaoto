@@ -75,7 +75,7 @@ describe('Integrations View', function () {
 		const xmlRoutes = labels.filter((label) => label.includes('.camel.xml'));
 
 		expect(xmlRoutes).to.not.be.empty;
-		expect(xmlRoutes.length).to.be.equal(2);
+		expect(xmlRoutes).to.have.lengthOf(2);
 		expect(xmlRoutes).to.include.members(['sample.camel.xml', 'kaoto.camel.xml']);
 	});
 
@@ -83,7 +83,7 @@ describe('Integrations View', function () {
 		const yamlRoutes = labels.filter((label) => label.includes('.camel.yaml'));
 
 		expect(yamlRoutes).to.not.be.empty;
-		expect(yamlRoutes.length).to.be.equal(3);
+		expect(yamlRoutes).to.have.lengthOf(3);
 		expect(yamlRoutes).to.include.members(['sample1.camel.yaml', 'sample2.camel.yaml', 'sample3.camel.yaml']);
 	});
 
@@ -91,7 +91,7 @@ describe('Integrations View', function () {
 		const pipes = labels.filter((label) => label.includes('.pipe.yaml') || label.includes('-pipe.yaml'));
 
 		expect(pipes).to.not.be.empty;
-		expect(pipes.length).to.be.equal(2);
+		expect(pipes).to.have.lengthOf(2);
 		expect(pipes).to.include.members(['pipe1.pipe.yaml', 'pipe2-pipe.yaml']);
 	});
 
@@ -99,14 +99,14 @@ describe('Integrations View', function () {
 		const kamelets = labels.filter((label) => label.includes('.kamelet.yaml'));
 
 		expect(kamelets).to.not.be.empty;
-		expect(kamelets.length).to.be.equal(1);
+		expect(kamelets).to.have.lengthOf(1);
 		expect(kamelets).to.contain('kam1.kamelet.yaml');
 	});
 
 	it('routes are parsed and displayed', async function () {
 		const routes = labels.filter((label) => label.startsWith('route-'));
 		expect(routes).to.not.be.empty;
-		expect(routes.length).to.be.equal(10);
+		expect(routes).to.have.lengthOf(10);
 
 		const route = (await integrationsSection?.findItem('route-2700')) as TreeItem;
 		expect(route).to.not.be.undefined;

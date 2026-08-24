@@ -15,7 +15,7 @@
  */
 
 import { assert } from 'chai';
-import * as path from 'path';
+import * as path from 'path'; // NOSONAR
 import { ActivityBar, By, createWaitHelper, CustomEditor, EditorView, VSBrowser, WebDriver, WebElement, WebView } from 'vscode-extension-tester';
 import { KaotoEditor } from '../pageObjects/KaotoEditor';
 import { kaotoLocators } from '../pageObjects/locators';

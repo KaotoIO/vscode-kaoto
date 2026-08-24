@@ -87,6 +87,7 @@ type KaotoStatusBarState = 'ready' | 'in-progress' | 'none';
  * @returns 'none' if no Kaoto messages are present in the status bar
  */
 async function getKaotoStatusBarState(): Promise<KaotoStatusBarState> {
+	// prettier-ignore
 	try {
 		const statusBar = new StatusBar();
 		const statusBarItems = await statusBar.getItems();
@@ -101,7 +102,7 @@ async function getKaotoStatusBarState(): Promise<KaotoStatusBarState> {
 			}
 		}
 		return 'none';
-	} catch (error) {
+	} catch (error) { // NOSONAR - Polling loop: swallowing the error is intentional — catch returns 'none' as a fallback; driver.wait retries until timeout
 		return 'none';
 	}
 }
@@ -118,12 +119,13 @@ async function openExtensionPage(name: string, timeout: number): Promise<Extensi
 
 	await driver.wait(
 		async () => {
+			// prettier-ignore
 			try {
 				const extensionsView = await (await new ActivityBar().getViewControl('Extensions'))?.openView();
 				const marketplace = (await extensionsView?.getContent().getSection('Installed')) as ExtensionsViewSection;
 				item = (await marketplace.findItem(`@installed ${name}`)) as ExtensionsViewItem;
 				return true;
-			} catch (e) {
+			} catch (e) { // NOSONAR - Polling loop inside driver.wait: returns false to trigger a retry; driver.wait throws TimeoutError if deadline exceeded
 				return false;
 			}
 		},
@@ -135,6 +137,7 @@ async function openExtensionPage(name: string, timeout: number): Promise<Extensi
 
 async function extensionIsActivated(displayName: string): Promise<boolean> {
 	let extensionControl = await new ActivityBar().getViewControl('Extensions');
+	// prettier-ignore
 	try {
 		const item = await openExtensionPage(displayName, 10_000);
 		const activationTime = await item?.findElement(By.className('activationTime'));
@@ -145,7 +148,7 @@ async function extensionIsActivated(displayName: string): Promise<boolean> {
 			await extensionControl?.closeView();
 			return false;
 		}
-	} catch (err) {
+	} catch (err) { // NOSONAR - openExtensionPage or findElement may throw while the page is not yet rendered; returning false is intentional
 		await extensionControl?.closeView();
 		return false;
 	}

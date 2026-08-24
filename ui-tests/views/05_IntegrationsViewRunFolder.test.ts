@@ -67,7 +67,8 @@ describe('Integrations View', function () {
 			await button?.click();
 		});
 
-		it(`check 'folderB' routes are running`, async function () {
+		// prettier-ignore
+		it(`check 'folderB' routes are running`, async function () { // NOSONAR - waitUntilTerminalHasText throws on timeout, acting as the assertion
 			await waitUntilTerminalHasText(driver, ['Routes startup', 'Hello Route B', 'Hello Route BB'], 4_000, 180_000);
 		});
 	});

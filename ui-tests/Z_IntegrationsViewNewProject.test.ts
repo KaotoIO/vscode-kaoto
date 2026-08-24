@@ -85,7 +85,8 @@ describe('Integrations View', function () {
 			fs.rmSync(PROJECT_OUTPUT_DIR, { force: true, recursive: true });
 		});
 
-		it(`Create a new Quarkus project`, async function () {
+		// prettier-ignore
+		it(`Create a new Quarkus project`, async function () { // NOSONAR - multi-step UI wizard flow; each await throws on failure, and waitUntilNewCamelProjectHasCrucialFiles() asserts project structure via driver.wait
 			// runtime selection
 			input = await InputBox.create(30_000);
 			await input.setText('quarkus');

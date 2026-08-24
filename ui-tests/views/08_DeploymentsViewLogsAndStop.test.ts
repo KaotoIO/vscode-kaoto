@@ -68,7 +68,8 @@ describe('Deployments View', function () {
 		});
 	});
 
-	it(`hide terminal`, async function () {
+	// prettier-ignore
+	it(`hide terminal`, async function () { // NOSONAR - intentional action step: UI state change with no return value; failure throws and fails the test
 		await new BottomBarPanel().toggle(false);
 	});
 

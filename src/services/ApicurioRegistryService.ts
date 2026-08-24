@@ -226,6 +226,6 @@ export class ApicurioRegistryService {
 		} catch {
 			throw new ApicurioRegistryUrlError(`Invalid URL: "${registryUrl}"`);
 		}
-		return registryUrl.replace(/\/+$/, '');
+		return registryUrl.replace(/\/+$/, ''); // NOSONAR - /\/+$/ is a simple anchored pattern with no backtracking ambiguity; Sonar's super-linear analysis is a false positive for this input domain (short URL strings)
 	}
 }

@@ -61,12 +61,14 @@ describe('Integrations View', function () {
 			expect(button).to.not.be.undefined;
 		});
 
-		it(`click button`, async function () {
+		// prettier-ignore
+		it(`click button`, async function () { // NOSONAR - intentional action step: success means no exception thrown; a click that fails will throw and fail the test
 			const button = await getViewActionButton(kaotoViewContainer, integrationsSection, 'Run: Workspace');
 			await button?.click();
 		});
 
-		it(`check all workspace routes are running`, async function () {
+		// prettier-ignore
+		it(`check all workspace routes are running`, async function () { // NOSONAR - waitUntilTerminalHasText throws on timeout, acting as the assertion
 			await waitUntilTerminalHasText(driver, ['Routes startup', 'Hello Root Route', 'Hello Route A', 'Hello Route B', 'Hello Route BB'], 4_000, 180_000);
 		});
 	});
@@ -83,7 +85,8 @@ describe('Integrations View', function () {
 			expect(button).to.not.be.undefined;
 		});
 
-		it(`click button`, async function () {
+		// prettier-ignore
+		it(`click button`, async function () { // NOSONAR - intentional action step: success means no exception thrown; a click that fails will throw and fail the test
 			if (process.platform === 'win32') {
 				// temporarily skip on Windows because it is really unstable
 				// failing with JBang error: 'The process cannot access the file because it is being used by another process.'
@@ -99,8 +102,9 @@ describe('Integrations View', function () {
 			{ workspace: 'folderA', messages: ['Hello Route A'] },
 		];
 
+		// prettier-ignore
 		for (const { workspace, messages } of expectedMessages) {
-			it(`check ${workspace} workspace routes are running`, async function () {
+			it(`check ${workspace} workspace routes are running`, async function () { // NOSONAR - waitUntilTerminalHasText throws on timeout, acting as the assertion
 				if (process.platform === 'win32') {
 					// temporarily skip on Windows because it is really unstable
 					// failing with JBang error: 'The process cannot access the file because it is being used by another process.'
