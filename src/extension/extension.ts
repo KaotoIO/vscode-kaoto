@@ -20,13 +20,22 @@ import { I18n } from '@kie-tools-core/i18n/dist/core';
 import * as KogitoVsCode from '@kie-tools-core/vscode-extension/dist';
 import { getRedHatService, TelemetryService } from '@redhat-developer/vscode-redhat-telemetry';
 import * as vscode from 'vscode';
-import { KAOTO_FILE_PATH_GLOB } from '../constants';
+import { KAOTO_FILE_PATH_GLOB, VIEW_HELP } from '../constants';
 import { VSCodeKaotoChannelApiProducer } from './../webview/VSCodeKaotoChannelApiProducer';
-import { ExtensionContextHandler } from './ExtensionContextHandler';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { PortManager } from '../services/PortManager';
 import { CamelExecutorFactory } from '../executors/CamelExecutorFactory';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
+import { HelpFeedbackProvider } from '../views/help/HelpFeedbackProvider';
+import { IRegistrar } from './registrars/IRegistrar';
+import { EditorRegistrar } from './registrars/EditorRegistrar';
+import { ExecutorRegistrar } from './registrars/ExecutorRegistrar';
+import { LifecycleRegistrar } from './registrars/LifecycleRegistrar';
+import { IntegrationsRegistrar } from './registrars/IntegrationsRegistrar';
+import { DeploymentsRegistrar } from './registrars/DeploymentsRegistrar';
+import { TestsRegistrar } from './registrars/TestsRegistrar';
+import { InfrastructureRegistrar } from './registrars/InfrastructureRegistrar';
+import { OpenApiRegistrar } from './registrars/OpenApiRegistrar';
 
 let backendProxy: VsCodeBackendProxy;
 let telemetryService: TelemetryService;
@@ -78,84 +87,30 @@ export async function activate(context: vscode.ExtensionContext) {
 	const redhatService = await getRedHatService(context);
 	telemetryService = await redhatService.getTelemetryService();
 
-	const contextHandler = new ExtensionContextHandler(context, kieEditorStore, telemetryService);
-
-	/*
-	 * Register executor setup: config listeners, catalog command, and initial executor init
-	 */
-	contextHandler.registerExecutorSetup(catalogService);
-
-	/*
-	 * register undo/redo blank commands
-	 */
-	contextHandler.registerUndoRedoCommands();
-
-	/*
-	 * register commands for a toggle source code (open/close camel file in a side textual editor)
-	 */
-	await contextHandler.registerToggleSourceCode();
-
-	/*
-	 * register open with Kaoto Editor
-	 */
-	contextHandler.registerOpenWithKaoto();
-
 	/*
 	 * register all views (Integrations, Deployments, Infrastructure, Tests, Help & Feedback, OpenAPI) first to avoid race conditions
 	 */
-	contextHandler.registerHelpAndFeedbackView();
-	contextHandler.registerIntegrationsView();
-	contextHandler.registerDeploymentsView(portManager);
-	contextHandler.registerInfrastructureView();
-	contextHandler.registerTestsView();
-	contextHandler.registerOpenApiView();
+	context.subscriptions.push(vscode.window.registerTreeDataProvider(VIEW_HELP, new HelpFeedbackProvider(context.extensionUri.path)));
 
-	/*
-	 * register commands for 'Integrations' view
-	 */
-	await contextHandler.hideIntegrationsViewButtonsForMavenProjects();
-	contextHandler.registerNewCamelFilesCommands();
-	contextHandler.registerNewCamelProjectCommands();
-	contextHandler.registerKubernetesRunCommands();
-	contextHandler.registerRunIntegrationCommands(portManager);
-	contextHandler.registerRunSourceDirCommands(portManager);
+	const registrars: IRegistrar[] = [
+		new EditorRegistrar(context, kieEditorStore, telemetryService),
+		new IntegrationsRegistrar(context, telemetryService, portManager),
+		new DeploymentsRegistrar(context, telemetryService, portManager),
+		new InfrastructureRegistrar(context, telemetryService),
+		new TestsRegistrar(context, telemetryService),
+		new OpenApiRegistrar(context, telemetryService),
+		new ExecutorRegistrar(context, telemetryService, catalogService),
+		new LifecycleRegistrar(context, telemetryService),
+	];
 
-	/*
-	 * register commands for 'Deployments' view
-	 */
-	contextHandler.registerDeploymentsIntegrationCommands(); // Stop and Logs view item action buttons
-	contextHandler.registerDeploymentsRouteCommands(); // Stop/Start/Resume/Suspend route level buttons
-
-	/*
-	 * register commands for 'Infrastructure' view
-	 */
-	contextHandler.registerInfrastructureCommands();
-
-	/*
-	 * register commands for 'OpenAPI' view
-	 */
-	contextHandler.registerOpenApiImportCommand();
-
-	/*
-	 * register commands for 'Tests' view
-	 */
-	contextHandler.registerTestsInitCommands();
-	contextHandler.registerTestsRunCommands();
+	for (const registrar of registrars) {
+		await registrar.register();
+	}
 
 	/*
 	 * send extension startup event into Red Hat Telemetry
 	 */
 	await telemetryService.sendStartupEvent();
-
-	/*
-	 * show recommended extensions
-	 */
-	await contextHandler.showRecommendedExtensions();
-
-	/*
-	 * Show What's New on first start for this version
-	 */
-	await contextHandler.showWhatsNewIfNeeded();
 
 	KaotoOutputChannel.logInfo('Kaoto extension is successfully setup.');
 	console.log('Kaoto extension is successfully setup.');
