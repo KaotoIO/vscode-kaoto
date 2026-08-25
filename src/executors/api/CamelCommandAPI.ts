@@ -14,8 +14,8 @@ import {
 	RuntimeType,
 } from '../types/ExecutorTypes';
 import { CamelSettingsHelper } from '../helpers/CamelSettingsHelper';
-import { TestFolderResolver } from '../../helpers/TestFolderResolver';
-import { arePathsEqual } from '../../helpers/helpers';
+import { TestFolderResolver } from '../../services/TestFolderResolver';
+import { arePathsEqual } from '../../utils/Path';
 import { KAOTO_EXECUTOR_INFRA_ARGUMENTS_SETTING_ID } from '../../constants';
 import { KaotoOutputChannel } from '../../extension/KaotoOutputChannel';
 

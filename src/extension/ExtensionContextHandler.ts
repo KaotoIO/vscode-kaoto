@@ -16,9 +16,9 @@
 import * as vscode from 'vscode';
 import path from 'path';
 import * as KogitoVsCode from '@kie-tools-core/vscode-extension/dist';
-import { HelpFeedbackProvider } from '../views/providers/HelpFeedbackProvider';
-import { IntegrationsProvider } from '../views/providers/IntegrationsProvider';
-import { Integration } from '../views/integrationTreeItems/Integration';
+import { HelpFeedbackProvider } from '../views/help/HelpFeedbackProvider';
+import { IntegrationsProvider } from '../views/integrations/IntegrationsProvider';
+import { Integration } from '../views/integrations/Integration';
 import { NewCamelRouteCommand } from '../commands/NewCamelRouteCommand';
 import { NewCamelKameletCommand } from '../commands/NewCamelKameletCommand';
 import { NewCamelPipeCommand } from '../commands/NewCamelPipeCommand';
@@ -77,45 +77,38 @@ import {
 	VIEW_HELP,
 	VIEW_DEPLOYMENTS,
 } from '../constants';
-import {
-	findFolderOfPomXml,
-	runJBangCommandWithStatusBar,
-	verifyJavaExists,
-	verifyJBangExists,
-	verifyJBangTrustedSources,
-	verifyCamelPluginsAreInstalled,
-	safeGlobalStateGet,
-	safeGlobalStateUpdate,
-} from '../helpers/helpers';
+import { findFolderOfPomXml } from '../utils/Path';
+import { runJBangCommandWithStatusBar, verifyJavaExists, verifyJBangExists, verifyJBangTrustedSources, verifyCamelPluginsAreInstalled } from '../utils/Process';
+import { safeGlobalStateGet, safeGlobalStateUpdate } from '../utils/Vscode';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
 import { NewCamelFileCommand } from '../commands/NewCamelFileCommand';
-import { confirmFileDeleteDialog, confirmInfrastructureServiceStop } from '../helpers/modals';
+import { confirmFileDeleteDialog, confirmInfrastructureServiceStop } from '../utils/Modals';
 import { TelemetryEvent, TelemetryService } from '@redhat-developer/vscode-redhat-telemetry';
 import { NewCamelProjectCommand } from '../commands/NewCamelProjectCommand';
 import { CamelTaskFactory } from '../tasks/CamelTaskFactory';
 import { CamelCommandAPI } from '../executors/api/CamelCommandAPI';
-import { DeploymentsProvider } from '../views/providers/DeploymentsProvider';
-import { PortManager } from '../helpers/PortManager';
-import { ParentItem } from '../views/deploymentTreeItems/ParentItem';
+import { DeploymentsProvider } from '../views/deployments/DeploymentsProvider';
+import { PortManager } from '../services/PortManager';
+import { ParentItem } from '../views/deployments/ParentItem';
 import { RouteOperation } from '../types/RouteOperation';
-import { ChildItem } from '../views/deploymentTreeItems/ChildItem';
+import { ChildItem } from '../views/deployments/ChildItem';
 import { RecommendationCore } from '@redhat-developer/vscode-extension-proposals';
 import { WhatsNewPanel } from './WhatsNewPanel';
 import { satisfies } from 'compare-versions';
-import { StepsOnSaveManager } from '../helpers/StepsOnSaveManager';
-import { Folder } from '../views/integrationTreeItems/Folder';
-import { TestsProvider } from '../views/providers/TestsProvider';
-import { AbstractFolderTreeProvider } from '../views/providers/AbstractFolderTreeProvider';
+import { StepsOnSaveManager } from '../services/StepsOnSaveManager';
+import { Folder } from '../views/integrations/Folder';
+import { TestsProvider } from '../views/tests/TestsProvider';
+import { AbstractFolderTreeProvider } from '../views/shared/AbstractFolderTreeProvider';
 import { NewCamelTestCommand } from '../commands/NewCamelTestCommand';
-import { TestFolder } from '../views/testTreeItems/TestFolder';
+import { TestFolder } from '../views/tests/TestFolder';
 import { CamelTask, CamelTaskDefinition } from '../tasks/CamelTask';
-import { Test } from '../views/testTreeItems/Test';
-import { OpenApiProvider } from '../views/providers/OpenApiProvider';
+import { Test } from '../views/tests/Test';
+import { OpenApiProvider } from '../views/openapi/OpenApiProvider';
 import { ImportOpenApiCommand } from '../commands/ImportOpenApiCommand';
 import { ensureExecutorAvailable } from '../executors/ExecutorInitializer';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
-import { InfrastructureProvider } from '../views/providers/InfrastructureProvider';
-import { InfrastructureItem } from '../views/infrastructureTreeItems/InfrastructureItem';
+import { InfrastructureProvider } from '../views/infrastructure/InfrastructureProvider';
+import { InfrastructureItem } from '../views/infrastructure/InfrastructureItem';
 import { StartInfrastructureServiceCommand } from '../commands/StartInfrastructureServiceCommand';
 
 export class ExtensionContextHandler {

@@ -24,7 +24,7 @@ import { KAOTO_FILE_PATH_GLOB } from '../constants';
 import { VSCodeKaotoChannelApiProducer } from './../webview/VSCodeKaotoChannelApiProducer';
 import { ExtensionContextHandler } from './ExtensionContextHandler';
 import { KaotoOutputChannel } from './KaotoOutputChannel';
-import { PortManager } from '../helpers/PortManager';
+import { PortManager } from '../services/PortManager';
 import { CamelExecutorFactory } from '../executors/CamelExecutorFactory';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
 
