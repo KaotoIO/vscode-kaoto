@@ -123,6 +123,10 @@ const commonConfig = (env) => {
 			extensions: ['.tsx', '.ts', '.js', '.jsx'],
 			modules: ['node_modules'],
 			alias: {
+				// Pin react and react-dom to a single copy so the webview bundle and
+				// @kaoto/kaoto share the same React instance. Both are runtime deps
+				// because they are bundled into the webview JS, not resolved at runtime
+				// by Node.js.
 				react: path.resolve('./node_modules/react'),
 				'react-dom': path.resolve('./node_modules/react-dom'),
 			},

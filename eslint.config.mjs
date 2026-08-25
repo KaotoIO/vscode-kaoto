@@ -1,13 +1,12 @@
 // eslint.config.mjs
 
-import { defineConfig } from 'eslint-define-config';
 import ts from '@typescript-eslint/parser';
 import tsEslint from '@typescript-eslint/eslint-plugin';
 import stylisticEslint from '@stylistic/eslint-plugin';
 import chaiFriendly from 'eslint-plugin-chai-friendly';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 
-export default defineConfig([
+export default [
 	{
 		ignores: ['**/*.test.js', 'node_modules/*', 'dist/*', 'out/*'],
 	},
@@ -68,4 +67,4 @@ export default defineConfig([
 			'prettier/prettier': ['warn'],
 		},
 	},
-]);
+];
