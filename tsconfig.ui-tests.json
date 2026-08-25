@@ -3,7 +3,7 @@
   "compilerOptions": {
     "module": "CommonJS",
     "moduleResolution": "Bundler",
-    "rootDir": "ui-tests",
+    "rootDir": "src/ui-test",
     "target": "ES2023",
     "lib": ["ES2023"],
     "strict": true,
@@ -14,5 +14,5 @@
     "resolveJsonModule": true,
     "outDir": "out"
   },
-  "include": ["ui-tests"]
+  "include": ["src/ui-test"]
 }

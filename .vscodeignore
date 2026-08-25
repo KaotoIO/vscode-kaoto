@@ -19,6 +19,6 @@ uitest-resources
 .camel-jbang
 .camel-jbang-run
 .citrus-jbang
-ui-tests/**
+src/ui-test/**
 .github/**
 reports/**
