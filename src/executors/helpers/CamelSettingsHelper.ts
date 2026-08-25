@@ -16,8 +16,7 @@ import {
 	KAOTO_EXECUTOR_TYPE_SETTING_ID,
 } from '../../constants';
 import { resolvePaths } from '../../utils/Path';
-import { normalizeVersionForSemver } from '../../utils/Version';
-import { isRedHatBuild } from '../../utils/Vscode';
+import { isRedHatBuild, normalizeVersionForSemver } from '../../utils/Version';
 
 export interface ProcessedArguments {
 	args: string[];

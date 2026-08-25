@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { KaotoOutputChannel } from '../extension/KaotoOutputChannel';
-import { safeGlobalStateGet, safeGlobalStateUpdate, isRedHatBuild } from '../utils/Vscode';
+import { safeGlobalStateGet, safeGlobalStateUpdate } from '../utils/Vscode';
+import { isRedHatBuild } from '../utils/Version';
 
 const DONT_SHOW_AGAIN_KEY = 'kaoto.redhat.maven.notification.dontShowAgain';
 

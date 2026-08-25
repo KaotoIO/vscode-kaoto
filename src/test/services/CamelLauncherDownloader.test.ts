@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import * as path from 'path';
 import * as fs from 'fs';
 import { CamelLauncherDownloader, LauncherNotFoundError } from '../../services/CamelLauncherDownloader';
-import { isRedHatBuild } from '../../utils/Vscode';
+import { isRedHatBuild } from '../../utils/Version';
 
 suite('CamelLauncherDownloader Tests', () => {
 	let downloader: CamelLauncherDownloader;

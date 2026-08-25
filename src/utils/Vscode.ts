@@ -33,7 +33,3 @@ export async function safeGlobalStateUpdate(context: ExtensionContext, key: stri
 		KaotoOutputChannel.logWarning(`Unable to update global state for key '${key}': ${String(err)}`);
 	}
 }
-
-export function isRedHatBuild(version: string): boolean {
-	return version.includes('.redhat-');
-}

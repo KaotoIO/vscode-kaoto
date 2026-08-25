@@ -17,3 +17,7 @@
 export function normalizeVersionForSemver(version: string): string {
 	return version.replace(/\.redhat-\d+$/, '');
 }
+
+export function isRedHatBuild(version: string): boolean {
+	return version.includes('.redhat-');
+}
