@@ -52,7 +52,7 @@
     "@redhat-developer/vscode-extension-proposals": "^0.0.23",
     "@redhat-developer/vscode-redhat-telemetry": "^0.10.2",
     "compare-versions": "^6.1.1",
-    "dompurify": "3.4.13",
+    "dompurify": "3.4.14",
     "get-port-please": "^3.2.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
@@ -1490,7 +1490,7 @@
     }
   },
   "resolutions": {
-    "dompurify": "3.4.13",
+    "dompurify": "3.4.14",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "semver": "7.5.2",
