@@ -100,7 +100,7 @@ Before submitting AI-generated PRs, ensure:
 
 ### Linting and Code Quality
 
-- `yarn run lint` - Lint TypeScript files in `src` and `ui-tests`
+- `yarn run lint` - Lint TypeScript files in `src` (includes `src/ui-test`)
 - ESLint configuration in `eslint.config.mjs` with TypeScript and Prettier integration
 
 ### Testing
@@ -110,7 +110,7 @@ Before submitting AI-generated PRs, ensure:
 - `yarn run build:test:unit` - Build unit tests
 - `yarn run build:test:ui` - Build UI/integration tests
 - Unit tests located in `src/test/`
-- UI/integration tests in `ui-tests/`
+- UI/integration tests in `src/ui-test/`
 
 #### How to run UI/integration tests
 
@@ -166,7 +166,7 @@ Before submitting AI-generated PRs, ensure:
 - **Test Directory (`src/test/`)** mirrors the source structure:
   - `commands/`, `executors/`, `extension/`, `services/`, `utils/`, `views/`, `webview/`
 
-- **UI/Integration Tests (`ui-tests/`):**
+- **UI/Integration Tests (`src/ui-test/`):**
   - `editor/` - Editor interaction tests
   - `pageObjects/` - Page object models
   - `settings/` - Settings tests

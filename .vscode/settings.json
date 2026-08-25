@@ -21,8 +21,8 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "js/ts.tsc.autoDetect": "off",
-  "extesterRunner.testFileGlob": "**/ui-tests/**/*.test.ts",
-  "extesterRunner.rootFolder": "ui-tests",
+  "extesterRunner.testFileGlob": "**/src/ui-test/**/*.test.ts",
+  "extesterRunner.rootFolder": "src/ui-test",
   "extesterRunner.additionalArgs": [
     "--yarn",
     "--uninstall_extension",

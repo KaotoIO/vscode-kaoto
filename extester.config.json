@@ -11,7 +11,7 @@
     "testFiles": ["out/settings/*.test.js", "out/views/*.test.js", "out/editor/*.test.js", "out/**/*NewProject.test.js"],
     "resources": ["./test Fixture with speci@l chars"],
     "extensionsDir": "./test-resources",
-    "settings": "./ui-tests/vscode-settings.json",
+    "settings": "./src/ui-test/vscode-settings.json",
     "customPageObjects": "./out/pageObjects/locators.js"
   }
 }
