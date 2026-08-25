@@ -34,14 +34,15 @@ import { CamelTaskFactory } from '../../tasks/CamelTaskFactory';
 import { PortManager } from '../../services/PortManager';
 import { KaotoOutputChannel } from '../KaotoOutputChannel';
 import { sendCommandTrackingEvent } from './TrackingEvent';
+import { IRegistrar } from './IRegistrar';
 
-export class DeploymentsRegistrar {
+export class DeploymentsRegistrar implements IRegistrar {
 	private deploymentsProvider!: DeploymentsProvider;
 
 	constructor(
 		private readonly context: vscode.ExtensionContext,
-		private readonly portManager: PortManager,
 		private readonly telemetryService: TelemetryService | undefined,
+		private readonly portManager: PortManager,
 	) {}
 
 	register(): void {

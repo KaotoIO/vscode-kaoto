@@ -49,12 +49,13 @@ import { confirmFileDeleteDialog } from '../../utils/Modals';
 import { safeGlobalStateGet, safeGlobalStateUpdate } from '../../utils/Vscode';
 import { KaotoOutputChannel } from '../KaotoOutputChannel';
 import { sendCommandTrackingEvent } from './TrackingEvent';
+import { IRegistrar } from './IRegistrar';
 
-export class IntegrationsRegistrar {
+export class IntegrationsRegistrar implements IRegistrar {
 	constructor(
 		private readonly context: vscode.ExtensionContext,
-		private readonly portManager: PortManager,
 		private readonly telemetryService: TelemetryService | undefined,
+		private readonly portManager: PortManager,
 	) {}
 
 	async register(): Promise<void> {

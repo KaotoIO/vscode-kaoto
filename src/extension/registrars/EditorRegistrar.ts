@@ -18,8 +18,9 @@ import * as KogitoVsCode from '@kie-tools-core/vscode-extension/dist';
 import { TelemetryService } from '@redhat-developer/vscode-redhat-telemetry';
 import { COMMAND_CLOSE_SOURCE, COMMAND_OPEN_SOURCE, COMMAND_OPEN_WITH_KAOTO, COMMAND_REDO, COMMAND_UNDO } from '../../constants';
 import { sendCommandTrackingEvent } from './TrackingEvent';
+import { IRegistrar } from './IRegistrar';
 
-export class EditorRegistrar {
+export class EditorRegistrar implements IRegistrar {
 	constructor(
 		private readonly context: vscode.ExtensionContext,
 		private readonly kieEditorStore: KogitoVsCode.VsCodeKieEditorStore,

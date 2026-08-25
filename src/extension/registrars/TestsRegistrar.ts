@@ -36,8 +36,9 @@ import { CamelTask } from '../../tasks/CamelTask';
 import { confirmFileDeleteDialog } from '../../utils/Modals';
 import { KaotoOutputChannel } from '../KaotoOutputChannel';
 import { sendCommandTrackingEvent } from './TrackingEvent';
+import { IRegistrar } from './IRegistrar';
 
-export class TestsRegistrar {
+export class TestsRegistrar implements IRegistrar {
 	private testsProvider!: TestsProvider;
 
 	constructor(

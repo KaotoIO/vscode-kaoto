@@ -33,19 +33,21 @@ import {
 import { KaotoOutputChannel } from '../KaotoOutputChannel';
 import { KaotoCatalogService } from '../../services/KaotoCatalogService';
 import { ensureExecutorAvailable } from '../../executors/ExecutorInitializer';
+import { IRegistrar } from './IRegistrar';
 
-export class ExecutorRegistrar {
+export class ExecutorRegistrar implements IRegistrar {
 	constructor(
 		private readonly context: vscode.ExtensionContext,
 		private readonly telemetryService: TelemetryService | undefined,
+		private readonly catalogService: KaotoCatalogService,
 	) {}
 
 	/**
 	 * Register executor-related configuration listeners, catalog selection command,
 	 * and trigger initial executor setup (non-blocking).
 	 */
-	public register(catalogService: KaotoCatalogService): void {
-		this.registerExecutorSetup(catalogService);
+	public register(): void {
+		this.registerExecutorSetup(this.catalogService);
 	}
 
 	public registerExecutorSetup(catalogService: KaotoCatalogService): void {

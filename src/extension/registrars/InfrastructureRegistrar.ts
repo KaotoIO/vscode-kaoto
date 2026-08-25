@@ -32,8 +32,9 @@ import { CamelTaskFactory } from '../../tasks/CamelTaskFactory';
 import { confirmInfrastructureServiceStop } from '../../utils/Modals';
 import { KaotoOutputChannel } from '../KaotoOutputChannel';
 import { sendCommandTrackingEvent } from './TrackingEvent';
+import { IRegistrar } from './IRegistrar';
 
-export class InfrastructureRegistrar {
+export class InfrastructureRegistrar implements IRegistrar {
 	private infrastructureProvider!: InfrastructureProvider;
 
 	constructor(

@@ -27,6 +27,7 @@ import { PortManager } from '../services/PortManager';
 import { CamelExecutorFactory } from '../executors/CamelExecutorFactory';
 import { KaotoCatalogService } from '../services/KaotoCatalogService';
 import { HelpFeedbackProvider } from '../views/help/HelpFeedbackProvider';
+import { IRegistrar } from './registrars/IRegistrar';
 import { EditorRegistrar } from './registrars/EditorRegistrar';
 import { ExecutorRegistrar } from './registrars/ExecutorRegistrar';
 import { LifecycleRegistrar } from './registrars/LifecycleRegistrar';
@@ -86,39 +87,30 @@ export async function activate(context: vscode.ExtensionContext) {
 	const redhatService = await getRedHatService(context);
 	telemetryService = await redhatService.getTelemetryService();
 
-	const executorRegistrar = new ExecutorRegistrar(context, telemetryService);
-
-	/*
-	 * register undo/redo blank commands, toggle source code, and open with Kaoto
-	 */
-	await new EditorRegistrar(context, kieEditorStore, telemetryService).register();
-
 	/*
 	 * register all views (Integrations, Deployments, Infrastructure, Tests, Help & Feedback, OpenAPI) first to avoid race conditions
 	 */
 	context.subscriptions.push(vscode.window.registerTreeDataProvider(VIEW_HELP, new HelpFeedbackProvider(context.extensionUri.path)));
-	await new IntegrationsRegistrar(context, portManager, telemetryService).register();
-	new DeploymentsRegistrar(context, portManager, telemetryService).register();
-	new InfrastructureRegistrar(context, telemetryService).register();
-	new TestsRegistrar(context, telemetryService).register();
-	new OpenApiRegistrar(context, telemetryService).register();
 
-	/*
-	 * Register executor setup: config listeners, catalog command, and initial executor init
-	 */
-	executorRegistrar.register(catalogService);
+	const registrars: IRegistrar[] = [
+		new EditorRegistrar(context, kieEditorStore, telemetryService),
+		new IntegrationsRegistrar(context, telemetryService, portManager),
+		new DeploymentsRegistrar(context, telemetryService, portManager),
+		new InfrastructureRegistrar(context, telemetryService),
+		new TestsRegistrar(context, telemetryService),
+		new OpenApiRegistrar(context, telemetryService),
+		new ExecutorRegistrar(context, telemetryService, catalogService),
+		new LifecycleRegistrar(context, telemetryService),
+	];
+
+	for (const registrar of registrars) {
+		await registrar.register();
+	}
 
 	/*
 	 * send extension startup event into Red Hat Telemetry
 	 */
 	await telemetryService.sendStartupEvent();
-
-	/*
-	 * show recommended extensions and What's New on first start for this version
-	 */
-	const lifecycleRegistrar = new LifecycleRegistrar(context, telemetryService);
-	await lifecycleRegistrar.showRecommendedExtensions();
-	await lifecycleRegistrar.showWhatsNewIfNeeded();
 
 	KaotoOutputChannel.logInfo('Kaoto extension is successfully setup.');
 	console.log('Kaoto extension is successfully setup.');

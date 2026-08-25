@@ -22,8 +22,9 @@ import { safeGlobalStateGet, safeGlobalStateUpdate } from '../../utils/Vscode';
 import { KaotoOutputChannel } from '../KaotoOutputChannel';
 import { WhatsNewPanel } from '../WhatsNewPanel';
 import { sendCommandTrackingEvent } from './TrackingEvent';
+import { IRegistrar } from './IRegistrar';
 
-export class LifecycleRegistrar {
+export class LifecycleRegistrar implements IRegistrar {
 	constructor(
 		private readonly context: vscode.ExtensionContext,
 		private readonly telemetryService: TelemetryService | undefined,

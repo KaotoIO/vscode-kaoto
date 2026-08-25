@@ -22,8 +22,9 @@ import { ImportOpenApiCommand } from '../../commands/ImportOpenApiCommand';
 import { confirmFileDeleteDialog } from '../../utils/Modals';
 import { KaotoOutputChannel } from '../KaotoOutputChannel';
 import { sendCommandTrackingEvent } from './TrackingEvent';
+import { IRegistrar } from './IRegistrar';
 
-export class OpenApiRegistrar {
+export class OpenApiRegistrar implements IRegistrar {
 	constructor(
 		private readonly context: vscode.ExtensionContext,
 		private readonly telemetryService: TelemetryService | undefined,
