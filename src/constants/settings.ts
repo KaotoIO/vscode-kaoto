@@ -12,8 +12,6 @@ export const KAOTO_REST_APICURIO_REGISTRY_URL_SETTING_ID = 'kaoto.restConfigurat
 
 export const KAOTO_REST_CUSTOM_MEDIA_TYPES_SETTING_ID = 'kaoto.restConfiguration.customMediaTypes';
 
-export const KAOTO_DEPLOYMENTS_REFRESH_INTERVAL_SETTING_ID = 'kaoto.deployments.refresh.interval';
-
 export const KAOTO_VIEWS_REFRESH_INTERVAL_SETTING_ID = 'kaoto.views.refresh.interval';
 
 export const KAOTO_CATALOG_URL_SETTING_ID = 'kaoto.catalog.url';

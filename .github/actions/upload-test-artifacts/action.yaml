@@ -10,13 +10,13 @@ runs:
   using: composite
   steps:
     - name: Store Integration Tests VS Code Logs
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       if: ${{ always() }}
       with:
         name: vscode-logs-${{ inputs.os-name }}
         path: test-resources/settings/logs
     - name: Store Integration Tests VS Code screenshots
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       if: ${{ always() }}
       with:
         name: ui-test-screenshots-${{ inputs.os-name }}

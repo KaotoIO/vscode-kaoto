@@ -4,7 +4,6 @@ out/**
 src/**
 test/**
 .gitignore
-vsc-extension-quickstart.md
 **/tsconfig.json
 **/*.map
 **/*.ts
@@ -22,3 +21,9 @@ uitest-resources
 src/ui-test/**
 .github/**
 reports/**
+resources/demo.camel.yaml
+resources/test.kaoto.yaml
+resources/whats-new/2.8/**
+resources/whats-new/2.9/**
+resources/whats-new/2.10/**
+resources/whats-new/2.11/**
