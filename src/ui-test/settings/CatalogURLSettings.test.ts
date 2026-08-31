@@ -46,8 +46,20 @@ describe('User Settings', function () {
 	let driver: WebDriver;
 	let kaotoWebview: WebView;
 
-	before(function () {
+	before(async function (this: Mocha.Context) {
+		this.timeout(60_000);
 		driver = VSBrowser.instance.driver;
+		await VSBrowser.instance.waitForWorkbench(30_000, async function () {
+			await driver.wait(
+				async function () {
+					const editorTitles = await new EditorView().getOpenEditorTitles();
+					return editorTitles.find((title) => title.startsWith("What's New"));
+				},
+				30_000,
+				"Waiting for a What's New page to display.",
+			);
+		});
+		await new EditorView().closeAllEditors(); // close mainly What's New editor
 	});
 
 	after(async function () {
