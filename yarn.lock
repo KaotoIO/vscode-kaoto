@@ -13413,7 +13413,7 @@ __metadata:
     vscode-extension-tester: "npm:^8.25.0"
     wait-on: "npm:^9.1.0"
     web-worker: "npm:^1.5.0"
-    webpack: "npm:5.110.2"
+    webpack: "npm:5.110.3"
     webpack-cli: "npm:7.2.3"
     webpack-merge: "npm:6.0.1"
     yaml: "npm:^2.9.0"
@@ -13547,9 +13547,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.110.2":
-  version: 5.110.2
-  resolution: "webpack@npm:5.110.2"
+"webpack@npm:5.110.3":
+  version: 5.110.3
+  resolution: "webpack@npm:5.110.3"
   dependencies:
     "@types/estree": "npm:^1.0.8"
     "@types/json-schema": "npm:^7.0.15"
@@ -13575,7 +13575,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 10/4be61157406094143fbb39c4c3da19d07ff56d97c28347860ad4f7acd9a86f27e61da4ed15cb5d9aad7f2f2b8e772033c894ae464ed42ba962e5ef83132aa612
+  checksum: 10/be12a8b532febb0ab47d1b98f1f243708926be1b9fc39bceecdf8876af907a93defc9b36c9cece3adfccfc76c6960909b187f488e8c3497e8ae989c0701f0e37
   languageName: node
   linkType: hard
 
