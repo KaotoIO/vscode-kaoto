@@ -5959,15 +5959,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:3.4.14":
-  version: 3.4.14
-  resolution: "dompurify@npm:3.4.14"
+"dompurify@npm:3.4.15":
+  version: 3.4.15
+  resolution: "dompurify@npm:3.4.15"
   dependencies:
     "@types/trusted-types": "npm:^2.0.7"
   dependenciesMeta:
     "@types/trusted-types":
       optional: true
-  checksum: 10/e1948f825c9ea5dfc2d2adfdab60d230ccd593091cdf8ac30676b86df6bd1f97ab49e95678a164cbf3aa48d40304ad6dd58a35799261205142d9231aad357dae
+  checksum: 10/159f592307578405c5217ba40ab467d4ac35f23eb20abc7f32b85698b8c1aff92f71b00c80779f891a8e463edafab05d9a4db53052d5c67005240ac4fff7fc72
   languageName: node
   linkType: hard
 
@@ -13451,7 +13451,7 @@ __metadata:
     constants-browserify: "npm:^1.0.0"
     copy-webpack-plugin: "npm:^14.0.0"
     css-loader: "npm:6.8.1"
-    dompurify: "npm:3.4.14"
+    dompurify: "npm:3.4.15"
     eslint: "npm:^10.10.0"
     eslint-config-prettier: "npm:^10.1.8"
     eslint-plugin-chai-friendly: "npm:^1.2.1"
